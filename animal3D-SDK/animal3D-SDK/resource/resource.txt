@@ -1,0 +1,32 @@
+
+MODELS
+
+Teapot
+http://casual-effects.com/data/index.html
+
+
+IMAGES
+
+Atlases compiled by D. Buckstein
+
+Skyboxes
+http://www.zfight.com/misc/images/textures/envmaps/stormydays_large.jpg
+http://i.imgur.com/xoGVD3X.jpg
+-> shopped by D. Buckstein to fix seams
+
+High-resolution Earth & planets
+http://www.blenderguru.com/tutorials/create-a-realistic-earth/
+http://www.solarsystemscope.com/textures/
+http://www.celestiamotherlode.net/
+http://coryg89.github.io/assets/themes/img/normal1024x512.jpg
+https://astropedia.astrogeology.usgs.gov/download/Moon/LRO/LOLA/thumbs/Moon_LRO_LOLA_global_LDEM_1024.jpg
+
+Stone
+http://www.3dkingdoms.com/CW3D/Doc/displacement-maps.jpg
+
+Repeating textures 
+https://community.renderman.pixar.com/article/1787/library-pixar-one-thirty.html
+
+Sprite sheet goldmine
+https://www.spriters-resource.com/
+Dragon Quest VI: https://www.spriters-resource.com/ds_dsi/dragonquest6realmsofrevelation/
