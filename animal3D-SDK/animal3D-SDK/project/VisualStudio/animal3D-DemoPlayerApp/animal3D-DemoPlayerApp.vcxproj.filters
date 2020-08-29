@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\a3_app_utils">
+      <UniqueIdentifier>{01e529cf-90ba-4aa9-a977-378237d14526}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\a3_app_utils\Win32">
+      <UniqueIdentifier>{2ca5075d-8ac3-4bf3-8d1a-30112f40af63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\platform">
+      <UniqueIdentifier>{c9b3224b-6a92-4d3f-a9a6-3997fce496cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\platform">
+      <UniqueIdentifier>{11983670-b8cb-4693-8f97-78a7fa216867}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\platform\resource">
+      <UniqueIdentifier>{4f591334-f879-43ea-9374-f83ea282e494}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\platform\resource\icon">
+      <UniqueIdentifier>{038463f5-b3ac-48b0-a760-d873d4e4f67b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\source\animal3D-DemoPlayerApp\a3_dylib_config_load.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\animal3D-DemoPlayerApp\a3_app_utils\a3_app_load.h">
+      <Filter>Header Files\a3_app_utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\animal3D-DemoPlayerApp\a3_app_utils\Win32\a3_app_console.h">
+      <Filter>Header Files\a3_app_utils\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\animal3D-DemoPlayerApp\a3_app_utils\Win32\a3_app_window.h">
+      <Filter>Header Files\a3_app_utils\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\animal3D-DemoPlayerApp\a3_app_utils\Win32\a3_app_application.h">
+      <Filter>Header Files\a3_app_utils\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="animal3D-DemoPlayerApp.rc.h">
+      <Filter>Resource Files\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\animal3D-DemoPlayerApp\a3_app_utils\Win32\a3_app_renderer.h">
+      <Filter>Header Files\a3_app_utils\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="_src_win\a3_app_renderer_config.h">
+      <Filter>Source Files\platform</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="_src_win\main_win.c">
+      <Filter>Source Files\platform</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="_src_win\resource\icon\cbtk.ico">
+      <Filter>Resource Files\platform\resource\icon</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="animal3D-DemoPlayerApp.rc">
+      <Filter>Resource Files\platform</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>
