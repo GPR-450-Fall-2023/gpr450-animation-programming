@@ -1,0 +1,88 @@
+#-------------------------------------------------------------------------------
+#	Copyright 2011-2020 Daniel S. Buckstein
+#
+#	Licensed under the Apache License, Version 2.0 (the "License");
+#	you may not use this file except in compliance with the License.
+#	You may obtain a copy of the License at
+#
+#		http://www.apache.org/licenses/LICENSE-2.0
+#
+#	Unless required by applicable law or agreed to in writing, software
+#	distributed under the License is distributed on an "AS IS" BASIS,
+#	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#	See the License for the specific language governing permissions and
+#	limitations under the License.
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+#	animal3D SDK: Minimal 3D Animation Framework
+#	By Daniel S. Buckstein
+#	
+#	animal3D-demoinfo-example.txt
+# 	Syntax for demo info descriptors.
+#-------------------------------------------------------------------------------
+
+# Lines beginning with # are comments and will be ignored. Otherwise, lines will be read until @ is found, in which case the next variable to be processed will be processed. Max line length is 2048, including newline and null terminator. Max string length is 32, including null terminator.
+# This file describes the loader's syntax, with all user variables labelled as <variable name>.
+
+# The first meaningful, non-comment line is the number of info descriptors to be read: 
+# @ <number of records>
+@ 1
+
+# Each line following represents a demo description record: 
+# @ [<demo name>] [<demo DLL name>.dll] <defined callbacks count (determines how many times to repeat the following...)> :<callback mapping (see below)> <callback function name in DLL> :<callback mapping> <callback function>
+# 	...etc.
+@ [Hello animal3D] [helloA3.dll] 3 :a3callback_idle myIdle :a3callback_load myLoad :a3callback_unload myUnload
+
+
+#-------------------------------------------------------------------------------
+# All callback mappings (function hooks): 
+#	a3callback_load
+#		Purpose: Called when demo is loaded. Allocate resources, etc. Also called when hotbuild is triggered. Changes to be made when hotbuilding should be made here. The point of this is to not require a full-on deallocate/reallocate when hotloading occurs, which allows persistent data to stay persistent. The requirement is that persistent data does not change its format between loads, which may result in corruption.
+#		Params: Pointer to persistent data; hotbuild flag (1 if hotbuilding), indicating whether a soft or complete load should be done (do soft/partial/imperative load if hotbuilding, complete load if not hotbuilding).
+#		Return: Pointer to any persistent data (can be any type).
+#	a3callback_unload
+#		Purpose: Called when demo is unloaded. Opposite of load, so it should deallocate all resources, etc.
+#		Params: Pointer to persistent data; hotbuild flag (1 if hotbuilding), indicating whether a soft or complete unload should be done (do soft/partial/imperative unloading if hotbuilding, complete unload if not hotbuilding).
+#		Return: pointer to any persistent data (can be any type).
+#	a3callback_display
+#		Purpose: Called when the window's rectangle changes. NOTE: THIS IS NOT A RENDER CALLBACK!
+#		Params: Pointer to persistent data.
+#		Return: 1 to indicate that the window's display is controlled by rendering in the demo.
+#	a3callback_idle
+#		Purpose: Called when there are no other system tasks to be processed. Demo update and render should happen here using a timer for control.
+#		Params: Pointer to persistent data.
+#		Return: 1 (positive) if render occurred in this idle call; -1 (negative) if demo should quit (window closes for standalone demos); 0 otherwise (nothing special happened).
+#	a3callback_windowActivate
+#		Purpose: Called when the demo window gains focus, whether by clicking on it or other windows losing focus.
+#		Params: Pointer to persistent data.
+#	a3callback_windowDeactivate
+#		Purpose: Called when the demo window loses focus.
+#		Params: Pointer to persistent data.
+#	a3callback_windowMove
+#		Purpose: Called when the demo window moves, also called after load so demo can process window position.
+#		Params: Pointer to persistent data; new window coordinates on-screen (x, y).
+#	a3callback_windowResize
+#		Purpose: Called when the demo window is resized, also called after load so demo can process initial window size.
+#		Params: Pointer to persistent data; new window size on-screen (w, h);
+#	a3callback_keyPress / a3callback_keyHold / a3callback_keyRelease
+#		Purpose: Called when any key is pressed/held/released. NOTE: useful for persistent key state tracking.
+#		Params: Pointer to persistent data; virtual key code (not ASCII code; see next set).
+#	a3callback_keyCharPress / a3callback_keyCharHold
+#		Purpose: Called when an ASCII key is pressed/held. NOTE: there is no release callback for ASCII keys; these are best used for immediate commands instead of persistent state tracking.
+#		Params: Pointer to persistent data; ASCII code of key down.
+#	a3callback_mouseClick / a3callback_mouseDoubleClick / a3callback_mouseRelease
+#		Purpose: Called when a key is clicked/double-clicked/released.
+#		Params: Pointer to persistent data; mouse button (0 for L, 1 for M, 2 for wheel delta, 3 for R, 4-5 for extra buttons); cursor position (x, y).
+#	a3callback_mouseWheel
+#		Purpose: Called when the mouse wheel is rotated.
+#		Params: Pointer to persistent data; mouse wheel change (1 for up, -1 for down); cursor position (x, y).
+#	a3callback_mouseMove
+#		Purpose: Called when the mouse moves.
+#		Params: Pointer to persistent data; new cursor position (x, y).
+#	a3callback_mouseLeave
+#		Purpose: Called when the mouse leaves the window.
+#		Params: Pointer to persistent data.
+
+
+#-------------------------------------------------------------------------------
