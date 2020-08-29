@@ -1,0 +1,71 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "animal3D-DemoPlayerApp", "..\..\animal3D-DemoPlayerApp\animal3D-DemoPlayerApp.vcxproj", "{FC188ACC-6F0D-40CF-BC09-BCB27053393B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7484EB6D-CDF4-4E94-9C1E-88D70DB96241} = {7484EB6D-CDF4-4E94-9C1E-88D70DB96241}
+	EndProjectSection
+	GlobalSection(HgVSProperties) = preSolution
+		SolutionIsControlled = True
+		SolutionBindings = <Solution Location In Database>
+	EndGlobalSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "animal3D-DemoPlugin", "..\..\animal3D-DemoPlugin\animal3D-DemoPlugin.vcxproj", "{3510FDB9-6364-40DC-9AED-79D92B28496F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7484EB6D-CDF4-4E94-9C1E-88D70DB96241} = {7484EB6D-CDF4-4E94-9C1E-88D70DB96241}
+		{FC188ACC-6F0D-40CF-BC09-BCB27053393B} = {FC188ACC-6F0D-40CF-BC09-BCB27053393B}
+	EndProjectSection
+	GlobalSection(HgVSProperties) = preSolution
+		SolutionIsControlled = True
+		SolutionBindings = <Solution Location In Database>
+	EndGlobalSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "animal3D-A3DG-OpenGL", "..\..\animal3D-A3DG-OpenGL\animal3D-A3DG-OpenGL.vcxproj", "{7484EB6D-CDF4-4E94-9C1E-88D70DB96241}"
+	GlobalSection(HgVSProperties) = preSolution
+		SolutionIsControlled = True
+		SolutionBindings = <Solution Location In Database>
+	EndGlobalSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FC188ACC-6F0D-40CF-BC09-BCB27053393B}.Debug|x64.ActiveCfg = Debug|x64
+		{FC188ACC-6F0D-40CF-BC09-BCB27053393B}.Debug|x64.Build.0 = Debug|x64
+		{FC188ACC-6F0D-40CF-BC09-BCB27053393B}.Debug|x86.ActiveCfg = Debug|Win32
+		{FC188ACC-6F0D-40CF-BC09-BCB27053393B}.Debug|x86.Build.0 = Debug|Win32
+		{FC188ACC-6F0D-40CF-BC09-BCB27053393B}.Release|x64.ActiveCfg = Release|x64
+		{FC188ACC-6F0D-40CF-BC09-BCB27053393B}.Release|x64.Build.0 = Release|x64
+		{FC188ACC-6F0D-40CF-BC09-BCB27053393B}.Release|x86.ActiveCfg = Release|Win32
+		{FC188ACC-6F0D-40CF-BC09-BCB27053393B}.Release|x86.Build.0 = Release|Win32
+		{3510FDB9-6364-40DC-9AED-79D92B28496F}.Debug|x64.ActiveCfg = Debug|x64
+		{3510FDB9-6364-40DC-9AED-79D92B28496F}.Debug|x64.Build.0 = Debug|x64
+		{3510FDB9-6364-40DC-9AED-79D92B28496F}.Debug|x86.ActiveCfg = Debug|Win32
+		{3510FDB9-6364-40DC-9AED-79D92B28496F}.Debug|x86.Build.0 = Debug|Win32
+		{3510FDB9-6364-40DC-9AED-79D92B28496F}.Release|x64.ActiveCfg = Release|x64
+		{3510FDB9-6364-40DC-9AED-79D92B28496F}.Release|x64.Build.0 = Release|x64
+		{3510FDB9-6364-40DC-9AED-79D92B28496F}.Release|x86.ActiveCfg = Release|Win32
+		{3510FDB9-6364-40DC-9AED-79D92B28496F}.Release|x86.Build.0 = Release|Win32
+		{7484EB6D-CDF4-4E94-9C1E-88D70DB96241}.Debug|x64.ActiveCfg = Debug|x64
+		{7484EB6D-CDF4-4E94-9C1E-88D70DB96241}.Debug|x64.Build.0 = Debug|x64
+		{7484EB6D-CDF4-4E94-9C1E-88D70DB96241}.Debug|x86.ActiveCfg = Debug|Win32
+		{7484EB6D-CDF4-4E94-9C1E-88D70DB96241}.Debug|x86.Build.0 = Debug|Win32
+		{7484EB6D-CDF4-4E94-9C1E-88D70DB96241}.Release|x64.ActiveCfg = Release|x64
+		{7484EB6D-CDF4-4E94-9C1E-88D70DB96241}.Release|x64.Build.0 = Release|x64
+		{7484EB6D-CDF4-4E94-9C1E-88D70DB96241}.Release|x86.ActiveCfg = Release|Win32
+		{7484EB6D-CDF4-4E94-9C1E-88D70DB96241}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(HgVSProperties) = preSolution
+		SolutionIsControlled = True
+		SolutionBindings = <Solution Location In Database>
+	EndGlobalSection
+EndGlobal
