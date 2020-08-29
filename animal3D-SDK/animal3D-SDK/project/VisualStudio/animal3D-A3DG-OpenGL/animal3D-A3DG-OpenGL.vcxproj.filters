@@ -1,0 +1,185 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\animal3D-A3DG">
+      <UniqueIdentifier>{f4f43257-04bd-4456-9906-c44bb61e861e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\animal3D-A3DG\a3graphics">
+      <UniqueIdentifier>{4d5137a3-16e6-4445-8644-b5c4d5d4e9fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\animal3D-A3DG\a3graphics\_inl">
+      <UniqueIdentifier>{aa6739e5-4cbb-46f0-a2ca-c80806a4f5cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common">
+      <UniqueIdentifier>{b9d2d891-16ec-4210-85de-be769091e296}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\OpenGL">
+      <UniqueIdentifier>{0a1ffd2b-b486-4a16-952b-30ba4cf0096b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common\a3graphics">
+      <UniqueIdentifier>{dda38fc4-6a7c-4540-ab33-09963f3e67bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\OpenGL\a3graphics-OpenGL">
+      <UniqueIdentifier>{bc4d8efd-0d66-4dc4-9213-0e9d5b222a73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\platform">
+      <UniqueIdentifier>{4a0485b4-4924-4670-a48a-ce5d6cda5416}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\platform\a3graphics">
+      <UniqueIdentifier>{2e12eb71-0903-4480-973f-ebca30f2b40e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\platform\a3graphics\Win32">
+      <UniqueIdentifier>{102e780f-e68f-441f-8c4d-23eea186e7f3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\source\animal3D-A3DG\animal3D-A3DG.c">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\animal3D-A3DG\a3graphics-OpenGL\a3_BufferObject-OpenGL.c">
+      <Filter>Source Files\OpenGL\a3graphics-OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\animal3D-A3DG\a3graphics-OpenGL\a3_Framebuffer-OpenGL.c">
+      <Filter>Source Files\OpenGL\a3graphics-OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\animal3D-A3DG\a3graphics-OpenGL\a3_Material-OpenGL.c">
+      <Filter>Source Files\OpenGL\a3graphics-OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\animal3D-A3DG\a3graphics-OpenGL\a3_ShaderProgram-OpenGL.c">
+      <Filter>Source Files\OpenGL\a3graphics-OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\animal3D-A3DG\a3graphics-OpenGL\a3_TextRenderer-OpenGL.c">
+      <Filter>Source Files\OpenGL\a3graphics-OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\animal3D-A3DG\a3graphics-OpenGL\a3_Texture-OpenGL.c">
+      <Filter>Source Files\OpenGL\a3graphics-OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\animal3D-A3DG\a3graphics-OpenGL\a3_UniformBuffer-OpenGL.c">
+      <Filter>Source Files\OpenGL\a3graphics-OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\animal3D-A3DG\a3graphics-OpenGL\a3_VertexBuffer-OpenGL.c">
+      <Filter>Source Files\OpenGL\a3graphics-OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\animal3D-A3DG\a3graphics-OpenGL\a3_VertexDrawable-OpenGL.c">
+      <Filter>Source Files\OpenGL\a3graphics-OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\animal3D-A3DG\a3graphics\a3_GraphicsObjectHandle.c">
+      <Filter>Source Files\common\a3graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\animal3D-A3DG\a3graphics\a3_BufferObject.c">
+      <Filter>Source Files\common\a3graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\animal3D-A3DG\a3graphics\a3_Framebuffer.c">
+      <Filter>Source Files\common\a3graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\animal3D-A3DG\a3graphics\a3_Material.c">
+      <Filter>Source Files\common\a3graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\animal3D-A3DG\a3graphics\a3_ShaderProgram.c">
+      <Filter>Source Files\common\a3graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\animal3D-A3DG\a3graphics\a3_TextRenderer.c">
+      <Filter>Source Files\common\a3graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\animal3D-A3DG\a3graphics\a3_TextureAtlas.c">
+      <Filter>Source Files\common\a3graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\animal3D-A3DG\a3graphics\a3_Texture.c">
+      <Filter>Source Files\common\a3graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\animal3D-A3DG\a3graphics\a3_VertexBuffer.c">
+      <Filter>Source Files\common\a3graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\animal3D-A3DG\a3graphics\a3_VertexDescriptors.c">
+      <Filter>Source Files\common\a3graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\animal3D-A3DG\a3graphics\a3_VertexDrawable.c">
+      <Filter>Source Files\common\a3graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="_src_win\a3graphics\Win32\a3_app_renderer-OpenGL.c">
+      <Filter>Source Files\platform\a3graphics\Win32</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\include\animal3D-A3DG\animal3D-A3DG.h">
+      <Filter>Header Files\animal3D-A3DG</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\animal3D-A3DG\a3graphics\a3_BufferObject.h">
+      <Filter>Header Files\animal3D-A3DG\a3graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\animal3D-A3DG\a3graphics\a3_Framebuffer.h">
+      <Filter>Header Files\animal3D-A3DG\a3graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\animal3D-A3DG\a3graphics\a3_GraphicsObjectHandle.h">
+      <Filter>Header Files\animal3D-A3DG\a3graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\animal3D-A3DG\a3graphics\a3_Material.h">
+      <Filter>Header Files\animal3D-A3DG\a3graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\animal3D-A3DG\a3graphics\a3_ShaderProgram.h">
+      <Filter>Header Files\animal3D-A3DG\a3graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\animal3D-A3DG\a3graphics\a3_TextRenderer.h">
+      <Filter>Header Files\animal3D-A3DG\a3graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\animal3D-A3DG\a3graphics\a3_Texture.h">
+      <Filter>Header Files\animal3D-A3DG\a3graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\animal3D-A3DG\a3graphics\a3_TextureAtlas.h">
+      <Filter>Header Files\animal3D-A3DG\a3graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\animal3D-A3DG\a3graphics\a3_UniformBuffer.h">
+      <Filter>Header Files\animal3D-A3DG\a3graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\animal3D-A3DG\a3graphics\a3_VertexBuffer.h">
+      <Filter>Header Files\animal3D-A3DG\a3graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\animal3D-A3DG\a3graphics\a3_VertexDescriptors.h">
+      <Filter>Header Files\animal3D-A3DG\a3graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\animal3D-A3DG\a3graphics\a3_VertexDrawable.h">
+      <Filter>Header Files\animal3D-A3DG\a3graphics</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\include\animal3D-A3DG\a3graphics\_inl\a3_Framebuffer.inl">
+      <Filter>Header Files\animal3D-A3DG\a3graphics\_inl</Filter>
+    </None>
+    <None Include="..\..\..\include\animal3D-A3DG\a3graphics\_inl\a3_GraphicsObjectHandle.inl">
+      <Filter>Header Files\animal3D-A3DG\a3graphics\_inl</Filter>
+    </None>
+    <None Include="..\..\..\include\animal3D-A3DG\a3graphics\_inl\a3_Material.inl">
+      <Filter>Header Files\animal3D-A3DG\a3graphics\_inl</Filter>
+    </None>
+    <None Include="..\..\..\include\animal3D-A3DG\a3graphics\_inl\a3_ShaderProgram.inl">
+      <Filter>Header Files\animal3D-A3DG\a3graphics\_inl</Filter>
+    </None>
+    <None Include="..\..\..\include\animal3D-A3DG\a3graphics\_inl\a3_Texture.inl">
+      <Filter>Header Files\animal3D-A3DG\a3graphics\_inl</Filter>
+    </None>
+    <None Include="..\..\..\include\animal3D-A3DG\a3graphics\_inl\a3_VertexBuffer.inl">
+      <Filter>Header Files\animal3D-A3DG\a3graphics\_inl</Filter>
+    </None>
+    <None Include="..\..\..\include\animal3D-A3DG\a3graphics\_inl\a3_VertexDescriptors.inl">
+      <Filter>Header Files\animal3D-A3DG\a3graphics\_inl</Filter>
+    </None>
+    <None Include="..\..\..\include\animal3D-A3DG\a3graphics\_inl\a3_VertexDrawable.inl">
+      <Filter>Header Files\animal3D-A3DG\a3graphics\_inl</Filter>
+    </None>
+    <None Include="..\..\..\include\animal3D-A3DG\a3graphics\_inl\a3_BufferObject.inl">
+      <Filter>Header Files\animal3D-A3DG\a3graphics\_inl</Filter>
+    </None>
+  </ItemGroup>
+</Project>

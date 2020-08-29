@@ -1,0 +1,213 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\source\animal3D-A3DG\a3graphics-OpenGL\a3_BufferObject-OpenGL.c" />
+    <ClCompile Include="..\..\..\source\animal3D-A3DG\a3graphics-OpenGL\a3_Framebuffer-OpenGL.c" />
+    <ClCompile Include="..\..\..\source\animal3D-A3DG\a3graphics-OpenGL\a3_Material-OpenGL.c" />
+    <ClCompile Include="..\..\..\source\animal3D-A3DG\a3graphics-OpenGL\a3_ShaderProgram-OpenGL.c" />
+    <ClCompile Include="..\..\..\source\animal3D-A3DG\a3graphics-OpenGL\a3_TextRenderer-OpenGL.c" />
+    <ClCompile Include="..\..\..\source\animal3D-A3DG\a3graphics-OpenGL\a3_Texture-OpenGL.c" />
+    <ClCompile Include="..\..\..\source\animal3D-A3DG\a3graphics-OpenGL\a3_UniformBuffer-OpenGL.c" />
+    <ClCompile Include="..\..\..\source\animal3D-A3DG\a3graphics-OpenGL\a3_VertexBuffer-OpenGL.c" />
+    <ClCompile Include="..\..\..\source\animal3D-A3DG\a3graphics-OpenGL\a3_VertexDrawable-OpenGL.c" />
+    <ClCompile Include="..\..\..\source\animal3D-A3DG\a3graphics\a3_BufferObject.c" />
+    <ClCompile Include="..\..\..\source\animal3D-A3DG\a3graphics\a3_Framebuffer.c" />
+    <ClCompile Include="..\..\..\source\animal3D-A3DG\a3graphics\a3_GraphicsObjectHandle.c" />
+    <ClCompile Include="..\..\..\source\animal3D-A3DG\a3graphics\a3_Material.c" />
+    <ClCompile Include="..\..\..\source\animal3D-A3DG\a3graphics\a3_ShaderProgram.c" />
+    <ClCompile Include="..\..\..\source\animal3D-A3DG\a3graphics\a3_TextRenderer.c" />
+    <ClCompile Include="..\..\..\source\animal3D-A3DG\a3graphics\a3_Texture.c" />
+    <ClCompile Include="..\..\..\source\animal3D-A3DG\a3graphics\a3_TextureAtlas.c" />
+    <ClCompile Include="..\..\..\source\animal3D-A3DG\a3graphics\a3_VertexBuffer.c" />
+    <ClCompile Include="..\..\..\source\animal3D-A3DG\a3graphics\a3_VertexDescriptors.c" />
+    <ClCompile Include="..\..\..\source\animal3D-A3DG\a3graphics\a3_VertexDrawable.c" />
+    <ClCompile Include="..\..\..\source\animal3D-A3DG\animal3D-A3DG.c" />
+    <ClCompile Include="_src_win\a3graphics\Win32\a3_app_renderer-OpenGL.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\include\animal3D-A3DG\a3graphics\a3_BufferObject.h" />
+    <ClInclude Include="..\..\..\include\animal3D-A3DG\a3graphics\a3_Framebuffer.h" />
+    <ClInclude Include="..\..\..\include\animal3D-A3DG\a3graphics\a3_GraphicsObjectHandle.h" />
+    <ClInclude Include="..\..\..\include\animal3D-A3DG\a3graphics\a3_Material.h" />
+    <ClInclude Include="..\..\..\include\animal3D-A3DG\a3graphics\a3_ShaderProgram.h" />
+    <ClInclude Include="..\..\..\include\animal3D-A3DG\a3graphics\a3_TextRenderer.h" />
+    <ClInclude Include="..\..\..\include\animal3D-A3DG\a3graphics\a3_Texture.h" />
+    <ClInclude Include="..\..\..\include\animal3D-A3DG\a3graphics\a3_TextureAtlas.h" />
+    <ClInclude Include="..\..\..\include\animal3D-A3DG\a3graphics\a3_UniformBuffer.h" />
+    <ClInclude Include="..\..\..\include\animal3D-A3DG\a3graphics\a3_VertexBuffer.h" />
+    <ClInclude Include="..\..\..\include\animal3D-A3DG\a3graphics\a3_VertexDescriptors.h" />
+    <ClInclude Include="..\..\..\include\animal3D-A3DG\a3graphics\a3_VertexDrawable.h" />
+    <ClInclude Include="..\..\..\include\animal3D-A3DG\animal3D-A3DG.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\include\animal3D-A3DG\a3graphics\_inl\a3_BufferObject.inl" />
+    <None Include="..\..\..\include\animal3D-A3DG\a3graphics\_inl\a3_Framebuffer.inl" />
+    <None Include="..\..\..\include\animal3D-A3DG\a3graphics\_inl\a3_GraphicsObjectHandle.inl" />
+    <None Include="..\..\..\include\animal3D-A3DG\a3graphics\_inl\a3_Material.inl" />
+    <None Include="..\..\..\include\animal3D-A3DG\a3graphics\_inl\a3_ShaderProgram.inl" />
+    <None Include="..\..\..\include\animal3D-A3DG\a3graphics\_inl\a3_Texture.inl" />
+    <None Include="..\..\..\include\animal3D-A3DG\a3graphics\_inl\a3_VertexBuffer.inl" />
+    <None Include="..\..\..\include\animal3D-A3DG\a3graphics\_inl\a3_VertexDescriptors.inl" />
+    <None Include="..\..\..\include\animal3D-A3DG\a3graphics\_inl\a3_VertexDrawable.inl" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{7484EB6D-CDF4-4E94-9C1E-88D70DB96241}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>animal3DA3DGOpenGL</RootNamespace>
+    <WindowsTargetPlatformVersion>$(a3sdkversion)</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>$(a3platformtoolset)</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>$(a3platformtoolset)</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>$(a3platformtoolset)</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>$(a3platformtoolset)</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(ANIMAL3D_SDK)lib\$(PlatformTarget)\$(PlatformToolset)\$(Configuration)\</OutDir>
+    <IntDir>$(ProjectDir)build\$(PlatformTarget)\$(PlatformToolset)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(ANIMAL3D_SDK)lib\$(PlatformTarget)\$(PlatformToolset)\$(Configuration)\</OutDir>
+    <IntDir>$(ProjectDir)build\$(PlatformTarget)\$(PlatformToolset)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(ANIMAL3D_SDK)lib\$(PlatformTarget)\$(PlatformToolset)\$(Configuration)\</OutDir>
+    <IntDir>$(ProjectDir)build\$(PlatformTarget)\$(PlatformToolset)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(ANIMAL3D_SDK)lib\$(PlatformTarget)\$(PlatformToolset)\$(Configuration)\</OutDir>
+    <IntDir>$(ProjectDir)build\$(PlatformTarget)\$(PlatformToolset)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN$(PlatformArchitecture);_CRT_SECURE_NO_WARNINGS;_LIB;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ANIMAL3D_SDK)include\;$(ANIMAL3D_SDK)thirdparty\include\;$(DEV_SDK_DIR)include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <SDLCheck>
+      </SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN$(PlatformArchitecture);_CRT_SECURE_NO_WARNINGS;_LIB;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ANIMAL3D_SDK)include\;$(ANIMAL3D_SDK)thirdparty\include\;$(DEV_SDK_DIR)include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <SDLCheck>
+      </SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN$(PlatformArchitecture);_CRT_SECURE_NO_WARNINGS;_LIB;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ANIMAL3D_SDK)include\;$(ANIMAL3D_SDK)thirdparty\include\;$(DEV_SDK_DIR)include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <SDLCheck>
+      </SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN$(PlatformArchitecture);_CRT_SECURE_NO_WARNINGS;_LIB;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ANIMAL3D_SDK)include\;$(ANIMAL3D_SDK)thirdparty\include\;$(DEV_SDK_DIR)include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <SDLCheck>
+      </SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
