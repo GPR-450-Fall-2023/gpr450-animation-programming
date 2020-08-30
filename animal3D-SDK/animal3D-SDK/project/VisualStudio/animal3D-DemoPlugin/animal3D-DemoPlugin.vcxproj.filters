@@ -67,6 +67,18 @@
     <Filter Include="Source Files\common\A3_DEMO\a3_DemoMode0_Starter">
       <UniqueIdentifier>{6b17d22a-17a0-4e18-a838-64ae531f3984}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\common\A3_DEMO\_animation">
+      <UniqueIdentifier>{3e2e533a-d4f6-4cf9-846b-bcbb4181c462}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\A3_DEMO\_animation">
+      <UniqueIdentifier>{c24e9f6a-fbb5-4f1b-86e4-764d63f8f989}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\A3_DEMO\_animation\_inl">
+      <UniqueIdentifier>{b65cd137-e02b-49c4-93a1-c98a5ce6cb67}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common\A3_DEMO\_animation\_src">
+      <UniqueIdentifier>{55fe962e-9a3a-4684-acc9-45f5c9a26294}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="_src_win\main_dll.c">
@@ -111,6 +123,27 @@
     <ClCompile Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\a3_DemoMode0_Starter\a3_DemoMode0_Starter-unload.c">
       <Filter>Source Files\common\A3_DEMO\a3_DemoMode0_Starter</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_animation\_src\a3_Hierarchy.c">
+      <Filter>Source Files\common\A3_DEMO\_animation\_src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_animation\_src\a3_HierarchyState.c">
+      <Filter>Source Files\common\A3_DEMO\_animation\_src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_animation\_src\a3_HierarchyStateBlend.c">
+      <Filter>Source Files\common\A3_DEMO\_animation\_src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_animation\_src\a3_KeyframeAnimation.c">
+      <Filter>Source Files\common\A3_DEMO\_animation\_src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_animation\_src\a3_KeyframeAnimationController.c">
+      <Filter>Source Files\common\A3_DEMO\_animation\_src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_animation\_src\a3_Kinematics.c">
+      <Filter>Source Files\common\A3_DEMO\_animation\_src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_animation\_src\a3_SpatialPose.c">
+      <Filter>Source Files\common\A3_DEMO\_animation\_src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\a3_DemoState.h">
@@ -133,6 +166,27 @@
     </ClInclude>
     <ClInclude Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\a3_DemoMode0_Starter.h">
       <Filter>Header Files\A3_DEMO</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_animation\a3_Hierarchy.h">
+      <Filter>Header Files\A3_DEMO\_animation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_animation\a3_HierarchyState.h">
+      <Filter>Header Files\A3_DEMO\_animation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_animation\a3_HierarchyStateBlend.h">
+      <Filter>Header Files\A3_DEMO\_animation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_animation\a3_KeyframeAnimation.h">
+      <Filter>Header Files\A3_DEMO\_animation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_animation\a3_KeyframeAnimationController.h">
+      <Filter>Header Files\A3_DEMO\_animation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_animation\a3_Kinematics.h">
+      <Filter>Header Files\A3_DEMO\_animation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_animation\a3_SpatialPose.h">
+      <Filter>Header Files\A3_DEMO\_animation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -159,6 +213,27 @@
     </None>
     <None Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_a3_demo_utilities\_inl\a3_DemoRenderUtils.inl">
       <Filter>Header Files\A3_DEMO\_a3_demo_utilities\_inl</Filter>
+    </None>
+    <None Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_animation\_inl\a3_Hierarchy.inl">
+      <Filter>Header Files\A3_DEMO\_animation\_inl</Filter>
+    </None>
+    <None Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_animation\_inl\a3_HierarchyState.inl">
+      <Filter>Header Files\A3_DEMO\_animation\_inl</Filter>
+    </None>
+    <None Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_animation\_inl\a3_HierarchyStateBlend.inl">
+      <Filter>Header Files\A3_DEMO\_animation\_inl</Filter>
+    </None>
+    <None Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_animation\_inl\a3_KeyframeAnimation.inl">
+      <Filter>Header Files\A3_DEMO\_animation\_inl</Filter>
+    </None>
+    <None Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_animation\_inl\a3_KeyframeAnimationController.inl">
+      <Filter>Header Files\A3_DEMO\_animation\_inl</Filter>
+    </None>
+    <None Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_animation\_inl\a3_Kinematics.inl">
+      <Filter>Header Files\A3_DEMO\_animation\_inl</Filter>
+    </None>
+    <None Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_animation\_inl\a3_SpatialPose.inl">
+      <Filter>Header Files\A3_DEMO\_animation\_inl</Filter>
     </None>
   </ItemGroup>
 </Project>
