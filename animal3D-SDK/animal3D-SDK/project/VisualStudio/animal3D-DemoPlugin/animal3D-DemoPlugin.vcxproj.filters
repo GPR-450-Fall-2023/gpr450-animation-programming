@@ -1,0 +1,164 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\common">
+      <UniqueIdentifier>{1d401567-a44f-421e-ac49-7cf60c536f43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\platform">
+      <UniqueIdentifier>{d20b6381-b7ec-495f-abae-07539acfb83f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common\A3_DEMO">
+      <UniqueIdentifier>{dda03ea8-3626-4309-9618-9d7c5653f2a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\A3_DEMO">
+      <UniqueIdentifier>{858c921c-d67d-4e51-b6c0-0f4d8257d22c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\A3_DEMO">
+      <UniqueIdentifier>{d061064f-0ee7-45dc-afc1-2fb200b50b87}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\A3_DEMO\glsl">
+      <UniqueIdentifier>{57770b2e-d573-407d-9b4a-66b59653d8a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\A3_DEMO\glsl\4x">
+      <UniqueIdentifier>{baef5553-8143-4e09-b432-4db39f33224e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\A3_DEMO\glsl\4x\vs">
+      <UniqueIdentifier>{b23c4635-6a55-432e-9453-d8ecd1441102}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\A3_DEMO\glsl\4x\fs">
+      <UniqueIdentifier>{a1c202b9-b43e-420b-8f3a-510ab7f41122}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\A3_DEMO\glsl\4x\gs">
+      <UniqueIdentifier>{ba76bf87-4f53-4fa1-8110-f7b9b074ca1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\A3_DEMO\glsl\4x\ts">
+      <UniqueIdentifier>{5d8c89cc-e259-49f5-8f82-c314680ac233}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\A3_DEMO\glsl\4x\cs">
+      <UniqueIdentifier>{44168005-08e4-4cd8-99aa-3a94953c559e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common\A3_DEMO\a3_DemoState">
+      <UniqueIdentifier>{099be26f-4fce-44e2-ab33-a6aa6cb8589e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\A3_DEMO\_a3_demo_utilities">
+      <UniqueIdentifier>{3ab11224-8c88-4d34-8321-60c72199923c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common\A3_DEMO\_a3_demo_utilities">
+      <UniqueIdentifier>{1a9e718c-12e8-4df2-82c7-bdb88b5bc6b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common\A3_DEMO\_a3_demo_utilities\_src">
+      <UniqueIdentifier>{463a0caa-37cc-476c-97f7-30f04e21a02e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\A3_DEMO\_a3_demo_utilities\_inl">
+      <UniqueIdentifier>{2d8be67b-ce3c-4104-8234-156fe1b439df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common\A3_DEMO\a3_DemoMode0_Starter">
+      <UniqueIdentifier>{6b17d22a-17a0-4e18-a838-64ae531f3984}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="_src_win\main_dll.c">
+      <Filter>Source Files\platform</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_a3_demo_utilities\_src\a3_DemoRenderUtils.c">
+      <Filter>Source Files\common\A3_DEMO\_a3_demo_utilities\_src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_a3_demo_utilities\_src\a3_DemoSceneObject.c">
+      <Filter>Source Files\common\A3_DEMO\_a3_demo_utilities\_src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_a3_demo_callbacks.c">
+      <Filter>Source Files\common\A3_DEMO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\a3_DemoState\a3_DemoState-idle-input.c">
+      <Filter>Source Files\common\A3_DEMO\a3_DemoState</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\a3_DemoState\a3_DemoState-idle-render.c">
+      <Filter>Source Files\common\A3_DEMO\a3_DemoState</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\a3_DemoState\a3_DemoState-idle-update.c">
+      <Filter>Source Files\common\A3_DEMO\a3_DemoState</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\a3_DemoState\a3_DemoState-unload.c">
+      <Filter>Source Files\common\A3_DEMO\a3_DemoState</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\a3_DemoState\a3_DemoState-load.c">
+      <Filter>Source Files\common\A3_DEMO\a3_DemoState</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\a3_DemoMode0_Starter\a3_DemoMode0_Starter-idle-input.c">
+      <Filter>Source Files\common\A3_DEMO\a3_DemoMode0_Starter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\a3_DemoMode0_Starter\a3_DemoMode0_Starter-idle-render.c">
+      <Filter>Source Files\common\A3_DEMO\a3_DemoMode0_Starter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\a3_DemoMode0_Starter\a3_DemoMode0_Starter-idle-update.c">
+      <Filter>Source Files\common\A3_DEMO\a3_DemoMode0_Starter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\a3_DemoMode0_Starter\a3_DemoMode0_Starter-load.c">
+      <Filter>Source Files\common\A3_DEMO\a3_DemoMode0_Starter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\a3_DemoMode0_Starter\a3_DemoMode0_Starter-unload.c">
+      <Filter>Source Files\common\A3_DEMO\a3_DemoMode0_Starter</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\a3_DemoState.h">
+      <Filter>Header Files\A3_DEMO</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_a3_demo_utilities\a3_DemoMacros.h">
+      <Filter>Header Files\A3_DEMO\_a3_demo_utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_a3_demo_utilities\a3_DemoRenderUtils.h">
+      <Filter>Header Files\A3_DEMO\_a3_demo_utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_a3_demo_utilities\a3_DemoSceneObject.h">
+      <Filter>Header Files\A3_DEMO\_a3_demo_utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_a3_demo_utilities\a3_DemoShaderProgram.h">
+      <Filter>Header Files\A3_DEMO\_a3_demo_utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\animal3D-DemoPlugin\_a3_dylib_config_export.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\a3_DemoMode0_Starter.h">
+      <Filter>Header Files\A3_DEMO</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\resource\glsl\4x\fs\drawColorAttrib_fs4x.glsl">
+      <Filter>Resource Files\A3_DEMO\glsl\4x\fs</Filter>
+    </None>
+    <None Include="..\..\..\resource\glsl\4x\fs\drawColorUnif_fs4x.glsl">
+      <Filter>Resource Files\A3_DEMO\glsl\4x\fs</Filter>
+    </None>
+    <None Include="..\..\..\resource\glsl\4x\vs\passColor_transform_vs4x.glsl">
+      <Filter>Resource Files\A3_DEMO\glsl\4x\vs</Filter>
+    </None>
+    <None Include="..\..\..\resource\glsl\4x\vs\passthru_transform_vs4x.glsl">
+      <Filter>Resource Files\A3_DEMO\glsl\4x\vs</Filter>
+    </None>
+    <None Include="..\..\..\resource\glsl\4x\vs\passthru_transform_instanced_vs4x.glsl">
+      <Filter>Resource Files\A3_DEMO\glsl\4x\vs</Filter>
+    </None>
+    <None Include="..\..\..\resource\glsl\4x\vs\passColor_transform_instanced_vs4x.glsl">
+      <Filter>Resource Files\A3_DEMO\glsl\4x\vs</Filter>
+    </None>
+    <None Include="..\..\..\resource\glsl\4x\vs\passthru_vs4x.glsl">
+      <Filter>Resource Files\A3_DEMO\glsl\4x\vs</Filter>
+    </None>
+    <None Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_a3_demo_utilities\_inl\a3_DemoRenderUtils.inl">
+      <Filter>Header Files\A3_DEMO\_a3_demo_utilities\_inl</Filter>
+    </None>
+  </ItemGroup>
+</Project>
