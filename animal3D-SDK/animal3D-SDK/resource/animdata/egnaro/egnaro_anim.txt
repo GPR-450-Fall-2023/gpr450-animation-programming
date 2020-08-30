@@ -1,0 +1,13 @@
+#----------------------------------------
+# animal3D by D. Buckstein
+# Animation Clip Set File Format
+#----------------------------------------
+
+# Animations for "Egnaro" character
+
+# animations
+# @ clip_name	duration_s	first_frame	last_frame	reverse_transition	forward_transition	comments (ignored)                                   
+@ 	basepose	0.0			0			0			|					|
+@ 	calibration	1.0			1			27			> calibration		>| calibration
+@ 	idle		4.0			28			52			<<					>
+@ 	dance		1.5			54			78			<<					>

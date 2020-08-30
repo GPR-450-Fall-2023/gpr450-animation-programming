@@ -1,0 +1,24 @@
+#----------------------------------------
+# animal3D by D. Buckstein
+# Sprite Cells File Format
+#----------------------------------------
+
+# Empty lines or lines beginning with # are comments.
+# Lines beginning with @ are data. Keep line lengths LESS THAN 256 characters long.
+# Sprite cells: describes positions and sizes for cells in a sprite sheet.
+
+# First, number of cells to read
+# @ cell_count
+@ 6
+
+# Read cell data in order
+# For each value, write the measurement in pixels
+# @ offset_x	offset_y	size_w		size_h		local_x		local_y		comments (ignored)
+@ 	0			232			24			24			0			0			# body
+@	24			232			24			24			0			-1			
+@	52			240			24			16    		0			-2		
+@	80			240			32			16    		0			-2		
+@	48			232			8			8			0			0			# eye
+@	56			232			16			8			0			-4			# smile
+
+#----------------------------------------

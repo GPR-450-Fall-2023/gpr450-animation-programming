@@ -1,0 +1,55 @@
+#----------------------------------------
+# animal3D by D. Buckstein
+# Animation Clip Set File Format
+#----------------------------------------
+
+# Empty lines or lines beginning with # are comments.
+# Lines beginning with @ are data. Keep line lengths LESS THAN 256 characters long.
+#
+# General animation script: describes clips for a keyframe animation controller.
+# File format contains a list of keyframe animation clips with related attributes, including: 
+# 	name, first frame, last frame, pre- and post-animation automatic transition action
+# This specific file contains test clip data that can be used to control a sprite sheet: 
+#	see "resource/tex/sprite/spriteTest8x8.png"
+#
+# Transition syntax: 
+#		Characters		Description
+#			|				Pause at current terminus of clip (start of first frame or end of last frame)
+#			>				Forward playback from start of clip (true clip start; includes playback of first frame)
+#			>|				Forward pause at start of first frame
+#			<				Reverse playback from end of clip (true clip end; includes playback of last frame)
+#			<|				Reverse pause at end of last frame
+#			>>				Forward playback from end of first frame (skip first; excludes playback of first frame)
+#			>>|				Forward pause at end of first frame
+#			<<				Reverse playback from start of last frame (skip last; excludes playback of last frame)
+#			<<|				Reverse pause at start of last frame
+#
+# Append a clip name to any of the above to apply the action to the specified clip.
+# Providing only the command characters will apply the action to the current clip.
+#
+# Examples: 
+# 	 		> test 			Play the clip called 'test' from the start of the first frame
+# 	 		<| 				Wait at the end the current clip, ready to play in reverse
+# 	 		>>				Play the current clip from the end of the first frame (beginnig of second frame)
+#			<<| TEST		Wait at the start of the last frame of clip called 'TEST'
+#
+# Clip names must contain LESS THAN 32 characters and only alphanumeric characters, beginning with a letter.
+#
+# Read the data in two passes:
+# First check for valid data (lines beginning with @) to get clip names for reference and count.
+# Then read and store the actual data.
+#
+# Example data: 
+# @ clip_name	duration_s	first_frame	last_frame	reverse_transition	forward_transition	comments (ignored)
+@ 	row0		10.0		0			7			< row3				> row1				# go to previous/next
+@ 	row1		8.0			8			15			< row0				> row2				# ""
+@ 	row2		4.0			16			23			< row1				> row3				# ""
+@ 	row3		2.0			24			31			< row2				> row0				# ""
+@ 	row4		1.0			32			39			>>					<<					# ping pong skips
+@ 	row5		2.5			40			47			>					<					# ping pong repeats
+@ 	row6_rev	0.5			55			48			<| row0				>| row0				# stop on another clip
+@ 	row7_rev	5.0			63			56			>|					<|					# stop in other direction
+@ 	all			8.0			0			63			<					>					# true loop
+@ 	middle_rev	2.0			47			32			>					<					# ping pong
+@ 	row0_ping_f	4.0			0			7			|					<< row0_pong_r		# ping pong time-sensitive
+@ 	row0_pong_r	4.0			0			6			> row0_ping_f		|					# ""

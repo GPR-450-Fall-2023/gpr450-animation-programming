@@ -1,0 +1,11 @@
+newmtl egnaro_textured_hi_res_v0_phong1SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd egnaro_diffuse.png
+bump egnaro_normals.png -bm 1
+Ni 1.00
+Ks 0.00 0.00 0.00
+map_Ks egnaro_specular.png
+Ns 18.00

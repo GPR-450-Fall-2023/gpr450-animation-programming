@@ -1,0 +1,11 @@
+#----------------------------------------
+# animal3D by D. Buckstein
+# Animation Clip Set File Format
+#----------------------------------------
+
+# @ clip_name	duration_s	first_frame	last_frame	reverse_transition	forward_transition	comments (ignored)
+@ 	body_idle	0.5			0			3			>>					<<					# sprite ping pong
+@ 	eye_idle	0.0			4			4			|					|					# still frame
+@ 	mouth_idle	0.0			5			5			|					|					# still frame
+
+#----------------------------------------
