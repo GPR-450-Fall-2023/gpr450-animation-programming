@@ -102,19 +102,19 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 	currentSceneObject->scaleMode = 2;
 	currentSceneObject->scale.x = 24.0f;
 	currentSceneObject->scale.y = 24.0f;
-	currentSceneObject->scale.z = 0.0f;
+	currentSceneObject->scale.z = 0.001953125;
 	currentSceneObject->position.z = -sceneObjectHeight;
-
-	currentSceneObject = demoMode->obj_sphere;
-	currentSceneObject->scaleMode = 1;
-	currentSceneObject->scale.x = 2.0f;
-	a3real3Set(currentSceneObject->position.v, +1.0f * sceneObjectDistance, 0.0f, sceneObjectHeight);
 
 	currentSceneObject = demoMode->obj_box;
 	currentSceneObject->scaleMode = 2;
 	currentSceneObject->scale.x = 5.0f;
 	currentSceneObject->scale.y = 4.0f;
 	currentSceneObject->scale.z = 3.0f;
+	a3real3Set(currentSceneObject->position.v, +1.0f * sceneObjectDistance, 0.0f, sceneObjectHeight);
+
+	currentSceneObject = demoMode->obj_sphere;
+	currentSceneObject->scaleMode = 1;
+	currentSceneObject->scale.x = 2.0f;
 	a3real3Set(currentSceneObject->position.v, -1.0f * sceneObjectDistance, 0.0f, sceneObjectHeight);
 
 	currentSceneObject = demoMode->obj_cylinder;
@@ -153,16 +153,18 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 
 
 	// set flags
-	demoMode->render = starter_renderSolid;
+	demoMode->render = starter_renderTexture;
 	demoMode->display = starter_displayTexture;
 	demoMode->activeCamera = starter_cameraSceneViewer;
 
 	demoMode->pipeline = starter_forward;
-	demoMode->pass = starter_passScene;
+	demoMode->pass = starter_passComposite;
 
 	demoMode->targetIndex[starter_passScene] = starter_scene_finalcolor;
+	demoMode->targetIndex[starter_passComposite] = starter_scene_finalcolor;
 
 	demoMode->targetCount[starter_passScene] = starter_target_scene_max;
+	demoMode->targetCount[starter_passComposite] = 1;
 }
 
 

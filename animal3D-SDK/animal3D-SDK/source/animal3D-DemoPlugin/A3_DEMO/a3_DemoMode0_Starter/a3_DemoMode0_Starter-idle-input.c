@@ -58,6 +58,9 @@ void a3starter_input_keyCharPress(a3_DemoState const* demoState, a3_DemoMode0_St
 
 		// toggle target
 		a3demoCtrlCasesLoop(demoMode->targetIndex[demoMode->pass], demoMode->targetCount[demoMode->pass], '}', '{');
+
+		// toggle pass to display
+		a3demoCtrlCasesLoop(demoMode->pass, starter_pass_max, ')', '(');
 	}
 }
 

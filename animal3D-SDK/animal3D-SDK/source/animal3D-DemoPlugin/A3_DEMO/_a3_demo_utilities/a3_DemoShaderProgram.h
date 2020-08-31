@@ -70,7 +70,9 @@ extern "C"
 				uCount,						// generic count
 				uAxis,						// generic axis
 				uSize,						// generic size
+				uFlag,						// generic flag
 				uTime,						// time
+				uColor0,					// color (used in whatever context is needed)
 				uColor;						// color (used in whatever context is needed)
 
 			a3i32

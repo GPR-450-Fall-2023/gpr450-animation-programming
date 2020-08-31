@@ -91,14 +91,14 @@ enum a3_DemoState_ObjectMaxCount
 	demoStateMaxCount_timer = 1,
 
 	demoStateMaxCount_drawDataBuffer = 1,
-	demoStateMaxCount_vertexArray = 2,
+	demoStateMaxCount_vertexArray = 8,
 	demoStateMaxCount_drawable = 16,
 
-	demoStateMaxCount_shaderProgram = 8,
+	demoStateMaxCount_shaderProgram = 32,
 
 	demoStateMaxCount_texture = 8,
 
-	demoStateMaxCount_framebuffer = 1,
+	demoStateMaxCount_framebuffer = 2,
 };
 
 	
@@ -211,6 +211,10 @@ struct a3_DemoState
 		a3_VertexArrayDescriptor vertexArray[demoStateMaxCount_vertexArray];
 		struct {
 			a3_VertexArrayDescriptor
+			//	vao_tangentbasis_texcoord_morph5[1],		// VAO for vertex format with partial tangent bases for 5-target morphing model, with texcoords
+			//	vao_tangentbasis_texcoord_skin[1],			// VAO for vertex format with complete tangent basis, with texcoords and skin weights
+				vao_tangentbasis_texcoord[1];				// VAO for vertex format with complete tangent basis, with texcoords
+			a3_VertexArrayDescriptor
 				vao_position_color[1],						// VAO for vertex format with position and color
 				vao_position[1];							// VAO for vertex format with only position
 		};
@@ -223,6 +227,9 @@ struct a3_DemoState
 			a3_VertexDrawable
 				draw_grid[1],								// wireframe ground plane to emphasize scaling
 				draw_axes[1];								// coordinate axes at the center of the world
+			//a3_VertexDrawable
+			//	draw_link[1],								// wireframe link between nodes (e.g. bone)
+			//	draw_node[1];								// wireframe node (e.g. joint)
 			a3_VertexDrawable
 				draw_unit_box[1],							// unit box (width = height = depth = 1)
 				draw_unit_sphere[1],						// unit sphere (radius = 1)
@@ -231,6 +238,8 @@ struct a3_DemoState
 				draw_unit_torus[1],							// unit torus (major radius = 1)
 				draw_unit_plane_z[1];						// unit plane (width = height = 1) with Z normal
 			a3_VertexDrawable
+			//	draw_character_skin[1],						// can't not have a skinnable character
+			//	draw_teapot_morph[1],						// can't not have a morphing Utah teapot
 				draw_teapot[1];								// can't not have a Utah teapot
 		};
 	};
@@ -248,6 +257,21 @@ struct a3_DemoState
 				prog_drawColorUnif_instanced[1],			// draw uniform color with instancing
 				prog_drawColorAttrib[1],					// draw color attribute
 				prog_drawColorUnif[1];						// draw uniform color
+			a3_DemoStateShaderProgram
+			//	prog_drawPhong_instanced[1],				// draw Phong shading model with instancing
+			//	prog_drawLambert_instanced[1],				// draw Lambert shading model with instancing
+				prog_drawTexture_instanced[1],				// draw texture with instancing
+			//	prog_drawPhong[1],							// draw Phong shading model
+			//	prog_drawLambert[1],						// draw Lambert shading model
+				prog_drawTexture[1];						// draw texture
+			//a3_DemoStateShaderProgram
+			//	prog_drawPhong_skin_instanced[1],			// draw skinned model with instancing
+			//	prog_drawPhong_morph5_instanced[1],			// draw 5-target morphing model with instancing
+			//	prog_drawPhong_skin[1],						// draw skinned model
+			//	prog_drawPhong_morph5[1];					// draw 5-target morphing model
+			a3_DemoStateShaderProgram
+				prog_drawTangentBasis_instanced[1],			// draw vertex/face tangent bases and wireframe with instancing
+				prog_drawTangentBasis[1];					// draw vertex/face tangent bases and wireframe
 		};
 	};
 
@@ -273,6 +297,8 @@ struct a3_DemoState
 		struct {
 			a3_Framebuffer
 				fbo_scene_c16d24s8_mrt[1];					// framebuffer for capturing scene
+			a3_Framebuffer
+				fbo_composite_c16[1];						// framebuffer for compositing
 		};
 	};
 
