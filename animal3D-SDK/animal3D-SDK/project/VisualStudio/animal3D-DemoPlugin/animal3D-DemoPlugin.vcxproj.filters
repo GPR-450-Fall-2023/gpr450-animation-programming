@@ -79,6 +79,15 @@
     <Filter Include="Source Files\common\A3_DEMO\_animation\_src">
       <UniqueIdentifier>{55fe962e-9a3a-4684-acc9-45f5c9a26294}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\A3_DEMO\glsl\4x\fs\00-common">
+      <UniqueIdentifier>{8e96f663-13b6-4494-88f1-e0ec989ce374}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\A3_DEMO\glsl\4x\gs\00-common">
+      <UniqueIdentifier>{402662c4-8504-4a31-aa29-ba50d47f9702}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\A3_DEMO\glsl\4x\vs\00-common">
+      <UniqueIdentifier>{169282bb-c283-4ebc-b9e7-f24c489c69af}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="_src_win\main_dll.c">
@@ -234,6 +243,51 @@
     </None>
     <None Include="..\..\..\source\animal3D-DemoPlugin\A3_DEMO\_animation\_inl\a3_SpatialPose.inl">
       <Filter>Header Files\A3_DEMO\_animation\_inl</Filter>
+    </None>
+    <None Include="..\..\..\resource\glsl\4x\vs\00-common\passTangentBasis_morph5_transform_instanced_vs4x.glsl">
+      <Filter>Resource Files\A3_DEMO\glsl\4x\vs\00-common</Filter>
+    </None>
+    <None Include="..\..\..\resource\glsl\4x\vs\00-common\passTangentBasis_morph5_transform_vs4x.glsl">
+      <Filter>Resource Files\A3_DEMO\glsl\4x\vs\00-common</Filter>
+    </None>
+    <None Include="..\..\..\resource\glsl\4x\vs\00-common\passTangentBasis_skin_transform_instanced_vs4x.glsl">
+      <Filter>Resource Files\A3_DEMO\glsl\4x\vs\00-common</Filter>
+    </None>
+    <None Include="..\..\..\resource\glsl\4x\vs\00-common\passTangentBasis_skin_transform_vs4x.glsl">
+      <Filter>Resource Files\A3_DEMO\glsl\4x\vs\00-common</Filter>
+    </None>
+    <None Include="..\..\..\resource\glsl\4x\vs\00-common\passTangentBasis_transform_instanced_vs4x.glsl">
+      <Filter>Resource Files\A3_DEMO\glsl\4x\vs\00-common</Filter>
+    </None>
+    <None Include="..\..\..\resource\glsl\4x\vs\00-common\passTangentBasis_transform_vs4x.glsl">
+      <Filter>Resource Files\A3_DEMO\glsl\4x\vs\00-common</Filter>
+    </None>
+    <None Include="..\..\..\resource\glsl\4x\vs\00-common\passTexcoord_transform_instanced_vs4x.glsl">
+      <Filter>Resource Files\A3_DEMO\glsl\4x\vs\00-common</Filter>
+    </None>
+    <None Include="..\..\..\resource\glsl\4x\vs\00-common\passTexcoord_transform_vs4x.glsl">
+      <Filter>Resource Files\A3_DEMO\glsl\4x\vs\00-common</Filter>
+    </None>
+    <None Include="..\..\..\resource\glsl\4x\gs\00-common\drawTangentBasis_gs4x.glsl">
+      <Filter>Resource Files\A3_DEMO\glsl\4x\gs\00-common</Filter>
+    </None>
+    <None Include="..\..\..\resource\glsl\4x\fs\00-common\drawLambert_fs4x.glsl">
+      <Filter>Resource Files\A3_DEMO\glsl\4x\fs\00-common</Filter>
+    </None>
+    <None Include="..\..\..\resource\glsl\4x\fs\00-common\drawPhong_fs4x.glsl">
+      <Filter>Resource Files\A3_DEMO\glsl\4x\fs\00-common</Filter>
+    </None>
+    <None Include="..\..\..\resource\glsl\4x\fs\00-common\drawTexture_fs4x.glsl">
+      <Filter>Resource Files\A3_DEMO\glsl\4x\fs\00-common</Filter>
+    </None>
+    <None Include="..\..\..\resource\glsl\4x\fs\00-common\utilCommon_fs4x.glsl">
+      <Filter>Resource Files\A3_DEMO\glsl\4x\fs\00-common</Filter>
+    </None>
+    <None Include="..\..\..\resource\glsl\4x\vs\00-common\utilCommon_vs4x.glsl">
+      <Filter>Resource Files\A3_DEMO\glsl\4x\vs\00-common</Filter>
+    </None>
+    <None Include="..\..\..\resource\glsl\4x\gs\00-common\utilCommon_gs4x.glsl">
+      <Filter>Resource Files\A3_DEMO\glsl\4x\gs\00-common</Filter>
     </None>
   </ItemGroup>
 </Project>

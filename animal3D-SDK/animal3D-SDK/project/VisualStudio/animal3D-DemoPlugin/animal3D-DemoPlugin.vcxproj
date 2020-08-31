@@ -229,8 +229,23 @@
     <ClInclude Include="..\..\..\source\animal3D-DemoPlugin\_a3_dylib_config_export.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\..\resource\glsl\4x\fs\00-common\drawLambert_fs4x.glsl" />
+    <None Include="..\..\..\resource\glsl\4x\fs\00-common\drawPhong_fs4x.glsl" />
+    <None Include="..\..\..\resource\glsl\4x\fs\00-common\drawTexture_fs4x.glsl" />
+    <None Include="..\..\..\resource\glsl\4x\fs\00-common\utilCommon_fs4x.glsl" />
     <None Include="..\..\..\resource\glsl\4x\fs\drawColorAttrib_fs4x.glsl" />
     <None Include="..\..\..\resource\glsl\4x\fs\drawColorUnif_fs4x.glsl" />
+    <None Include="..\..\..\resource\glsl\4x\gs\00-common\drawTangentBasis_gs4x.glsl" />
+    <None Include="..\..\..\resource\glsl\4x\gs\00-common\utilCommon_gs4x.glsl" />
+    <None Include="..\..\..\resource\glsl\4x\vs\00-common\passTangentBasis_morph5_transform_instanced_vs4x.glsl" />
+    <None Include="..\..\..\resource\glsl\4x\vs\00-common\passTangentBasis_morph5_transform_vs4x.glsl" />
+    <None Include="..\..\..\resource\glsl\4x\vs\00-common\passTangentBasis_skin_transform_instanced_vs4x.glsl" />
+    <None Include="..\..\..\resource\glsl\4x\vs\00-common\passTangentBasis_skin_transform_vs4x.glsl" />
+    <None Include="..\..\..\resource\glsl\4x\vs\00-common\passTangentBasis_transform_instanced_vs4x.glsl" />
+    <None Include="..\..\..\resource\glsl\4x\vs\00-common\passTangentBasis_transform_vs4x.glsl" />
+    <None Include="..\..\..\resource\glsl\4x\vs\00-common\passTexcoord_transform_instanced_vs4x.glsl" />
+    <None Include="..\..\..\resource\glsl\4x\vs\00-common\passTexcoord_transform_vs4x.glsl" />
+    <None Include="..\..\..\resource\glsl\4x\vs\00-common\utilCommon_vs4x.glsl" />
     <None Include="..\..\..\resource\glsl\4x\vs\passColor_transform_instanced_vs4x.glsl" />
     <None Include="..\..\..\resource\glsl\4x\vs\passColor_transform_vs4x.glsl" />
     <None Include="..\..\..\resource\glsl\4x\vs\passthru_transform_instanced_vs4x.glsl" />
