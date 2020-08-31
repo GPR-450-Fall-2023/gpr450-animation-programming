@@ -43,6 +43,8 @@
 // vector math
 #include "animal3D-A3DM/a3math/a3vector.h"
 #include "animal3D-A3DM/a3math/a3matrix.h"
+#include "animal3D-A3DM/a3math/a3quaternion.h"
+#include "animal3D-A3DM/a3math/a3dualquaternion.h"
 
 
 //-----------------------------------------------------------------------------
