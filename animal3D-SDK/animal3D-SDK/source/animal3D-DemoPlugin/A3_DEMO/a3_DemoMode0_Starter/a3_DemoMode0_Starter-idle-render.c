@@ -61,6 +61,8 @@ void a3starter_render_controls(a3_DemoState const* demoState, a3_DemoMode0_Start
 	a3byte const* renderProgramName[starter_render_max] = {
 		"Solid color",
 		"Texture",
+		"Lambert shading",
+		"Phong shading",
 	};
 
 	// forward display names
@@ -215,6 +217,8 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 		{
 			demoState->prog_drawColorUnif,
 			demoState->prog_drawTexture,
+			demoState->prog_drawLambert,
+			demoState->prog_drawPhong,
 		},
 	};
 
@@ -332,7 +336,8 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 	a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uPB_inv, 1, projectionBiasMat_inv.mm);
 	a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uAtlas, 1, a3mat4_identity.mm);
 	a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, hueCount, rgba4->v);
-	a3shaderUniformSendDouble(a3unif_single, currentDemoProgram->uTime, 1, &demoState->timer_display->totalTime);
+	if (demoState->updateAnimation)
+		a3shaderUniformSendDouble(a3unif_single, currentDemoProgram->uTime, 1, &demoState->timer_display->totalTime);
 
 	// select pipeline algorithm
 	glDisable(GL_BLEND);
@@ -351,7 +356,7 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 			//	- modelview
 			//	- modelview for normals
 			//	- per-object animation data
-			for (currentSceneObject = demoMode->obj_plane, endSceneObject = demoMode->obj_teapot,
+			for (currentSceneObject = demoMode->obj_plane, endSceneObject = demoMode->obj_torus,
 				j = (a3ui32)(currentSceneObject - demoMode->object_scene);
 				currentSceneObject <= endSceneObject;
 				++j, ++currentSceneObject)
@@ -367,6 +372,53 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 				a3vertexDrawableActivateAndRender(currentDrawable);
 			}
 			break;
+		case starter_renderLambert:
+		case starter_renderPhong:
+			for (currentSceneObject = demoMode->obj_plane, endSceneObject = demoMode->obj_torus,
+				j = (a3ui32)(currentSceneObject - demoMode->object_scene);
+				currentSceneObject <= endSceneObject;
+				++j, ++currentSceneObject)
+			{
+				// send data and draw
+				i = (j * 2 + 11) % hueCount;
+				currentDrawable = drawable[currentSceneObject - demoMode->obj_skybox];
+				a3textureActivate(texture_dm[j], a3tex_unit00);
+				a3textureActivate(texture_dm[j], a3tex_unit01);
+				a3real4x4Product(modelViewMat.m, activeCameraObject->modelMatInv.m, currentSceneObject->modelMat.m);
+				a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMV, 1, modelViewMat.mm);
+				a3demo_quickInvertTranspose_internal(modelViewMat.m);
+				modelViewMat.v3 = a3vec4_zero;
+				a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMV_nrm, 1, modelViewMat.mm);
+				a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, rgba4[i].v);
+				a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uIndex, 1, &j);
+				a3vertexDrawableActivateAndRender(currentDrawable);
+			}
+			break;
+		}
+
+		// draw morphing object
+		currentDemoProgram = demoState->prog_drawPhong_morph5;
+		a3shaderProgramActivate(currentDemoProgram->program);
+		a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uP, 1, activeCamera->projectionMat.mm);
+		a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uAtlas, 1, a3mat4_identity.mm);
+		if (demoState->updateAnimation)
+			a3shaderUniformSendDouble(a3unif_single, currentDemoProgram->uTime, 1, &demoState->timer_display->totalTime);
+		currentSceneObject = demoMode->obj_teapot;
+		j = (a3ui32)(currentSceneObject - demoMode->object_scene);
+		{
+			// send data and draw
+			i = (j * 2 + 11) % hueCount;
+			currentDrawable = demoState->draw_teapot_morph;
+			a3textureActivate(texture_dm[j], a3tex_unit00);
+			a3textureActivate(texture_dm[j], a3tex_unit01);
+			a3real4x4Product(modelViewMat.m, activeCameraObject->modelMatInv.m, currentSceneObject->modelMat.m);
+			a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMV, 1, modelViewMat.mm);
+			a3demo_quickInvertTranspose_internal(modelViewMat.m);
+			modelViewMat.v3 = a3vec4_zero;
+			a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMV_nrm, 1, modelViewMat.mm);
+			a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, rgba4[i].v);
+			a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uIndex, 1, &j);
+			a3vertexDrawableActivateAndRender(currentDrawable);
 		}
 
 	}	break;
@@ -533,7 +585,7 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 				a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uFlag, 1, flag);
 
 				// draw objects again
-				for (currentSceneObject = demoMode->obj_plane, endSceneObject = demoMode->obj_teapot,
+				for (currentSceneObject = demoMode->obj_plane, endSceneObject = demoMode->obj_torus,
 					j = (a3ui32)(currentSceneObject - demoMode->object_scene);
 					currentSceneObject <= endSceneObject;
 					++j, ++currentSceneObject)
@@ -541,6 +593,31 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 					// calculate per-object uniforms
 					i = (j * 2 + 23) % hueCount;
 					currentDrawable = drawable[currentSceneObject - demoMode->obj_skybox];
+					a3real4x4Product(modelViewMat.m, activeCameraObject->modelMatInv.m, currentSceneObject->modelMat.m);
+					a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMV, 1, modelViewMat.mm);
+					a3demo_quickInvertTranspose_internal(modelViewMat.m);
+					modelViewMat.v3 = a3vec4_zero;
+					a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMV_nrm, 1, modelViewMat.mm);
+					a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uAtlas, 1, a3mat4_identity.mm);
+					a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uIndex, 1, &i);
+					a3vertexDrawableActivateAndRender(currentDrawable);
+				}
+
+				// morphing bases
+				currentDemoProgram = demoState->prog_drawTangentBasis_morph5;
+				a3shaderProgramActivate(currentDemoProgram->program);
+				a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uP, 1, activeCamera->projectionMat.mm);
+				a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor0, hueCount, rgba4->v);
+				a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, a3vec4_one.v);
+				a3shaderUniformSendFloat(a3unif_single, currentDemoProgram->uSize, 1, size);
+				a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uFlag, 1, flag);
+				if (demoState->updateAnimation)
+					a3shaderUniformSendDouble(a3unif_single, currentDemoProgram->uTime, 1, &demoState->timer_display->totalTime);
+				currentSceneObject = demoMode->obj_teapot;
+				j = (a3ui32)(currentSceneObject - demoMode->object_scene);
+				{
+					i = (j * 2 + 23) % hueCount;
+					currentDrawable = demoState->draw_teapot_morph;
 					a3real4x4Product(modelViewMat.m, activeCameraObject->modelMatInv.m, currentSceneObject->modelMat.m);
 					a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMV, 1, modelViewMat.mm);
 					a3demo_quickInvertTranspose_internal(modelViewMat.m);
