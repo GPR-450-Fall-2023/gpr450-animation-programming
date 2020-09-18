@@ -30,8 +30,8 @@
 // partial FK solver
 a3i32 a3kinematicsSolveForwardPartial(const a3_HierarchyState *hierarchyState, const a3ui32 firstIndex, const a3ui32 nodeCount)
 {
-	if (hierarchyState && hierarchyState->poseGroup && 
-		firstIndex < hierarchyState->poseGroup->hierarchy->numNodes && nodeCount)
+	if (hierarchyState && hierarchyState->hierarchy && 
+		firstIndex < hierarchyState->hierarchy->numNodes && nodeCount)
 	{
 		// ****TO-DO: implement forward kinematics algorithm
 		//	- for all nodes starting at first index
@@ -49,8 +49,8 @@ a3i32 a3kinematicsSolveForwardPartial(const a3_HierarchyState *hierarchyState, c
 // partial IK solver
 a3i32 a3kinematicsSolveInversePartial(const a3_HierarchyState *hierarchyState, const a3ui32 firstIndex, const a3ui32 nodeCount)
 {
-	if (hierarchyState && hierarchyState->poseGroup &&
-		firstIndex < hierarchyState->poseGroup->hierarchy->numNodes && nodeCount)
+	if (hierarchyState && hierarchyState->hierarchy &&
+		firstIndex < hierarchyState->hierarchy->numNodes && nodeCount)
 	{
 		// ****TO-DO: implement inverse kinematics algorithm
 		//	- for all nodes starting at first index

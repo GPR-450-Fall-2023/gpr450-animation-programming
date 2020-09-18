@@ -50,17 +50,43 @@ inline a3i32 a3hierarchyPoseGroupGetNodePoseOffsetIndex(const a3_HierarchyPoseGr
 	return -1;
 }
 
+//-----------------------------------------------------------------------------
+
+// reset full hierarchy pose
+inline a3i32 a3hierarchyPoseReset(const a3_HierarchyPose* pose_inout, const a3ui32 nodeCount)
+{
+	if (pose_inout && nodeCount)
+	{
+
+	}
+	return -1;
+}
+
+// convert full hierarchy pose to hierarchy transforms
+inline a3i32 a3hierarchyPoseConvert(const a3_HierarchyPose* pose_inout, const a3ui32 nodeCount, const a3_SpatialPoseChannel channel, const a3_SpatialPoseEulerOrder order)
+{
+	if (pose_inout && nodeCount)
+	{
+
+	}
+	return -1;
+}
+
+// copy full hierarchy pose
+inline a3i32 a3hierarchyPoseCopy(const a3_HierarchyPose* pose_out, const a3_HierarchyPose* pose_in, const a3ui32 nodeCount)
+{
+	if (pose_out && pose_in && nodeCount)
+	{
+
+	}
+	return -1;
+}
+
 
 //-----------------------------------------------------------------------------
 
 // update inverse object-space matrices
-inline a3i32 a3hierarchyStateUpdateObjectInverse(const a3_HierarchyState *state, const a3boolean usingScale)
-{
-	return -1;
-}
-
-// update bind-to-current given bind-pose object-space transforms
-inline a3i32 a3hierarchyStateUpdateObjectBindToCurrent(const a3_HierarchyState *state, const a3_HierarchyTransform *objectSpaceBindInverse)
+inline a3i32 a3hierarchyStateUpdateObjectInverse(const a3_HierarchyState *state)
 {
 	return -1;
 }

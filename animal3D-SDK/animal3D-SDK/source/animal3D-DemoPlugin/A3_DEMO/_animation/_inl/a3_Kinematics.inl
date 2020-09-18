@@ -33,7 +33,7 @@
 // FK solver
 inline a3i32 a3kinematicsSolveForward(const a3_HierarchyState *hierarchyState)
 {
-	return a3kinematicsSolveForwardPartial(hierarchyState, 0, hierarchyState->poseGroup->hierarchy->numNodes);
+	return a3kinematicsSolveForwardPartial(hierarchyState, 0, hierarchyState->hierarchy->numNodes);
 }
 
 
@@ -42,7 +42,7 @@ inline a3i32 a3kinematicsSolveForward(const a3_HierarchyState *hierarchyState)
 // IK solver
 inline a3i32 a3kinematicsSolveInverse(const a3_HierarchyState *hierarchyState)
 {
-	return a3kinematicsSolveInversePartial(hierarchyState, 0, hierarchyState->poseGroup->hierarchy->numNodes);
+	return a3kinematicsSolveInversePartial(hierarchyState, 0, hierarchyState->hierarchy->numNodes);
 }
 
 
