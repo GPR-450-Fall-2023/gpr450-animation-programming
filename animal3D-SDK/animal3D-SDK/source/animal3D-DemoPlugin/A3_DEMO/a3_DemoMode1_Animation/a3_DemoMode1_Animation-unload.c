@@ -18,30 +18,30 @@
 	animal3D SDK: Minimal 3D Animation Framework
 	By Daniel S. Buckstein
 
-	a3_DemoMode0_Starter-unload.c
-	Demo mode implementations: starter scene.
+	a3_DemoMode1_Animation-unload.c
+	Demo mode implementations: animation scene.
 
 	********************************************
-	*** UNLOADING FOR STARTER SCENE MODE     ***
+	*** UNLOADING FOR ANIMATION SCENE MODE   ***
 	********************************************
 */
 
 //-----------------------------------------------------------------------------
 
-#include "../a3_DemoMode0_Starter.h"
+#include "../a3_DemoMode1_Animation.h"
 
 #include "../a3_DemoState.h"
 
 
 //-----------------------------------------------------------------------------
 
-void a3starter_unload(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMode)
+void a3animation_unload(a3_DemoState const* demoState, a3_DemoMode1_Animation* demoMode)
 {
 
 }
 
 
-void a3starter_unloadValidate(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode)
+void a3animation_unloadValidate(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode)
 {
 
 }

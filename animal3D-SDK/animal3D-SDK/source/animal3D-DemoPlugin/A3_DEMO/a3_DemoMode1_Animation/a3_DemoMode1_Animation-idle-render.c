@@ -18,17 +18,17 @@
 	animal3D SDK: Minimal 3D Animation Framework
 	By Daniel S. Buckstein
 
-	a3_DemoMode0_Starter-idle-render.c
-	Demo mode implementations: starter scene.
+	a3_DemoMode1_Animation-idle-render.c
+	Demo mode implementations: animation scene.
 
 	********************************************
-	*** RENDERING FOR STARTER SCENE MODE     ***
+	*** RENDERING FOR ANIMATION SCENE MODE   ***
 	********************************************
 */
 
 //-----------------------------------------------------------------------------
 
-#include "../a3_DemoMode0_Starter.h"
+#include "../a3_DemoMode1_Animation.h"
 
 #include "../a3_DemoState.h"
 
@@ -48,17 +48,17 @@
 //-----------------------------------------------------------------------------
 
 // controls for pipelines mode
-void a3starter_render_controls(a3_DemoState const* demoState, a3_DemoMode0_Starter const* demoMode,
+void a3animation_render_controls(a3_DemoState const* demoState, a3_DemoMode1_Animation const* demoMode,
 	a3_TextRenderer const* text, a3vec4 const col,
 	a3f32 const textAlign, a3f32 const textDepth, a3f32 const textOffsetDelta, a3f32 textOffset)
 {
 	// display mode info
-	a3byte const* pipelineText[starter_pipeline_max] = {
+	a3byte const* pipelineText[animation_pipeline_max] = {
 		"Forward rendering",
 	};
 
 	// forward pipeline names
-	a3byte const* renderProgramName[starter_render_max] = {
+	a3byte const* renderProgramName[animation_render_max] = {
 		"Solid color",
 		"Texture",
 		"Lambert shading",
@@ -66,13 +66,13 @@ void a3starter_render_controls(a3_DemoState const* demoState, a3_DemoMode0_Start
 	};
 
 	// forward display names
-	a3byte const* displayProgramName[starter_display_max] = {
+	a3byte const* displayProgramName[animation_display_max] = {
 		"Texture",
 	};
 
 	// active camera name
-	a3byte const* cameraText[starter_camera_max] = {
-		"starter scene camera",
+	a3byte const* cameraText[animation_camera_max] = {
+		"animation scene camera",
 	};
 
 	// constant color target names
@@ -81,46 +81,46 @@ void a3starter_render_controls(a3_DemoState const* demoState, a3_DemoMode0_Start
 	a3byte const depthBufferText[] = "Depth buffer";
 
 	// pass names
-	a3byte const* passName[starter_pass_max] = {
+	a3byte const* passName[animation_pass_max] = {
 		"Pass: Render scene objects",
 		"Pass: Composite",
 	};
-	a3byte const* targetText_scene[starter_target_scene_max] = {
+	a3byte const* targetText_scene[animation_target_scene_max] = {
 		colorBufferText,
 		depthBufferText,
 	};
-	a3byte const* targetText_composite[starter_target_scene_max] = {
+	a3byte const* targetText_composite[animation_target_scene_max] = {
 		colorBufferText,
 	};
-	a3byte const* const* targetText[starter_pass_max] = {
+	a3byte const* const* targetText[animation_pass_max] = {
 		targetText_scene,
 		targetText_composite,
 	};
 
 	// pipeline and target
-	a3_DemoMode0_Starter_RenderProgramName const render = demoMode->render;
-	a3_DemoMode0_Starter_DisplayProgramName const display = demoMode->display;
-	a3_DemoMode0_Starter_ActiveCameraName const activeCamera = demoMode->activeCamera;
-	a3_DemoMode0_Starter_PipelineName const pipeline = demoMode->pipeline;
-	a3_DemoMode0_Starter_PassName const pass = demoMode->pass;
-	a3_DemoMode0_Starter_TargetName const targetIndex = demoMode->targetIndex[pass];
-	a3_DemoMode0_Starter_TargetName const targetCount = demoMode->targetCount[pass];
+	a3_DemoMode1_Animation_RenderProgramName const render = demoMode->render;
+	a3_DemoMode1_Animation_DisplayProgramName const display = demoMode->display;
+	a3_DemoMode1_Animation_ActiveCameraName const activeCamera = demoMode->activeCamera;
+	a3_DemoMode1_Animation_PipelineName const pipeline = demoMode->pipeline;
+	a3_DemoMode1_Animation_PassName const pass = demoMode->pass;
+	a3_DemoMode1_Animation_TargetName const targetIndex = demoMode->targetIndex[pass];
+	a3_DemoMode1_Animation_TargetName const targetCount = demoMode->targetCount[pass];
 
 	// demo modes
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"    Pipeline (%u / %u) ('[' | ']'): %s", pipeline + 1, starter_pipeline_max, pipelineText[pipeline]);
+		"    Pipeline (%u / %u) ('[' | ']'): %s", pipeline + 1, animation_pipeline_max, pipelineText[pipeline]);
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"    Display pass (%u / %u) ('(' | ')'): %s", pass + 1, starter_pass_max, passName[pass]);
+		"    Display pass (%u / %u) ('(' | ')'): %s", pass + 1, animation_pass_max, passName[pass]);
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"        Target (%u / %u) ('{' | '}'): %s", targetIndex + 1, targetCount, targetText[pass][targetIndex]);
 
 	// lighting modes
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"    Rendering mode (%u / %u) ('j' | 'k'): %s", render + 1, starter_render_max, renderProgramName[render]);
+		"    Rendering mode (%u / %u) ('j' | 'k'): %s", render + 1, animation_render_max, renderProgramName[render]);
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"    Display mode (%u / %u) ('J' | 'K'): %s", display + 1, starter_display_max, displayProgramName[display]);
+		"    Display mode (%u / %u) ('J' | 'K'): %s", display + 1, animation_display_max, displayProgramName[display]);
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"    Active camera (%u / %u) ('c' prev | next 'v'): %s", activeCamera + 1, starter_camera_max, cameraText[activeCamera]);
+		"    Active camera (%u / %u) ('c' prev | next 'v'): %s", activeCamera + 1, animation_camera_max, cameraText[activeCamera]);
 }
 
 
@@ -130,7 +130,7 @@ void a3starter_render_controls(a3_DemoState const* demoState, a3_DemoMode0_Start
 //	a3_Framebuffer const* fbo_bright, a3_Framebuffer const* fbo_blur_horiz, a3_Framebuffer const* fbo_blur_vert);
 
 // sub-routine for rendering the demo state using the shading pipeline
-void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const* demoMode, a3f64 const dt)
+void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation const* demoMode, a3f64 const dt)
 {
 	// pointers
 	const a3_VertexDrawable* currentDrawable;
@@ -213,7 +213,7 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 	};
 
 	// forward pipeline shader programs
-	const a3_DemoStateShaderProgram* renderProgram[starter_pipeline_max][starter_render_max] = {
+	const a3_DemoStateShaderProgram* renderProgram[animation_pipeline_max][animation_render_max] = {
 		{
 			demoState->prog_drawColorUnif,
 			demoState->prog_drawTexture,
@@ -223,29 +223,29 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 	};
 
 	// display shader programs
-	const a3_DemoStateShaderProgram* displayProgram[starter_display_max] = {
+	const a3_DemoStateShaderProgram* displayProgram[animation_display_max] = {
 		demoState->prog_drawTexture,
 	};
 
 	// framebuffers to which to write based on pipeline mode
-	const a3_Framebuffer* writeFBO[starter_pass_max] = {
+	const a3_Framebuffer* writeFBO[animation_pass_max] = {
 		demoState->fbo_scene_c16d24s8_mrt,
 		demoState->fbo_composite_c16,
 	};
 
 	// framebuffers from which to read based on pipeline mode
-	const a3_Framebuffer* readFBO[starter_pass_max][4] = {
+	const a3_Framebuffer* readFBO[animation_pass_max][4] = {
 		{ 0, },
 		{ demoState->fbo_scene_c16d24s8_mrt, },
 	};
 
 	// target info
-	a3_DemoMode0_Starter_RenderProgramName const render = demoMode->render;
-	a3_DemoMode0_Starter_DisplayProgramName const display = demoMode->display;
-	a3_DemoMode0_Starter_PipelineName const pipeline = demoMode->pipeline;
-	a3_DemoMode0_Starter_PassName const pass = demoMode->pass;
-	a3_DemoMode0_Starter_TargetName const targetIndex = demoMode->targetIndex[pass], targetCount = demoMode->targetCount[pass];
-	a3_DemoMode0_Starter_PassName currentPass;
+	a3_DemoMode1_Animation_RenderProgramName const render = demoMode->render;
+	a3_DemoMode1_Animation_DisplayProgramName const display = demoMode->display;
+	a3_DemoMode1_Animation_PipelineName const pipeline = demoMode->pipeline;
+	a3_DemoMode1_Animation_PassName const pass = demoMode->pass;
+	a3_DemoMode1_Animation_TargetName const targetIndex = demoMode->targetIndex[pass], targetCount = demoMode->targetCount[pass];
+	a3_DemoMode1_Animation_PassName currentPass;
 
 
 	// pixel size and effect axis
@@ -303,12 +303,12 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 	//		- capture color and depth
 
 	// select target framebuffer
-	currentPass = starter_passScene;
+	currentPass = animation_passScene;
 	currentWriteFBO = writeFBO[currentPass];
 	switch (pipeline)
 	{
 		// shading with MRT
-	case starter_forward:
+	case animation_forward:
 		// target scene framebuffer
 		a3demo_setSceneState(currentWriteFBO, demoState->displaySkybox);
 		break;
@@ -344,13 +344,13 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 	switch (pipeline)
 	{
 		// scene pass using forward pipeline
-	case starter_forward: {
+	case animation_forward: {
 
 		// forward shading algorithms
 		switch (demoMode->render)
 		{
-		case starter_renderSolid:
-		case starter_renderTexture:
+		case animation_renderSolid:
+		case animation_renderTexture:
 			// individual object requirements: 
 			//	- modelviewprojection
 			//	- modelview
@@ -372,8 +372,8 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 				a3vertexDrawableActivateAndRender(currentDrawable);
 			}
 			break;
-		case starter_renderLambert:
-		case starter_renderPhong:
+		case animation_renderLambert:
+		case animation_renderPhong:
 			for (currentSceneObject = demoMode->obj_plane, endSceneObject = demoMode->obj_torus,
 				j = (a3ui32)(currentSceneObject - demoMode->object_scene);
 				currentSceneObject <= endSceneObject;
@@ -436,13 +436,13 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 	//	- activate composite framebuffer
 	//	- composite scene layers
 
-	currentPass = starter_passComposite;
+	currentPass = animation_passComposite;
 	currentWriteFBO = writeFBO[currentPass];
 	a3framebufferActivate(currentWriteFBO);
 
 	// composite skybox
 	currentDemoProgram = demoState->displaySkybox ? demoState->prog_drawTexture : demoState->prog_drawColorUnif;
-	a3demo_drawModelTexturedColored_invertModel(modelViewProjectionMat.m, viewProjectionMat.m, demoMode->obj_skybox->modelMat.m, a3mat4_identity.m, currentDemoProgram, demoState->draw_unit_box, demoState->tex_skybox_clouds, a3vec4_one.v);
+	a3demo_drawModelTexturedColored_invertModel(modelViewProjectionMat.m, viewProjectionMat.m, demoMode->obj_skybox->modelMat.m, a3mat4_identity.m, currentDemoProgram, demoState->draw_unit_box, demoState->tex_skybox_clouds, a3vec4_w.v);
 	a3demo_enableCompositeBlending();
 
 	// draw textured quad with previous pass image on it
@@ -452,7 +452,7 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 
 	switch (pipeline)
 	{
-	case starter_forward:
+	case animation_forward:
 		// use simple texturing program
 		currentDemoProgram = demoState->prog_drawTexture;
 		a3shaderProgramActivate(currentDemoProgram->program);
@@ -502,13 +502,13 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 	// select output to display
 	switch (demoMode->pass)
 	{
-	case starter_passScene:
+	case animation_passScene:
 		if (currentDisplayFBO->color && (!currentDisplayFBO->depthStencil || targetIndex < targetCount - 1))
 			a3framebufferBindColorTexture(currentDisplayFBO, a3tex_unit00, targetIndex);
 		else
 			a3framebufferBindDepthTexture(currentDisplayFBO, a3tex_unit00);
 		break;
-	case starter_passComposite:
+	case animation_passComposite:
 		a3framebufferBindColorTexture(currentDisplayFBO, a3tex_unit00, targetIndex);
 		break;
 	}
@@ -528,7 +528,7 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 		switch (demoMode->display)
 		{
 			// most basic option: simply display texture
-		case starter_displayTexture:
+		case animation_displayTexture:
 			break;
 		}
 
@@ -549,7 +549,7 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 	a3demo_enableCompositeBlending();
 
 	// scene overlays
-	if (demoMode->pass >= starter_passScene)
+	if (demoMode->pass >= animation_passScene)
 	{
 		if (demoState->displayGrid || demoState->displayTangentBases || demoState->displayWireframe)
 		{

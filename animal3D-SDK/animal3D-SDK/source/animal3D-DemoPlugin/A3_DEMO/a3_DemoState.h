@@ -44,6 +44,7 @@
 #include "_a3_demo_utilities/a3_DemoShaderProgram.h"
 
 #include "a3_DemoMode0_Starter.h"
+#include "a3_DemoMode1_Animation.h"
 
 
 //-----------------------------------------------------------------------------
@@ -65,6 +66,7 @@ typedef enum	a3_DemoState_TextDisplayName	a3_DemoState_TextDisplayName;
 enum a3_DemoState_ModeName
 {
 	demoState_modeStarter,				// starter scene
+	demoState_modeAnimation,			// animation scene
 
 	demoState_mode_max
 };
@@ -166,6 +168,7 @@ struct a3_DemoState
 
 	// demo modes
 	a3_DemoMode0_Starter demoMode0_starter[1];
+	a3_DemoMode1_Animation demoMode1_animation[1];
 	a3_DemoState_ModeName demoMode;
 	a3_DemoModeCallbacks demoModeCallbacks[demoState_mode_max];
 	a3_DemoModeCallbacks const* demoModeCallbacksPtr;
@@ -227,9 +230,9 @@ struct a3_DemoState
 			a3_VertexDrawable
 				draw_grid[1],								// wireframe ground plane to emphasize scaling
 				draw_axes[1];								// coordinate axes at the center of the world
-			//a3_VertexDrawable
-			//	draw_link[1],								// wireframe link between nodes (e.g. bone)
-			//	draw_node[1];								// wireframe node (e.g. joint)
+			a3_VertexDrawable
+				draw_link[1],								// wireframe link between nodes (e.g. bone)
+				draw_node[1];								// wireframe node (e.g. joint)
 			a3_VertexDrawable
 				draw_unit_box[1],							// unit box (width = height = depth = 1)
 				draw_unit_sphere[1],						// unit sphere (radius = 1)

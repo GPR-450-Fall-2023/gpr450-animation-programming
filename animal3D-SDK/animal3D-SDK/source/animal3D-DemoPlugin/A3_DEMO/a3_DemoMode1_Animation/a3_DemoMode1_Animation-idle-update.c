@@ -18,17 +18,17 @@
 	animal3D SDK: Minimal 3D Animation Framework
 	By Daniel S. Buckstein
 	
-	a3_DemoMode0_Starter-idle-update.c
-	Demo mode implementations: starter scene.
+	a3_DemoMode1_Animation-idle-update.c
+	Demo mode implementations: animation scene.
 
 	********************************************
-	*** UPDATE FOR STARTER SCENE MODE        ***
+	*** UPDATE FOR ANIMATION SCENE MODE      ***
 	********************************************
 */
 
 //-----------------------------------------------------------------------------
 
-#include "../a3_DemoMode0_Starter.h"
+#include "../a3_DemoMode1_Animation.h"
 
 //typedef struct a3_DemoState a3_DemoState;
 #include "../a3_DemoState.h"
@@ -48,10 +48,10 @@ void a3demo_update_pointLight(a3_DemoSceneObject* obj_camera, a3_DemoPointLight*
 
 void a3demo_applyScale_internal(a3_DemoSceneObject* sceneObject, a3real4x4p s);
 
-void a3starter_update(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a3f64 const dt)
+void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode, a3f64 const dt)
 {
 	a3ui32 i;
-	a3_DemoModelMatrixStack matrixStack[starterMaxCount_sceneObject];
+	a3_DemoModelMatrixStack matrixStack[animationMaxCount_sceneObject];
 
 	// active camera
 	a3_DemoProjector const* activeCamera = demoMode->projector + demoMode->activeCamera;
@@ -61,23 +61,23 @@ void a3starter_update(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a
 	a3mat4 scaleMat = a3mat4_identity;
 
 	a3demo_update_objects(demoState, dt,
-		demoMode->object_scene, starterMaxCount_sceneObject, 0, 0);
+		demoMode->object_scene, animationMaxCount_sceneObject, 0, 0);
 	a3demo_update_objects(demoState, dt,
-		demoMode->object_camera, starterMaxCount_cameraObject, 1, 0);
+		demoMode->object_camera, animationMaxCount_cameraObject, 1, 0);
 
 	a3demo_updateProjectorViewProjectionMat(demoMode->proj_camera_main);
 
 	a3demo_update_defaultAnimation(demoState, dt, demoMode->obj_box, 6, 2);
 
 	// apply scales to objects
-	for (i = 0; i < starterMaxCount_sceneObject; ++i)
+	for (i = 0; i < animationMaxCount_sceneObject; ++i)
 		a3demo_applyScale_internal(demoMode->object_scene + i, scaleMat.m);
 
 	// update skybox
 	a3demo_update_bindSkybox(demoMode->obj_camera_main, demoMode->obj_skybox);
 
 	// update matrix stack data
-	for (i = 0; i < starterMaxCount_sceneObject; ++i)
+	for (i = 0; i < animationMaxCount_sceneObject; ++i)
 	{
 		a3demo_updateModelMatrixStack(matrixStack + i,
 			activeCamera->projectionMat.m, activeCameraObject->modelMat.m, activeCameraObject->modelMatInv.m,

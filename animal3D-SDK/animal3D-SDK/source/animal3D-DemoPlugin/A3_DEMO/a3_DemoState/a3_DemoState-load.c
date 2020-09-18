@@ -176,7 +176,7 @@ void a3demo_loadGeometry(a3_DemoState *demoState)
 	const a3byte *const geometryStream = "./data/geom_data_gpro_coursebase.dat";
 
 	// geometry data
-	a3_GeometryData displayShapesData[2] = { 0 };
+	a3_GeometryData displayShapesData[4] = { 0 };
 	a3_GeometryData proceduralShapesData[6] = { 0 };
 	a3_GeometryData loadedModelsData[1] = { 0 };
 	a3_GeometryData morphTargetsData[1][5] = { 0 };
@@ -226,7 +226,7 @@ void a3demo_loadGeometry(a3_DemoState *demoState)
 	else if (!demoState->streaming || a3fileStreamOpenWrite(fileStream, geometryStream))
 	{
 		// create new data
-		a3_ProceduralGeometryDescriptor displayShapes[2] = { a3geomShape_none };
+		a3_ProceduralGeometryDescriptor displayShapes[4] = { a3geomShape_none };
 		a3_ProceduralGeometryDescriptor proceduralShapes[6] = { a3geomShape_none };
 		const a3_DemoStateLoadedModel loadedShapes[1] = {
 			{ A3_DEMO_OBJ"teapot/teapot.obj", downscale20x_y2z_x2y.mm, a3model_calculateVertexTangents },
@@ -245,6 +245,8 @@ void a3demo_loadGeometry(a3_DemoState *demoState)
 		//	(axes, grid)
 		a3proceduralCreateDescriptorAxes(displayShapes + 0, a3geomFlag_wireframe, 0.0f, 1);
 		a3proceduralCreateDescriptorPlane(displayShapes + 1, a3geomFlag_wireframe, a3geomAxis_default, 20.0f, 20.0f, 20, 20);
+		a3proceduralCreateDescriptorCone(displayShapes + 2, a3geomFlag_wireframe, a3geomAxis_default, 1.0f, 1.0f, 4, 1, 1);
+		a3proceduralCreateDescriptorSphere(displayShapes + 3, a3geomFlag_wireframe, a3geomAxis_default, 1.0f, 4, 2);
 		for (i = 0; i < displayShapesCount; ++i)
 		{
 			a3proceduralGenerateGeometryData(displayShapesData + i, displayShapes + i, 0);
@@ -364,6 +366,10 @@ void a3demo_loadGeometry(a3_DemoState *demoState)
 	a3geometryGenerateVertexArray(vao, "vao:pos", displayShapesData + 1, vbo_ibo, sharedVertexStorage);
 	currentDrawable = demoState->draw_grid;
 	sharedVertexStorage += a3geometryGenerateDrawable(currentDrawable, displayShapesData + 1, vao, vbo_ibo, sceneCommonIndexFormat, 0, 0);
+	currentDrawable = demoState->draw_link;
+	sharedVertexStorage += a3geometryGenerateDrawable(currentDrawable, displayShapesData + 2, vao, vbo_ibo, sceneCommonIndexFormat, 0, 0);
+	currentDrawable = demoState->draw_node;
+	sharedVertexStorage += a3geometryGenerateDrawable(currentDrawable, displayShapesData + 3, vao, vbo_ibo, sceneCommonIndexFormat, 0, 0);
 
 	// models
 	vao = demoState->vao_tangentbasis_texcoord;

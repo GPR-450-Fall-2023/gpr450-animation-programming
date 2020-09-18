@@ -18,39 +18,39 @@
 	animal3D SDK: Minimal 3D Animation Framework
 	By Daniel S. Buckstein
 
-	a3_DemoMode0_Starter-load.c
-	Demo mode implementations: starter scene.
+	a3_DemoMode1_Animation-load.c
+	Demo mode implementations: animation scene.
 
 	********************************************
-	*** LOADING FOR STARTER SCENE MODE       ***
+	*** LOADING FOR ANIMATION SCENE MODE     ***
 	********************************************
 */
 
 //-----------------------------------------------------------------------------
 
-#include "../a3_DemoMode0_Starter.h"
+#include "../a3_DemoMode1_Animation.h"
 
 #include "../a3_DemoState.h"
 
 
 //-----------------------------------------------------------------------------
 
-void a3starter_input(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a3f64 const dt);
-void a3starter_update(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a3f64 const dt);
-void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const* demoMode, a3f64 const dt);
-void a3starter_input_keyCharPress(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMode, a3i32 const asciiKey, a3i32 const state);
-void a3starter_input_keyCharHold(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMode, a3i32 const asciiKey, a3i32 const state);
+void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode, a3f64 const dt);
+void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode, a3f64 const dt);
+void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation const* demoMode, a3f64 const dt);
+void a3animation_input_keyCharPress(a3_DemoState const* demoState, a3_DemoMode1_Animation* demoMode, a3i32 const asciiKey, a3i32 const state);
+void a3animation_input_keyCharHold(a3_DemoState const* demoState, a3_DemoMode1_Animation* demoMode, a3i32 const asciiKey, a3i32 const state);
 
-void a3starter_loadValidate(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode)
+void a3animation_loadValidate(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode)
 {
 	// initialize callbacks
-	a3_DemoModeCallbacks* const callbacks = demoState->demoModeCallbacks + demoState_modeStarter;
+	a3_DemoModeCallbacks* const callbacks = demoState->demoModeCallbacks + demoState_modeAnimation;
 	callbacks->demoMode = demoMode;
-	callbacks->handleInput =	(a3_DemoMode_EventCallback)		a3starter_input;
-	callbacks->handleUpdate =	(a3_DemoMode_EventCallback)		a3starter_update;
-	callbacks->handleRender =	(a3_DemoMode_EventCallbackConst)a3starter_render;
-	callbacks->handleKeyPress = (a3_DemoMode_InputCallback)		a3starter_input_keyCharPress;
-	callbacks->handleKeyHold =	(a3_DemoMode_InputCallback)		a3starter_input_keyCharHold;
+	callbacks->handleInput =	(a3_DemoMode_EventCallback)		a3animation_input;
+	callbacks->handleUpdate =	(a3_DemoMode_EventCallback)		a3animation_update;
+	callbacks->handleRender =	(a3_DemoMode_EventCallbackConst)a3animation_render;
+	callbacks->handleKeyPress = (a3_DemoMode_InputCallback)		a3animation_input_keyCharPress;
+	callbacks->handleKeyHold =	(a3_DemoMode_InputCallback)		a3animation_input_keyCharHold;
 
 	// initialize cameras dependent on viewport
 	demoMode->proj_camera_main->aspect = demoState->frameAspect;
@@ -61,7 +61,7 @@ void a3starter_loadValidate(a3_DemoState* demoState, a3_DemoMode0_Starter* demoM
 }
 
 
-void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMode)
+void a3animation_load(a3_DemoState const* demoState, a3_DemoMode1_Animation* demoMode)
 {
 	a3ui32 i;
 
@@ -87,11 +87,11 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 
 
 	// all objects
-	for (i = 0; i < starterMaxCount_sceneObject; ++i)
+	for (i = 0; i < animationMaxCount_sceneObject; ++i)
 		a3demo_initSceneObject(demoMode->object_scene + i);
-	for (i = 0; i < starterMaxCount_cameraObject; ++i)
+	for (i = 0; i < animationMaxCount_cameraObject; ++i)
 		a3demo_initSceneObject(demoMode->object_camera + i);
-	for (i = 0; i < starterMaxCount_projector; ++i)
+	for (i = 0; i < animationMaxCount_projector; ++i)
 		a3demo_initProjector(demoMode->projector + i);
 
 	currentSceneObject = demoMode->obj_skybox;
@@ -153,18 +153,18 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 
 
 	// set flags
-	demoMode->render = starter_renderTexture;
-	demoMode->display = starter_displayTexture;
-	demoMode->activeCamera = starter_cameraSceneViewer;
+	demoMode->render = animation_renderPhong;
+	demoMode->display = animation_displayTexture;
+	demoMode->activeCamera = animation_cameraSceneViewer;
 
-	demoMode->pipeline = starter_forward;
-	demoMode->pass = starter_passComposite;
+	demoMode->pipeline = animation_forward;
+	demoMode->pass = animation_passComposite;
 
-	demoMode->targetIndex[starter_passScene] = starter_scene_finalcolor;
-	demoMode->targetIndex[starter_passComposite] = starter_scene_finalcolor;
+	demoMode->targetIndex[animation_passScene] = animation_scene_finalcolor;
+	demoMode->targetIndex[animation_passComposite] = animation_scene_finalcolor;
 
-	demoMode->targetCount[starter_passScene] = starter_target_scene_max;
-	demoMode->targetCount[starter_passComposite] = 1;
+	demoMode->targetCount[animation_passScene] = animation_target_scene_max;
+	demoMode->targetCount[animation_passComposite] = 1;
 }
 
 
