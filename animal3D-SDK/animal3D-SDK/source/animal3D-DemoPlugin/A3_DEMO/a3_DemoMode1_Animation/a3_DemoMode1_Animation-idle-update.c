@@ -67,8 +67,6 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 
 	a3demo_updateProjectorViewProjectionMat(demoMode->proj_camera_main);
 
-	a3demo_update_defaultAnimation(demoState, dt, demoMode->obj_box, 6, 2);
-
 	// apply scales to objects
 	for (i = 0; i < animationMaxCount_sceneObject; ++i)
 		a3demo_applyScale_internal(demoMode->object_scene + i, scaleMat.m);

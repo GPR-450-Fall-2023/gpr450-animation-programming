@@ -34,6 +34,8 @@
 
 #include "_a3_demo_utilities/a3_DemoSceneObject.h"
 
+#include "_animation/a3_HierarchyStateBlend.h"
+
 
 //-----------------------------------------------------------------------------
 
@@ -128,6 +130,11 @@ typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetN
 		a3_DemoMode1_Animation_PassName pass;
 		a3_DemoMode1_Animation_TargetName targetIndex[animation_pass_max], targetCount[animation_pass_max];
 
+		// skeletal animation
+		a3_Hierarchy hierarchy_skel[1];
+		a3_HierarchyState hierarchyState_skel[1];
+		a3_HierarchyPoseGroup hierarchyPoseGroup_skel[1];
+
 		// objects
 		union {
 			a3_DemoSceneObject object_scene[animationMaxCount_sceneObject];
@@ -135,14 +142,7 @@ typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetN
 				a3_DemoSceneObject
 					obj_skybox[1];
 				a3_DemoSceneObject
-					obj_plane[1],
-					obj_box[1],
-					obj_sphere[1],
-					obj_cylinder[1],
-					obj_capsule[1],
-					obj_torus[1];
-				a3_DemoSceneObject
-					obj_teapot[1];
+					obj_skeleton[1];
 			};
 		};
 		union {
