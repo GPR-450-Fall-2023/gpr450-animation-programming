@@ -87,6 +87,7 @@ extern "C"
 		struct {
 			a3i32
 				// transformation uniform block handles
+				ubTransformBlend,	// blending transforms
 				ubTransformStack,	// matrix stack block
 				ubTransformMVPB,	// model-view-projection-bias matrix block
 				ubTransformMVP;		// model-view-projection matrix block
