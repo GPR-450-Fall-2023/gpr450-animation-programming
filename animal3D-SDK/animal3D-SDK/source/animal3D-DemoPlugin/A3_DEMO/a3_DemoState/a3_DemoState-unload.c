@@ -63,9 +63,13 @@ void a3demo_unloadShaders(a3_DemoState* demoState)
 {
 	a3_DemoStateShaderProgram* currentProg = demoState->shaderProgram,
 		* const endProg = currentProg + demoStateMaxCount_shaderProgram;
+	a3_UniformBuffer* currentUBO = demoState->uniformBuffer,
+		* const endUBO = currentUBO + demoStateMaxCount_uniformBuffer;
 
 	while (currentProg < endProg)
 		a3shaderProgramRelease((currentProg++)->program);
+	while (currentUBO < endUBO)
+		a3bufferRelease(currentUBO++);
 }
 
 
@@ -103,6 +107,8 @@ void a3demo_unloadValidate(const a3_DemoState* demoState)
 		* const endVAO = currentVAO + demoStateMaxCount_vertexArray;
 	const a3_DemoStateShaderProgram* currentProg = demoState->shaderProgram,
 		* const endProg = currentProg + demoStateMaxCount_shaderProgram;
+	const a3_UniformBuffer* currentUBO = demoState->uniformBuffer,
+		* const endUBO = currentUBO + demoStateMaxCount_uniformBuffer;
 	const a3_Texture* currentTex = demoState->texture,
 		* const endTex = currentTex + demoStateMaxCount_texture;
 	const a3_Framebuffer* currentFBO = demoState->framebuffer,
@@ -125,6 +131,12 @@ void a3demo_unloadValidate(const a3_DemoState* demoState)
 		handle += (currentProg++)->program->handle->handle;
 	if (handle)
 		printf("\n A3 Warning: One or more shader programs not released.");
+
+	handle = 0;
+	while (currentUBO < endUBO)
+		handle += (currentUBO++)->handle->handle;
+	if (handle)
+		printf("\n A3 Warning: One or more uniform buffers not released.");
 
 	handle = 0;
 	while (currentTex < endTex)

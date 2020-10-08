@@ -127,6 +127,13 @@ void a3animation_unloadValidate(a3_DemoState const* demoState, a3_DemoMode1_Anim
 
 void a3demo_load(a3_DemoState* demoState)
 {
+	// demo modes
+	demoState->demoMode = demoState_modeAnimation;
+	demoState->demoModeCallbacksPtr = demoState->demoModeCallbacks + demoState->demoMode;
+	a3starter_load(demoState, demoState->demoMode0_starter);
+	a3animation_load(demoState, demoState->demoMode1_animation);
+
+
 	// geometry
 	a3demo_loadGeometry(demoState);
 
@@ -148,13 +155,6 @@ void a3demo_load(a3_DemoState* demoState)
 	demoState->updateAnimation = a3true;
 	demoState->stencilTest = a3false;
 	demoState->skipIntermediatePasses = a3false;
-
-
-	// demo modes
-	demoState->demoMode = demoState_modeAnimation;
-	demoState->demoModeCallbacksPtr = demoState->demoModeCallbacks + demoState->demoMode;
-	a3starter_load(demoState, demoState->demoMode0_starter);
-	a3animation_load(demoState, demoState->demoMode1_animation);
 }
 
 void a3demo_unload(a3_DemoState* demoState)

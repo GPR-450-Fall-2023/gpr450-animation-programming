@@ -25,6 +25,19 @@
 #version 450
 
 layout (location = 0) in vec4 aPosition;
+layout (location = 2) in vec4 aNormal;
+layout (location = 8) in vec4 aTexcoord;
+layout (location = 10) in vec4 aTangent;
+layout (location = 11) in vec4 aBitangent;
+
+uniform mat4 uP;
+uniform mat4 uMV, uMV_nrm;
+uniform mat4 uAtlas;
+
+out vbVertexData {
+	mat4 vTangentBasis_view;
+	vec4 vTexcoord_atlas;
+};
 
 flat out int vVertexID;
 flat out int vInstanceID;
@@ -32,7 +45,13 @@ flat out int vInstanceID;
 void main()
 {
 	// DUMMY OUTPUT: directly assign input position to output position
-	gl_Position = aPosition;
+//	gl_Position = aPosition;
+
+	vTangentBasis_view = uMV_nrm * mat4(aTangent, aBitangent, aNormal, vec4(0.0));
+	vTangentBasis_view[3] = uMV * aPosition;
+	gl_Position = uP * vTangentBasis_view[3];
+	
+	vTexcoord_atlas = uAtlas * aTexcoord;
 
 	vVertexID = gl_VertexID;
 	vInstanceID = gl_InstanceID;
