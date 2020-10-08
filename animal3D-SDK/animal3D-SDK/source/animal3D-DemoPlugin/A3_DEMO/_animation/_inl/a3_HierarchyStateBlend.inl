@@ -30,6 +30,62 @@
 
 //-----------------------------------------------------------------------------
 
+// pointer-based reset/identity operation for single spatial pose
+inline a3_SpatialPose* a3spatialPoseOpIdentity(a3_SpatialPose* pose_out)
+{
+	pose_out->transform = a3mat4_identity;
+	// ...
+
+	// done
+	return pose_out;
+}
+
+// pointer-based LERP operation for single spatial pose
+inline a3_SpatialPose* a3spatialPoseOpLERP(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, a3real const u)
+{
+
+	// done
+	return pose_out;
+}
+
+
+//-----------------------------------------------------------------------------
+
+// data-based reset/identity
+inline a3_SpatialPose a3spatialPoseDOpIdentity()
+{
+	a3_SpatialPose const result = { a3mat4_identity /*, ...*/ };
+	return result;
+}
+
+// data-based LERP
+inline a3_SpatialPose a3spatialPoseDOpLERP(a3_SpatialPose const pose0, a3_SpatialPose const pose1, a3real const u)
+{
+	a3_SpatialPose result = { 0 };
+	// ...
+
+	// done
+	return result;
+}
+
+
+//-----------------------------------------------------------------------------
+
+// pointer-based reset/identity operation for hierarchical pose
+inline a3_HierarchyPose* a3hierarchyPoseOpIdentity(a3_HierarchyPose* pose_out)
+{
+
+	// done
+	return pose_out;
+}
+
+// pointer-based LERP operation for hierarchical pose
+inline a3_HierarchyPose* a3hierarchyPoseOpLERP(a3_HierarchyPose* pose_out, a3_HierarchyPose const* pose0, a3_HierarchyPose const* pose1, a3real const u)
+{
+
+	// done
+	return pose_out;
+}
 
 
 //-----------------------------------------------------------------------------

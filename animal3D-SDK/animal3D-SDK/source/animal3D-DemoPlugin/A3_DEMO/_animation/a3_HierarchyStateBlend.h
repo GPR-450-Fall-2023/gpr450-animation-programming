@@ -28,8 +28,8 @@
 
 #include "a3_HierarchyState.h"
 
+#include "a3_Kinematics.h"
 
-//-----------------------------------------------------------------------------
 
 #ifdef __cplusplus
 extern "C"
@@ -41,6 +41,29 @@ extern "C"
 
 //-----------------------------------------------------------------------------
 
+// pointer-based reset/identity operation for single spatial pose
+a3_SpatialPose* a3spatialPoseOpIdentity(a3_SpatialPose* pose_out);
+
+// pointer-based LERP operation for single spatial pose
+a3_SpatialPose* a3spatialPoseOpLERP(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, a3real const u);
+
+
+//-----------------------------------------------------------------------------
+
+// data-based reset/identity
+a3_SpatialPose a3spatialPoseDOpIdentity();
+
+// data-based LERP
+a3_SpatialPose a3spatialPoseDOpLERP(a3_SpatialPose const pose0, a3_SpatialPose const pose1, a3real const u);
+
+
+//-----------------------------------------------------------------------------
+
+// pointer-based reset/identity operation for hierarchical pose
+a3_HierarchyPose* a3hierarchyPoseOpIdentity(a3_HierarchyPose* pose_out);
+
+// pointer-based LERP operation for hierarchical pose
+a3_HierarchyPose* a3hierarchyPoseOpLERP(a3_HierarchyPose* pose_out, a3_HierarchyPose const* pose0, a3_HierarchyPose const* pose1, a3real const u);
 
 
 //-----------------------------------------------------------------------------

@@ -34,7 +34,6 @@
 
 #include "_a3_demo_utilities/a3_DemoSceneObject.h"
 
-#include "_animation/a3_Kinematics.h"
 #include "_animation/a3_HierarchyStateBlend.h"
 
 

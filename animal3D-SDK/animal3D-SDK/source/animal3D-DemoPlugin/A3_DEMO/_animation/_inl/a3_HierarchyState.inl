@@ -51,7 +51,7 @@ inline a3i32 a3hierarchyPoseGroupGetNodePoseOffsetIndex(const a3_HierarchyPoseGr
 }
 
 //-----------------------------------------------------------------------------
-
+/*
 // reset full hierarchy pose
 inline a3i32 a3hierarchyPoseReset(const a3_HierarchyPose* pose_inout, const a3ui32 nodeCount)
 {
@@ -61,7 +61,7 @@ inline a3i32 a3hierarchyPoseReset(const a3_HierarchyPose* pose_inout, const a3ui
 	}
 	return -1;
 }
-
+*/
 // convert full hierarchy pose to hierarchy transforms
 inline a3i32 a3hierarchyPoseConvert(const a3_HierarchyPose* pose_inout, const a3ui32 nodeCount, const a3_SpatialPoseChannel channel, const a3_SpatialPoseEulerOrder order)
 {
@@ -71,7 +71,7 @@ inline a3i32 a3hierarchyPoseConvert(const a3_HierarchyPose* pose_inout, const a3
 	}
 	return -1;
 }
-
+/*
 // copy full hierarchy pose
 inline a3i32 a3hierarchyPoseCopy(const a3_HierarchyPose* pose_out, const a3_HierarchyPose* pose_in, const a3ui32 nodeCount)
 {
@@ -81,7 +81,7 @@ inline a3i32 a3hierarchyPoseCopy(const a3_HierarchyPose* pose_out, const a3_Hier
 	}
 	return -1;
 }
-
+*/
 
 //-----------------------------------------------------------------------------
 
