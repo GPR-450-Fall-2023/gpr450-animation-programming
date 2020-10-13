@@ -273,7 +273,7 @@ void a3demo_loadGeometry(a3_DemoState *demoState)
 			if (loadedShapes[i].skinWeightsFilePath)
 			{
 				a3byte *nodeNames[128] = { 0 };
-				a3ui32 nodeCount = 0;// a3hierarchyGetNodeNames(nodeNames, demoState->demoMode1_animation->hierarchy_skel);
+				a3ui32 nodeCount = a3hierarchyGetNodeNames(nodeNames, demoState->demoMode1_animation->hierarchy_skel);
 				a3modelLoadOBJSkinWeights(loadedModelsData + i, loadedShapes[i].modelFilePath, loadedShapes[i].flag, loadedShapes[i].skinWeightsFilePath, nodeNames, nodeCount, loadedShapes[i].transform);
 			}
 			else

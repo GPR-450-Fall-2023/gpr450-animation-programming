@@ -30,10 +30,74 @@
 
 //-----------------------------------------------------------------------------
 
+// partial FK solver
+inline a3i32 a3kinematicsSolveForwardPartial(const a3_HierarchyState* hierarchyState, const a3ui32 firstIndex, const a3ui32 nodeCount)
+{
+	if (hierarchyState && hierarchyState->hierarchy &&
+		firstIndex < hierarchyState->hierarchy->numNodes && nodeCount)
+	{
+		// ****TO-DO: implement forward kinematics algorithm
+		//	- for all nodes starting at first index
+		//		- if node is not root (has parent node)
+		//			- object matrix = parent object matrix * local matrix
+		//		- else
+		//			- copy local matrix to object matrix
+		const a3_HierarchyNode* itr = hierarchyState->hierarchy->nodes + firstIndex;
+		const a3_HierarchyNode* const end = itr + nodeCount;
+		for (; itr < end; ++itr)
+		{
+			if (itr->parentIndex >= 0)
+				a3real4x4Product(hierarchyState->objectSpace->pose[itr->index].transform.m,
+					hierarchyState->objectSpace->pose[itr->parentIndex].transform.m,
+					hierarchyState->localSpace->pose[itr->index].transform.m);
+			else
+				hierarchyState->objectSpace->pose[itr->index] = hierarchyState->localSpace->pose[itr->index];
+		}
+		return (a3i32)(end - itr);
+	}
+	return -1;
+}
+
+
+//-----------------------------------------------------------------------------
+
+// partial IK solver
+inline a3i32 a3kinematicsSolveInversePartial(const a3_HierarchyState* hierarchyState, const a3ui32 firstIndex, const a3ui32 nodeCount)
+{
+	if (hierarchyState && hierarchyState->hierarchy &&
+		firstIndex < hierarchyState->hierarchy->numNodes && nodeCount)
+	{
+		// ****TO-DO: implement inverse kinematics algorithm
+		//	- for all nodes starting at first index
+		//		- if node is not root (has parent node)
+		//			- local matrix = inverse parent object matrix * object matrix
+		//		- else
+		//			- copy object matrix to local matrix
+		const a3_HierarchyNode* itr = hierarchyState->hierarchy->nodes + firstIndex;
+		const a3_HierarchyNode* const end = itr + nodeCount;
+		for (; itr < end; ++itr)
+		{
+			if (itr->parentIndex >= 0)
+				a3real4x4Product(hierarchyState->localSpace->pose[itr->index].transform.m,
+					hierarchyState->objectSpaceInv->pose[itr->parentIndex].transform.m,
+					hierarchyState->objectSpace->pose[itr->index].transform.m);
+			else
+				hierarchyState->localSpace->pose[itr->index] = hierarchyState->objectSpace->pose[itr->index];
+		}
+		return (a3i32)(end - itr);
+	}
+	return -1;
+}
+
+
+//-----------------------------------------------------------------------------
+
 // FK solver
 inline a3i32 a3kinematicsSolveForward(const a3_HierarchyState *hierarchyState)
 {
-	return a3kinematicsSolveForwardPartial(hierarchyState, 0, hierarchyState->hierarchy->numNodes);
+	if (hierarchyState && hierarchyState->hierarchy)
+		return a3kinematicsSolveForwardPartial(hierarchyState, 0, hierarchyState->hierarchy->numNodes);
+	return -1;
 }
 
 
@@ -42,7 +106,9 @@ inline a3i32 a3kinematicsSolveForward(const a3_HierarchyState *hierarchyState)
 // IK solver
 inline a3i32 a3kinematicsSolveInverse(const a3_HierarchyState *hierarchyState)
 {
-	return a3kinematicsSolveInversePartial(hierarchyState, 0, hierarchyState->hierarchy->numNodes);
+	if (hierarchyState && hierarchyState->hierarchy)
+		return a3kinematicsSolveInversePartial(hierarchyState, 0, hierarchyState->hierarchy->numNodes);
+	return -1;
 }
 
 

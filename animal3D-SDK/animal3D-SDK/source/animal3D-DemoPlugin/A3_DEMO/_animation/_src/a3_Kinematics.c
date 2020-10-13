@@ -27,40 +27,6 @@
 
 //-----------------------------------------------------------------------------
 
-// partial FK solver
-a3i32 a3kinematicsSolveForwardPartial(const a3_HierarchyState *hierarchyState, const a3ui32 firstIndex, const a3ui32 nodeCount)
-{
-	if (hierarchyState && hierarchyState->hierarchy && 
-		firstIndex < hierarchyState->hierarchy->numNodes && nodeCount)
-	{
-		// ****TO-DO: implement forward kinematics algorithm
-		//	- for all nodes starting at first index
-		//		- if node is not root (has parent node)
-		//			- object matrix = parent object matrix * local matrix
-		//		- else
-		//			- copy local matrix to object matrix
-	}
-	return -1;
-}
-
-
-//-----------------------------------------------------------------------------
-
-// partial IK solver
-a3i32 a3kinematicsSolveInversePartial(const a3_HierarchyState *hierarchyState, const a3ui32 firstIndex, const a3ui32 nodeCount)
-{
-	if (hierarchyState && hierarchyState->hierarchy &&
-		firstIndex < hierarchyState->hierarchy->numNodes && nodeCount)
-	{
-		// ****TO-DO: implement inverse kinematics algorithm
-		//	- for all nodes starting at first index
-		//		- if node is not root (has parent node)
-		//			- local matrix = inverse parent object matrix * object matrix
-		//		- else
-		//			- copy object matrix to local matrix
-	}
-	return -1;
-}
 
 
 //-----------------------------------------------------------------------------
