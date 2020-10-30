@@ -1,0 +1,19 @@
+#----------------------------------------------
+# xbot by Mixamo
+# Animation Clip Set File Format by DBuckstein
+#----------------------------------------------
+
+# animations
+# @ clip_name	duration_s	first_frame	last_frame	reverse_transition	forward_transition	comments (ignored)		
+@ 	base		1.0			0			29			|					|					#30
+@ 	skintest	1.0			30			98			<					>					#69
+@	idle		1.0			99			349			<					>					#251
+@	gangnam		1.0			350			720			<					>					#371
+@	samba		1.0			721			1436		<					>					#716
+@	leftsw		1.0			1437		1468		<					>					#32
+@	left90		1.0			1469		1497		<					>					#29
+@	rightsw		1.0			1498		1529		<					>					#32
+@	right90		1.0			1530		1558		<					>					#29
+@	walking		1.0			1559		1590		<					>					#32
+@	jump		1.0			1591		1656		<					>					#66
+@	backflip	1.0			1657		1832		<					>					#176

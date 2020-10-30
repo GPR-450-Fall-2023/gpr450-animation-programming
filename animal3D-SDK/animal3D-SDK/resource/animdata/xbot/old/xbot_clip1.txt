@@ -1,0 +1,20 @@
+#----------------------------------------------
+# xbot by Mixamo
+# Animation Clip Set File Format by DBuckstein
+#----------------------------------------------
+
+# animations
+# @ clip_name	duration_s	first_frame	last_frame	reverse_transition	forward_transition	comments (ignored)		
+@ 	base		0.0			0			0			|					|					#1
+@ 	idle 		1.0			1			246			<					>					#246
+@ 	jump		1.0			247			312			<<					>>					#66 double-ended
+@ 	lsw			1.0			313			344			<<					>>					#32 double-ended offset
+@ 	ls			1.0			345			365			<<					>>					#21 double-ended offset
+@ 	lt90		1.0			366			394			<					>					#29
+@ 	lt			1.0			395			444			<					>					#50
+@ 	rsw			1.0			445			476			<<					>>					#32 double-ended offset
+@ 	rs			1.0			477			497			<<					>>					#21 double-ended offset
+@ 	rt90		1.0			498			526			<					>					#29
+@ 	rt			1.0			527			576			<					>					#50
+@ 	run			1.0			577			598			<<					>>					#22 double-ended offset
+@ 	walk		1.0			599			630			<<					>>					#32 double-ended offset

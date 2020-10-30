@@ -1,0 +1,34 @@
+#----------------------------------------------
+# xbot by Mixamo
+# Animation Clip Set File Format by DBuckstein
+#----------------------------------------------
+
+# animations
+# @ clip_name	duration_s	first_frame	last_frame	reverse_transition	forward_transition	comments (ignored)		
+@ 	base		1.0			1			24			<					>					#24
+@	ymca		4.0			25			133			<					>					#109
+@	idle_pistol	2.0			134			166			<					>					#33
+@	skintest	2.0			167			221			<					>					#55
+@	gangnam		12.0		222			518			<					>					#297
+@	samba		24.0		519			1091		<					>					#573
+@	backflip	4.0			1092		1232		<					>					#141
+@	idle_f		4.0			1233		1433		<					>					#201
+@	jump_f		2.0			1434		1474		<					>					#41
+@	walk_f		4.0			1475		1498		<					>					#24
+@	run_f		2.0			1499		1516		<					>					#18
+@	walk_s_l_f	2.0			1517		1539		<					>					#23
+@	strafe_l_f	2.0			1540		1556		<					>					#17
+@	turn_l_f	2.0			1557		1585		<					>					#29
+@	walk_s_r_f	2.0			1586		1608		<					>					#23
+@	strafe_r_f	2.0			1609		1625		<					>					#17
+@	turn_r_f	2.0			1626		1654		<					>					#29
+@	idle_m		4.0			1655		1855		<					>					#201
+@	jump_m		2.0			1856		1908		<					>					#53
+@	walk_m		4.0			1909		1934		<					>					#26
+@	run_m		2.0			1935		1952		<					>					#18
+@	walk_s_l_m	2.0			1953		1978		<					>					#26
+@	strafe_l_m	2.0			1979		1995		<					>					#17
+@	turn_l_m	2.0			1996		2018		<					>					#23
+@	walk_s_r_m	2.0			2019		2044		<					>					#26
+@	strafe_r_m	2.0			2045		2061		<					>					#17
+@	turn_r_m	2.0			2062		2084		<					>					#23

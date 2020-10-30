@@ -1,0 +1,355 @@
+# Motion Analysis HTR (source:MACFileLib v1.10)
+[Header]
+# KeyWord<space>Value<CR>
+FileType htr
+DataType HTRS
+FileVersion 1
+NumSegments 67
+NumFrames 1
+DataFrameRate 30
+EulerRotationOrder ZYX
+CalibrationUnits mm
+RotationUnits Degrees
+GlobalAxisofGravity Y
+BoneLengthAxis Y
+ScaleFactor 1.00
+[SegmentNames&Hierarchy]
+# ObjectName<tab>ParentObjectName<CR>
+mixamorig:Hips	GLOBAL
+mixamorig:Spine	mixamorig:Hips
+mixamorig:Spine1	mixamorig:Spine
+mixamorig:Spine2	mixamorig:Spine1
+mixamorig:Neck	mixamorig:Spine2
+mixamorig:Head	mixamorig:Neck
+mixamorig:HeadTop_End	mixamorig:Head
+mixamorig:LeftEye	mixamorig:Head
+mixamorig:RightEye	mixamorig:Head
+mixamorig:LeftShoulder	mixamorig:Spine2
+mixamorig:LeftArm	mixamorig:LeftShoulder
+mixamorig:LeftForeArm	mixamorig:LeftArm
+mixamorig:LeftHand	mixamorig:LeftForeArm
+mixamorig:LeftHandThumb1	mixamorig:LeftHand
+mixamorig:LeftHandThumb2	mixamorig:LeftHandThumb1
+mixamorig:LeftHandThumb3	mixamorig:LeftHandThumb2
+mixamorig:LeftHandThumb4	mixamorig:LeftHandThumb3
+mixamorig:LeftHandIndex1	mixamorig:LeftHand
+mixamorig:LeftHandIndex2	mixamorig:LeftHandIndex1
+mixamorig:LeftHandIndex3	mixamorig:LeftHandIndex2
+mixamorig:LeftHandIndex4	mixamorig:LeftHandIndex3
+mixamorig:LeftHandMiddle1	mixamorig:LeftHand
+mixamorig:LeftHandMiddle2	mixamorig:LeftHandMiddle1
+mixamorig:LeftHandMiddle3	mixamorig:LeftHandMiddle2
+mixamorig:LeftHandMiddle4	mixamorig:LeftHandMiddle3
+mixamorig:LeftHandRing1	mixamorig:LeftHand
+mixamorig:LeftHandRing2	mixamorig:LeftHandRing1
+mixamorig:LeftHandRing3	mixamorig:LeftHandRing2
+mixamorig:LeftHandRing4	mixamorig:LeftHandRing3
+mixamorig:LeftHandPinky1	mixamorig:LeftHand
+mixamorig:LeftHandPinky2	mixamorig:LeftHandPinky1
+mixamorig:LeftHandPinky3	mixamorig:LeftHandPinky2
+mixamorig:LeftHandPinky4	mixamorig:LeftHandPinky3
+mixamorig:RightShoulder	mixamorig:Spine2
+mixamorig:RightArm	mixamorig:RightShoulder
+mixamorig:RightForeArm	mixamorig:RightArm
+mixamorig:RightHand	mixamorig:RightForeArm
+mixamorig:RightHandPinky1	mixamorig:RightHand
+mixamorig:RightHandPinky2	mixamorig:RightHandPinky1
+mixamorig:RightHandPinky3	mixamorig:RightHandPinky2
+mixamorig:RightHandPinky4	mixamorig:RightHandPinky3
+mixamorig:RightHandRing1	mixamorig:RightHand
+mixamorig:RightHandRing2	mixamorig:RightHandRing1
+mixamorig:RightHandRing3	mixamorig:RightHandRing2
+mixamorig:RightHandRing4	mixamorig:RightHandRing3
+mixamorig:RightHandMiddle1	mixamorig:RightHand
+mixamorig:RightHandMiddle2	mixamorig:RightHandMiddle1
+mixamorig:RightHandMiddle3	mixamorig:RightHandMiddle2
+mixamorig:RightHandMiddle4	mixamorig:RightHandMiddle3
+mixamorig:RightHandIndex1	mixamorig:RightHand
+mixamorig:RightHandIndex2	mixamorig:RightHandIndex1
+mixamorig:RightHandIndex3	mixamorig:RightHandIndex2
+mixamorig:RightHandIndex4	mixamorig:RightHandIndex3
+mixamorig:RightHandThumb1	mixamorig:RightHand
+mixamorig:RightHandThumb2	mixamorig:RightHandThumb1
+mixamorig:RightHandThumb3	mixamorig:RightHandThumb2
+mixamorig:RightHandThumb4	mixamorig:RightHandThumb3
+mixamorig:LeftUpLeg	mixamorig:Hips
+mixamorig:LeftLeg	mixamorig:LeftUpLeg
+mixamorig:LeftFoot	mixamorig:LeftLeg
+mixamorig:LeftToeBase	mixamorig:LeftFoot
+mixamorig:LeftToe_End	mixamorig:LeftToeBase
+mixamorig:RightUpLeg	mixamorig:Hips
+mixamorig:RightLeg	mixamorig:RightUpLeg
+mixamorig:RightFoot	mixamorig:RightLeg
+mixamorig:RightToeBase	mixamorig:RightFoot
+mixamorig:RightToe_End	mixamorig:RightToeBase
+[BasePosition]
+# ObjectName<tab>Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneLength<CR>
+mixamorig:Hips	-0.000000	2641.383347	52.732343	180.000000	0.000000	90.000000	25.400000
+mixamorig:Spine	3.340688	0.000235	258.612340	0.000000	-0.000000	0.000000	25.400000
+mixamorig:Spine1	-25.420348	0.000006	256.119662	0.000000	-0.000000	0.000000	25.400000
+mixamorig:Spine2	-34.884886	0.000009	231.140300	0.000000	-0.000000	0.000000	25.400000
+mixamorig:Neck	-63.910634	0.000016	423.460393	0.000000	-0.000000	0.000000	25.400000
+mixamorig:Head	42.799132	-0.000011	244.294003	0.000000	-0.000000	0.000000	25.400000
+mixamorig:HeadTop_End	65.658589	-0.000017	452.505035	0.000000	-0.000000	0.000000	25.400000
+mixamorig:LeftEye	235.802274	77.916041	162.801497	0.000000	-0.000000	0.000000	8.466667
+mixamorig:RightEye	235.802080	-77.915781	162.801303	0.000000	-0.000000	0.000000	8.466667
+mixamorig:LeftShoulder	-66.750964	116.089341	278.027991	0.000000	-0.000000	0.000000	25.400000
+mixamorig:LeftArm	-56.695764	269.046199	-13.324380	0.000000	-0.000000	0.000000	707.174664
+mixamorig:LeftForeArm	0.000969	707.174664	-0.002229	0.000000	-0.000000	0.000000	719.552591
+mixamorig:LeftHand	0.000969	719.552591	-0.000484	0.000000	-0.000000	0.000000	25.400000
+mixamorig:LeftHandThumb1	68.133244	62.639975	-40.006279	0.000000	-0.000000	0.000000	25.400000
+mixamorig:LeftHandThumb2	47.363000	82.037047	-47.363097	0.000000	-0.000000	0.000000	25.400000
+mixamorig:LeftHandThumb3	38.899370	67.375151	-38.899951	0.000000	-0.000000	0.000000	25.400000
+mixamorig:LeftHandThumb4	28.663754	49.646001	-28.663900	0.000000	-0.000000	0.000000	25.400000
+mixamorig:LeftHandIndex1	57.405798	231.376187	-13.133888	0.000000	-0.000000	0.000000	93.380734
+mixamorig:LeftHandIndex2	0.000775	93.380734	-0.000194	0.000000	-0.000000	0.000000	73.229832
+mixamorig:LeftHandIndex3	-0.001163	73.229832	0.000969	0.000000	-0.000000	0.000000	60.775166
+mixamorig:LeftHandIndex4	0.000775	60.775166	0.000969	0.000000	-0.000000	0.000000	25.400000
+mixamorig:LeftHandMiddle1	0.000388	242.148398	-0.000872	0.000000	-0.000000	0.000000	93.935158
+mixamorig:LeftHandMiddle2	0.000388	93.935158	0.000097	0.000000	-0.000000	0.000000	74.953371
+mixamorig:LeftHandMiddle3	0.000388	74.953371	-0.000969	0.000000	-0.000000	0.000000	71.981071
+mixamorig:LeftHandMiddle4	-0.000194	71.981071	-0.000969	0.000000	-0.000000	0.000000	25.400000
+mixamorig:LeftHandRing1	-47.373077	231.255070	-1.116017	0.000000	-0.000000	0.000000	80.112358
+mixamorig:LeftHandRing2	0.000194	80.112358	-0.000194	0.000000	-0.000000	0.000000	74.616957
+mixamorig:LeftHandRing3	-0.000194	74.616957	-0.001163	0.000000	-0.000000	0.000000	67.245314
+mixamorig:LeftHandRing4	0.000000	67.245314	-0.001260	0.000000	-0.000000	0.000000	25.400000
+mixamorig:LeftHandPinky1	-96.674138	205.175461	-12.412130	0.000000	-0.000000	0.000000	91.440930
+mixamorig:LeftHandPinky2	-0.000581	91.440930	-0.000097	0.000000	-0.000000	0.000000	53.700986
+mixamorig:LeftHandPinky3	0.000000	53.700986	0.000484	0.000000	-0.000000	0.000000	50.182402
+mixamorig:LeftHandPinky4	-0.001163	50.182402	0.000291	0.000000	-0.000000	0.000000	25.400000
+mixamorig:RightShoulder	-66.751546	-116.077229	278.032932	0.000000	-0.000000	0.000000	25.400000
+mixamorig:RightArm	-56.695377	-269.058238	-13.329903	0.000000	-0.000000	0.000000	-707.174664
+mixamorig:RightForeArm	0.000388	-707.174664	-0.000872	0.000000	-0.000000	0.000000	-719.552397
+mixamorig:RightHand	0.001357	-719.552397	0.000000	0.000000	-0.000000	0.000000	25.400000
+mixamorig:RightHandPinky1	-96.672588	-205.147556	-12.406898	0.000000	-0.000000	0.000000	-91.440930
+mixamorig:RightHandPinky2	0.001357	-91.440930	0.000969	0.000000	-0.000000	0.000000	-53.700986
+mixamorig:RightHandPinky3	0.000388	-53.700986	0.000388	0.000000	-0.000000	0.000000	-50.182402
+mixamorig:RightHandPinky4	0.000000	-50.182402	-0.000484	0.000000	-0.000000	0.000000	25.400000
+mixamorig:RightHandRing1	-47.372884	-231.231235	-1.115436	0.000000	-0.000000	0.000000	-80.112358
+mixamorig:RightHandRing2	0.001163	-80.112358	0.000581	0.000000	-0.000000	0.000000	-74.616957
+mixamorig:RightHandRing3	-0.000969	-74.616957	-0.001066	0.000000	-0.000000	0.000000	-67.245314
+mixamorig:RightHandRing4	0.000000	-67.245314	0.000581	0.000000	-0.000000	0.000000	25.400000
+mixamorig:RightHandMiddle1	0.000388	-242.125531	-0.000388	0.000000	-0.000000	0.000000	-93.935158
+mixamorig:RightHandMiddle2	-0.000581	-93.935158	0.000388	0.000000	-0.000000	0.000000	-74.953371
+mixamorig:RightHandMiddle3	0.000000	-74.953371	0.000000	0.000000	-0.000000	0.000000	-71.981071
+mixamorig:RightHandMiddle4	0.001357	-71.981071	0.000194	0.000000	-0.000000	0.000000	25.400000
+mixamorig:RightHandIndex1	57.406961	-231.350414	-13.126427	0.000000	-0.000000	0.000000	-93.380734
+mixamorig:RightHandIndex2	0.000775	-93.380734	0.000484	0.000000	-0.000000	0.000000	-73.229832
+mixamorig:RightHandIndex3	0.000969	-73.229832	-0.001260	0.000000	-0.000000	0.000000	-60.775166
+mixamorig:RightHandIndex4	0.000775	-60.775166	0.000678	0.000000	-0.000000	0.000000	25.400000
+mixamorig:RightHandThumb1	68.138670	-62.606062	-39.946980	0.000000	-0.000000	0.000000	25.400000
+mixamorig:RightHandThumb2	47.363776	-82.036272	-47.363582	0.000000	-0.000000	0.000000	25.400000
+mixamorig:RightHandThumb3	38.898788	-67.376120	-38.898788	0.000000	-0.000000	0.000000	25.400000
+mixamorig:RightHandThumb4	28.664142	-49.646388	-28.662931	0.000000	-0.000000	0.000000	25.400000
+mixamorig:LeftUpLeg	-40.628722	208.477658	-171.493554	0.000000	-0.000000	0.000000	25.400000
+mixamorig:LeftLeg	7.229985	0.000000	-1127.010085	0.000000	-0.000000	0.000000	25.400000
+mixamorig:LeftFoot	-75.747702	0.000000	-1128.467941	0.000000	-0.000000	0.000000	25.400000
+mixamorig:LeftToeBase	272.048123	-0.000073	-221.708173	0.000000	-0.000000	0.000000	25.400000
+mixamorig:LeftToe_End	235.664685	-0.000073	-0.017247	0.000000	-0.000000	0.000000	25.400000
+mixamorig:RightUpLeg	-40.628722	-208.478021	-171.492221	0.000000	-0.000000	0.000000	25.400000
+mixamorig:RightLeg	7.268355	0.000000	-1127.011635	0.000000	-0.000000	0.000000	25.400000
+mixamorig:RightFoot	-75.788203	0.000024	-1128.464356	0.000000	-0.000000	0.000000	25.400000
+mixamorig:RightToeBase	272.048317	-0.000048	-221.708173	0.000000	-0.000000	0.000000	25.400000
+mixamorig:RightToe_End	235.664297	-0.000048	-0.017247	0.000000	-0.000000	0.000000	25.400000
+[mixamorig:Hips]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	-0.000000	1.000000
+[mixamorig:Spine]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:Spine1]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:Spine2]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:Neck]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:Head]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:HeadTop_End]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:LeftEye]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:RightEye]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:LeftShoulder]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:LeftArm]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:LeftForeArm]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:LeftHand]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:LeftHandThumb1]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:LeftHandThumb2]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:LeftHandThumb3]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:LeftHandThumb4]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:LeftHandIndex1]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:LeftHandIndex2]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:LeftHandIndex3]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:LeftHandIndex4]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:LeftHandMiddle1]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:LeftHandMiddle2]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:LeftHandMiddle3]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:LeftHandMiddle4]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:LeftHandRing1]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:LeftHandRing2]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:LeftHandRing3]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:LeftHandRing4]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:LeftHandPinky1]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:LeftHandPinky2]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:LeftHandPinky3]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:LeftHandPinky4]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:RightShoulder]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:RightArm]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:RightForeArm]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:RightHand]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:RightHandPinky1]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:RightHandPinky2]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:RightHandPinky3]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:RightHandPinky4]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:RightHandRing1]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:RightHandRing2]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:RightHandRing3]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:RightHandRing4]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:RightHandMiddle1]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:RightHandMiddle2]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:RightHandMiddle3]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:RightHandMiddle4]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:RightHandIndex1]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:RightHandIndex2]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:RightHandIndex3]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:RightHandIndex4]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:RightHandThumb1]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:RightHandThumb2]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:RightHandThumb3]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:RightHandThumb4]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:LeftUpLeg]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:LeftLeg]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:LeftFoot]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:LeftToeBase]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:LeftToe_End]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:RightUpLeg]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:RightLeg]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:RightFoot]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:RightToeBase]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[mixamorig:RightToe_End]
+# Tx<tab>Ty<tab>Tz<tab>Rx<tab>Ry<tab>Rz<tab>BoneScaleFactor<CR>
+0	0.000000	0.000000	0.000000	0.000000	-0.000000	0.000000	1.000000
+[EndOfFile]

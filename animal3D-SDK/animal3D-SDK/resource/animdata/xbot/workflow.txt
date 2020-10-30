@@ -1,0 +1,9 @@
+Instructions for setting up this character: 
+1) Download from Mixamo with the following settings: 
+	a) FBX
+	b) Original Pose
+	c) 24 fps
+	d) Uniform frame reduction
+2) Drag into MotionBuilder, select take
+3) Click on skeleton root
+4) Export take as HTR
