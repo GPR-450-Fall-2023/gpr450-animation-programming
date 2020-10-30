@@ -34,6 +34,7 @@
 
 #include "_a3_demo_utilities/a3_DemoSceneObject.h"
 
+#include "_animation/a3_KeyframeAnimationController.h"
 #include "_animation/a3_HierarchyStateBlend.h"
 
 
@@ -50,6 +51,8 @@ typedef enum a3_DemoMode1_Animation_ActiveCameraName		a3_DemoMode1_Animation_Act
 typedef enum a3_DemoMode1_Animation_PipelineName			a3_DemoMode1_Animation_PipelineName;
 typedef enum a3_DemoMode1_Animation_PassName				a3_DemoMode1_Animation_PassName;
 typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetName;
+typedef enum a3_DemoMode1_Animation_ControlTarget			a3_DemoMode1_Animation_ControlTarget;
+typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMode;
 #endif	// __cplusplus
 
 
@@ -67,8 +70,8 @@ typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetN
 	enum a3_DemoMode1_Animation_RenderProgramName
 	{
 		animation_renderSolid,			// solid color
-		animation_renderTexture,			// textured
-		animation_renderLambert,			// Lambert shading model
+		animation_renderTexture,		// textured
+		animation_renderLambert,		// Lambert shading model
 		animation_renderPhong,			// Phong shading model
 
 		animation_render_max
@@ -113,7 +116,28 @@ typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetN
 		animation_scene_finalcolor = 0,	// final display color
 		animation_scene_fragdepth,		// fragment depth
 	
-		animation_target_scene_max,
+		animation_target_scene_max
+	};
+
+	// control targets
+	enum a3_DemoMode1_Animation_ControlTarget
+	{
+		animation_ctrl_camera,
+		animation_ctrl_character,
+
+		animation_ctrlmode_max
+	};
+
+	// input modes
+	enum a3_DemoMode1_Animation_InputMode
+	{
+		animation_input_direct,
+		animation_input_euler,
+		animation_input_kinematic,
+		animation_input_interpolate1,
+		animation_input_interpolate2,
+
+		animation_inputmode_max
 	};
 
 
@@ -130,14 +154,29 @@ typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetN
 		a3_DemoMode1_Animation_PassName pass;
 		a3_DemoMode1_Animation_TargetName targetIndex[animation_pass_max], targetCount[animation_pass_max];
 
+		// scene graph
+		a3_Hierarchy sceneGraph[1];
+		a3_HierarchyState sceneGraphState[1];
+
+		// animation controllers
+		a3_ClipController clipCtrl[1], clipCtrlA[1], clipCtrlB[1];
+		a3_ClipPool clipPool[1];
+
 		// skeletal animation
 		a3_Hierarchy hierarchy_skel[1];
 		a3_HierarchyState hierarchyState_skel[2];
 		a3_HierarchyPoseGroup hierarchyPoseGroup_skel[1];
 		a3mat4 mvp_joint[128], mvp_bone[128], t_skin[128];
 		a3dualquat dq_skin[128];
-		a3ui32 hierarchyKeyPose_display[2];
-		a3real hierarchyKeyPose_param;
+
+		// control modes
+		a3_DemoMode1_Animation_ControlTarget ctrl_target;
+		a3_DemoMode1_Animation_InputMode ctrl_position, ctrl_rotation;
+
+		// input axes & integration variables
+		a3f64 axis_l[2], axis_r[2];
+		a3vec2 pos, vel, acc;
+		a3real rot, velr, accr;
 
 		// objects
 		union {
@@ -147,6 +186,13 @@ typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetN
 					obj_skybox[1];
 				a3_DemoSceneObject
 					obj_skeleton[1];
+			};
+		};
+		union {
+			a3_DemoSceneObject object_scene_ctrl[animationMaxCount_sceneObject];
+			struct {
+				a3_DemoSceneObject
+					obj_skeleton_ctrl[1];
 			};
 		};
 		union {

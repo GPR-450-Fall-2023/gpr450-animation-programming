@@ -97,7 +97,7 @@ enum a3_DemoState_ObjectMaxCount
 	demoStateMaxCount_drawable = 16,
 
 	demoStateMaxCount_shaderProgram = 32,
-	demoStateMaxCount_uniformBuffer = 4,
+	demoStateMaxCount_uniformBuffer = 8,
 
 	demoStateMaxCount_texture = 8,
 
@@ -242,6 +242,7 @@ struct a3_DemoState
 				draw_unit_torus[1],							// unit torus (major radius = 1)
 				draw_unit_plane_z[1];						// unit plane (width = height = 1) with Z normal
 			a3_VertexDrawable
+				draw_character_skin_alt[1],					// can't not have a skinnable character alternative
 				draw_character_skin[1],						// can't not have a skinnable character
 				draw_teapot_morph[1],						// can't not have a morphing Utah teapot
 				draw_teapot[1];								// can't not have a Utah teapot
@@ -292,6 +293,8 @@ struct a3_DemoState
 				ubo_transformMVP[1],
 				ubo_transformBlend[1],
 				ubo_transformStack[1];
+			a3_UniformBuffer
+				ubo_transformSkelMVP[4];
 		};
 	};
 

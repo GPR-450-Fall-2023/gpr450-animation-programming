@@ -47,9 +47,9 @@ inline a3i32 a3kinematicsSolveForwardPartial(const a3_HierarchyState* hierarchyS
 		for (; itr < end; ++itr)
 		{
 			if (itr->parentIndex >= 0)
-				a3real4x4Product(hierarchyState->objectSpace->pose[itr->index].transform.m,
-					hierarchyState->objectSpace->pose[itr->parentIndex].transform.m,
-					hierarchyState->localSpace->pose[itr->index].transform.m);
+				a3real4x4Product(hierarchyState->objectSpace->pose[itr->index].transformMat.m,
+					hierarchyState->objectSpace->pose[itr->parentIndex].transformMat.m,
+					hierarchyState->localSpace->pose[itr->index].transformMat.m);
 			else
 				hierarchyState->objectSpace->pose[itr->index] = hierarchyState->localSpace->pose[itr->index];
 		}
@@ -78,9 +78,9 @@ inline a3i32 a3kinematicsSolveInversePartial(const a3_HierarchyState* hierarchyS
 		for (; itr < end; ++itr)
 		{
 			if (itr->parentIndex >= 0)
-				a3real4x4Product(hierarchyState->localSpace->pose[itr->index].transform.m,
-					hierarchyState->objectSpaceInv->pose[itr->parentIndex].transform.m,
-					hierarchyState->objectSpace->pose[itr->index].transform.m);
+				a3real4x4Product(hierarchyState->localSpace->pose[itr->index].transformMat.m,
+					hierarchyState->objectSpaceInv->pose[itr->parentIndex].transformMat.m,
+					hierarchyState->objectSpace->pose[itr->index].transformMat.m);
 			else
 				hierarchyState->localSpace->pose[itr->index] = hierarchyState->objectSpace->pose[itr->index];
 		}

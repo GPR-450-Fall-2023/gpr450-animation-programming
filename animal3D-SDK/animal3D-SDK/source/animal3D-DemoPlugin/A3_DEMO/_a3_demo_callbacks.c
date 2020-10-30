@@ -125,6 +125,39 @@ void a3animation_unload(a3_DemoState const* demoState, a3_DemoMode1_Animation* d
 void a3starter_unloadValidate(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMode);
 void a3animation_unloadValidate(a3_DemoState const* demoState, a3_DemoMode1_Animation* demoMode);
 
+
+//-----------------------------------------------------------------------------
+// miscellaneous functions
+
+// get the size of the persistent state to allocate
+//	(good idea to keep it relatively constant, so that addresses don't change 
+//	when the library is reloaded... that would mess everything up!)
+inline a3ui32 a3demo_getPersistentStateSize()
+{
+	const a3ui32 minimum = sizeof(a3_DemoState);
+	a3ui32 size = 1;
+	while (size < minimum)
+		size += size;
+	return size;
+}
+
+
+// consistent text initialization
+inline void a3demo_initializeText(a3_DemoState* demoState)
+{
+	a3textInitialize(demoState->text + 0, 18, 1, 0, 0, 0);
+	a3textInitialize(demoState->text + 1, 16, 0, 0, 0, 0);
+}
+
+inline void a3demo_releaseText(a3_DemoState* demoState)
+{
+	a3textRelease(demoState->text + 0);
+	a3textRelease(demoState->text + 1);
+}
+
+
+//-----------------------------------------------------------------------------
+
 void a3demo_load(a3_DemoState* demoState)
 {
 	// demo modes
@@ -181,34 +214,62 @@ void a3demoMode_unloadValidate(a3_DemoState* demoState)
 	a3animation_unloadValidate(demoState, demoState->demoMode1_animation);
 }
 
-
-//-----------------------------------------------------------------------------
-// miscellaneous functions
-
-// get the size of the persistent state to allocate
-//	(good idea to keep it relatively constant, so that addresses don't change 
-//	when the library is reloaded... that would mess everything up!)
-inline a3ui32 a3demo_getPersistentStateSize()
+void a3demo_idle(a3_DemoState* demoState, a3f64 const dt)
 {
-	const a3ui32 minimum = sizeof(a3_DemoState);
-	a3ui32 size = 1;
-	while (size < minimum)
-		size += size;
-	return size;
-}
+	// track updates
+	if (demoState->timer->totalTime > 2.0)
+	{
+		demoState->n_timer += 1;
+		demoState->dt_timer = demoState->timer_display->totalTime - demoState->t_timer;
+		demoState->dt_timer_tot += demoState->dt_timer;
+		demoState->t_timer = demoState->timer_display->totalTime;
+	}
+	else
+	{
+		demoState->n_timer = 0;
+		demoState->dt_timer = demoState->timer_display->totalTime;
+		demoState->dt_timer_tot = 0.0;
+		demoState->t_timer = demoState->timer_display->totalTime;
+	}
 
+	// main idle loop
+	a3demo_input(demoState, dt);
+	a3demo_update(demoState, dt);
+	a3demo_render(demoState, dt);
 
-// consistent text initialization
-inline void a3demo_initializeText(a3_DemoState* demoState)
-{
-	a3textInitialize(demoState->text + 0, 18, 1, 0, 0, 0);
-	a3textInitialize(demoState->text + 1, 16, 0, 0, 0, 0);
-}
+	// update input
+	a3mouseUpdate(demoState->mouse);
+	a3keyboardUpdate(demoState->keyboard);
+	a3XboxControlUpdate(demoState->xcontrol);
 
-inline void a3demo_releaseText(a3_DemoState* demoState)
-{
-	a3textRelease(demoState->text + 0);
-	a3textRelease(demoState->text + 1);
+	// extra controls
+	if (a3XboxControlIsConnected(demoState->xcontrol))
+	{
+		if (a3XboxControlIsPressed(demoState->xcontrol, a3xbox_DPAD_up))
+			a3demoCtrlIncLoop(demoState->textMode, demoState_text_max);
+		if (a3XboxControlIsPressed(demoState->xcontrol, a3xbox_DPAD_down))
+			a3demoCtrlDecLoop(demoState->textMode, demoState_text_max);
+
+		if (a3XboxControlIsPressed(demoState->xcontrol, a3xbox_back))
+		{
+			if (!a3textIsInitialized(demoState->text))
+			{
+				a3demo_initializeText(demoState);
+				demoState->textInit = a3true;
+			}
+			else
+			{
+				a3demo_releaseText(demoState);
+				demoState->textInit = a3false;
+			}
+		}
+
+		if (a3XboxControlIsPressed(demoState->xcontrol, a3xbox_start))
+		{
+			a3demo_unloadShaders(demoState);
+			a3demo_loadShaders(demoState);
+		}
+	}
 }
 
 
@@ -254,32 +315,28 @@ A3DYLIBSYMBOL a3_DemoState *a3demoCB_load(a3_DemoState *demoState, a3boolean hot
 		// set up trig table (A3DM)
 		a3trigInit(trigSamplesPerDegree, demoState->trigTable);
 
-		// initialize state variables
-		// e.g. timer, thread, etc.
-		a3timerSet(demoState->timer_display, 30.0);
-		a3timerStart(demoState->timer_display);
-
 		// text
 		a3demo_initializeText(demoState);
 		demoState->textInit = a3true;
 		demoState->textMode = demoState_textControls;
 
-
 		// enable asset streaming between loads
-		//demoState->streaming = a3true;
-
+		demoState->streaming = a3true;
 
 		// create directory for data
 		a3fileStreamMakeDirectory("./data");
 
-
 		// set default GL state
 		a3demo_setDefaultGraphicsState();
-
 
 		// demo modes
 		a3demoMode_loadValidate(demoState);
 		a3demo_load(demoState);
+
+		// initialize state variables
+		// e.g. timer, thread, etc.
+		a3timerSet(demoState->timer_display, 30.0);
+		a3timerStart(demoState->timer_display);
 	}
 
 	// return persistent state pointer
@@ -344,32 +401,7 @@ A3DYLIBSYMBOL a3i32 a3demoCB_idle(a3_DemoState *demoState)
 		{
 			// render timer ticked, update demo state and draw
 			a3f64 const dt = demoState->timer_display->secondsPerTick;
-
-			// track updates
-			if (demoState->timer->totalTime > 2.0)
-			{
-				demoState->n_timer += 1;
-				demoState->dt_timer = demoState->timer_display->totalTime - demoState->t_timer;
-				demoState->dt_timer_tot += demoState->dt_timer;
-				demoState->t_timer = demoState->timer_display->totalTime;
-			}
-			else
-			{
-				demoState->n_timer = 0;
-				demoState->dt_timer = demoState->timer_display->totalTime;
-				demoState->dt_timer_tot = 0.0;
-				demoState->t_timer = demoState->timer_display->totalTime;
-			}
-
-			// main idle loop
-			a3demo_input(demoState, dt);
-			a3demo_update(demoState, dt);
-			a3demo_render(demoState, dt);
-
-			// update input
-			a3mouseUpdate(demoState->mouse);
-			a3keyboardUpdate(demoState->keyboard);
-			a3XboxControlUpdate(demoState->xcontrol);
+			a3demo_idle(demoState, dt);
 
 			// render occurred this idle: return +1
 			return +1;

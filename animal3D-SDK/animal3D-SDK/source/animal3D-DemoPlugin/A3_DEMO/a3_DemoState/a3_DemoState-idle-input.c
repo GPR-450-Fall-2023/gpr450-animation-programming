@@ -56,14 +56,14 @@ void a3demo_input_controlObject(
 
 		movingObject = a3demo_moveSceneObject(object, 
 			ctrlMoveSpeed * (a3real)(dt),
-			(a3real)(rJoystick[0]),
+			(a3real)(lJoystick[0]),
 			(a3real)(*rTrigger - *lTrigger),
-			(a3real)(-rJoystick[1])
+			(a3real)(-lJoystick[1])
 		);
 		// rotate
 		{
-			azimuth = (a3real)(-lJoystick[0]);
-			elevation = (a3real)(lJoystick[1]);
+			azimuth = (a3real)(-rJoystick[0]);
+			elevation = (a3real)(rJoystick[1]);
 
 			// this really defines which way is "up"
 			// mouse's Y motion controls pitch, but X can control yaw or roll

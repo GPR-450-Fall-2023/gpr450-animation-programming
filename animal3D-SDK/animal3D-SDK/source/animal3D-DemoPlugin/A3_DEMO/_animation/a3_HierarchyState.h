@@ -70,8 +70,8 @@ struct a3_HierarchyPoseGroup
 	// channels
 	a3_SpatialPoseChannel* channel;
 
-	// preferred Euler order
-	a3_SpatialPoseEulerOrder order;
+	// preferred Euler orders
+	a3_SpatialPoseEulerOrder* order;
 
 	// number of hierarchical poses
 	a3ui32 hposeCount;
@@ -87,27 +87,42 @@ struct a3_HierarchyState
 	// pointer to hierarcy
 	const a3_Hierarchy* hierarchy;
 
-	// local-space pose
-	a3_HierarchyPose localSpace[1];
+	// collection of poses
+	union {
+		a3_HierarchyPose hpose[5];
+		struct {
+			// active animation pose
+			a3_HierarchyPose animPose[1];
 
-	// object-space pose
-	a3_HierarchyPose objectSpace[1];
+			// local-space pose
+			a3_HierarchyPose localSpace[1];
 
-	// object-space inverse pose
-	a3_HierarchyPose objectSpaceInv[1];
+			// object-space pose
+			a3_HierarchyPose objectSpace[1];
 
-	// object-space bind-to-current pose
-	a3_HierarchyPose objectSpaceBindToCurrent[1];
+			// object-space inverse pose
+			a3_HierarchyPose objectSpaceInv[1];
+
+			// object-space bind-to-current pose
+			a3_HierarchyPose objectSpaceBindToCurrent[1];
+		};
+	};
 };
 	
 
 //-----------------------------------------------------------------------------
 
 // initialize pose set given an initialized hierarchy and key pose count
-a3i32 a3hierarchyPoseGroupCreate(a3_HierarchyPoseGroup *poseGroup_out, const a3_Hierarchy *hierarchy, const a3ui32 poseCount, const a3_SpatialPoseEulerOrder order);
+a3i32 a3hierarchyPoseGroupCreate(a3_HierarchyPoseGroup *poseGroup_out, const a3_Hierarchy *hierarchy, const a3ui32 poseCount);
 
 // release pose set
 a3i32 a3hierarchyPoseGroupRelease(a3_HierarchyPoseGroup *poseGroup);
+
+// load binary
+a3i32 a3hierarchyPoseGroupLoadBinary(a3_HierarchyPoseGroup* poseGroup, a3_FileStream const* fileStream);
+
+// save binary
+a3i32 a3hierarchyPoseGroupSaveBinary(a3_HierarchyPoseGroup const* poseGroup, a3_FileStream const* fileStream);
 
 // get offset to hierarchy pose in contiguous set
 a3i32 a3hierarchyPoseGroupGetPoseOffsetIndex(const a3_HierarchyPoseGroup *poseGroup, const a3ui32 poseIndex);
@@ -122,16 +137,19 @@ a3i32 a3hierarchyPoseGroupGetNodePoseOffsetIndex(const a3_HierarchyPoseGroup *po
 a3i32 a3hierarchyPoseReset(const a3_HierarchyPose* pose_inout, const a3ui32 nodeCount);
 
 // convert full hierarchy pose to hierarchy transforms
-a3i32 a3hierarchyPoseConvert(const a3_HierarchyPose* pose_inout, const a3ui32 nodeCount, const a3_SpatialPoseChannel* channel, const a3_SpatialPoseEulerOrder order);
+a3i32 a3hierarchyPoseConvert(const a3_HierarchyPose* pose_inout, const a3ui32 nodeCount, const a3_SpatialPoseChannel* channel, const a3_SpatialPoseEulerOrder* order);
 
 // restore full hierarchy pose from hierarchy transforms
-a3i32 a3hierarchyPoseRestore(const a3_HierarchyPose* pose_inout, const a3ui32 nodeCount, const a3_SpatialPoseChannel* channel, const a3_SpatialPoseEulerOrder order);
+a3i32 a3hierarchyPoseRestore(const a3_HierarchyPose* pose_inout, const a3ui32 nodeCount, const a3_SpatialPoseChannel* channel, const a3_SpatialPoseEulerOrder* order);
 
 // copy full hierarchy pose
 a3i32 a3hierarchyPoseCopy(const a3_HierarchyPose* pose_out, const a3_HierarchyPose* pose_in, const a3ui32 nodeCount);
 
 // concat full hierarchy pose
 a3i32 a3hierarchyPoseConcat(const a3_HierarchyPose* pose_out, const a3_HierarchyPose* pose_lhs, const a3_HierarchyPose* pose_rhs, const a3ui32 nodeCount);
+
+// deconcat full hierarchy pose
+a3i32 a3hierarchyPoseDeconcat(const a3_HierarchyPose* pose_out, const a3_HierarchyPose* pose_lhs, const a3_HierarchyPose* pose_rhs, const a3ui32 nodeCount);
 
 // lerp full hierarchy pose
 a3i32 a3hierarchyPoseLerp(const a3_HierarchyPose* pose_out, const a3_HierarchyPose* pose_0, const a3_HierarchyPose* pose_1, const a3real u, const a3ui32 nodeCount);

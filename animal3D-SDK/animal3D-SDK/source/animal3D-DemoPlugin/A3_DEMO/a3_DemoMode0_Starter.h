@@ -111,7 +111,7 @@ typedef enum a3_DemoMode0_Starter_TargetName				a3_DemoMode0_Starter_TargetName;
 		starter_scene_finalcolor = 0,	// final display color
 		starter_scene_fragdepth,		// fragment depth
 	
-		starter_target_scene_max,
+		starter_target_scene_max
 	};
 
 

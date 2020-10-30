@@ -46,8 +46,29 @@ inline a3real4r a3demo_mat2quat_safe(a3real4 q, a3real4x4 const m)
 	//	-> NOTE: this is for testing dual quaternion skinning only; 
 	//		quaternion data would normally be computed with poses
 
+	a3real4SetReal4(q, a3vec4_w.v);
+
+	// done
 	return q;
 }
+
+inline a3real4x2r a3demo_mat2dquat_safe(a3real4x2 Q, a3real4x4 const m)
+{
+	// ****TO-DO: 
+	//	-> convert matrix to dual quaternion
+	//	-> NOTE: this is for testing dual quaternion skinning only; 
+	//		quaternion data would normally be computed with poses
+
+	a3demo_mat2quat_safe(Q[0], m);
+	a3real4SetReal4(Q[1], a3vec4_zero.v);
+
+	// done
+	return Q;
+}
+
+
+//-----------------------------------------------------------------------------
+
 
 
 //-----------------------------------------------------------------------------
@@ -64,7 +85,7 @@ void a3demo_applyScale_internal(a3_DemoSceneObject* sceneObject, a3real4x4p s);
 
 void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode, a3f64 const dt)
 {
-	a3ui32 i;
+	a3ui32 i, j;
 	a3_DemoModelMatrixStack matrixStack[animationMaxCount_sceneObject];
 
 	a3_HierarchyState* activeHS = demoMode->hierarchyState_skel + 1, * baseHS = demoMode->hierarchyState_skel;
@@ -79,54 +100,89 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	a3demo_update_objects(demoState, dt,
 		demoMode->object_scene, animationMaxCount_sceneObject, 0, 0);
 	a3demo_update_objects(demoState, dt,
+		demoMode->object_scene_ctrl, animationMaxCount_sceneObject, 0, 0);
+	a3demo_update_objects(demoState, dt,
 		demoMode->object_camera, animationMaxCount_cameraObject, 1, 0);
 
 	a3demo_updateProjectorViewProjectionMat(demoMode->proj_camera_main);
 
 	// apply scales to objects
 	for (i = 0; i < animationMaxCount_sceneObject; ++i)
+	{
 		a3demo_applyScale_internal(demoMode->object_scene + i, scaleMat.m);
+		a3demo_applyScale_internal(demoMode->object_scene_ctrl + i, scaleMat.m);
+	}
 
 	// update skybox
 	a3demo_update_bindSkybox(demoMode->obj_camera_main, demoMode->obj_skybox);
+	
+	// update scene graph local transforms
+	j = 0;
+	demoMode->sceneGraphState->localSpace->pose[j++].transformMat = a3mat4_identity;
+	demoMode->sceneGraphState->localSpace->pose[j++].transformMat = demoMode->object_camera->modelMat;
+	demoMode->sceneGraphState->localSpace->pose[j++].transformMat = a3mat4_identity;
+	demoMode->sceneGraphState->localSpace->pose[j++].transformMat = demoMode->obj_skeleton_ctrl->modelMat;
+	// start of scene objects
+	demoMode->sceneGraphState->localSpace->pose[j + 0].transformMat = demoMode->obj_skybox->modelMat;
+	demoMode->sceneGraphState->localSpace->pose[j + 1].transformMat = demoMode->obj_skeleton->modelMat;
+	a3kinematicsSolveForward(demoMode->sceneGraphState);
+	a3hierarchyStateUpdateObjectInverse(demoMode->sceneGraphState);
 
-	// update matrix stack data
-	for (i = 0; i < animationMaxCount_sceneObject; ++i)
+	// update matrix stack data using scene graph
+	for (i = 0; i < animationMaxCount_sceneObject; ++i, ++j)
 	{
 		a3demo_updateModelMatrixStack(matrixStack + i,
-			activeCamera->projectionMat.m, activeCameraObject->modelMat.m, activeCameraObject->modelMatInv.m,
-			demoMode->object_scene[i].modelMat.m, a3mat4_identity.m);
+			activeCamera->projectionMat.m,
+			demoMode->sceneGraphState->objectSpace->pose[demoMode->obj_camera_main->sceneGraphIndex].transformMat.m,
+			demoMode->sceneGraphState->objectSpaceInv->pose[demoMode->obj_camera_main->sceneGraphIndex].transformMat.m,
+			demoMode->sceneGraphState->objectSpace->pose[demoMode->obj_skeleton->sceneGraphIndex].transformMat.m,
+			a3mat4_identity.m);
 	}
 
 
 	// skeletal
 	if (demoState->updateAnimation)
 	{
-		i = (a3ui32)(demoState->timer_display->totalTime);
-		demoMode->hierarchyKeyPose_display[0] = (i + 0) % (demoMode->hierarchyPoseGroup_skel->hposeCount - 1);
-		demoMode->hierarchyKeyPose_display[1] = (i + 1) % (demoMode->hierarchyPoseGroup_skel->hposeCount - 1);
-		demoMode->hierarchyKeyPose_param = (a3real)(demoState->timer_display->totalTime - (a3f64)i);
-	}
+		a3real const dtr = (a3real)dt;
+		a3_ClipController* clipCtrl = demoMode->clipCtrlA;
 
-	//a3hierarchyPoseCopy(activeHS->objectSpace,
-	//	demoMode->hierarchyPoseGroup_skel->hpose + demoMode->hierarchyKeyPose_display[0] + 1,
-	//	demoMode->hierarchy_skel->numNodes);
-	a3hierarchyPoseLerp(activeHS->objectSpace,	// use as temp storage
-		demoMode->hierarchyPoseGroup_skel->hpose + demoMode->hierarchyKeyPose_display[0] + 1,
-		demoMode->hierarchyPoseGroup_skel->hpose + demoMode->hierarchyKeyPose_display[1] + 1,
-		demoMode->hierarchyKeyPose_param,
-		demoMode->hierarchy_skel->numNodes);
-	a3hierarchyPoseConcat(activeHS->localSpace,	// goal to calculate
-		baseHS->localSpace, // holds base pose
-		activeHS->objectSpace, // temp storage
-		demoMode->hierarchy_skel->numNodes);
-	a3hierarchyPoseConvert(activeHS->localSpace,
-		demoMode->hierarchy_skel->numNodes,
-		demoMode->hierarchyPoseGroup_skel->channel,
-		demoMode->hierarchyPoseGroup_skel->order);
-	a3kinematicsSolveForward(activeHS);
-	a3hierarchyStateUpdateObjectInverse(activeHS);
-	a3hierarchyStateUpdateObjectBindToCurrent(activeHS, baseHS);
+		// update controllers
+		a3clipControllerUpdate(demoMode->clipCtrl, dt);
+		a3clipControllerUpdate(demoMode->clipCtrlA, dt);
+		a3clipControllerUpdate(demoMode->clipCtrlB, dt);
+
+		// STEP
+	//	a3hierarchyPoseCopy(activeHS->animPose,
+	//		demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipCtrl->keyframeIndex,
+	//		demoMode->hierarchy_skel->numNodes);
+
+		// LERP
+		a3hierarchyPoseLerp(activeHS->animPose,
+			demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[clipCtrl->keyframeIndex].sampleIndex0,
+			demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[clipCtrl->keyframeIndex].sampleIndex1,
+			(a3f32)clipCtrl->keyframeParam, demoMode->hierarchy_skel->numNodes);
+
+		// FK pipeline
+		a3hierarchyPoseConcat(activeHS->localSpace,	// goal to calculate
+			baseHS->localSpace, // holds base pose
+			activeHS->animPose, // holds current sample pose
+			demoMode->hierarchy_skel->numNodes);
+		a3hierarchyPoseConvert(activeHS->localSpace,
+			demoMode->hierarchy_skel->numNodes,
+			demoMode->hierarchyPoseGroup_skel->channel,
+			demoMode->hierarchyPoseGroup_skel->order);
+		a3kinematicsSolveForward(activeHS);
+		a3hierarchyStateUpdateObjectInverse(activeHS);
+		a3hierarchyStateUpdateObjectBindToCurrent(activeHS, baseHS);
+
+		// ****TO-DO: 
+		// process input
+
+		// apply input
+		demoMode->obj_skeleton_ctrl->position.x = +(demoMode->pos.x);
+		demoMode->obj_skeleton_ctrl->position.y = +(demoMode->pos.y);
+		demoMode->obj_skeleton_ctrl->euler.z = -a3trigValid_sind(demoMode->rot);
+	}
 
 
 	// prepare and upload graphics data
@@ -148,10 +204,10 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 			mvp_bone = demoMode->mvp_bone + i;
 			t_skin = demoMode->t_skin + i;
 			dq_skin = demoMode->dq_skin + i;
-		
+
 			// joint transform
 			a3real4x4SetScale(scaleMat.m, a3real_quarter);
-			a3real4x4Concat(activeHS->objectSpace->pose[i].transform.m, scaleMat.m);
+			a3real4x4Concat(activeHS->objectSpace->pose[i].transformMat.m, scaleMat.m);
 			a3real4x4Product(mvp_joint->m, mvp_obj.m, scaleMat.m);
 			
 			// bone transform
@@ -159,11 +215,11 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 			if (p >= 0)
 			{
 				// position is parent joint's position
-				scaleMat.v3 = activeHS->objectSpace->pose[p].transform.v3;
+				scaleMat.v3 = activeHS->objectSpace->pose[p].transformMat.v3;
 
 				// direction basis is from parent to current
 				a3real3Diff(scaleMat.v2.v,
-					activeHS->objectSpace->pose[i].transform.v3.v, scaleMat.v3.v);
+					activeHS->objectSpace->pose[i].transformMat.v3.v, scaleMat.v3.v);
 
 				// right basis is cross of some upward vector and direction
 				// select 'z' for up if either of the other dimensions is set
@@ -183,15 +239,10 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 			a3real4x4Product(mvp_bone->m, mvp_obj.m, scaleMat.m);
 
 			// get base to current object-space
-			*t_skin = activeHS->objectSpaceBindToCurrent->pose[i].transform;
-		
+			*t_skin = activeHS->objectSpaceBindToCurrent->pose[i].transformMat;
+
 			// calculate DQ
-			{
-				a3real4 d = { a3real_zero };
-				a3demo_mat2quat_safe(dq_skin->r.q, t_skin->m);
-				a3real3ProductS(d, t_skin->v3.v, a3real_half);
-				a3quatProduct(dq_skin->d.q, d, dq_skin->r.q);
-			}
+			a3demo_mat2dquat_safe(dq_skin->Q, t_skin->m);
 		}
 		
 		// upload

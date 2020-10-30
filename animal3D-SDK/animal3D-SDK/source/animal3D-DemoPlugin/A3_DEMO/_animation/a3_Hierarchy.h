@@ -109,6 +109,13 @@ a3ret a3hierarchyGetNodeIndex(const a3_Hierarchy *hierarchy, const a3byte name[a
 //	return: -1 if invalid params
 a3ret a3hierarchyGetNodeNames(const a3byte *nameList_out[], const a3_Hierarchy *hierarchy);
 
+// A3: Utility to prefix all node names with some fixed string.
+//	param hierarchy: non-null pointer to initialized hierarchy
+//	param prefix: string to prepend to each node's name
+//	return: index if success
+//	return: -1 if invalid params or node not found
+a3i32 a3hierarchyPrefixNodeNames(a3_Hierarchy const* hierarchy, a3byte const prefix[a3node_nameSize]);
+
 // A3: Check if node is a parent of another.
 //	param hierarchy: non-null pointer to initialized hierarchy
 //	param parentIndex: non-negative possible parent node index

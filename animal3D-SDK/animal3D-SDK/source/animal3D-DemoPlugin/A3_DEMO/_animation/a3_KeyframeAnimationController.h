@@ -47,19 +47,39 @@ typedef struct a3_ClipController			a3_ClipController;
 struct a3_ClipController
 {
 	a3byte name[a3keyframeAnimation_nameLenMax];
+
+	// index of clip in pool and keyframe in clip
+	a3ui32 clipIndex, keyframeIndex;
+
+	// clip time, keyframe time and speed in steps
+	a3i32 clipTime_step, keyframeTime_step, playback_step;
+
+	// clip time, keyframe time and speed in seconds
+	a3f64 clipTime_sec, keyframeTime_sec, playback_sec, playback_stepPerSec, playback_secPerStep;
+
+	// clip and keyframe interpolation parameters
+	a3f64 clipParam, keyframeParam;
+
+	// clip pool and pointers
+	a3_ClipPool const* clipPool;
+	a3_Clip const* clip;
+	a3_Keyframe const* keyframe;
 };
 
 
 //-----------------------------------------------------------------------------
 
 // initialize clip controller
-a3i32 a3clipControllerInit(a3_ClipController* clipCtrl_out, const a3byte ctrlName[a3keyframeAnimation_nameLenMax], const a3_ClipPool* clipPool, const a3ui32 clipIndex_pool);
+a3i32 a3clipControllerInit(a3_ClipController* clipCtrl_out, const a3byte ctrlName[a3keyframeAnimation_nameLenMax], const a3_ClipPool* clipPool, const a3ui32 clipIndex_pool, const a3i32 playback_step, const a3f64 playback_stepPerSec);
 
 // update clip controller
-a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt);
+a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, a3f64 dt);
+
+// set playback state
+a3i32 a3clipControllerSetPlayback(a3_ClipController* clipCtrl, const a3i32 playback_step, const a3f64 playback_stepPerSec);
 
 // set clip to play
-a3i32 a3clipControllerSetClip(a3_ClipController* clipCtrl, const a3_ClipPool* clipPool, const a3ui32 clipIndex_pool);
+a3i32 a3clipControllerSetClip(a3_ClipController* clipCtrl, const a3_ClipPool* clipPool, const a3ui32 clipIndex_pool, const a3i32 playback_step, const a3f64 playback_stepPerSec);
 
 
 //-----------------------------------------------------------------------------

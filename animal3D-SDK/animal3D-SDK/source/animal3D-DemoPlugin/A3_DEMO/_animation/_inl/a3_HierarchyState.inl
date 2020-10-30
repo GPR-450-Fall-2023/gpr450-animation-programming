@@ -66,26 +66,26 @@ inline a3i32 a3hierarchyPoseReset(const a3_HierarchyPose* pose_inout, const a3ui
 }
 
 // convert full hierarchy pose to hierarchy transforms
-inline a3i32 a3hierarchyPoseConvert(const a3_HierarchyPose* pose_inout, const a3ui32 nodeCount, const a3_SpatialPoseChannel* channel, const a3_SpatialPoseEulerOrder order)
+inline a3i32 a3hierarchyPoseConvert(const a3_HierarchyPose* pose_inout, const a3ui32 nodeCount, const a3_SpatialPoseChannel* channel, const a3_SpatialPoseEulerOrder* order)
 {
 	if (pose_inout && nodeCount && channel)
 	{
 		a3index i;
 		for (i = 0; i < nodeCount; ++i)
-			a3spatialPoseConvert(pose_inout->pose + i, channel[i], order);
+			a3spatialPoseConvert(pose_inout->pose + i, channel[i], order[i]);
 		return i;
 	}
 	return -1;
 }
 
 // restore full hierarchy pose from hierarchy transforms
-inline a3i32 a3hierarchyPoseRestore(const a3_HierarchyPose* pose_inout, const a3ui32 nodeCount, const a3_SpatialPoseChannel* channel, const a3_SpatialPoseEulerOrder order)
+inline a3i32 a3hierarchyPoseRestore(const a3_HierarchyPose* pose_inout, const a3ui32 nodeCount, const a3_SpatialPoseChannel* channel, const a3_SpatialPoseEulerOrder* order)
 {
 	if (pose_inout && nodeCount && channel)
 	{
 		a3index i;
 		for (i = 0; i < nodeCount; ++i)
-			a3spatialPoseRestore(pose_inout->pose + i, channel[i], order);
+			a3spatialPoseRestore(pose_inout->pose + i, channel[i], order[i]);
 		return i;
 	}
 	return -1;
@@ -117,6 +117,19 @@ inline a3i32 a3hierarchyPoseConcat(const a3_HierarchyPose* pose_out, const a3_Hi
 	return -1;
 }
 
+// deconcat full hierarchy pose
+inline a3i32 a3hierarchyPoseDeconcat(const a3_HierarchyPose* pose_out, const a3_HierarchyPose* pose_lhs, const a3_HierarchyPose* pose_rhs, const a3ui32 nodeCount)
+{
+	if (pose_out && pose_lhs && pose_rhs && nodeCount)
+	{
+		a3index i;
+		for (i = 0; i < nodeCount; ++i)
+			a3spatialPoseDeconcat(pose_out->pose + i, pose_lhs->pose + i, pose_rhs->pose + i);
+		return i;
+	}
+	return -1;
+}
+
 // lerp full hierarchy pose
 inline a3i32 a3hierarchyPoseLerp(const a3_HierarchyPose* pose_out, const a3_HierarchyPose* pose_0, const a3_HierarchyPose* pose_1, const a3real u, const a3ui32 nodeCount)
 {
@@ -140,8 +153,8 @@ inline a3i32 a3hierarchyStateUpdateObjectInverse(const a3_HierarchyState *state)
 	{
 		a3index i;
 		for (i = 0; i < state->hierarchy->numNodes; ++i)
-			a3real4x4TransformInverse(state->objectSpaceInv->pose[i].transform.m,
-				state->objectSpace->pose[i].transform.m);
+			a3real4x4TransformInverse(state->objectSpaceInv->pose[i].transformMat.m,
+				state->objectSpace->pose[i].transformMat.m);
 		return i;
 	}
 	return -1;
@@ -154,9 +167,9 @@ inline a3i32 a3hierarchyStateUpdateObjectBindToCurrent(const a3_HierarchyState* 
 	{
 		a3index i;
 		for (i = 0; i < state->hierarchy->numNodes; ++i)
-			a3real4x4Product(state->objectSpaceBindToCurrent->pose[i].transform.m,
-				state->objectSpace->pose[i].transform.m,
-				state_bind->objectSpaceInv->pose[i].transform.m);
+			a3real4x4Product(state->objectSpaceBindToCurrent->pose[i].transformMat.m,
+				state->objectSpace->pose[i].transformMat.m,
+				state_bind->objectSpaceInv->pose[i].transformMat.m);
 		return i;
 	}
 	return -1;

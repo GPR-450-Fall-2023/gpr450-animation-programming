@@ -131,6 +131,25 @@ a3ret a3hierarchyGetNodeNames(const a3byte *nameList_out[], const a3_Hierarchy *
 	return -1;
 }
 
+a3i32 a3hierarchyPrefixNodeNames(a3_Hierarchy const* hierarchy, a3byte const prefix[a3node_nameSize])
+{
+	if (hierarchy && hierarchy->nodes && prefix && *prefix)
+	{
+		a3byte copy[a3node_nameSize] = { 0 };
+		a3ui32 i;
+		for (i = 0; i < hierarchy->numNodes; ++i)
+		{
+			strncpy(copy, prefix, a3node_nameSize);
+			strcat(copy, hierarchy->nodes[i].name);
+			strncpy(hierarchy->nodes[i].name, copy, a3node_nameSize);
+		}
+
+		// done
+		return i;
+	}
+	return 0;
+}
+
 a3ret a3hierarchySaveBinary(const a3_Hierarchy *hierarchy, const a3_FileStream *fileStream)
 {
 	FILE *fp;

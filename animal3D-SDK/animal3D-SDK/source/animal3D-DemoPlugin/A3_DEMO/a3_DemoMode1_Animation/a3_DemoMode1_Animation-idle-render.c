@@ -97,6 +97,19 @@ void a3animation_render_controls(a3_DemoState const* demoState, a3_DemoMode1_Ani
 		targetText_composite,
 	};
 
+	// controls
+	a3byte const* ctrlTargetName[animation_ctrlmode_max] = {
+		"CAMERA",
+		"CHARACTER",
+	};
+	a3byte const* inputModeName[animation_inputmode_max] = {
+		"Direct assignment",
+		"Euler integration",
+		"Kinematic integration",
+		"Interpolate to target value (fake velocity)",
+		"Interpolate to target velocity (fake acceleration)",
+	};
+
 	// pipeline and target
 	a3_DemoMode1_Animation_RenderProgramName const render = demoMode->render;
 	a3_DemoMode1_Animation_DisplayProgramName const display = demoMode->display;
@@ -105,6 +118,9 @@ void a3animation_render_controls(a3_DemoState const* demoState, a3_DemoMode1_Ani
 	a3_DemoMode1_Animation_PassName const pass = demoMode->pass;
 	a3_DemoMode1_Animation_TargetName const targetIndex = demoMode->targetIndex[pass];
 	a3_DemoMode1_Animation_TargetName const targetCount = demoMode->targetCount[pass];
+	a3_DemoMode1_Animation_ControlTarget const ctrlTarget = demoMode->ctrl_target;
+	a3_DemoMode1_Animation_InputMode const inputPos = demoMode->ctrl_position;
+	a3_DemoMode1_Animation_InputMode const inputRot = demoMode->ctrl_rotation;
 
 	// demo modes
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
@@ -115,12 +131,23 @@ void a3animation_render_controls(a3_DemoState const* demoState, a3_DemoMode1_Ani
 		"        Target (%u / %u) ('{' | '}'): %s", targetIndex + 1, targetCount, targetText[pass][targetIndex]);
 
 	// lighting modes
+	//a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+	//	"    Rendering mode (%u / %u) ('j' | 'k'): %s", render + 1, animation_render_max, renderProgramName[render]);
+	//a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+	//	"    Display mode (%u / %u) ('J' | 'K'): %s", display + 1, animation_display_max, displayProgramName[display]);
+	//a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+	//	"    Active camera (%u / %u) ('c' prev | next 'v'): %s", activeCamera + 1, animation_camera_max, cameraText[activeCamera]);
+
+	// control and input modes
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"    Rendering mode (%u / %u) ('j' | 'k'): %s", render + 1, animation_render_max, renderProgramName[render]);
-	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"    Display mode (%u / %u) ('J' | 'K'): %s", display + 1, animation_display_max, displayProgramName[display]);
-	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"    Active camera (%u / %u) ('c' prev | next 'v'): %s", activeCamera + 1, animation_camera_max, cameraText[activeCamera]);
+		"    Control target (%u / %u) (';'/Dpad L | '\''/Dpad R): %s", ctrlTarget + 1, animation_ctrlmode_max, ctrlTargetName[ctrlTarget]);
+	if (ctrlTarget)
+	{
+		a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+			"    Input mode (position) (%u / %u) ('-'/pad X | '='/pad B): %s", inputPos + 1, animation_inputmode_max, inputModeName[inputPos]);
+		a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+			"    Input mode (rotation) (%u / %u) ('_'/pad A | '+'/pad Y): %s", inputRot + 1, animation_inputmode_max, inputModeName[inputRot]);
+	}
 }
 
 
@@ -263,14 +290,17 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 	};
 
 	// final model matrix and full matrix stack
-	a3mat4 viewProjectionMat = activeCamera->viewProjectionMat;
-	a3mat4 modelViewProjectionMat = viewProjectionMat;
-	a3mat4 modelMat = a3mat4_identity, modelViewMat = a3mat4_identity;
-	a3mat4 projectionBiasMat = activeCamera->projectionMat, projectionBiasMat_inv = activeCamera->projectionMatInv;
+	a3mat4 projectionMat = activeCamera->projectionMat;
+	a3mat4 projectionMatInv = activeCamera->projectionMatInv;
+	a3mat4 viewMat = demoMode->sceneGraphState->objectSpaceInv->pose[activeCameraObject->sceneGraphIndex].transformMat;
+	a3mat4 viewProjectionMat;
+	a3mat4 projectionBiasMat, projectionBiasMat_inv;
+	a3mat4 modelMat, modelViewMat, modelViewProjectionMat;
 
 	// init
-	a3real4x4Product(projectionBiasMat.m, bias.m, activeCamera->projectionMat.m);
-	a3real4x4Product(projectionBiasMat_inv.m, activeCamera->projectionMatInv.m, unbias.m);
+	a3real4x4Product(viewProjectionMat.m, projectionMat.m, viewMat.m);
+	a3real4x4Product(projectionBiasMat.m, bias.m, projectionMat.m);
+	a3real4x4Product(projectionBiasMat_inv.m, projectionMatInv.m, unbias.m);
 
 
 	//-------------------------------------------------------------------------
@@ -304,9 +334,9 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 
 
 	// optional stencil test before drawing objects
-	a3real4x4SetScale(modelMat.m, a3real_four);
-	if (demoState->stencilTest)
-		a3demo_drawStencilTest(modelViewProjectionMat.m, viewProjectionMat.m, modelMat.m, demoState->prog_drawColorUnif, demoState->draw_unit_sphere);
+	//a3real4x4SetScale(modelMat.m, a3real_four);
+	//if (demoState->stencilTest)
+	//	a3demo_drawStencilTest(modelViewProjectionMat.m, viewProjectionMat.m, modelMat.m, demoState->prog_drawColorUnif, demoState->draw_unit_sphere);
 
 
 	// select program based on settings
@@ -318,8 +348,8 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 	//	- light data
 	//	- activate shared textures including atlases if using
 	//	- shared animation data
-	a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uP, 1, activeCamera->projectionMat.mm);
-	a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uP_inv, 1, activeCamera->projectionMatInv.mm);
+	a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uP, 1, projectionMat.mm);
+	a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uP_inv, 1, projectionMatInv.mm);
 	a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uPB, 1, projectionBiasMat.mm);
 	a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uPB_inv, 1, projectionBiasMat_inv.mm);
 	a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uAtlas, 1, a3mat4_identity.mm);
@@ -348,24 +378,29 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 		currentDemoProgram = demoState->prog_drawPhong_skin;
 		a3shaderProgramActivate(currentDemoProgram->program);
 		a3shaderUniformBufferActivate(demoState->ubo_transformBlend, 1);
-		a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uP, 1, activeCamera->projectionMat.mm);
+		a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uP, 1, projectionMat.mm);
 		a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uAtlas, 1, a3mat4_identity.mm);
-		currentSceneObject = demoMode->obj_skeleton;
-		j = (a3ui32)(currentSceneObject - demoMode->object_scene);
+		
+		for (currentSceneObject = demoMode->obj_skeleton, endSceneObject = demoMode->obj_skeleton;
+			currentSceneObject <= endSceneObject; ++currentSceneObject)
 		{
 			// send data and draw
-			i = (j * 2 + 1) % hueCount;
-			currentDrawable = demoState->draw_character_skin;
+			j = (a3ui32)(currentSceneObject - demoMode->object_scene);
 			a3textureActivate(texture_dm[j], a3tex_unit00);
 			a3textureActivate(texture_dm[j], a3tex_unit01);
-			a3real4x4Product(modelViewMat.m, activeCameraObject->modelMatInv.m, currentSceneObject->modelMat.m);
+			modelMat = demoMode->sceneGraphState->objectSpace->pose[currentSceneObject->sceneGraphIndex].transformMat;
+			a3real4x4Product(modelViewMat.m, viewMat.m, modelMat.m);
 			a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMV, 1, modelViewMat.mm);
 			a3demo_quickInvertTranspose_internal(modelViewMat.m);
 			modelViewMat.v3 = a3vec4_zero;
 			a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMV_nrm, 1, modelViewMat.mm);
-			a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, rgba4[i].v);
 			a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uIndex, 1, &j);
-			a3vertexDrawableActivateAndRender(currentDrawable);
+			i = (j * 2 + 1) % hueCount;
+			a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, rgba4[i].v);
+			a3vertexDrawableActivateAndRender(demoState->draw_character_skin);
+			i = (j * 2 + 13) % hueCount;
+			a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, rgba4[i].v);
+			a3vertexDrawableActivateAndRender(demoState->draw_character_skin_alt);
 		}
 
 	}	break;
@@ -389,7 +424,8 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 
 	// composite skybox
 	currentDemoProgram = demoState->displaySkybox ? demoState->prog_drawTexture : demoState->prog_drawColorUnif;
-	a3demo_drawModelTexturedColored_invertModel(modelViewProjectionMat.m, viewProjectionMat.m, demoMode->obj_skybox->modelMat.m, a3mat4_identity.m, currentDemoProgram, demoState->draw_unit_box, demoState->tex_skybox_clouds, a3vec4_w.v);
+	modelMat = demoMode->sceneGraphState->objectSpace->pose[demoMode->obj_skybox->sceneGraphIndex].transformMat;
+	a3demo_drawModelTexturedColored_invertModel(modelViewProjectionMat.m, viewProjectionMat.m, modelMat.m, a3mat4_identity.m, currentDemoProgram, demoState->draw_unit_box, demoState->tex_skybox_clouds, a3vec4_w.v);
 	a3demo_enableCompositeBlending();
 
 	// draw textured quad with previous pass image on it
@@ -515,13 +551,13 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 			if (demoState->displayTangentBases || demoState->displayWireframe)
 			{
 				const a3i32 flag[1] = { demoState->displayTangentBases * 3 + demoState->displayWireframe * 4 };
-				const a3f32 size[1] = { 0.0625f };
+				const a3f32 size[1] = { 0.015625f };
 
 				currentDemoProgram = demoState->prog_drawTangentBasis;
 				a3shaderProgramActivate(currentDemoProgram->program);
 
 				// projection matrix
-				a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uP, 1, activeCamera->projectionMat.mm);
+				a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uP, 1, projectionMat.mm);
 				// wireframe color
 				a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor0, hueCount, rgba4->v);
 				// blend color
@@ -535,24 +571,29 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 				currentDemoProgram = demoState->prog_drawTangentBasis_skin;
 				a3shaderProgramActivate(currentDemoProgram->program);
 				a3shaderUniformBufferActivate(demoState->ubo_transformBlend, 1);
-				a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uP, 1, activeCamera->projectionMat.mm);
+				a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uP, 1, projectionMat.mm);
 				a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor0, hueCount, rgba4->v);
 				a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, a3vec4_one.v);
 				a3shaderUniformSendFloat(a3unif_single, currentDemoProgram->uSize, 1, size);
 				a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uFlag, 1, flag);
-				currentSceneObject = demoMode->obj_skeleton;
-				j = (a3ui32)(currentSceneObject - demoMode->object_scene);
+
+				for (currentSceneObject = demoMode->obj_skeleton, endSceneObject = demoMode->obj_skeleton;
+					currentSceneObject <= endSceneObject; ++currentSceneObject)
 				{
-					i = (j * 2 + 13) % hueCount;
-					currentDrawable = demoState->draw_character_skin;
-					a3real4x4Product(modelViewMat.m, activeCameraObject->modelMatInv.m, currentSceneObject->modelMat.m);
+					j = (a3ui32)(currentSceneObject - demoMode->object_scene);
+					modelMat = demoMode->sceneGraphState->objectSpace->pose[currentSceneObject->sceneGraphIndex].transformMat;
+					a3real4x4Product(modelViewMat.m, viewMat.m, modelMat.m);
 					a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMV, 1, modelViewMat.mm);
 					a3demo_quickInvertTranspose_internal(modelViewMat.m);
 					modelViewMat.v3 = a3vec4_zero;
 					a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMV_nrm, 1, modelViewMat.mm);
 					a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uAtlas, 1, a3mat4_identity.mm);
+					i = (j * 2 + 7) % hueCount;
 					a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uIndex, 1, &i);
-					a3vertexDrawableActivateAndRender(currentDrawable);
+					a3vertexDrawableActivateAndRender(demoState->draw_character_skin);
+					i = (j * 2 + 19) % hueCount;
+					a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uIndex, 1, &i);
+					a3vertexDrawableActivateAndRender(demoState->draw_character_skin_alt);
 				}
 			}
 
@@ -621,15 +662,20 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 			a3vertexDrawableRenderActive();
 		}
 
-		// individual objects
+		// individual objects (based on scene graph)
 		if (demoState->displayObjectAxes)
 		{
-			// scene objects
-			for (currentSceneObject = demoMode->obj_skeleton, endSceneObject = demoMode->obj_skeleton,
-				j = (a3ui32)(currentSceneObject - demoMode->object_scene);
-				currentSceneObject <= endSceneObject;
-				++j, ++currentSceneObject)
-				a3demo_drawModelSimple(modelViewProjectionMat.m, viewProjectionMat.m, currentSceneObject->modelMat.m, currentDemoProgram);
+			j = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_skeleton_ctrl");
+			modelMat = demoMode->sceneGraphState->objectSpace->pose[j].transformMat;
+			a3demo_drawModelSimple(modelViewProjectionMat.m, viewProjectionMat.m, modelMat.m, currentDemoProgram);
+		
+		//	for (currentSceneObject = demoMode->obj_skeleton, endSceneObject = demoMode->obj_skeleton;
+		//		currentSceneObject <= endSceneObject; ++currentSceneObject)
+		//	{
+		//		j = (a3ui32)(currentSceneObject - demoMode->object_scene);
+		//		modelMat = demoMode->sceneGraphState->objectSpace->pose[currentSceneObject->sceneGraphIndex].transformMat;
+		//		a3demo_drawModelSimple(modelViewProjectionMat.m, viewProjectionMat.m, modelMat.m, currentDemoProgram);
+		//	}
 		}
 	}
 }

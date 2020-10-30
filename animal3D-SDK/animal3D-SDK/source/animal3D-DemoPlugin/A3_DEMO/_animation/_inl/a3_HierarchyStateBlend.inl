@@ -33,7 +33,7 @@
 // pointer-based reset/identity operation for single spatial pose
 inline a3_SpatialPose* a3spatialPoseOpIdentity(a3_SpatialPose* pose_out)
 {
-	pose_out->transform = a3mat4_identity;
+	pose_out->transformMat = a3mat4_identity;
 	// ...
 
 	// done

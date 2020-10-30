@@ -161,6 +161,12 @@ void a3demo_loadGeometry(a3_DemoState *demoState)
 		+0.05f,  0.00f,  0.00f,  0.00f,
 		 0.00f,  0.00f,  0.00f, +1.00f,
 	};
+	static const a3mat4 scale1x_z2y = {
+		+0.05f,  0.00f,  0.00f,  0.00f,
+		 0.00f,  0.00f, -0.05f,  0.00f,
+		 0.00f, +0.05f,  0.00f,  0.00f,
+		 0.00f,  0.00f,  0.00f, +1.00f,
+	};
 
 	// pointer to shared vbo/ibo
 	a3_VertexBuffer *vbo_ibo;
@@ -173,12 +179,12 @@ void a3demo_loadGeometry(a3_DemoState *demoState)
 
 	// file streaming (if requested)
 	a3_FileStream fileStream[1] = { 0 };
-	const a3byte *const geometryStream = "./data/geom_data_gpro_coursebase.dat";
+	const a3byte *const geometryStream = "./data/gpro_base_geom.dat";
 
 	// geometry data
 	a3_GeometryData displayShapesData[4] = { 0 };
 	a3_GeometryData proceduralShapesData[6] = { 0 };
-	a3_GeometryData loadedModelsData[2] = { 0 };
+	a3_GeometryData loadedModelsData[3] = { 0 };
 	a3_GeometryData morphTargetsData[1][5] = { 0 };
 	const a3ui32 displayShapesCount = sizeof(displayShapesData) / sizeof(a3_GeometryData);
 	const a3ui32 proceduralShapesCount = sizeof(proceduralShapesData) / sizeof(a3_GeometryData);
@@ -228,9 +234,11 @@ void a3demo_loadGeometry(a3_DemoState *demoState)
 		// create new data
 		a3_ProceduralGeometryDescriptor displayShapes[4] = { a3geomShape_none };
 		a3_ProceduralGeometryDescriptor proceduralShapes[6] = { a3geomShape_none };
-		const a3_DemoStateLoadedModel loadedShapes[2] = {
+		const a3_DemoStateLoadedModel loadedShapes[3] = {
 			{ A3_DEMO_OBJ"teapot/teapot.obj", 0, downscale20x_y2z_x2y.mm, a3model_calculateVertexTangents },
-			{ A3_DEMO_OBJ"egnaro/egnaro_mesh.obj", A3_DEMO_OBJ"egnaro/egnaro_skin.xml", a3mat4_identity.mm, a3model_calculateVertexTangents },
+			//{ A3_DEMO_OBJ"egnaro/egnaro_mesh.obj", A3_DEMO_OBJ"egnaro/egnaro_skin.xml", a3mat4_identity.mm, a3model_calculateVertexTangents },
+			{ A3_DEMO_OBJ"xbot/xbot_surface.obj", A3_DEMO_OBJ"xbot/xbot_surface.xml", scale1x_z2y.mm, a3model_calculateVertexTangents },
+			{ A3_DEMO_OBJ"xbot/xbot_joints.obj", A3_DEMO_OBJ"xbot/xbot_joints.xml", scale1x_z2y.mm, a3model_calculateVertexTangents },
 		};
 		const a3_DemoStateLoadedModel morphShapes[1][5] = {
 			{
@@ -405,6 +413,8 @@ void a3demo_loadGeometry(a3_DemoState *demoState)
 	a3geometryGenerateVertexArray(vao, "vao:tb+tc+skin", loadedModelsData + 1, vbo_ibo, sharedVertexStorage);
 	currentDrawable = demoState->draw_character_skin;
 	sharedVertexStorage += a3geometryGenerateDrawable(currentDrawable, loadedModelsData + 1, vao, vbo_ibo, sceneCommonIndexFormat, 0, 0);
+	currentDrawable = demoState->draw_character_skin_alt;
+	sharedVertexStorage += a3geometryGenerateDrawable(currentDrawable, loadedModelsData + 2, vao, vbo_ibo, sceneCommonIndexFormat, 0, 0);
 
 	// morphing models
 	vao = demoState->vao_tangentbasis_texcoord_morph5;
@@ -531,10 +541,10 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 			// 00-common
 			{ { { 0 },	"shdr-vs:pass-tex-trans",			a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTexcoord_transform_vs4x.glsl" } } },
 			{ { { 0 },	"shdr-vs:pass-tb-trans",			a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTangentBasis_transform_vs4x.glsl" } } },
-			{ { { 0 },	"shdr-vs:pass-tb-morph5-t",			a3shader_vertex  ,	2,{ A3_DEMO_VS"00-common/passTangentBasis_morph5_transform_vs4x.glsl",
-																					A3_DEMO_VS"00-common/utilCommon_vs4x.glsl",} } },
-			{ { { 0 },	"shdr-vs:pass-tb-skin-t",			a3shader_vertex  ,	2,{ A3_DEMO_VS"00-common/passTangentBasis_skin_transform_vs4x.glsl",
-																					A3_DEMO_VS"00-common/utilCommon_vs4x.glsl",} } },
+			{ { { 0 },	"shdr-vs:pass-tb-morph5-t",			a3shader_vertex  ,	2,{ A3_DEMO_VS"00-common/e/passTangentBasis_morph5_transform_vs4x.glsl",
+																					A3_DEMO_VS"00-common/e/utilCommon_vs4x.glsl",} } },
+			{ { { 0 },	"shdr-vs:pass-tb-skin-t",			a3shader_vertex  ,	2,{ A3_DEMO_VS"00-common/e/passTangentBasis_skin_transform_vs4x.glsl",
+																					A3_DEMO_VS"00-common/e/utilCommon_vs4x.glsl",} } },
 			{ { { 0 },	"shdr-vs:pass-tex-trans-inst",		a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTexcoord_transform_instanced_vs4x.glsl" } } },
 			{ { { 0 },	"shdr-vs:pass-tb-trans-inst",		a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTangentBasis_transform_instanced_vs4x.glsl" } } },
 			{ { { 0 },	"shdr-vs:pass-tb-morph5-t-inst",	a3shader_vertex  ,	2,{ A3_DEMO_VS"00-common/e/passTangentBasis_morph5_transform_instanced_vs4x.glsl",
@@ -793,6 +803,8 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 	a3bufferCreate(demoState->ubo_transformBlend, "ubo:transformBlend", a3buffer_uniform, a3index_countMaxShort, 0);
 	a3bufferCreate(demoState->ubo_transformMVP, "ubo:transformMVP", a3buffer_uniform, a3index_countMaxShort, 0);
 	a3bufferCreate(demoState->ubo_transformMVPB, "ubo:transformMVPB", a3buffer_uniform, a3index_countMaxShort, 0);
+	for (i = 0; i < 4; ++i)
+		a3bufferCreate(demoState->ubo_transformSkelMVP + i, "ubo:transformSkelMVP", a3buffer_uniform, a3index_countMaxShort, 0);
 
 
 	printf("\n\n---------------- LOAD SHADERS FINISHED ---------------- \n");

@@ -45,13 +45,13 @@ void a3animation_input_keyCharPress(a3_DemoState const* demoState, a3_DemoMode1_
 	switch (asciiKey)
 	{
 		// toggle render program
-		a3demoCtrlCasesLoop(demoMode->render, animation_render_max, 'k', 'j');
+		//a3demoCtrlCasesLoop(demoMode->render, animation_render_max, 'k', 'j');
 
 		// toggle display program
-		a3demoCtrlCasesLoop(demoMode->display, animation_display_max, 'K', 'J');
+		//a3demoCtrlCasesLoop(demoMode->display, animation_display_max, 'K', 'J');
 
 		// toggle active camera
-		a3demoCtrlCasesLoop(demoMode->activeCamera, animation_camera_max, 'v', 'c');
+		//a3demoCtrlCasesLoop(demoMode->activeCamera, animation_camera_max, 'v', 'c');
 
 		// toggle pipeline mode
 		a3demoCtrlCasesLoop(demoMode->pipeline, animation_pipeline_max, ']', '[');
@@ -61,6 +61,15 @@ void a3animation_input_keyCharPress(a3_DemoState const* demoState, a3_DemoMode1_
 
 		// toggle pass to display
 		a3demoCtrlCasesLoop(demoMode->pass, animation_pass_max, ')', '(');
+
+		// toggle control target
+		a3demoCtrlCasesLoop(demoMode->ctrl_target, animation_ctrlmode_max, '\'', ';');
+
+		// toggle position input mode
+		a3demoCtrlCasesLoop(demoMode->ctrl_position, animation_inputmode_max, '=', '-');
+
+		// toggle rotation input mode
+		a3demoCtrlCasesLoop(demoMode->ctrl_rotation, animation_inputmode_max, '+', '_');
 	}
 }
 
@@ -104,9 +113,49 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 		a3real4Real4x4Mul(projector->sceneObject->modelMat.m, coord.v);
 	}
 	
-	// move camera
-	a3demo_input_controlProjector(demoState, projector,
-		dt, projector->ctrlMoveSpeed, projector->ctrlRotateSpeed, projector->ctrlZoomSpeed);
+	// choose control target
+	switch (demoMode->ctrl_target)
+	{
+	case animation_ctrl_camera:
+		// move camera
+		a3demo_input_controlProjector(demoState, projector,
+			dt, projector->ctrlMoveSpeed, projector->ctrlRotateSpeed, projector->ctrlZoomSpeed);
+		break;
+	case animation_ctrl_character:
+		// capture axes
+		if (a3XboxControlIsConnected(demoState->xcontrol))
+		{
+			// ****TO-DO:
+			// get directly from joysticks
+		
+		}
+		else
+		{
+			// ****TO-DO:
+			// calculate normalized vectors given keyboard state
+
+		}
+		break;
+	}
+
+	// allow the controller, if connected, to change control targets
+	if (a3XboxControlIsConnected(demoState->xcontrol))
+	{
+		if (a3XboxControlIsPressed(demoState->xcontrol, a3xbox_DPAD_right))
+			a3demoCtrlIncLoop(demoMode->ctrl_target, animation_ctrlmode_max);
+		if (a3XboxControlIsPressed(demoState->xcontrol, a3xbox_DPAD_left))
+			a3demoCtrlDecLoop(demoMode->ctrl_target, animation_ctrlmode_max);
+
+		if (a3XboxControlIsPressed(demoState->xcontrol, a3xbox_B))
+			a3demoCtrlIncLoop(demoMode->ctrl_position, animation_inputmode_max);
+		if (a3XboxControlIsPressed(demoState->xcontrol, a3xbox_X))
+			a3demoCtrlDecLoop(demoMode->ctrl_position, animation_inputmode_max);
+
+		if (a3XboxControlIsPressed(demoState->xcontrol, a3xbox_Y))
+			a3demoCtrlIncLoop(demoMode->ctrl_rotation, animation_inputmode_max);
+		if (a3XboxControlIsPressed(demoState->xcontrol, a3xbox_A))
+			a3demoCtrlDecLoop(demoMode->ctrl_rotation, animation_inputmode_max);
+	}
 }
 
 

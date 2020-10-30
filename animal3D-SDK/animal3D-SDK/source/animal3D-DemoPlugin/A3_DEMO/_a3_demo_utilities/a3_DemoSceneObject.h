@@ -80,7 +80,8 @@ extern "C"
 		a3vec3 euler;		// euler angles for direct rotation control
 		a3vec3 position;	// scene position for direct control
 		a3vec3 scale;		// scale (not accounted for in update)
-		a3i32 scaleMode;	// 0 = off; 1 = uniform; other = non-uniform (nightmare)
+		a3ui32 scaleMode;	// 0 = off; 1 = uniform; other = non-uniform (nightmare)
+		a3ui32 sceneGraphIndex;	// index in scene graph
 	};
 
 	// projector/camera/viewer

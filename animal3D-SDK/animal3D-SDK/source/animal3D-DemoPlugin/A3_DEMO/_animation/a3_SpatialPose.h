@@ -65,15 +65,15 @@ enum a3_SpatialPoseChannel
 	// identity (no channels)
 	a3poseChannel_none,
 
-	// orientation
-	a3poseChannel_orient_x = 0x0001,
-	a3poseChannel_orient_y = 0x0002,
-	a3poseChannel_orient_z = 0x0004,
-	a3poseChannel_orient_w = 0x0008,
-	a3poseChannel_orient_xy = a3poseChannel_orient_x | a3poseChannel_orient_y,
-	a3poseChannel_orient_yz = a3poseChannel_orient_y | a3poseChannel_orient_z,
-	a3poseChannel_orient_zx = a3poseChannel_orient_z | a3poseChannel_orient_x,
-	a3poseChannel_orient_xyz = a3poseChannel_orient_xy | a3poseChannel_orient_z,
+	// rotation
+	a3poseChannel_rotate_x = 0x0001,
+	a3poseChannel_rotate_y = 0x0002,
+	a3poseChannel_rotate_z = 0x0004,
+	a3poseChannel_rotate_w = 0x0008,
+	a3poseChannel_rotate_xy = a3poseChannel_rotate_x | a3poseChannel_rotate_y,
+	a3poseChannel_rotate_yz = a3poseChannel_rotate_y | a3poseChannel_rotate_z,
+	a3poseChannel_rotate_zx = a3poseChannel_rotate_z | a3poseChannel_rotate_x,
+	a3poseChannel_rotate_xyz = a3poseChannel_rotate_xy | a3poseChannel_rotate_z,
 
 	// scale
 	a3poseChannel_scale_x = 0x0010,
@@ -94,6 +94,16 @@ enum a3_SpatialPoseChannel
 	a3poseChannel_translate_yz = a3poseChannel_translate_y | a3poseChannel_translate_z,
 	a3poseChannel_translate_zx = a3poseChannel_translate_z | a3poseChannel_translate_x,
 	a3poseChannel_translate_xyz = a3poseChannel_translate_xy | a3poseChannel_translate_z,
+
+	// user channels
+	a3poseChannel_user_x = 0x1000,
+	a3poseChannel_user_y = 0x2000,
+	a3poseChannel_user_z = 0x4000,
+	a3poseChannel_user_w = 0x8000,
+	a3poseChannel_user_xy = a3poseChannel_user_x | a3poseChannel_user_y,
+	a3poseChannel_user_yz = a3poseChannel_user_y | a3poseChannel_user_z,
+	a3poseChannel_user_zx = a3poseChannel_user_z | a3poseChannel_user_x,
+	a3poseChannel_user_xyz = a3poseChannel_user_xy | a3poseChannel_user_z,
 };
 
 	
@@ -102,11 +112,12 @@ enum a3_SpatialPoseChannel
 // single pose for a single node
 struct a3_SpatialPose
 {
-	a3mat4 transform;
-	a3vec4 orientation;
-	a3vec4 angles;
+	a3mat4 transformMat;
+	a3dualquat transformDQ;
+	a3vec4 rotate;
 	a3vec4 scale;
-	a3vec4 translation;
+	a3vec4 translate;
+	a3vec4 user;
 };
 
 
@@ -138,6 +149,9 @@ a3i32 a3spatialPoseCopy(a3_SpatialPose* spatialPose_out, const a3_SpatialPose* s
 
 // concat
 a3i32 a3spatialPoseConcat(a3_SpatialPose* spatialPose_out, const a3_SpatialPose* spatialPose_lhs, const a3_SpatialPose* spatialPose_rhs);
+
+// deconcat
+a3i32 a3spatialPoseDeconcat(a3_SpatialPose* spatialPose_out, const a3_SpatialPose* spatialPose_lhs, const a3_SpatialPose* spatialPose_rhs);
 
 // lerp
 a3i32 a3spatialPoseLerp(a3_SpatialPose* spatialPose_out, const a3_SpatialPose* spatialPose_0, const a3_SpatialPose* spatialPose_1, const a3real u);
