@@ -30,6 +30,14 @@
 
 //-----------------------------------------------------------------------------
 
+// single FK solver
+inline void a3kinematicsSolveForwardSingle(const a3_HierarchyState* hierarchyState, const a3ui32 index, const a3ui32 parentIndex)
+{
+	a3real4x4Product(hierarchyState->objectSpace->pose[index].transformMat.m,
+		hierarchyState->objectSpace->pose[parentIndex].transformMat.m,
+		hierarchyState->localSpace->pose[index].transformMat.m);
+}
+
 // partial FK solver
 inline a3i32 a3kinematicsSolveForwardPartial(const a3_HierarchyState* hierarchyState, const a3ui32 firstIndex, const a3ui32 nodeCount)
 {
@@ -47,9 +55,7 @@ inline a3i32 a3kinematicsSolveForwardPartial(const a3_HierarchyState* hierarchyS
 		for (; itr < end; ++itr)
 		{
 			if (itr->parentIndex >= 0)
-				a3real4x4Product(hierarchyState->objectSpace->pose[itr->index].transformMat.m,
-					hierarchyState->objectSpace->pose[itr->parentIndex].transformMat.m,
-					hierarchyState->localSpace->pose[itr->index].transformMat.m);
+				a3kinematicsSolveForwardSingle(hierarchyState, itr->index, itr->parentIndex);
 			else
 				hierarchyState->objectSpace->pose[itr->index] = hierarchyState->localSpace->pose[itr->index];
 		}
@@ -60,6 +66,14 @@ inline a3i32 a3kinematicsSolveForwardPartial(const a3_HierarchyState* hierarchyS
 
 
 //-----------------------------------------------------------------------------
+
+// single IK solver
+inline void a3kinematicsSolveInverseSingle(const a3_HierarchyState* hierarchyState, const a3ui32 index, const a3ui32 parentIndex)
+{
+	a3real4x4Product(hierarchyState->localSpace->pose[index].transformMat.m,
+		hierarchyState->objectSpaceInv->pose[parentIndex].transformMat.m,
+		hierarchyState->objectSpace->pose[index].transformMat.m);
+}
 
 // partial IK solver
 inline a3i32 a3kinematicsSolveInversePartial(const a3_HierarchyState* hierarchyState, const a3ui32 firstIndex, const a3ui32 nodeCount)
@@ -78,9 +92,7 @@ inline a3i32 a3kinematicsSolveInversePartial(const a3_HierarchyState* hierarchyS
 		for (; itr < end; ++itr)
 		{
 			if (itr->parentIndex >= 0)
-				a3real4x4Product(hierarchyState->localSpace->pose[itr->index].transformMat.m,
-					hierarchyState->objectSpaceInv->pose[itr->parentIndex].transformMat.m,
-					hierarchyState->objectSpace->pose[itr->index].transformMat.m);
+				a3kinematicsSolveInverseSingle(hierarchyState, itr->index, itr->parentIndex);
 			else
 				hierarchyState->localSpace->pose[itr->index] = hierarchyState->objectSpace->pose[itr->index];
 		}

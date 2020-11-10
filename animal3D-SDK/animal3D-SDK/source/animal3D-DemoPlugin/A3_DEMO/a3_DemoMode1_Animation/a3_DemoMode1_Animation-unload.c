@@ -37,11 +37,14 @@
 
 void a3animation_unload(a3_DemoState const* demoState, a3_DemoMode1_Animation* demoMode)
 {
+	a3ui32 i, j;
+
 	// release skeleton and related assets
-	a3hierarchyRelease(demoMode->sceneGraph);
+	for (i = 0, j = sizeof(demoMode->hierarchyState_skel) / sizeof(a3_HierarchyState); i < j; ++i)
+		a3hierarchyStateRelease(demoMode->hierarchyState_skel + i);
 	a3hierarchyStateRelease(demoMode->sceneGraphState);
+	a3hierarchyRelease(demoMode->sceneGraph);
 	a3hierarchyRelease(demoMode->hierarchy_skel);
-	a3hierarchyStateRelease(demoMode->hierarchyState_skel);
 	a3hierarchyPoseGroupRelease(demoMode->hierarchyPoseGroup_skel);
 }
 

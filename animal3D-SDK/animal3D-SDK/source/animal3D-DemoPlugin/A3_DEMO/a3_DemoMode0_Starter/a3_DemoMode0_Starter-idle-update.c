@@ -39,8 +39,8 @@
 //-----------------------------------------------------------------------------
 // UPDATE
 
-void a3demo_update_objects(a3_DemoState* demoState, a3f64 const dt,
-	a3_DemoSceneObject* sceneObjectBase, a3ui32 count, a3boolean useZYX, a3boolean applyScale);
+void a3demo_update_objects(a3f64 const dt, a3_DemoSceneObject* sceneObjectBase,
+	a3ui32 count, a3boolean useZYX, a3boolean applyScale);
 void a3demo_update_defaultAnimation(a3_DemoState* demoState, a3f64 const dt,
 	a3_DemoSceneObject* sceneObjectBase, a3ui32 count, a3ui32 axis);
 void a3demo_update_bindSkybox(a3_DemoSceneObject* obj_camera, a3_DemoSceneObject* obj_skybox);
@@ -60,10 +60,10 @@ void a3starter_update(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a
 	// temp scale mat
 	a3mat4 scaleMat = a3mat4_identity;
 
-	a3demo_update_objects(demoState, dt,
-		demoMode->object_scene, starterMaxCount_sceneObject, 0, 0);
-	a3demo_update_objects(demoState, dt,
-		demoMode->object_camera, starterMaxCount_cameraObject, 1, 0);
+	a3demo_update_objects(dt, demoMode->object_scene,
+		starterMaxCount_sceneObject, 0, 0);
+	a3demo_update_objects(dt, demoMode->object_camera,
+		starterMaxCount_cameraObject, 1, 0);
 
 	a3demo_updateProjectorViewProjectionMat(demoMode->proj_camera_main);
 

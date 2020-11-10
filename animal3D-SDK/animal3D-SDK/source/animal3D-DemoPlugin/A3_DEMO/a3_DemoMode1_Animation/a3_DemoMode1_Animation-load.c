@@ -35,6 +35,56 @@
 
 //-----------------------------------------------------------------------------
 
+void a3animation_load_resetEffectors(a3_DemoMode1_Animation* demoMode,
+	a3_HierarchyState* hierarchyState, a3_HierarchyPoseGroup const* poseGroup)
+{
+	a3_DemoSceneObject* sceneObject = demoMode->obj_skeleton;
+	a3ui32 j = sceneObject->sceneGraphIndex;
+
+	// need to properly transform joints to their parent frame
+	a3mat4 const skeletonToControl = demoMode->sceneGraphState->localSpace->pose[j].transformMat;
+	a3vec4 controlLocator;
+
+	// look-at effector
+	// position in front of neck
+	j = a3hierarchyGetNodeIndex(demoMode->hierarchy_skel, "mixamorig:Neck");
+	sceneObject = demoMode->obj_skeleton_neckLookat_ctrl;
+	a3real4Real4x4Product(controlLocator.v, skeletonToControl.m,
+		hierarchyState->objectSpace->pose[j].transformMat.v3.v);
+	sceneObject->position.x = controlLocator.x;
+	sceneObject->position.y = controlLocator.y + a3real_four;
+	sceneObject->position.z = controlLocator.z;
+	sceneObject->scale.x = a3real_third;
+	sceneObject->scaleMode = 1;
+
+	// right wrist effector
+	// position on wrist
+	j = a3hierarchyGetNodeIndex(demoMode->hierarchy_skel, "mixamorig:RightHand");
+	sceneObject = demoMode->obj_skeleton_wristEffector_r_ctrl;
+	a3real4Real4x4Product(controlLocator.v, skeletonToControl.m,
+		hierarchyState->objectSpace->pose[j].transformMat.v3.v);
+	sceneObject->position.x = controlLocator.x;
+	sceneObject->position.y = controlLocator.y;
+	sceneObject->position.z = controlLocator.z;
+	sceneObject->scale.x = a3real_third;
+	sceneObject->scaleMode = 1;
+
+	// right wrist constraint
+	// position behind elbow
+	j = a3hierarchyGetNodeIndex(demoMode->hierarchy_skel, "mixamorig:RightForeArm");
+	sceneObject = demoMode->obj_skeleton_wristConstraint_r_ctrl;
+	a3real4Real4x4Product(controlLocator.v, skeletonToControl.m,
+		hierarchyState->objectSpace->pose[j].transformMat.v3.v);
+	sceneObject->position.x = controlLocator.x;
+	sceneObject->position.y = controlLocator.y - a3real_half;
+	sceneObject->position.z = controlLocator.z;
+	sceneObject->scale.x = a3real_third;
+	sceneObject->scaleMode = 1;
+
+	// right wrist base
+	//j = a3hierarchyGetNodeIndex(demoMode->hierarchy_skel, "mixamorig:RightArm");
+}
+
 // utility to load animation
 void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Animation* demoMode)
 {
@@ -48,7 +98,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	a3_SpatialPose* spatialPose = 0;
 
 	a3_FileStream fileStream[1] = { 0 };
-	const a3byte* const geometryStream = "./data/gpro_base_anim.dat";
+	const a3byte* const geometryStream = "./data/gpro_base_anim_working.dat";
 
 
 	// next set up hierarchy poses
@@ -72,14 +122,16 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	else if (!demoState->streaming || a3fileStreamOpenWrite(fileStream, geometryStream))
 	{
 		// set up scenegraph
-		a3hierarchyCreate(demoMode->sceneGraph,
-			(animationMaxCount_sceneObject + animationMaxCount_cameraObject + 1), 0);
+		a3hierarchyCreate(demoMode->sceneGraph, animationMaxCount_sceneObject, 0);
 		a3hierarchySetNode(demoMode->sceneGraph, 0, -1, "scene_world_root");
 		a3hierarchySetNode(demoMode->sceneGraph, 1, 0, "scene_camera_main");
 		a3hierarchySetNode(demoMode->sceneGraph, 2, 0, "scene_light_main");
-		a3hierarchySetNode(demoMode->sceneGraph, 3, 0, "scene_skeleton_ctrl");
-		a3hierarchySetNode(demoMode->sceneGraph, 4, 0, "scene_skybox");
-		a3hierarchySetNode(demoMode->sceneGraph, 5, 3, "scene_skeleton");
+		a3hierarchySetNode(demoMode->sceneGraph, 3, 0, "scene_skybox");
+		a3hierarchySetNode(demoMode->sceneGraph, 4, 0, "scene_skeleton_ctrl");
+		a3hierarchySetNode(demoMode->sceneGraph, 5, 4, "scene_skeleton_neckLookat_ctrl");
+		a3hierarchySetNode(demoMode->sceneGraph, 6, 4, "scene_skeleton_wristEff_r_ctrl");
+		a3hierarchySetNode(demoMode->sceneGraph, 7, 4, "scene_skeleton_wristCon_r_ctrl");
+		a3hierarchySetNode(demoMode->sceneGraph, 8, 4, "scene_skeleton");
 
 	/*
 		// manually set up a skeleton
@@ -371,43 +423,20 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	}
 
 
-	// egnaro
-	//demoMode->obj_skeleton->euler.z = +a3real_oneeighty;
-	//demoMode->obj_skeleton->euler.x = -a3real_ninety;
-
-	// xbot
-	demoMode->obj_skeleton->euler.x = a3real_ninety;
-	demoMode->obj_skeleton->euler.y = a3real_oneeighty;
-
-	// control node
-	demoMode->obj_skeleton_ctrl->position.y = +a3real_four;
-	demoMode->obj_skeleton_ctrl->euler.z = a3real_oneeighty;
-
 	// map relevant objects to scene graph
+	demoMode->obj_world_root->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_world_root");
 	demoMode->obj_camera_main->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_camera_main");
-	demoMode->obj_skeleton->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_skeleton");
+	demoMode->obj_light_main->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_light_main");
 	demoMode->obj_skybox->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_skybox");
+	demoMode->obj_skeleton_ctrl->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_skeleton_ctrl");
+	demoMode->obj_skeleton_neckLookat_ctrl->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_skeleton_neckLookat_ctrl");
+	demoMode->obj_skeleton_wristEffector_r_ctrl->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_skeleton_wristEff_r_ctrl");
+	demoMode->obj_skeleton_wristConstraint_r_ctrl->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_skeleton_wristCon_r_ctrl");
+	demoMode->obj_skeleton->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_skeleton");
 
 	// scene graph state
 	demoMode->sceneGraphState->hierarchy = 0;
 	a3hierarchyStateCreate(demoMode->sceneGraphState, demoMode->sceneGraph);
-
-	// finally set up hierarchy states
-	// base state for skeleton
-	hierarchyState = demoMode->hierarchyState_skel;
-	hierarchyState->hierarchy = 0;
-	a3hierarchyStateCreate(hierarchyState, hierarchy);
-	a3hierarchyPoseCopy(hierarchyState->localSpace, hierarchyPoseGroup->hpose, hierarchy->numNodes);
-	a3hierarchyPoseConvert(hierarchyState->localSpace, hierarchy->numNodes, hierarchyPoseGroup->channel, hierarchyPoseGroup->order);
-	a3kinematicsSolveForward(hierarchyState);
-	a3hierarchyPoseRestore(hierarchyState->objectSpace, hierarchy->numNodes, hierarchyPoseGroup->channel, hierarchyPoseGroup->order);
-	a3hierarchyStateUpdateObjectInverse(hierarchyState);
-
-	// real-time state
-	hierarchyState = demoMode->hierarchyState_skel + 1;
-	hierarchyState->hierarchy = 0;
-	a3hierarchyStateCreate(hierarchyState, hierarchy);
-
 
 	// clips and controllers
 	{
@@ -468,10 +497,60 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot");
 		a3clipControllerInit(demoMode->clipCtrl, "xbot_ctrl", demoMode->clipPool, j, rate, fps);
-		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_idle_pistol");
+		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_idle_f");
 		a3clipControllerInit(demoMode->clipCtrlA, "xbot_ctrlA", demoMode->clipPool, j, rate, fps);
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_skintest");
 		a3clipControllerInit(demoMode->clipCtrlB, "xbot_ctrlB", demoMode->clipPool, j, rate, fps);
+	}
+
+	// finally set up hierarchy states
+	// base state for skeleton
+	hierarchyState = demoMode->hierarchyState_skel_base;
+	hierarchyState->hierarchy = 0;
+	a3hierarchyStateCreate(hierarchyState, hierarchy);
+	a3hierarchyPoseCopy(hierarchyState->localSpace, hierarchyPoseGroup->hpose, hierarchy->numNodes);
+	a3hierarchyPoseConvert(hierarchyState->localSpace, hierarchy->numNodes, hierarchyPoseGroup->channel, hierarchyPoseGroup->order);
+	a3kinematicsSolveForward(hierarchyState);
+	a3hierarchyStateUpdateLocalInverse(hierarchyState);
+	a3hierarchyStateUpdateObjectInverse(hierarchyState);
+
+	// FK state
+	hierarchyState = demoMode->hierarchyState_skel_fk;
+	hierarchyState->hierarchy = 0;
+	a3hierarchyStateCreate(hierarchyState, hierarchy);
+
+	// IK state
+	hierarchyState = demoMode->hierarchyState_skel_ik;
+	hierarchyState->hierarchy = 0;
+	a3hierarchyStateCreate(hierarchyState, hierarchy);
+
+	// final blend state
+	hierarchyState = demoMode->hierarchyState_skel_final;
+	hierarchyState->hierarchy = 0;
+	a3hierarchyStateCreate(hierarchyState, hierarchy);
+
+	// egnaro
+	//demoMode->obj_skeleton->euler.x = -a3real_ninety;
+
+	// xbot
+	demoMode->obj_skeleton->euler.x = a3real_ninety;
+	demoMode->obj_skeleton->euler.y = a3real_oneeighty;
+
+	// control node
+	demoMode->obj_skeleton_ctrl->position.y = +a3real_four;
+	demoMode->obj_skeleton_ctrl->euler.z = a3real_oneeighty;
+
+	// effectors
+	// do one update to get first pose for target IK frame
+	{
+		void a3animation_update_animation(a3_DemoMode1_Animation* demoMode, a3f64 const dt, a3boolean const updateIK);
+		void a3animation_update_sceneGraph(a3_DemoMode1_Animation* demoMode, a3f64 const dt);
+		for (p = 0; p < 3; ++p)
+		{
+			a3animation_update_animation(demoMode, 0.0, 0);
+			a3animation_update_sceneGraph(demoMode, 0.0);
+			a3animation_load_resetEffectors(demoMode, demoMode->hierarchyState_skel_fk, hierarchyPoseGroup);
+		}
 	}
 }
 
@@ -486,6 +565,8 @@ void a3animation_input_keyCharHold(a3_DemoState const* demoState, a3_DemoMode1_A
 
 void a3animation_loadValidate(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode)
 {
+	a3ui32 i, j;
+
 	// initialize callbacks
 	a3_DemoModeCallbacks* const callbacks = demoState->demoModeCallbacks + demoState_modeAnimation;
 	callbacks->demoMode = demoMode;
@@ -504,11 +585,12 @@ void a3animation_loadValidate(a3_DemoState* demoState, a3_DemoMode1_Animation* d
 
 	// animation
 	demoMode->sceneGraphState->hierarchy = demoMode->sceneGraph;
-	demoMode->hierarchyState_skel->hierarchy = demoMode->hierarchy_skel;
 	demoMode->hierarchyPoseGroup_skel->hierarchy = demoMode->hierarchy_skel;
 	demoMode->clipCtrl->clipPool = demoMode->clipPool;
 	demoMode->clipCtrl->clip = demoMode->clipPool->clip + demoMode->clipCtrl->clipIndex;
 	demoMode->clipCtrl->keyframe = demoMode->clipPool->keyframe + demoMode->clipCtrl->keyframeIndex;
+	for (i = 0, j = sizeof(demoMode->hierarchyState_skel) / sizeof(a3_HierarchyState); i < j; ++i)
+		demoMode->hierarchyState_skel[i].hierarchy = demoMode->hierarchy_skel;
 }
 
 
@@ -540,8 +622,6 @@ void a3animation_load(a3_DemoState const* demoState, a3_DemoMode1_Animation* dem
 	// all objects
 	for (i = 0; i < animationMaxCount_sceneObject; ++i)
 		a3demo_initSceneObject(demoMode->object_scene + i);
-	for (i = 0; i < animationMaxCount_cameraObject; ++i)
-		a3demo_initSceneObject(demoMode->object_camera + i);
 	for (i = 0; i < animationMaxCount_projector; ++i)
 		a3demo_initProjector(demoMode->projector + i);
 
