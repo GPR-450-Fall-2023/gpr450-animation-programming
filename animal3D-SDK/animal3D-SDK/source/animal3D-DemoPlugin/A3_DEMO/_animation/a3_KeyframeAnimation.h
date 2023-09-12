@@ -65,7 +65,7 @@ struct a3_Keyframe
 	// amount of time keyframe is active for, cannot be 0
 	a3real duration;
 
-	// inverse of duration
+	// reciprocal of duration
 	a3real durationInverse;
 
 	// data held by keyframe
@@ -86,7 +86,7 @@ struct a3_KeyframePool
 };
 
 
-void a3keyframeSetDuration(a3_Keyframe* keyframe, const a3real newDuration);
+void a3keyframeSetDuration(a3_Keyframe* keyframe, const a3real duration);
 
 
 // allocate keyframe pool
@@ -110,6 +110,24 @@ struct a3_Clip
 
 	// index in clip pool
 	a3ui32 index;
+
+	// total length of all keyframes combined
+	a3real duration;
+
+	// reciprocal of duration
+	a3real durationInverse;
+
+	// number of keyframes in keyframe pool
+	a3ui32 keyframeCount;
+
+	// index of first keyframe in pool
+	a3ui32 firstKeyframeIndex;
+
+	// index of last keyframe in pool
+	a3ui32 lastKeyFrameIndex;
+
+	// pool with keyframes clip uses
+	const a3_KeyframePool* keyframePool;
 };
 
 // group of clips
@@ -128,6 +146,9 @@ a3i32 a3clipPoolCreate(a3_ClipPool* clipPool_out, const a3ui32 count);
 
 // release clip pool
 a3i32 a3clipPoolRelease(a3_ClipPool* clipPool);
+
+// function to set duration on clip
+void a3clipUpdateDurationFromKeyframePool(a3_Clip* clip);
 
 // initialize clip with first and last indices
 a3i32 a3clipInit(a3_Clip* clip_out, const a3byte clipName[a3keyframeAnimation_nameLenMax], const a3_KeyframePool* keyframePool, const a3ui32 firstKeyframeIndex, const a3ui32 finalKeyframeIndex);

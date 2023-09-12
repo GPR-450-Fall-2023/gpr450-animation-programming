@@ -36,15 +36,15 @@
 //-----------------------------------------------------------------------------
 
 
-void a3keyframeSetDuration(a3_Keyframe* keyframe, const a3real newDuration)
+void a3keyframeSetDuration(a3_Keyframe* keyframe, const a3real duration)
 {
-	if (newDuration < a3keyframeAnimation_minDuration)
+	if (duration < a3keyframeAnimation_minDuration)
 	{
 		keyframe->duration = a3keyframeAnimation_minDuration;
 	}
 	else
 	{
-		keyframe->duration = newDuration;
+		keyframe->duration = duration;
 	}
 
 	keyframe->durationInverse = 1 / keyframe->duration;
@@ -56,6 +56,8 @@ a3i32 a3keyframePoolCreate(a3_KeyframePool* keyframePool_out, const a3ui32 count
 {
 	const a3real KEYFRAME_DEFAULT_DURATION = 1;
 	const a3ui32 KEYFRAME_DEFAULT_DATA = 0;
+
+	keyframePool_out = (a3_KeyframePool*) malloc(sizeof(keyframePool_out));
 
 	keyframePool_out->keyframe = (a3_Keyframe*) malloc(count * sizeof(keyframePool_out));
 	keyframePool_out->count = count;
@@ -90,6 +92,11 @@ a3i32 a3keyframeInit(a3_Keyframe* keyframe_out, const a3real duration, const a3u
 // allocate clip pool
 a3i32 a3clipPoolCreate(a3_ClipPool* clipPool_out, const a3ui32 count)
 {
+	/*clipPool_out = (a3_ClipPool*) malloc(sizeof(a3_ClipPool));
+	clipPool_out->*/
+
+	
+
 	return -1;
 }
 
@@ -99,9 +106,40 @@ a3i32 a3clipPoolRelease(a3_ClipPool* clipPool)
 	return -1;
 }
 
+void a3clipUpdateDurationFromKeyframePool(a3_Clip* clip)
+{
+	a3real duration = 0;
+
+	for (a3ui32 i = clip->firstKeyframeIndex; i <= clip->lastKeyFrameIndex; i++)
+	{
+		duration += clip->keyframePool->keyframe[i].duration;
+	}
+
+	if (duration < a3keyframeAnimation_minDuration)
+	{
+		clip->duration = a3keyframeAnimation_minDuration;
+	}
+	else
+	{
+		clip->duration = duration;
+	}
+
+	clip->durationInverse = 1 / clip->duration;
+}
+
 // initialize clip with first and last indices
 a3i32 a3clipInit(a3_Clip* clip_out, const a3byte clipName[a3keyframeAnimation_nameLenMax], const a3_KeyframePool* keyframePool, const a3ui32 firstKeyframeIndex, const a3ui32 finalKeyframeIndex)
 {
+	// clip_out->name = clipName;
+	strcpy(clip_out->name, clipName);
+
+	clip_out->keyframePool = keyframePool;
+	clip_out->firstKeyframeIndex = firstKeyframeIndex;
+	clip_out->lastKeyFrameIndex = finalKeyframeIndex;
+	clip_out->keyframeCount = finalKeyframeIndex - firstKeyframeIndex + 1; // +1 since both final and first are included in pool
+
+	a3clipUpdateDurationFromKeyframePool(clip_out);
+
 	return -1;
 }
 
