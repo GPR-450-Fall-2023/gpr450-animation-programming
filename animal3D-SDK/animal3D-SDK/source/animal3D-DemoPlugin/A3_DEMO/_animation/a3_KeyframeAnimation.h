@@ -69,9 +69,10 @@ struct a3_Keyframe
 	a3real durationInverse;
 
 	// data held by keyframe
-	a3i32 data;
+	a3ui32 data;
 
-	void (*setDuration)(const a3real newDuration);
+	// function for setting duration, will ensure duration > 0 and durationInverse will be set
+	void (*setDuration)(a3_Keyframe* keyframe, const a3real newDuration);
 };
 
 // pool of keyframe descriptors

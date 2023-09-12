@@ -54,19 +54,34 @@ void a3keyframeSetDuration(a3_Keyframe* keyframe, const a3real newDuration)
 // allocate keyframe pool
 a3i32 a3keyframePoolCreate(a3_KeyframePool* keyframePool_out, const a3ui32 count)
 {
-	return -1;
+	const a3real KEYFRAME_DEFAULT_DURATION = 1;
+	const a3ui32 KEYFRAME_DEFAULT_DATA = 0;
+
+	keyframePool_out = (a3_KeyframePool*) malloc(count * sizeof(keyframePool_out));
+
+	for (a3ui16 i = 0; i < count; i++)
+	{
+		a3keyframeInit((a3_Keyframe*) (keyframePool_out + i), KEYFRAME_DEFAULT_DURATION, KEYFRAME_DEFAULT_DATA);
+	}
+
+	return 1;
 }
 
 // release keyframe pool
 a3i32 a3keyframePoolRelease(a3_KeyframePool* keyframePool)
 {
+	
 	return -1;
 }
 
 // initialize keyframe
 a3i32 a3keyframeInit(a3_Keyframe* keyframe_out, const a3real duration, const a3ui32 value_x)
 {
-	return -1;
+	keyframe_out->data = value_x;
+	keyframe_out->setDuration = a3keyframeSetDuration;
+	keyframe_out->setDuration(keyframe_out, duration);
+
+	return 1;
 }
 
 
