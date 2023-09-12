@@ -25,6 +25,7 @@
 #include "../a3_KeyframeAnimationController.h"
 
 #include <string.h>
+#include <stdlib.h>
 
 
 //-----------------------------------------------------------------------------
@@ -32,7 +33,23 @@
 // initialize clip controller
 a3i32 a3clipControllerInit(a3_ClipController* clipCtrl_out, const a3byte ctrlName[a3keyframeAnimation_nameLenMax], const a3_ClipPool* clipPool, const a3ui32 clipIndex_pool)
 {
-	return -1;
+	clipCtrl_out = (a3_ClipController*)malloc(sizeof(a3_ClipController));
+	
+	strcpy(clipCtrl_out->name, ctrlName);
+
+	clipCtrl_out->clipPool = clipPool;
+
+	clipCtrl_out->playbackDirection = 1;
+
+	clipCtrl_out->clip = clipIndex_pool;
+	clipCtrl_out->clipTime = 0;
+	clipCtrl_out->clipParameter = 0;
+
+	clipCtrl_out->keyframe = 0;
+	clipCtrl_out->keyframeTime = 0;
+	clipCtrl_out->keyframeParameter = 0;
+
+	return 0;
 }
 
 

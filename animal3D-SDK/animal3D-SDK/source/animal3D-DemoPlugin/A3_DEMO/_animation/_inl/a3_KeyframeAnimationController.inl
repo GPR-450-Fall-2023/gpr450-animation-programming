@@ -26,6 +26,8 @@
 #ifndef __ANIMAL3D_KEYFRAMEANIMATIONCONTROLLER_INL
 #define __ANIMAL3D_KEYFRAMEANIMATIONCONTROLLER_INL
 
+#include <stdio.h> 
+
 
 //-----------------------------------------------------------------------------
 
@@ -38,7 +40,23 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 // set clip to play
 inline a3i32 a3clipControllerSetClip(a3_ClipController* clipCtrl, const a3_ClipPool* clipPool, const a3ui32 clipIndex_pool)
 {
-	return -1;
+	if (!clipCtrl)
+	{
+		printf("Clip controller invalid - a3clipControllerSetClip failed");
+		return -1;
+	}
+
+	clipCtrl->clipPool = clipPool;
+
+	clipCtrl->clip = clipIndex_pool;
+	clipCtrl->clipTime = 0;
+	clipCtrl->clipParameter = 0;
+
+	clipCtrl->keyframe = 0;
+	clipCtrl->keyframeTime = 0;
+	clipCtrl->keyframeParameter = 0;
+
+	return 0;
 }
 
 
