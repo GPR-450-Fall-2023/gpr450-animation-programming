@@ -37,6 +37,8 @@ a3i32 a3clipControllerInit(a3_ClipController* clipCtrl_out, const a3byte ctrlNam
 	
 	strcpy(clipCtrl_out->name, ctrlName);
 
+	clipCtrl_out->terminusAction = LOOP;
+
 	clipCtrl_out->playbackDirection = 1;
 
 	if (a3clipControllerSetClip(clipCtrl_out, clipPool, clipIndex_pool) != 0)

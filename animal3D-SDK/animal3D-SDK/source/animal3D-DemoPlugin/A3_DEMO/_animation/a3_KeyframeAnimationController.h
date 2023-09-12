@@ -43,9 +43,9 @@ typedef struct a3_ClipController			a3_ClipController;
 //-----------------------------------------------------------------------------
 
 //terminus actions - what the clip does at the end
-enum TerminusActions {
-	STOP = 0,
-	LOOP,
+enum TerminusAction {
+	LOOP = 0,
+	STOP,
 	PING_PONG
 };
 
@@ -71,6 +71,9 @@ struct a3_ClipController
 
 	//Indicates play direction and speed (+1 means forward at normal pace, 0 is paused, -1 is backwards)
 	a3real playbackDirection;
+
+	//How the clip controller ends clips
+	enum TerminusAction terminusAction;
 
 	//Pointer to all clips controller controls
 	const a3_ClipPool* clipPool;

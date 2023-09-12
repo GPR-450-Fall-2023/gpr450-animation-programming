@@ -27,7 +27,6 @@
 #define __ANIMAL3D_KEYFRAMEANIMATIONCONTROLLER_INL
 
 #include <stdio.h> 
-#include <stdbool.h>
 
 
 //-----------------------------------------------------------------------------
@@ -46,35 +45,53 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 	clipCtrl->clipTime += dt;
 
 	//Resolution
-	bool resolved = false;
+	a3boolean resolved = false;
 
 	a3_Clip clip = clipCtrl->clipPool->clip[clipCtrl->clip];
 	a3_Keyframe keyframe = clip.keyframePool->keyframe[clipCtrl->keyframe];
 
+	//Loop through to make sure we start at a valid keyframe time
+	//(i.e. playhead may have skipped over a keyframe so we have to do case 3 twice)
 	while (!resolved)
 	{
-		//Paused - Case 1
-		if (clipCtrl->playbackDirection == 0)
+		//Resolution cases
+		if (clipCtrl->playbackDirection == 0) //Paused - Case 1
 		{
 			resolved = true;
 			printf("Playhead Paused");
 		}
-		else if (clipCtrl->keyframeTime >= keyframe.duration) //Forward Skip - Case 3
+		else if (clipCtrl->keyframeTime >= keyframe.duration) //Forward Case 3 and 4
 		{
-			//Forward Terminus - Case 4
+			if (clipCtrl->clipTime >= clip.duration) //Forward Terminus - Case 4
+			{
+				a3real clipDiff = clipCtrl->clipTime - clip.duration;
 
-			if (clipCtrl->clipTime >= clip.duration)
-			{
-				printf("Playhead Forward Terminus");
+				switch (clipCtrl->terminusAction)
+				{
+					case LOOP:
+						clipCtrl->keyframe = 0;
+						clipCtrl->clipTime = clipDiff;
+						clipCtrl->keyframeTime = clipDiff;
+
+						printf("Playhead Forward Loop Terminus");
+						break;
+				}
 			}
-			else
+			else //Forward Skip - Case 3
 			{
+				a3real keyframeDiff = clipCtrl->keyframeTime - keyframe.duration;
+
+				clipCtrl->keyframe++;
+				clipCtrl->keyframeTime = keyframeDiff;
+
 				printf("Playhead Forward Skip");
 			}
 		}
 		else if (clipCtrl->keyframeTime < 0) //Backward Skip - Case 6
 		{
-			//Backward Terminus - Case 7
+
+
+			//Backward Terminus - Case 7 (which imples case 6
 			if (clipCtrl->clipTime < 0)
 			{
 				printf("Playhead Backward Terminus");
@@ -107,7 +124,7 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 	clipCtrl->keyframeParameter = clipCtrl->keyframeTime * keyframe.durationInverse;
 	clipCtrl->clipTime = clipCtrl->clipTime * clip.durationInverse;
 
-	printf("Update Finished");
+	printf("Update Finished, Data = %i", keyframe.data);
 
 	return 0;
 }
