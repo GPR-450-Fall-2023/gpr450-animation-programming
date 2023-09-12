@@ -36,8 +36,10 @@
 //-----------------------------------------------------------------------------
 
 
+// sets keyframe duration while handling edge cases and setting duration inverse
 void a3keyframeSetDuration(a3_Keyframe* keyframe, const a3real duration)
 {
+	// set keyframe duration to provided duration or minDuration, whichever is higher
 	if (duration < a3keyframeAnimation_minDuration)
 	{
 		keyframe->duration = a3keyframeAnimation_minDuration;
@@ -47,6 +49,7 @@ void a3keyframeSetDuration(a3_Keyframe* keyframe, const a3real duration)
 		keyframe->duration = duration;
 	}
 
+	// set durationInverse to reciprocal
 	keyframe->durationInverse = 1 / keyframe->duration;
 }
 
@@ -54,8 +57,8 @@ void a3keyframeSetDuration(a3_Keyframe* keyframe, const a3real duration)
 // allocate keyframe pool
 a3i32 a3keyframePoolCreate(a3_KeyframePool* keyframePool_out, const a3ui32 count)
 {
-	const a3real KEYFRAME_DEFAULT_DURATION = 1;
-	const a3ui32 KEYFRAME_DEFAULT_DATA = 0;
+	const a3real KEYFRAME_DEFAULT_DURATION = 1; // init each keyframe with this duration
+	const a3ui32 KEYFRAME_DEFAULT_DATA = 0; // init each keyframe with this value
 
 	keyframePool_out = (a3_KeyframePool*) malloc(sizeof(a3_KeyframePool));
 

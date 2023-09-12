@@ -22,6 +22,14 @@
 	Data structures for fundamental keyframe animation.
 */
 
+/*
+*	Joseph Lyons
+*	Filled in structs in file (a3_Keyframe, a3_KeyframePool, a3_Clip, a3_ClipPool)
+*	Created functionality for all functions in file
+*/
+
+
+
 #ifndef __ANIMAL3D_KEYFRAMEANIMATION_H
 #define __ANIMAL3D_KEYFRAMEANIMATION_H
 
