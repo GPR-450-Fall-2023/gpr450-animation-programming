@@ -165,6 +165,11 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 
 	demoMode->targetCount[starter_passScene] = starter_target_scene_max;
 	demoMode->targetCount[starter_passComposite] = 1;
+
+	// SETUP HERE - Dillon
+	a3keyframePoolCreate(&demoMode->keyPool, 4);
+	a3clipPoolCreate(&demoMode->clipPool, 1);
+	a3clipControllerInit(&demoMode->clipCtrl, "testCtrl", &demoMode->clipPool, 0);
 }
 
 
