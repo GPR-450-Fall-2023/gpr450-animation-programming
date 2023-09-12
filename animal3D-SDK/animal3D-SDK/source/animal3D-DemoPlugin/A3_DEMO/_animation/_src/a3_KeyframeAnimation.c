@@ -35,6 +35,22 @@
 
 //-----------------------------------------------------------------------------
 
+
+void a3keyframeSetDuration(a3_Keyframe* keyframe, const a3real newDuration)
+{
+	if (newDuration < a3keyframeAnimation_minDuration)
+	{
+		keyframe->duration = a3keyframeAnimation_minDuration;
+	}
+	else
+	{
+		keyframe->duration = newDuration;
+	}
+
+	keyframe->durationInverse = 1 / keyframe->duration;
+}
+
+
 // allocate keyframe pool
 a3i32 a3keyframePoolCreate(a3_KeyframePool* keyframePool_out, const a3ui32 count)
 {

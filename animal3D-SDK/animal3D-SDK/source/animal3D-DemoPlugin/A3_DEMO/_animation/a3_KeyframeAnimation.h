@@ -52,12 +52,26 @@ enum
 };
 
 
+static const a3real a3keyframeAnimation_minDuration = (a3real) .01;
+
+
 // description of single keyframe
 // metaphor: moment
 struct a3_Keyframe
 {
 	// index in keyframe pool
 	a3ui32 index;
+
+	// amount of time keyframe is active for, cannot be 0
+	a3real duration;
+
+	// inverse of duration
+	a3real durationInverse;
+
+	// data held by keyframe
+	a3i32 data;
+
+	void (*setDuration)(const a3real newDuration);
 };
 
 // pool of keyframe descriptors
@@ -69,6 +83,9 @@ struct a3_KeyframePool
 	// number of keyframes
 	a3ui32 count;
 };
+
+
+void a3keyframeSetDuration(a3_Keyframe* keyframe, const a3real newDuration);
 
 
 // allocate keyframe pool
