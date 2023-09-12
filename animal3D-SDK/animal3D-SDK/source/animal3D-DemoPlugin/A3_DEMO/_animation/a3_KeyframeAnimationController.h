@@ -42,6 +42,13 @@ typedef struct a3_ClipController			a3_ClipController;
 
 //-----------------------------------------------------------------------------
 
+//terminus actions - what the clip does at the end
+enum TerminusActions {
+	STOP = 0,
+	LOOP,
+	PING_PONG
+};
+
 // clip controller
 // metaphor: playhead
 struct a3_ClipController

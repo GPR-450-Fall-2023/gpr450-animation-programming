@@ -37,17 +37,12 @@ a3i32 a3clipControllerInit(a3_ClipController* clipCtrl_out, const a3byte ctrlNam
 	
 	strcpy(clipCtrl_out->name, ctrlName);
 
-	clipCtrl_out->clipPool = clipPool;
-
 	clipCtrl_out->playbackDirection = 1;
 
-	clipCtrl_out->clip = clipIndex_pool;
-	clipCtrl_out->clipTime = 0;
-	clipCtrl_out->clipParameter = 0;
-
-	clipCtrl_out->keyframe = 0;
-	clipCtrl_out->keyframeTime = 0;
-	clipCtrl_out->keyframeParameter = 0;
+	if (a3clipControllerSetClip(clipCtrl_out, clipPool, clipIndex_pool) != 0)
+	{
+		return -1;
+	}
 
 	return 0;
 }

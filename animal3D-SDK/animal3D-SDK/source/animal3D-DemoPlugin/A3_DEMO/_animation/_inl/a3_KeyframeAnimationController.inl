@@ -27,6 +27,7 @@
 #define __ANIMAL3D_KEYFRAMEANIMATIONCONTROLLER_INL
 
 #include <stdio.h> 
+#include <stdbool.h>
 
 
 //-----------------------------------------------------------------------------
@@ -34,7 +35,81 @@
 // update clip controller
 inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt)
 {
-	return -1;
+	if (!clipCtrl)
+	{
+		printf("Clip controller invalid - a3clipControllerUpdate failed");
+		return -1;
+	}
+
+	//Pre resolution
+	clipCtrl->keyframeTime += dt;
+	clipCtrl->clipTime += dt;
+
+	//Resolution
+	bool resolved = false;
+
+	a3_Clip clip = clipCtrl->clipPool->clip[clipCtrl->clip];
+	a3_Keyframe keyframe = clip.keyframePool->keyframe[clipCtrl->keyframe];
+
+	while (!resolved)
+	{
+		//Paused - Case 1
+		if (clipCtrl->playbackDirection == 0)
+		{
+			resolved = true;
+			printf("Playhead Paused");
+		}
+		else if (clipCtrl->keyframeTime >= keyframe.duration) //Forward Skip - Case 3
+		{
+			//Forward Terminus - Case 4
+
+			if (clipCtrl->clipTime >= clip.duration)
+			{
+				printf("Playhead Forward Terminus");
+			}
+			else
+			{
+				printf("Playhead Forward Skip");
+			}
+		}
+		else if (clipCtrl->keyframeTime < 0) //Backward Skip - Case 6
+		{
+			//Backward Terminus - Case 7
+			if (clipCtrl->clipTime < 0)
+			{
+				printf("Playhead Backward Terminus");
+			}
+			else
+			{
+				printf("Playhead Backward Skip");
+			}
+		}
+		else //Case 2 and 5 - forward and backward move (do nothing else)
+		{
+			resolved = true;
+			
+			if (clipCtrl->playbackDirection > 0)
+			{
+				printf("Playhead moved forward");
+			}
+			else
+			{
+				printf("Playhead moved backward");
+			}
+		}
+
+		//Update new clip/keyframe info
+		clip = clipCtrl->clipPool->clip[clipCtrl->clip];
+		keyframe = clip.keyframePool->keyframe[clipCtrl->keyframe];
+	}
+
+	//Resolution
+	clipCtrl->keyframeParameter = clipCtrl->keyframeTime * keyframe.durationInverse;
+	clipCtrl->clipTime = clipCtrl->clipTime * clip.durationInverse;
+
+	printf("Update Finished");
+
+	return 0;
 }
 
 // set clip to play
