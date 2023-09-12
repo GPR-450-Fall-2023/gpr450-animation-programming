@@ -65,6 +65,7 @@ a3i32 a3keyframePoolCreate(a3_KeyframePool* keyframePool_out, const a3ui32 count
 	for (a3ui16 i = 0; i < count; i++)
 	{
 		a3keyframeInit((keyframePool_out->keyframe + i), KEYFRAME_DEFAULT_DURATION, KEYFRAME_DEFAULT_DATA);
+		(keyframePool_out->keyframe + i)->index = i;
 	}
 
 	return 1;
@@ -106,27 +107,6 @@ a3i32 a3clipPoolRelease(a3_ClipPool* clipPool)
 	return -1;
 }
 
-void a3clipUpdateDurationFromKeyframePool(a3_Clip* clip)
-{
-	a3real duration = 0;
-
-	for (a3ui32 i = clip->firstKeyframeIndex; i <= clip->lastKeyFrameIndex; i++)
-	{
-		duration += clip->keyframePool->keyframe[i].duration;
-	}
-
-	if (duration < a3keyframeAnimation_minDuration)
-	{
-		clip->duration = a3keyframeAnimation_minDuration;
-	}
-	else
-	{
-		clip->duration = duration;
-	}
-
-	clip->durationInverse = 1 / clip->duration;
-}
-
 // initialize clip with first and last indices
 a3i32 a3clipInit(a3_Clip* clip_out, const a3byte clipName[a3keyframeAnimation_nameLenMax], const a3_KeyframePool* keyframePool, const a3ui32 firstKeyframeIndex, const a3ui32 finalKeyframeIndex)
 {
@@ -138,9 +118,9 @@ a3i32 a3clipInit(a3_Clip* clip_out, const a3byte clipName[a3keyframeAnimation_na
 	clip_out->lastKeyFrameIndex = finalKeyframeIndex;
 	clip_out->keyframeCount = finalKeyframeIndex - firstKeyframeIndex + 1; // +1 since both final and first are included in pool
 
-	a3clipUpdateDurationFromKeyframePool(clip_out);
+	a3clipCalculateDuration(clip_out);
 
-	return -1;
+	return 1;
 }
 
 // get clip index from pool

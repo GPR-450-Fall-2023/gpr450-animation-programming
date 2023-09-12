@@ -147,9 +147,6 @@ a3i32 a3clipPoolCreate(a3_ClipPool* clipPool_out, const a3ui32 count);
 // release clip pool
 a3i32 a3clipPoolRelease(a3_ClipPool* clipPool);
 
-// function to set duration on clip
-void a3clipUpdateDurationFromKeyframePool(a3_Clip* clip);
-
 // initialize clip with first and last indices
 a3i32 a3clipInit(a3_Clip* clip_out, const a3byte clipName[a3keyframeAnimation_nameLenMax], const a3_KeyframePool* keyframePool, const a3ui32 firstKeyframeIndex, const a3ui32 finalKeyframeIndex);
 
