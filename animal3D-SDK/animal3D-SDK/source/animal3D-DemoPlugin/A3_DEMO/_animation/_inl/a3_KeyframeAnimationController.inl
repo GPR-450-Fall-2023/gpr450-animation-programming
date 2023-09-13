@@ -83,6 +83,7 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 						clipCtrl->clipTime = clip.duration;
 						clipCtrl->keyframeTime = keyframe.duration;
 						clipCtrl->playbackDirection = 0;
+						printf("Playhead Forward Stop Terminus\n");
 						break;
 				}
 			}
@@ -98,9 +99,6 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 		}
 		else if (clipCtrl->keyframeTime < 0) //Backward - Case 6 and 7
 		{
-
-			
-
 			if (clipCtrl->clipTime < 0) //Backward Terminus - Case 7
 			{
 				//Clip duration will be negative, want to add that negative to duration so we loop back to the end
@@ -119,6 +117,13 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 					clipCtrl->clipTime = clipDiff;
 
 					printf("Playhead Backward Loop Terminus\n");
+					break;
+				case STOP:
+					clipCtrl->clipTime = 0;
+					clipCtrl->keyframeTime = 0;
+					clipCtrl->playbackDirection = 0;
+
+					printf("Playhead Backward Stop Terminus\n");
 					break;
 				}
 			}
