@@ -34,21 +34,24 @@
 // update clip controller
 inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt)
 {
-	//system("cls"); //Clear terminal
+	//Comment this out if you want to see the whole history with each frame in the terminal
+	system("cls"); //Clear terminal
 
+	//clipCtrl null check
 	if (!clipCtrl)
 	{
 		printf("\n--------- Clip controller invalid - a3clipController, Update failed --------\n\n");
 		return -1;
 	}
 
-	//Pre resolution
+	////////////// Pre resolution - Step time forward //////////////////////
 	clipCtrl->keyframeTime += clipCtrl->playbackDirection * dt;
 	clipCtrl->clipTime += clipCtrl->playbackDirection * dt;
 
-	//Resolution
-	a3boolean resolved = false;
+	///////////////// Resolution - Handle results of time step ///////////////////////
 
+	//Local variables
+	a3boolean resolved = false;
 	a3_Clip clip = clipCtrl->clipPool->clip[clipCtrl->clip];
 	a3_Keyframe keyframe = clip.keyframePool->keyframe[clipCtrl->keyframe];
 
@@ -59,82 +62,104 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 		//Resolution cases
 		if (clipCtrl->playbackDirection == 0) //Paused - Case 1
 		{
+			//Do nothing
 			resolved = true;
-			printf("Playhead Paused\n");
+			printf("Playhead Paused - ");
 		}
 		else if (clipCtrl->playbackDirection > 0 //Have to be moving forward
-			&& clipCtrl->keyframeTime >= keyframe.duration) //Forward Case 3 and 4
+			&& clipCtrl->keyframeTime >= keyframe.duration) //Playhead is past keyframe end - Forward Case 3 and 4
 		{
+			//Playhead is at or past end of clip
 			if (clipCtrl->clipTime >= clip.duration) //Forward Terminus - Case 4
 			{
+				//How far past the end the playhead is
 				a3real clipDiff = clipCtrl->clipTime - clip.duration;
 
+				//Handle specific terminus actions
 				switch (clipCtrl->terminusAction)
 				{
 					case LOOP:
+						//Reset to beginning of clip while saving how far past the end
+						//of the clip the playhead went
 						clipCtrl->keyframe = 0;
 						clipCtrl->clipTime = clipDiff;
 						clipCtrl->keyframeTime = clipDiff;
 
-						printf("Playhead Forward Loop Terminus\n");
+						//For debugging/testing only
+						printf("Playhead Forward Loop Terminus - ");
 						break;
 
 					case STOP:
+						//Pause clipController and clamp times to their max values
 						clipCtrl->clipTime = clip.duration;
 						clipCtrl->keyframeTime = keyframe.duration;
 						clipCtrl->playbackDirection = 0;
-						printf("Playhead Forward Stop Terminus\n");
+
+						//For debugging/testing only
+						printf("Playhead Forward Stop Terminus - ");
 						break;
 					case PING_PONG:
+						//Reverse playback direction and calculate new playhead location by
+						//sending it backwards as far is it went past the end of the clip
 						clipCtrl->playbackDirection = -1;
 						clipCtrl->clipTime = clip.duration - (clipCtrl->clipTime - clip.duration); //Reverse direction of overflowed time
 						
+						//Calculate keyframe time in the same way as the clipTime
 						a3real keyframeDiff = clipCtrl->keyframeTime - keyframe.duration;
 						clipCtrl->keyframeTime = keyframe.duration - (keyframeDiff);
 
-						printf("Playhead Forward Ping Pong Terminus\n");
+						printf("Playhead Forward Ping Pong Terminus - ");
 						break;
 				}
 			}
 			else //Forward Skip - Case 3
 			{
+				//How far past the end of the keyframe the playhead is
 				a3real keyframeDiff = clipCtrl->keyframeTime - keyframe.duration;
 
+				//Move to next keyframe and set new keyframe time
 				clipCtrl->keyframe++;
 				clipCtrl->keyframeTime = keyframeDiff;
 
-				printf("Playhead Forward Skip\n");
+				printf("Playhead Forward Skip - ");
 			}
 		}
-		else if (clipCtrl->keyframeTime < 0) //Backward - Case 6 and 7
+		else if (clipCtrl->keyframeTime < 0) //playhead passed keyframe end - Backward - Case 6 and 7
 		{
-			if (clipCtrl->clipTime < 0) //Backward Terminus - Case 7
+			if (clipCtrl->clipTime < 0) //Playhead passed clip end - Backward Terminus - Case 7
 			{
 				//Clip duration will be negative, want to add that negative to duration so we loop back to the end
 				a3real clipDiff = clipCtrl->clipTime + clip.duration;
 
+				//Handle clip terminus actions
 				switch (clipCtrl->terminusAction)
 				{
 				case LOOP:
 					//Loop keyframe to end of clip
 					clipCtrl->keyframe = clipCtrl->clipPool->clip[clipCtrl->clip].keyframePool->count - 1;
 					
+					//Calculate keyframe time based on duration of the new frame
 					a3_Keyframe nextFrame = clipCtrl->clipPool->clip[clipCtrl->clip].keyframePool->keyframe[clipCtrl->keyframe];
-					clipCtrl->keyframeTime = clipCtrl->keyframeTime + nextFrame.duration;
+					clipCtrl->keyframeTime = clipCtrl->keyframeTime + nextFrame.duration; //Add this because keyframe time is negative
 					
 					//Set new clipTime
 					clipCtrl->clipTime = clipDiff;
 
-					printf("Playhead Backward Loop Terminus\n");
+					//For debugging/testing only
+					printf("Playhead Backward Loop Terminus - ");
 					break;
 				case STOP:
+
+					//Zero out values and pause playhead so everything stops squarely at the beginning
 					clipCtrl->clipTime = 0;
 					clipCtrl->keyframeTime = 0;
 					clipCtrl->playbackDirection = 0;
 
-					printf("Playhead Backward Stop Terminus\n");
+					//For debugging/testing only
+					printf("Playhead Backward Stop Terminus - ");
 					break;
 				case PING_PONG:
+					//Reverse the playhead direction
 					clipCtrl->playbackDirection = 1;
 
 					//Reverse direction of overflowed time
@@ -142,33 +167,38 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 					//overflow is just the positive clipTime
 					clipCtrl->clipTime = -clipCtrl->clipTime; //Flip sign
 					clipCtrl->keyframeTime = clipCtrl->clipTime; //MAKE SURE you do not flip this sign (it has already been flipped)
-
-					printf("Playhead Backward Ping Pong Terminus\n");
+					
+					//For debugging/testing only
+					printf("Playhead Backward Ping Pong Terminus - ");
 					break;
 				}
 			}
 			else//Backward Skip - Case 6
 			{
+				//Update new keyframe index
 				clipCtrl->keyframe--;
 
 				//New keyframe time = old keyframe time (which should be negative) + new keyframe duration
 				a3_Keyframe nextFrame = clipCtrl->clipPool->clip[clipCtrl->clip].keyframePool->keyframe[clipCtrl->keyframe];
 				clipCtrl->keyframeTime = clipCtrl->keyframeTime + nextFrame.duration;
 
-				printf("Playhead Backward Skip\n");
+				//For debugging/testing only
+				printf("Playhead Backward Skip - ");
 			}
 		}
 		else //Case 2 and 5 - forward and backward move (do nothing else)
 		{
+			//Do nothing
 			resolved = true;
 			
+			//For debugging/testing only
 			if (clipCtrl->playbackDirection > 0)
 			{
-				printf("Playhead moved forward\n");
+				printf("Playhead moved forward - ");
 			}
 			else
 			{
-				printf("Playhead moved backward\n");
+				printf("Playhead moved backward - ");
 			}
 		}
 
@@ -177,11 +207,12 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 		keyframe = clip.keyframePool->keyframe[clipCtrl->keyframe];
 	}
 
-	//Resolution
+	//////////////// Post Resolution ////////////////////
 	clipCtrl->keyframeParameter = clipCtrl->keyframeTime * keyframe.durationInverse;
 	clipCtrl->clipParameter = clipCtrl->clipTime * clip.durationInverse;
 
-	printf("Clip Time: %f\nClip Duration: %f\nKeyframeTime: %f\nKeyframe Duration: %f\n", clipCtrl->clipTime, clip.duration, clipCtrl->keyframeTime, keyframe.duration);
+	//For debugging/testing only, prints out clipCtrl info
+	printf("\nClip Time: %f\nClip Duration: %f\nClip Normalized: %f\n\nKeyframeTime: %f\nKeyframe Duration: %f\nKeyframe Normalized: %f\n", clipCtrl->clipTime, clip.duration, clipCtrl->clipParameter, clipCtrl->keyframeTime, keyframe.duration, clipCtrl->keyframeParameter);
 	printf("\n------ Update Finished, Data = %i ------\n\n", keyframe.data);
 
 	return 0;
@@ -190,12 +221,14 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 // set clip to play
 inline a3i32 a3clipControllerSetClip(a3_ClipController* clipCtrl, const a3_ClipPool* clipPool, const a3ui32 clipIndex_pool)
 {
+	//clipCtrl null check
 	if (!clipCtrl)
 	{
 		printf("\n----------- Clip controller invalid - a3clipControllerSetClip failed -------------\n\n");
 		return -1;
 	}
 	 
+	//Reset time values, set new clip and clip pool
 	clipCtrl->clipPool = clipPool;
 
 	clipCtrl->clip = clipIndex_pool;
