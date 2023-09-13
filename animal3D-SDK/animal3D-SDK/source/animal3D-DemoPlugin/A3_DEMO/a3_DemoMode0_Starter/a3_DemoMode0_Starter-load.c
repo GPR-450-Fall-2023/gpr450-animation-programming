@@ -168,7 +168,7 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 
 	// SETUP HERE - Dillon
 	a3keyframePoolCreate(&demoMode->keyPool, 4);
-	a3clipPoolCreate(&demoMode->clipPool, 1);
+	a3clipPoolCreate(&demoMode->clipPool, &demoMode->keyPool, 1);
 	a3clipControllerInit(&demoMode->clipCtrl, "testCtrl", &demoMode->clipPool, 0);
 }
 

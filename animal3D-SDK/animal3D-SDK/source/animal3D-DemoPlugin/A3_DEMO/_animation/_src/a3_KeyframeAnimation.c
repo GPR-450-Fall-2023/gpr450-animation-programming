@@ -60,7 +60,7 @@ a3i32 a3keyframePoolCreate(a3_KeyframePool* keyframePool_out, const a3ui32 count
 	const a3real KEYFRAME_DEFAULT_DURATION = 1; // init each keyframe with this duration
 	const a3ui32 KEYFRAME_DEFAULT_DATA = 0; // init each keyframe with this value
 
-	keyframePool_out = (a3_KeyframePool*) malloc(sizeof(a3_KeyframePool));
+	//keyframePool_out = (a3_KeyframePool*) malloc(sizeof(a3_KeyframePool));
 
 	if (keyframePool_out == NULL) return -1;
 
@@ -114,15 +114,24 @@ a3i32 a3keyframeInit(a3_Keyframe* keyframe_out, const a3real duration, const a3u
 
 
 // allocate clip pool
-a3i32 a3clipPoolCreate(a3_ClipPool* clipPool_out, const a3ui32 count)
+a3i32 a3clipPoolCreate(a3_ClipPool* clipPool_out, a3_KeyframePool* keyframePool, const a3ui32 count)
 {
-	clipPool_out = (a3_ClipPool*) malloc(sizeof(a3_ClipPool));
+	const a3byte DEFAULT_CLIP_NAME[] = "Clip";
+	const a3ui32 DEFAULT_FIRST_INDEX = 0;
+	const a3ui32 DEFAULT_LAST_INDEX = 0;
+
+	//clipPool_out = (a3_ClipPool*) malloc(sizeof(a3_ClipPool));
 
 	if(clipPool_out == NULL) return -1;
 
 	clipPool_out->count = count;
 
 	clipPool_out->clip = (a3_Clip*) malloc(sizeof(a3_Clip) * count);
+
+	for (a3ui32 i = 0; i < count; i++)
+	{
+		a3clipInit((clipPool_out->clip + i), DEFAULT_CLIP_NAME, keyframePool, DEFAULT_FIRST_INDEX, DEFAULT_LAST_INDEX);
+	}
 
 	if(clipPool_out->clip == NULL) return 1;
 
