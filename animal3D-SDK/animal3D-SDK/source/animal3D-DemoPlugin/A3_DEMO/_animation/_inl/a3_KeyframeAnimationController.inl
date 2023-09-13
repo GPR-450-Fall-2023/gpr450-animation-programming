@@ -137,7 +137,7 @@ inline a3i32 a3clipControllerSetClip(a3_ClipController* clipCtrl, const a3_ClipP
 		printf("Clip controller invalid - a3clipControllerSetClip failed");
 		return -1;
 	}
-
+	 
 	clipCtrl->clipPool = clipPool;
 
 	clipCtrl->clip = clipIndex_pool;
