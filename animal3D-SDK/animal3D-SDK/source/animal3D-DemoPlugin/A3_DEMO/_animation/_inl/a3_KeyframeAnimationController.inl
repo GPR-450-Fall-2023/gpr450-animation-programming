@@ -85,6 +85,15 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 						clipCtrl->playbackDirection = 0;
 						printf("Playhead Forward Stop Terminus\n");
 						break;
+					case PING_PONG:
+						clipCtrl->playbackDirection = -1;
+						clipCtrl->clipTime = clip.duration - (clipCtrl->clipTime - clip.duration); //Reverse direction of overflowed time
+						
+						a3real keyframeDiff = clipCtrl->keyframeTime - keyframe.duration;
+						clipCtrl->keyframeTime = keyframe.duration - (keyframeDiff);
+
+						printf("Playhead Forward Ping Pong Terminus\n");
+						break;
 				}
 			}
 			else //Forward Skip - Case 3
@@ -124,6 +133,17 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 					clipCtrl->playbackDirection = 0;
 
 					printf("Playhead Backward Stop Terminus\n");
+					break;
+				case PING_PONG:
+					clipCtrl->playbackDirection = 1;
+
+					//Reverse direction of overflowed time
+					//clipTime should be negative if it has gone past 0 so the 
+					//overflow is just the positive clipTime
+					clipCtrl->clipTime = -clipCtrl->clipTime; //Flip sign
+					clipCtrl->keyframeTime = clipCtrl->clipTime; //MAKE SURE you do not flip this sign (it has already been flipped)
+
+					printf("Playhead Backward Ping Pong Terminus\n");
 					break;
 				}
 			}

@@ -177,9 +177,9 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 	demoMode->keyPool.keyframe[1].data = 1;
 	a3keyframeSetDuration(&demoMode->keyPool.keyframe[1], .01f);
 	demoMode->keyPool.keyframe[2].data = 2;
-	a3keyframeSetDuration(&demoMode->keyPool.keyframe[2], 1);
+	a3keyframeSetDuration(&demoMode->keyPool.keyframe[2], .5);
 	demoMode->keyPool.keyframe[3].data = 3;
-	a3keyframeSetDuration(&demoMode->keyPool.keyframe[3], 2);
+	a3keyframeSetDuration(&demoMode->keyPool.keyframe[3], .5);
 
 	a3clipCalculateDuration(&demoMode->clipPool.clip[0]);
 	//////////
@@ -187,15 +187,17 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 	a3clipControllerInit(&demoMode->clipCtrl, "testCtrl", &demoMode->clipPool, 0);
 
 	////// Test Code
-	demoMode->clipCtrl.playbackDirection = -1;
-	demoMode->clipCtrl.terminusAction = STOP;
-	a3_Clip clip = demoMode->clipCtrl.clipPool->clip[demoMode->clipCtrl.clip];
+	demoMode->clipCtrl.playbackDirection = 1;
+	demoMode->clipCtrl.terminusAction = PING_PONG;
+
+	//Used to move playhead to the end of the clip so we can test backward movement (like the stop terminus)
+	/*a3_Clip clip = demoMode->clipCtrl.clipPool->clip[demoMode->clipCtrl.clip];
 	a3_Keyframe keyframe = clip.keyframePool->keyframe[clip.keyframeCount - 1];
 	demoMode->clipCtrl.clipTime = clip.duration;
 	demoMode->clipCtrl.clipParameter = 1;
 	demoMode->clipCtrl.keyframe = clip.keyframeCount - 1;
 	demoMode->clipCtrl.keyframeTime = keyframe.duration;
-	demoMode->clipCtrl.keyframeParameter = 1;
+	demoMode->clipCtrl.keyframeParameter = 1;*/
 	//////
 }
 
