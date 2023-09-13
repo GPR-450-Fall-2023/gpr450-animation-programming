@@ -26,12 +26,20 @@
 #ifndef __ANIMAL3D_KEYFRAMEANIMATION_INL
 #define __ANIMAL3D_KEYFRAMEANIMATION_INL
 
+// These are here to provide this file access to NULL for error checking
+// https ://stackoverflow.com/questions/50379663/why-i-get-null-is-undefined-error
+#include <stdlib.h>
+#include <stdio.h>
+
 
 //-----------------------------------------------------------------------------
 
 // calculate clip duration as sum of keyframes' durations
 inline a3i32 a3clipCalculateDuration(a3_Clip* clip)
 {
+	if(clip == NULL) return -1;
+	if(clip->keyframePool == NULL) return 1;
+
 	a3real duration = 0;
 
 	for (a3ui32 i = clip->firstKeyframeIndex; i <= clip->lastKeyFrameIndex; i++)
@@ -50,12 +58,15 @@ inline a3i32 a3clipCalculateDuration(a3_Clip* clip)
 
 	clip->durationInverse = 1 / clip->duration;
 
-	return 1;
+	return 0;
 }
 
 // calculate keyframes' durations by distributing clip's duration
 inline a3i32 a3clipDistributeDuration(a3_Clip* clip, const a3real newClipDuration)
 {
+	if(clip == NULL) return -1;
+	if(clip->keyframePool == NULL) return 1;
+
 	a3_Keyframe* keyframe;
 	a3real durationPerKeyframe = newClipDuration / clip->keyframeCount;
 
@@ -69,7 +80,7 @@ inline a3i32 a3clipDistributeDuration(a3_Clip* clip, const a3real newClipDuratio
 	// If it did, each keyframe would automatically have set duration to min value
 	a3clipCalculateDuration(clip);
 
-	return 1;
+	return 0;
 }
 
 

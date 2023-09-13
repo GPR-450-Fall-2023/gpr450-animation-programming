@@ -22,6 +22,14 @@
 	Data structures for fundamental keyframe animation.
 */
 
+/*
+*	Joseph Lyons
+*	Filled in structs in file (a3_Keyframe, a3_KeyframePool, a3_Clip, a3_ClipPool)
+*	Created functionality for all functions in file
+*/
+
+
+
 #ifndef __ANIMAL3D_KEYFRAMEANIMATION_H
 #define __ANIMAL3D_KEYFRAMEANIMATION_H
 
@@ -142,7 +150,7 @@ struct a3_ClipPool
 
 
 // allocate clip pool
-a3i32 a3clipPoolCreate(a3_ClipPool* clipPool_out, const a3ui32 count);
+a3i32 a3clipPoolCreate(a3_ClipPool* clipPool_out, a3_KeyframePool* keyframePool, const a3ui32 count);
 
 // release clip pool
 a3i32 a3clipPoolRelease(a3_ClipPool* clipPool);

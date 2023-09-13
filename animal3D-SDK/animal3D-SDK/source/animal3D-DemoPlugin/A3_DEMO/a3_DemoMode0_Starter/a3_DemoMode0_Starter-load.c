@@ -169,8 +169,19 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 	// SETUP HERE - Dillon
 	a3keyframePoolCreate(&demoMode->keyPool, 4);
 
-	a3clipPoolCreate(&demoMode->clipPool, 1);
+	a3clipPoolCreate(&demoMode->clipPool, &demoMode->keyPool, 1);
 
+	demoMode->keyPool.keyframe[0].data = 0;
+	a3keyframeSetDuration(&demoMode->keyPool.keyframe[0], .41f);
+	demoMode->keyPool.keyframe[1].data = 1;
+	a3keyframeSetDuration(&demoMode->keyPool.keyframe[1], .01f);
+	demoMode->keyPool.keyframe[2].data = 2;
+	a3keyframeSetDuration(&demoMode->keyPool.keyframe[2], 1);
+	demoMode->keyPool.keyframe[3].data = 3;
+	a3keyframeSetDuration(&demoMode->keyPool.keyframe[3], 2);
+
+	a3clipCalculateDuration(&demoMode->clipPool.clip[0]);
+	
 	a3clipControllerInit(&demoMode->clipCtrl, "testCtrl", &demoMode->clipPool, 0);
 }
 

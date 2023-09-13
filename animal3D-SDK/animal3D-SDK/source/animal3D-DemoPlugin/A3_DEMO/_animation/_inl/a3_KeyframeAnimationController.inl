@@ -34,9 +34,11 @@
 // update clip controller
 inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt)
 {
+	//system("cls"); //Clear terminal
+
 	if (!clipCtrl)
 	{
-		printf("Clip controller invalid - a3clipControllerUpdate failed");
+		printf("\n--------- Clip controller invalid - a3clipController, Update failed --------\n\n");
 		return -1;
 	}
 
@@ -58,7 +60,7 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 		if (clipCtrl->playbackDirection == 0) //Paused - Case 1
 		{
 			resolved = true;
-			printf("Playhead Paused");
+			printf("Playhead Paused\n");
 		}
 		else if (clipCtrl->keyframeTime >= keyframe.duration) //Forward Case 3 and 4
 		{
@@ -73,7 +75,7 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 						clipCtrl->clipTime = clipDiff;
 						clipCtrl->keyframeTime = clipDiff;
 
-						printf("Playhead Forward Loop Terminus");
+						printf("Playhead Forward Loop Terminus\n");
 						break;
 				}
 			}
@@ -84,7 +86,7 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 				clipCtrl->keyframe++;
 				clipCtrl->keyframeTime = keyframeDiff;
 
-				printf("Playhead Forward Skip");
+				printf("Playhead Forward Skip\n");
 			}
 		}
 		else if (clipCtrl->keyframeTime < 0) //Backward Skip - Case 6
@@ -94,11 +96,11 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 			//Backward Terminus - Case 7 (which imples case 6
 			if (clipCtrl->clipTime < 0)
 			{
-				printf("Playhead Backward Terminus");
+				printf("Playhead Backward Terminus\n");
 			}
 			else
 			{
-				printf("Playhead Backward Skip");
+				printf("Playhead Backward Skip\n");
 			}
 		}
 		else //Case 2 and 5 - forward and backward move (do nothing else)
@@ -107,11 +109,11 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 			
 			if (clipCtrl->playbackDirection > 0)
 			{
-				printf("Playhead moved forward");
+				printf("Playhead moved forward\n");
 			}
 			else
 			{
-				printf("Playhead moved backward");
+				printf("Playhead moved backward\n");
 			}
 		}
 
@@ -122,9 +124,10 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 
 	//Resolution
 	clipCtrl->keyframeParameter = clipCtrl->keyframeTime * keyframe.durationInverse;
-	clipCtrl->clipTime = clipCtrl->clipTime * clip.durationInverse;
+	clipCtrl->clipParameter = clipCtrl->clipTime * clip.durationInverse;
 
-	printf("Update Finished, Data = %i", keyframe.data);
+	printf("Clip Time: %f\nClip Duration: %f\nKeyframeTime: %f\nKeyframe Duration: %f\n", clipCtrl->clipTime, clip.duration, clipCtrl->keyframeTime, keyframe.duration);
+	printf("\n------ Update Finished, Data = %i ------\n\n", keyframe.data);
 
 	return 0;
 }
@@ -134,7 +137,7 @@ inline a3i32 a3clipControllerSetClip(a3_ClipController* clipCtrl, const a3_ClipP
 {
 	if (!clipCtrl)
 	{
-		printf("Clip controller invalid - a3clipControllerSetClip failed");
+		printf("\n----------- Clip controller invalid - a3clipControllerSetClip failed -------------\n\n");
 		return -1;
 	}
 	 
