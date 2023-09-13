@@ -175,7 +175,7 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 	demoMode->keyPool.keyframe[0].data = 0;
 	a3keyframeSetDuration(&demoMode->keyPool.keyframe[0], .41f);
 	demoMode->keyPool.keyframe[1].data = 1;
-	a3keyframeSetDuration(&demoMode->keyPool.keyframe[1], .01f);
+	a3keyframeSetDuration(&demoMode->keyPool.keyframe[1], .01f); //Tests skipping of keyframes
 	demoMode->keyPool.keyframe[2].data = 2;
 	a3keyframeSetDuration(&demoMode->keyPool.keyframe[2], .5);
 	demoMode->keyPool.keyframe[3].data = 3;

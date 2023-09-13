@@ -131,6 +131,9 @@ a3i32 a3clipPoolCreate(a3_ClipPool* clipPool_out, a3_KeyframePool* keyframePool,
 	for (a3ui32 i = 0; i < count; i++)
 	{
 		a3clipInit((clipPool_out->clip + i), DEFAULT_CLIP_NAME, keyframePool, DEFAULT_FIRST_INDEX, lastIndex);
+		
+		if ((clipPool_out->clip + i) == NULL) return -1;
+		
 		(clipPool_out->clip + i)->index = i; //Log clips index in pool
 	}
 
