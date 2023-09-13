@@ -171,6 +171,7 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 
 	a3clipPoolCreate(&demoMode->clipPool, &demoMode->keyPool, 1);
 
+	//////// Test Code
 	demoMode->keyPool.keyframe[0].data = 0;
 	a3keyframeSetDuration(&demoMode->keyPool.keyframe[0], .41f);
 	demoMode->keyPool.keyframe[1].data = 1;
@@ -181,8 +182,14 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 	a3keyframeSetDuration(&demoMode->keyPool.keyframe[3], 2);
 
 	a3clipCalculateDuration(&demoMode->clipPool.clip[0]);
+	//////////
 	
 	a3clipControllerInit(&demoMode->clipCtrl, "testCtrl", &demoMode->clipPool, 0);
+
+	////// Test Code
+	demoMode->clipCtrl.playbackDirection = 1;
+	demoMode->clipCtrl.terminusAction = STOP;
+	//////
 }
 
 

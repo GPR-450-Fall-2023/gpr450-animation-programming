@@ -43,8 +43,8 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 	}
 
 	//Pre resolution
-	clipCtrl->keyframeTime += dt;
-	clipCtrl->clipTime += dt;
+	clipCtrl->keyframeTime += clipCtrl->playbackDirection * dt;
+	clipCtrl->clipTime += clipCtrl->playbackDirection * dt;
 
 	//Resolution
 	a3boolean resolved = false;
@@ -62,7 +62,8 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 			resolved = true;
 			printf("Playhead Paused\n");
 		}
-		else if (clipCtrl->keyframeTime >= keyframe.duration) //Forward Case 3 and 4
+		else if (clipCtrl->playbackDirection > 0 //Have to be moving forward
+			&& clipCtrl->keyframeTime >= keyframe.duration) //Forward Case 3 and 4
 		{
 			if (clipCtrl->clipTime >= clip.duration) //Forward Terminus - Case 4
 			{
@@ -77,6 +78,12 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 
 						printf("Playhead Forward Loop Terminus\n");
 						break;
+
+					case STOP:
+						clipCtrl->clipTime = clip.duration;
+						clipCtrl->keyframeTime = keyframe.duration;
+						clipCtrl->playbackDirection = 0;
+						break;
 				}
 			}
 			else //Forward Skip - Case 3
@@ -89,17 +96,40 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 				printf("Playhead Forward Skip\n");
 			}
 		}
-		else if (clipCtrl->keyframeTime < 0) //Backward Skip - Case 6
+		else if (clipCtrl->keyframeTime < 0) //Backward - Case 6 and 7
 		{
 
+			
 
-			//Backward Terminus - Case 7 (which imples case 6
-			if (clipCtrl->clipTime < 0)
+			if (clipCtrl->clipTime < 0) //Backward Terminus - Case 7
 			{
-				printf("Playhead Backward Terminus\n");
+				//Clip duration will be negative, want to add that negative to duration so we loop back to the end
+				a3real clipDiff = clipCtrl->clipTime + clip.duration;
+
+				switch (clipCtrl->terminusAction)
+				{
+				case LOOP:
+					//Loop keyframe to end of clip
+					clipCtrl->keyframe = clipCtrl->clipPool->clip[clipCtrl->clip].keyframePool->count - 1;
+					
+					a3_Keyframe nextFrame = clipCtrl->clipPool->clip[clipCtrl->clip].keyframePool->keyframe[clipCtrl->keyframe];
+					clipCtrl->keyframeTime = clipCtrl->keyframeTime + nextFrame.duration;
+					
+					//Set new clipTime
+					clipCtrl->clipTime = clipDiff;
+
+					printf("Playhead Backward Loop Terminus\n");
+					break;
+				}
 			}
-			else
+			else//Backward Skip - Case 6
 			{
+				clipCtrl->keyframe--;
+
+				//New keyframe time = old keyframe time (which should be negative) + new keyframe duration
+				a3_Keyframe nextFrame = clipCtrl->clipPool->clip[clipCtrl->clip].keyframePool->keyframe[clipCtrl->keyframe];
+				clipCtrl->keyframeTime = clipCtrl->keyframeTime + nextFrame.duration;
+
 				printf("Playhead Backward Skip\n");
 			}
 		}
