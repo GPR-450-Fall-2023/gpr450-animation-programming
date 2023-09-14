@@ -84,7 +84,7 @@ void a3starter_update(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a
 			demoMode->object_scene[i].modelMat.m, a3mat4_identity.m);
 	}
 
-	//update using settings from enums here!!!
+	// select the active clip controller to make changes to the clip
 	a3_ClipController* clipCtrl;
 	switch (demoMode->currentController)
 	{
@@ -102,9 +102,19 @@ void a3starter_update(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a
 		break;
 	}
 
+	// setting to start/end of clip
+	if (demoMode->first == 1) {
+		//call function to set to first keyframe of clip
+		demoMode->first = 0;
+	}
+	if (demoMode->last == 1) {
+		//call function to set to last keyframe of clip
+		demoMode->last = 0;
+	}
+
 	// turning play/pause/slowmo/forward/backward into effect
-	a3i16 playbackSpd= 1;
-	if (demoMode->playPause = 1) {			//pause
+	a3f32 playbackSpd = 1;
+	if (demoMode->playPause == 1) {			//pause
 		playbackSpd *= 0;
 	}
 	if (demoMode->forwardBackward == 1) {	//backward

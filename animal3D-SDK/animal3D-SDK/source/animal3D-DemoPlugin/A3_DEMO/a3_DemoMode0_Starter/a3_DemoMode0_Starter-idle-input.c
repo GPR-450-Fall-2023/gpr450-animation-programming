@@ -69,12 +69,14 @@ void a3starter_input_keyCharPress(a3_DemoState const* demoState, a3_DemoMode0_St
 		a3demoCtrlCasesLoop(demoMode->playPause, starter_play_pause_max, 'p', 'o');
 
 		// set to first/last frame in current clip
+		a3demoCtrlCasesLoop(demoMode->first, starter_first_keyframe_max, 'e', 'd');
+		a3demoCtrlCasesLoop(demoMode->last, starter_last_keyframe_max, 'r', 'f');
 
 		// toggle clip
 		a3demoCtrlCasesLoop(demoMode->currentClip, demoMode->numOfClips, 's', 'a');
 
 		// toggle backwards
-		a3demoCtrlCasesLoop(demoMode->forwardBackward, starter_playing_max, 'b', 'f');
+		a3demoCtrlCasesLoop(demoMode->forwardBackward, starter_playing_max, 'b', 'g');
 
 		// toggle slowmo
 		a3demoCtrlCasesLoop(demoMode->slowmo, starter_slowmo_speed_max, 'm', 'n');

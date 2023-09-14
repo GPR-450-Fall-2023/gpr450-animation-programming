@@ -177,10 +177,10 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 	demoMode->currentClip = 0;
 	a3clipPoolCreate(&demoMode->clipPool, &demoMode->keyPool, demoMode->numOfClips);
 
-	// Initializing Keyframes
-	//for (a3ui32 i = 0; i < numOfKeyframes; i++) {
-	//	a3keyframeInit(&demoMode->keyPool.keyframe[i], a3sqrt(i), (i/2)+1);
-	//}
+	// Initializing Keyframes UNCOMMENT THIS BEFORE SAYING DONE
+	for (a3ui32 i = 0; i < demoMode->numOfKeyframes; i++) {
+		a3keyframeInit(&demoMode->keyPool.keyframe[i], 0.5f, (i/2)+1);
+	}
 
 	//demoMode->keyPool.keyframe[0].data = 0;
 	//a3keyframeSetDuration(&demoMode->keyPool.keyframe[0], .41f);

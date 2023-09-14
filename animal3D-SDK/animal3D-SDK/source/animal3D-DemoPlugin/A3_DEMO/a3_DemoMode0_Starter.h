@@ -54,6 +54,8 @@ typedef enum a3_DemoMode0_Starter_Play_Pause				a3_DemoMode0_Starter_Play_Pause;
 typedef enum a3_DemoMode0_Starter_Playing_Direction			a3_DemoMode0_Starter_Playing_Direction;
 typedef enum a3_DemoMode0_Starter_Slowmo_Speed				a3_DemoMode0_Starter_Slowmo_Speed;
 typedef enum a3_DemoMode0_Starter_Terminus_Action			a3_DemoMode0_Starter_Terminus_Action;
+typedef enum a3_DemoMode0_Starter_First_Keyframe			a3_DemoMode0_Starter_First_Keyframe;
+typedef enum a3_DemoMode0_Starter_Last_Keyframe				a3_DemoMode0_Starter_Last_Keyframe;
 #endif	// __cplusplus
 
 
@@ -127,6 +129,24 @@ typedef enum a3_DemoMode0_Starter_Terminus_Action			a3_DemoMode0_Starter_Terminu
 		starter_play_pause_max,
 	};
 
+	// start of clip
+	enum a3_DemoMode0_Starter_First_Keyframe
+	{
+		starter_normal_playback_f = 0,	// play normally
+		starter_first_keyframe,			// set to first keyframe of clip
+
+		starter_first_keyframe_max,
+	};
+
+	// end of clip
+	enum a3_DemoMode0_Starter_Last_Keyframe
+	{
+		starter_normal_playback_l = 0,	// play normally
+		starter_last_keyframe,			// set to last keyframe of clip
+
+		starter_last_keyframe_max,
+	};
+
 	// playback directions
 	enum a3_DemoMode0_Starter_Playing_Direction
 	{
@@ -174,6 +194,8 @@ typedef enum a3_DemoMode0_Starter_Terminus_Action			a3_DemoMode0_Starter_Terminu
 		a3_DemoMode0_Starter_Playing_Direction forwardBackward;
 		a3_DemoMode0_Starter_Slowmo_Speed slowmo;
 		a3_DemoMode0_Starter_Terminus_Action terminus;
+		a3_DemoMode0_Starter_First_Keyframe first;
+		a3_DemoMode0_Starter_Last_Keyframe last;
 
 		// objects
 		union {

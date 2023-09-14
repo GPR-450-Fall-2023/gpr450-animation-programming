@@ -110,9 +110,9 @@ void a3starter_render_controls(a3_DemoState const* demoState, a3_DemoMode0_Start
 
 	// terminus action names
 	a3byte const* terminusAction[starter_terminus_max] = {
-		"Stop",
 		"Loop",
 		"Ping Pong",
+		"Stop",
 	};
 
 	// constant color target names
