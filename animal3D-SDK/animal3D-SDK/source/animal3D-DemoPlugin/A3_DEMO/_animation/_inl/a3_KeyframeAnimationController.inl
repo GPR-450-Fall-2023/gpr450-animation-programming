@@ -35,7 +35,7 @@
 inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt)
 {
 	//Comment this out if you want to see the whole history with each frame in the terminal
-	system("cls"); //Clear terminal
+ 	//system("cls"); //Clear terminal
 
 	//clipCtrl null check
 	if (!clipCtrl)
@@ -81,7 +81,7 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 					case LOOP:
 						//Reset to beginning of clip while saving how far past the end
 						//of the clip the playhead went
-						clipCtrl->keyframe = 0;
+						clipCtrl->keyframe = clip.firstKeyframeIndex;
 						clipCtrl->clipTime = clipDiff;
 						clipCtrl->keyframeTime = clipDiff;
 
@@ -94,6 +94,7 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 						clipCtrl->clipTime = clip.duration;
 						clipCtrl->keyframeTime = keyframe.duration;
 						clipCtrl->playbackDirection = 0;
+						clipCtrl->keyframe = clip.lastKeyFrameIndex;
 
 						//For debugging/testing only
 						printf("Playhead Forward Stop Terminus - ");
@@ -102,11 +103,17 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 						//Reverse playback direction and calculate new playhead location by
 						//sending it backwards as far is it went past the end of the clip
 						clipCtrl->playbackDirection = -1;
-						clipCtrl->clipTime = clip.duration - (clipCtrl->clipTime - clip.duration); //Reverse direction of overflowed time
+						a3real clipOverflow = (clipCtrl->clipTime - clip.duration);
+						clipCtrl->clipTime = clip.duration - clipOverflow; //Reverse direction of overflowed time
 						
-						//Calculate keyframe time in the same way as the clipTime
-						a3real keyframeDiff = clipCtrl->keyframeTime - keyframe.duration;
-						clipCtrl->keyframeTime = keyframe.duration - (keyframeDiff);
+						//Reset keyframe to make sure we're at the last one (could have skipped it)
+						clipCtrl->keyframe = clip.lastKeyFrameIndex;
+						keyframe = clip.keyframePool->keyframe[clipCtrl->keyframe];
+
+						//Calculate keyframe time in the same way as the clipTime, use clipDiff 
+						//since we are at the last keyframe
+						clipCtrl->keyframeTime = keyframe.duration - (clipDiff);	
+						
 
 						printf("Playhead Forward Ping Pong Terminus - ");
 						break;
@@ -136,7 +143,7 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 				{
 				case LOOP:
 					//Loop keyframe to end of clip
-					clipCtrl->keyframe = clipCtrl->clipPool->clip[clipCtrl->clip].keyframePool->count - 1;
+					clipCtrl->keyframe = clipCtrl->clipPool->clip[clipCtrl->clip].lastKeyFrameIndex;
 					
 					//Calculate keyframe time based on duration of the new frame
 					a3_Keyframe nextFrame = clipCtrl->clipPool->clip[clipCtrl->clip].keyframePool->keyframe[clipCtrl->keyframe];
@@ -154,6 +161,7 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 					clipCtrl->clipTime = 0;
 					clipCtrl->keyframeTime = 0;
 					clipCtrl->playbackDirection = 0;
+					clipCtrl->keyframe = clip.firstKeyframeIndex;
 
 					//For debugging/testing only
 					printf("Playhead Backward Stop Terminus - ");
@@ -167,7 +175,8 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 					//overflow is just the positive clipTime
 					clipCtrl->clipTime = -clipCtrl->clipTime; //Flip sign
 					clipCtrl->keyframeTime = clipCtrl->clipTime; //MAKE SURE you do not flip this sign (it has already been flipped)
-					
+					clipCtrl->keyframe = clip.firstKeyframeIndex;
+
 					//For debugging/testing only
 					printf("Playhead Backward Ping Pong Terminus - ");
 					break;
@@ -179,7 +188,7 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 				clipCtrl->keyframe--;
 
 				//New keyframe time = old keyframe time (which should be negative) + new keyframe duration
-				a3_Keyframe nextFrame = clipCtrl->clipPool->clip[clipCtrl->clip].keyframePool->keyframe[clipCtrl->keyframe];
+				a3_Keyframe nextFrame = clip.keyframePool->keyframe[clipCtrl->keyframe];
 				clipCtrl->keyframeTime = clipCtrl->keyframeTime + nextFrame.duration;
 
 				//For debugging/testing only
