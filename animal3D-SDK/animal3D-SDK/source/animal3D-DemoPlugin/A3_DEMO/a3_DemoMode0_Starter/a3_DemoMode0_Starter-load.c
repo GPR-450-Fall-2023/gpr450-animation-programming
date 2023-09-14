@@ -167,27 +167,47 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 	demoMode->targetCount[starter_passComposite] = 1;
 
 	// SETUP HERE - Dillon
-	a3keyframePoolCreate(&demoMode->keyPool, 4);
 
-	a3clipPoolCreate(&demoMode->clipPool, &demoMode->keyPool, 1);
+	// Creating Pool of Keyframes
+	a3ui32 numOfKeyframes = 20;
+	a3keyframePoolCreate(&demoMode->keyPool, numOfKeyframes);
 
-	//////// Test Code
-	demoMode->keyPool.keyframe[0].data = 0;
-	a3keyframeSetDuration(&demoMode->keyPool.keyframe[0], .41f);
-	demoMode->keyPool.keyframe[1].data = 1;
-	a3keyframeSetDuration(&demoMode->keyPool.keyframe[1], .01f); //Tests skipping of keyframes
-	demoMode->keyPool.keyframe[2].data = 2;
-	a3keyframeSetDuration(&demoMode->keyPool.keyframe[2], .5);
-	demoMode->keyPool.keyframe[3].data = 3;
-	a3keyframeSetDuration(&demoMode->keyPool.keyframe[3], .5);
+	// Creating Pool of Clips
+	a3ui32 numOfClips = 5;
+	a3clipPoolCreate(&demoMode->clipPool, &demoMode->keyPool, numOfClips);
+
+	// Initializing Keyframes
+	for (int i = 0; i < numOfKeyframes; i++) {
+		a3keyframeInit(&demoMode->keyPool.keyframe[i], a3sqrt(i), (i/2)+1);
+	}
+
+	//demoMode->keyPool.keyframe[0].data = 0;
+	//a3keyframeSetDuration(&demoMode->keyPool.keyframe[0], .41f);
+	//demoMode->keyPool.keyframe[1].data = 1;
+	//a3keyframeSetDuration(&demoMode->keyPool.keyframe[1], .01f); //Tests skipping of keyframes
+	//demoMode->keyPool.keyframe[2].data = 2;
+	//a3keyframeSetDuration(&demoMode->keyPool.keyframe[2], .5);
+	//demoMode->keyPool.keyframe[3].data = 3;
+	//a3keyframeSetDuration(&demoMode->keyPool.keyframe[3], .5);
 
 	//a3clipCalculateDuration(&demoMode->clipPool.clip[0]);
 	//////////
 
-	a3clipInit(&demoMode->clipPool.clip[0], "Clip 1", &demoMode->keyPool, 0, 1);
-	//init keyframes, clips, and clipcontrollers here!!!
+	// Initializing Clips
+	a3clipInit(&demoMode->clipPool.clip[0], "Clip " + (1), &demoMode->keyPool, 0, 6);
+	a3clipInit(&demoMode->clipPool.clip[1], "Clip " + (2), &demoMode->keyPool, 4, 10);
+	a3clipInit(&demoMode->clipPool.clip[2], "Clip " + (3), &demoMode->keyPool, 8, 14);
+	a3clipInit(&demoMode->clipPool.clip[3], "Clip " + (4), &demoMode->keyPool, 12, 18);
+	a3clipInit(&demoMode->clipPool.clip[4], "Clip " + (5), &demoMode->keyPool, 16, 20);
+	// I didnt put this in a for loop because it was getting annoying
+	// to think of a mathematical function to make the clips share keyframes
+	// but also not go out of bounds, so i just did it manually
+	// we can change this later
 	
-	a3clipControllerInit(&demoMode->clipCtrl, "testCtrl", &demoMode->clipPool, 0);
+	// Initializing Clip Controllers
+	a3clipControllerInit(&demoMode->clipCtrl, "Clip Controller 1", &demoMode->clipPool, 0);
+	a3clipControllerInit(&demoMode->clipCtrl2, "Clip Controller 2", &demoMode->clipPool, 2);
+	a3clipControllerInit(&demoMode->clipCtrl3, "Clip Controller 3", &demoMode->clipPool, 2);
 
 	////// Test Code
 	demoMode->clipCtrl.playbackDirection = 1;

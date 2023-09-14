@@ -113,7 +113,43 @@ typedef enum a3_DemoMode0_Starter_TargetName				a3_DemoMode0_Starter_TargetName;
 		starter_target_scene_max,
 	};
 
-	//create enums here!!!
+	// play/pause states
+	enum a3_DemoMode0_Starter_Pause_Play
+	{
+		starter_play = 0,				// playing
+		starter_pause,					// paused
+
+		starter_pause_play_max,
+	};
+
+	// playback directions
+	enum a3_DemoMode0_Starter_Playing_Direction
+	{
+		starter_playing_forward = 0,	// playing forward
+		starter_playing_backward,		// playing backward
+
+		starter_playing_max,
+	};
+
+	// slowmo speeds
+	enum a3_DemoMode0_Starter_Slowmo_Speed
+	{
+		starter_speed_normal = 0,		// 1x speed
+		starter_speed_half,				// 0.5x speed
+		starter_speed_quarter,			// 0.25x speed
+
+		starter_slowmo_speed_max,
+	};
+
+	// terminus actions
+	enum a3_DemoMode0_Starter_Terminus_Action
+	{
+		starter_terminus_stop = 0,		// stop when clip ends
+		starter_terminus_loop,			// repeat when clip ends
+		starter_terminus_ping_pong,		// rewind when clip ends then repeat
+
+		starter_terminus_max,
+	};
 
 
 //-----------------------------------------------------------------------------
@@ -166,6 +202,8 @@ typedef enum a3_DemoMode0_Starter_TargetName				a3_DemoMode0_Starter_TargetName;
 		/////// DATA HERE - Dillon /////////
 
 		a3_ClipController clipCtrl;
+		a3_ClipController clipCtrl2;
+		a3_ClipController clipCtrl3;
 		a3_ClipPool clipPool;
 		a3_KeyframePool keyPool;
 	};
