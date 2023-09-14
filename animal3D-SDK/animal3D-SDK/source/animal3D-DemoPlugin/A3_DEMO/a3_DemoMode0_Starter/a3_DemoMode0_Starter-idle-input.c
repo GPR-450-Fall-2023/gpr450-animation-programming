@@ -62,7 +62,25 @@ void a3starter_input_keyCharPress(a3_DemoState const* demoState, a3_DemoMode0_St
 		// toggle pass to display
 		a3demoCtrlCasesLoop(demoMode->pass, starter_pass_max, ')', '(');
 
-		//create loops through enums here!!!
+		// toggle clip controllers
+		a3demoCtrlCasesLoop(demoMode->currentController, demoMode->numOfControllers, 'w', 'q');
+
+		// toggle pause
+		a3demoCtrlCasesLoop(demoMode->playPause, starter_play_pause_max, 'p', 'o');
+
+		// set to first/last frame in current clip
+
+		// toggle clip
+		a3demoCtrlCasesLoop(demoMode->currentClip, demoMode->numOfClips, 's', 'a');
+
+		// toggle backwards
+		a3demoCtrlCasesLoop(demoMode->forwardBackward, starter_playing_max, 'b', 'f');
+
+		// toggle slowmo
+		a3demoCtrlCasesLoop(demoMode->slowmo, starter_slowmo_speed_max, 'm', 'n');
+
+		// toggle terminus actions
+		a3demoCtrlCasesLoop(demoMode->terminus, starter_terminus_max, ',', '.');
 	}
 }
 

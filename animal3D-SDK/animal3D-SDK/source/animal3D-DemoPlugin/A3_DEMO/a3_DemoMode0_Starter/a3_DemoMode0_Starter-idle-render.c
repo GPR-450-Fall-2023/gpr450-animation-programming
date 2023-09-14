@@ -73,7 +73,47 @@ void a3starter_render_controls(a3_DemoState const* demoState, a3_DemoMode0_Start
 		"starter scene camera",
 	};
 
-	//ENUM LABELS HERE!!!
+	// clip controller names
+	a3byte const* clipControllers[3] = {
+		"Clip Controller 1",
+		"Clip Controller 2",
+		"Clip Controller 3",
+	};
+
+	// play/pause names
+	a3byte const* playingState[starter_play_pause_max] = {
+		"Playing",
+		"Paused",
+	};
+
+	// clip names
+	a3byte const* clips[5] = {
+		"Clip 1",
+		"Clip 2",
+		"Clip 3",
+		"Clip 4",
+		"Clip 5",
+	};
+
+	// playback direction names
+	a3byte const* playbackDirection[starter_playing_max] = {
+		"Forward",
+		"Backward",
+	};
+
+	// slowmo speed names
+	a3byte const* slowmoSpeed[starter_slowmo_speed_max] = {
+		"Normal Speed",
+		"Half Speed",
+		"Quarter Speed",
+	};
+
+	// terminus action names
+	a3byte const* terminusAction[starter_terminus_max] = {
+		"Stop",
+		"Loop",
+		"Ping Pong",
+	};
 
 	// constant color target names
 	a3byte const colorBufferText[] = "Color target 0: FINAL DISPLAY COLOR";
@@ -106,6 +146,11 @@ void a3starter_render_controls(a3_DemoState const* demoState, a3_DemoMode0_Start
 	a3_DemoMode0_Starter_TargetName const targetIndex = demoMode->targetIndex[pass];
 	a3_DemoMode0_Starter_TargetName const targetCount = demoMode->targetCount[pass];
 
+	a3_DemoMode0_Starter_Play_Pause const playPause = demoMode->playPause;
+	a3_DemoMode0_Starter_Playing_Direction const forwardBackward = demoMode->forwardBackward;
+	a3_DemoMode0_Starter_Slowmo_Speed const slowmo = demoMode->slowmo;
+	a3_DemoMode0_Starter_Terminus_Action const terminus = demoMode->terminus;
+
 	// demo modes
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"    Pipeline (%u / %u) ('[' | ']'): %s", pipeline + 1, starter_pipeline_max, pipelineText[pipeline]);
@@ -122,7 +167,25 @@ void a3starter_render_controls(a3_DemoState const* demoState, a3_DemoMode0_Start
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"    Active camera (%u / %u) ('c' prev | next 'v'): %s", activeCamera + 1, starter_camera_max, cameraText[activeCamera]);
 
-	//Basic Testing Interface LABELS HERE!!!
+	// Basic Testing Interface
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"Controls:");
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"    Change Clip Controller ('q' prev | next 'w'): %s", clipControllers[demoMode->currentController]);
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"    Play/Pause (p): %s", playingState[playPause]);
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"    Start of Clip (e)");
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"    End of Clip (r)");
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"    Current Clip ('a' prev | next 's'): %s", clips[demoMode->currentClip]);
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"    Forward/Backward (b): %s", playbackDirection[forwardBackward]);
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"    Slowmo Speed (m): %s", slowmoSpeed[slowmo]);
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"    Terminus Action (%u / %u) ( , | . ): %s", terminus + 1, starter_terminus_max, terminusAction[terminus]);
 
 }
 

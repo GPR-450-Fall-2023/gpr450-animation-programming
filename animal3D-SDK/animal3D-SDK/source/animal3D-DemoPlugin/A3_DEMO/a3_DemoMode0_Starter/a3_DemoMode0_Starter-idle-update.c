@@ -85,9 +85,40 @@ void a3starter_update(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a
 	}
 
 	//update using settings from enums here!!!
+	a3_ClipController* clipCtrl;
+	switch (demoMode->currentController)
+	{
+	case 0:
+		clipCtrl = &demoMode->clipCtrl1;
+		break;
+	case 1:
+		clipCtrl = &demoMode->clipCtrl2;
+		break;
+	case 2:
+		clipCtrl = &demoMode->clipCtrl3;
+		break;
+	default:
+		clipCtrl = &demoMode->clipCtrl1;
+		break;
+	}
+
+	// put play/pause/forward/backward state into effect
+	if (demoMode->playPause == 0 && demoMode->forwardBackward == 0) {		//playing forward
+		clipCtrl->playbackDirection = 1;
+	}
+	else if (demoMode->playPause == 0 && demoMode->forwardBackward == 1) {	//playing backward
+		clipCtrl->playbackDirection = -1;
+	}
+	else if (demoMode->playPause == 1) {									//paused
+		clipCtrl->playbackDirection = 0;
+	}
+	//slowmo???
+
+	// put terminus action state into effect
+	clipCtrl->terminusAction = demoMode->terminus;
 
 	//UPDATE HERE - Dillon
-	a3clipControllerUpdate(&demoMode->clipCtrl, (a3real)dt);
+	a3clipControllerUpdate(&demoMode->clipCtrl1, (a3real)dt);
 }
 
 

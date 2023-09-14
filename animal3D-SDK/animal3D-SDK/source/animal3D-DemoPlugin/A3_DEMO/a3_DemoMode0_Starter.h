@@ -49,6 +49,11 @@ typedef enum a3_DemoMode0_Starter_ActiveCameraName			a3_DemoMode0_Starter_Active
 typedef enum a3_DemoMode0_Starter_PipelineName				a3_DemoMode0_Starter_PipelineName;
 typedef enum a3_DemoMode0_Starter_PassName					a3_DemoMode0_Starter_PassName;
 typedef enum a3_DemoMode0_Starter_TargetName				a3_DemoMode0_Starter_TargetName;
+
+typedef enum a3_DemoMode0_Starter_Play_Pause				a3_DemoMode0_Starter_Play_Pause;
+typedef enum a3_DemoMode0_Starter_Playing_Direction			a3_DemoMode0_Starter_Playing_Direction;
+typedef enum a3_DemoMode0_Starter_Slowmo_Speed				a3_DemoMode0_Starter_Slowmo_Speed;
+typedef enum a3_DemoMode0_Starter_Terminus_Action			a3_DemoMode0_Starter_Terminus_Action;
 #endif	// __cplusplus
 
 
@@ -114,12 +119,12 @@ typedef enum a3_DemoMode0_Starter_TargetName				a3_DemoMode0_Starter_TargetName;
 	};
 
 	// play/pause states
-	enum a3_DemoMode0_Starter_Pause_Play
+	enum a3_DemoMode0_Starter_Play_Pause
 	{
 		starter_play = 0,				// playing
 		starter_pause,					// paused
 
-		starter_pause_play_max,
+		starter_play_pause_max,
 	};
 
 	// playback directions
@@ -165,7 +170,10 @@ typedef enum a3_DemoMode0_Starter_TargetName				a3_DemoMode0_Starter_TargetName;
 		a3_DemoMode0_Starter_PassName pass;
 		a3_DemoMode0_Starter_TargetName targetIndex[starter_pass_max], targetCount[starter_pass_max];
 
-		//create variables of type enum here!!!
+		a3_DemoMode0_Starter_Play_Pause playPause;
+		a3_DemoMode0_Starter_Playing_Direction forwardBackward;
+		a3_DemoMode0_Starter_Slowmo_Speed slowmo;
+		a3_DemoMode0_Starter_Terminus_Action terminus;
 
 		// objects
 		union {
@@ -201,11 +209,16 @@ typedef enum a3_DemoMode0_Starter_TargetName				a3_DemoMode0_Starter_TargetName;
 
 		/////// DATA HERE - Dillon /////////
 
-		a3_ClipController clipCtrl;
+		a3_ClipController clipCtrl1;
 		a3_ClipController clipCtrl2;
 		a3_ClipController clipCtrl3;
+		a3ui32 currentController;
+		a3ui32 numOfControllers;
 		a3_ClipPool clipPool;
 		a3_KeyframePool keyPool;
+		a3ui32 currentClip;
+		a3ui32 numOfKeyframes;
+		a3ui32 numOfClips;
 	};
 
 //-----------------------------------------------------------------------------

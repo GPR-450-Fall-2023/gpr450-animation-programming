@@ -169,17 +169,18 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 	// SETUP HERE - Dillon
 
 	// Creating Pool of Keyframes
-	a3ui32 numOfKeyframes = 20;
-	a3keyframePoolCreate(&demoMode->keyPool, numOfKeyframes);
+	demoMode->numOfKeyframes = 20;
+	a3keyframePoolCreate(&demoMode->keyPool, demoMode->numOfKeyframes);
 
 	// Creating Pool of Clips
-	a3ui32 numOfClips = 5;
-	a3clipPoolCreate(&demoMode->clipPool, &demoMode->keyPool, numOfClips);
+	demoMode->numOfClips = 5;
+	demoMode->currentClip = 0;
+	a3clipPoolCreate(&demoMode->clipPool, &demoMode->keyPool, demoMode->numOfClips);
 
 	// Initializing Keyframes
-	for (int i = 0; i < numOfKeyframes; i++) {
-		a3keyframeInit(&demoMode->keyPool.keyframe[i], a3sqrt(i), (i/2)+1);
-	}
+	//for (a3ui32 i = 0; i < numOfKeyframes; i++) {
+	//	a3keyframeInit(&demoMode->keyPool.keyframe[i], a3sqrt(i), (i/2)+1);
+	//}
 
 	//demoMode->keyPool.keyframe[0].data = 0;
 	//a3keyframeSetDuration(&demoMode->keyPool.keyframe[0], .41f);
@@ -205,13 +206,15 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 	// we can change this later
 	
 	// Initializing Clip Controllers
-	a3clipControllerInit(&demoMode->clipCtrl, "Clip Controller 1", &demoMode->clipPool, 0);
+	a3clipControllerInit(&demoMode->clipCtrl1, "Clip Controller 1", &demoMode->clipPool, 0);
 	a3clipControllerInit(&demoMode->clipCtrl2, "Clip Controller 2", &demoMode->clipPool, 2);
 	a3clipControllerInit(&demoMode->clipCtrl3, "Clip Controller 3", &demoMode->clipPool, 2);
+	demoMode->currentController = 0;
+	demoMode->numOfControllers = 3;
 
 	////// Test Code
-	demoMode->clipCtrl.playbackDirection = 1;
-	demoMode->clipCtrl.terminusAction = PING_PONG;
+	demoMode->clipCtrl1.playbackDirection = 1;
+	demoMode->clipCtrl1.terminusAction = PING_PONG;
 
 	//Used to move playhead to the end of the clip so we can test backward movement (like the stop terminus)
 	/*a3_Clip clip = demoMode->clipCtrl.clipPool->clip[demoMode->clipCtrl.clip];
