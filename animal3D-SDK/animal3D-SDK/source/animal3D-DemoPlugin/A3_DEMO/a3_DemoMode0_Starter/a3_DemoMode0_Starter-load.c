@@ -184,7 +184,8 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 	//a3clipCalculateDuration(&demoMode->clipPool.clip[0]);
 	//////////
 
-	a3clipInit(&demoMode->clipPool.clip[0], "Clip 1", & demoMode->keyPool, 0, 1);
+	a3clipInit(&demoMode->clipPool.clip[0], "Clip 1", &demoMode->keyPool, 0, 1);
+	//init keyframes, clips, and clipcontrollers here!!!
 	
 	a3clipControllerInit(&demoMode->clipCtrl, "testCtrl", &demoMode->clipPool, 0);
 

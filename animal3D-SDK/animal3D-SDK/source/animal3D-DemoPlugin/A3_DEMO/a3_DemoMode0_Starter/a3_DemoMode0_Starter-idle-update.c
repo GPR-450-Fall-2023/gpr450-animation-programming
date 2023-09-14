@@ -84,6 +84,8 @@ void a3starter_update(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a
 			demoMode->object_scene[i].modelMat.m, a3mat4_identity.m);
 	}
 
+	//update using settings from enums here!!!
+
 	//UPDATE HERE - Dillon
 	a3clipControllerUpdate(&demoMode->clipCtrl, (a3real)dt);
 }
