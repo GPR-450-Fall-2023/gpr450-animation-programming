@@ -37,16 +37,19 @@
 // calculate clip duration as sum of keyframes' durations
 inline a3i32 a3clipCalculateDuration(a3_Clip* clip)
 {
+	// return if anything needed is null
 	if(clip == NULL) return -1;
 	if(clip->keyframePool == NULL) return 1;
 
 	a3real duration = 0;
 
+	// add together all keyframe durations
 	for (a3ui32 i = clip->firstKeyframeIndex; i <= clip->lastKeyFrameIndex; i++)
 	{
 		duration += clip->keyframePool->keyframe[i].duration;
 	}
 
+	// make sure duration is greater than minimum
 	if (duration < a3keyframeAnimation_minDuration)
 	{
 		clip->duration = a3keyframeAnimation_minDuration;
@@ -56,6 +59,7 @@ inline a3i32 a3clipCalculateDuration(a3_Clip* clip)
 		clip->duration = duration;
 	}
 
+	// set inverse
 	clip->durationInverse = 1 / clip->duration;
 
 	return 0;
@@ -64,20 +68,25 @@ inline a3i32 a3clipCalculateDuration(a3_Clip* clip)
 // calculate keyframes' durations by distributing clip's duration
 inline a3i32 a3clipDistributeDuration(a3_Clip* clip, const a3real newClipDuration)
 {
+	// return if anything needed is null
 	if(clip == NULL) return -1;
 	if(clip->keyframePool == NULL) return 1;
+	if(clip->keyframeCount <= 0) return 1;
 
-	a3_Keyframe* keyframe;
+	a3_Keyframe* keyframe; // keyframe pointer we'll use for storage
+	
+	// calculate duration per keyframe
 	a3real durationPerKeyframe = newClipDuration / clip->keyframeCount;
 
+	// loop through each keyframe and set their duration
 	for (a3ui32 i = clip->firstKeyframeIndex; i <= clip->lastKeyFrameIndex; i++)
 	{
 		keyframe = (clip->keyframePool->keyframe + i);
 		a3keyframeSetDuration(keyframe, durationPerKeyframe);
 	}
 
-	// Do this in case durationPerKeyFrame ended up under min value
-	// If it did, each keyframe would automatically have set duration to min value
+	// do this in case durationPerKeyFrame ended up under min value
+	// if it did, each keyframe would automatically have set duration to min value
 	a3clipCalculateDuration(clip);
 
 	return 0;
