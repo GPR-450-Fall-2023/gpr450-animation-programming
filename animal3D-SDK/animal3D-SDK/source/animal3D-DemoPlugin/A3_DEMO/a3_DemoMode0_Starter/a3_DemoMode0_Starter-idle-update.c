@@ -102,17 +102,21 @@ void a3starter_update(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a
 		break;
 	}
 
-	// put play/pause/forward/backward state into effect
-	if (demoMode->playPause == 0 && demoMode->forwardBackward == 0) {		//playing forward
-		clipCtrl->playbackDirection = 1;
+	// turning play/pause/slowmo/forward/backward into effect
+	a3i16 playbackSpd= 1;
+	if (demoMode->playPause = 1) {			//pause
+		playbackSpd *= 0;
 	}
-	else if (demoMode->playPause == 0 && demoMode->forwardBackward == 1) {	//playing backward
-		clipCtrl->playbackDirection = -1;
+	if (demoMode->forwardBackward == 1) {	//backward
+		playbackSpd *= -1;
 	}
-	else if (demoMode->playPause == 1) {									//paused
-		clipCtrl->playbackDirection = 0;
+	if (demoMode->slowmo == 1) {			//half speed
+		playbackSpd *= 0.5;
 	}
-	//slowmo???
+	else if (demoMode->slowmo == 2) {		//quarter speed
+		playbackSpd *= 0.25;
+	}
+	clipCtrl->playbackDirection = playbackSpd;
 
 	// put terminus action state into effect
 	clipCtrl->terminusAction = demoMode->terminus;
