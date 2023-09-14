@@ -71,9 +71,11 @@ struct a3_Keyframe
 	a3ui32 index;
 
 	// amount of time keyframe is active for, cannot be 0
+	// NOTE: instead of setting this directly, you should use the setDuration function
 	a3real duration;
 
 	// reciprocal of duration
+	// NOTE: instead of setting this directly, you should use the setDuration function
 	a3real durationInverse;
 
 	// data held by keyframe
