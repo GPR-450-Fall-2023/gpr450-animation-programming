@@ -73,6 +73,8 @@ void a3starter_render_controls(a3_DemoState const* demoState, a3_DemoMode0_Start
 		"starter scene camera",
 	};
 
+	//ENUM LABELS HERE!!!
+
 	// constant color target names
 	a3byte const colorBufferText[] = "Color target 0: FINAL DISPLAY COLOR";
 	// constant depth target name
@@ -119,6 +121,9 @@ void a3starter_render_controls(a3_DemoState const* demoState, a3_DemoMode0_Start
 		"    Display mode (%u / %u) ('J' | 'K'): %s", display + 1, starter_display_max, displayProgramName[display]);
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"    Active camera (%u / %u) ('c' prev | next 'v'): %s", activeCamera + 1, starter_camera_max, cameraText[activeCamera]);
+
+	//Basic Testing Interface LABELS HERE!!!
+
 }
 
 

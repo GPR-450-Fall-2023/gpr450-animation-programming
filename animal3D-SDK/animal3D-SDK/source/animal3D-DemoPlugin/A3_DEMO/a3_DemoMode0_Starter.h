@@ -113,6 +113,8 @@ typedef enum a3_DemoMode0_Starter_TargetName				a3_DemoMode0_Starter_TargetName;
 		starter_target_scene_max,
 	};
 
+	//create enums here!!!
+
 
 //-----------------------------------------------------------------------------
 
@@ -126,6 +128,8 @@ typedef enum a3_DemoMode0_Starter_TargetName				a3_DemoMode0_Starter_TargetName;
 		a3_DemoMode0_Starter_PipelineName pipeline;
 		a3_DemoMode0_Starter_PassName pass;
 		a3_DemoMode0_Starter_TargetName targetIndex[starter_pass_max], targetCount[starter_pass_max];
+
+		//create variables of type enum here!!!
 
 		// objects
 		union {

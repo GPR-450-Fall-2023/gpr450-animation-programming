@@ -61,6 +61,8 @@ void a3starter_input_keyCharPress(a3_DemoState const* demoState, a3_DemoMode0_St
 
 		// toggle pass to display
 		a3demoCtrlCasesLoop(demoMode->pass, starter_pass_max, ')', '(');
+
+		//create loops through enums here!!!
 	}
 }
 
