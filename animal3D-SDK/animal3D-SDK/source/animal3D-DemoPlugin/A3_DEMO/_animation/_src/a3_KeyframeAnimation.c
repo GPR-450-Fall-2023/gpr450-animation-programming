@@ -22,6 +22,14 @@
 	Implementation of keyframe animation interfaces.
 */
 
+/*
+	animal3D SDK: Keyframe and Clip Controller Framework
+	By Dillon Drummond, Neo Kattan, Joseph Lyons
+
+	a3_KeyframeAnimation.c
+	Implementation of keyframe and clip controller interfaces
+*/
+
 #include "../a3_KeyframeAnimation.h"
 
 #include <stdlib.h>

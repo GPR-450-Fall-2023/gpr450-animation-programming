@@ -22,6 +22,14 @@
 	Inline definitions for keyframe animation.
 */
 
+/*
+	animal3D SDK: Keyframe and Clip Controller Framework
+	By Dillon Drummond, Neo Kattan, Joseph Lyons
+
+	a3_KeyframeAnimation.inl
+	Inline definitions for clip
+*/
+
 #ifdef __ANIMAL3D_KEYFRAMEANIMATION_H
 #ifndef __ANIMAL3D_KEYFRAMEANIMATION_INL
 #define __ANIMAL3D_KEYFRAMEANIMATION_INL

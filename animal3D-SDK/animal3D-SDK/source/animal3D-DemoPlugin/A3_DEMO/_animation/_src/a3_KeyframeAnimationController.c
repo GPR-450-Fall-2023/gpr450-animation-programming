@@ -63,13 +63,13 @@ a3ui32 a3clipControllerPoolCreate(a3_ClipControllerPool* clipCtrlPool_out, a3_Cl
 
 	clipCtrlPool_out->count = count; // set count
 
-	clipCtrlPool_out->clipControllers = (a3_ClipController*)malloc(sizeof(a3_ClipController) * count); // create clip array
+	clipCtrlPool_out->clipControllers = (a3_ClipController*)malloc(sizeof(a3_ClipController) * count); // create controller array
 
 	if (clipCtrlPool_out->clipControllers == NULL) return -1;
 
 	for (a3ui32 i = 0; i < count; i++)
 	{
-		// init each clip with default values
+		// init each clip controller with default values
 		a3clipControllerInit(clipCtrlPool_out->clipControllers + i, DEFAULT_CLIP_CONTROLLER_NAME, clipPool, DEFAULT_FIRST_INDEX);
 
 		if ((clipCtrlPool_out->clipControllers + i) == NULL) return -1; // return if controller is null

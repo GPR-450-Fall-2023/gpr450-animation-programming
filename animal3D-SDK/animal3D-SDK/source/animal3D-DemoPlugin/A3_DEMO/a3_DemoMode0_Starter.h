@@ -26,6 +26,14 @@
 	********************************************
 */
 
+/*
+	animal3D SDK: Keyframe and Clip Controller Framework
+	By Dillon Drummond, Neo Kattan, Joseph Lyons
+
+	a3_DemoMode0_Starter.h
+	Declaration of variables used to test keyframes and clip controller
+*/
+
 #ifndef __ANIMAL3D_DEMOMODE0_STARTER_H
 #define __ANIMAL3D_DEMOMODE0_STARTER_H
 
@@ -234,11 +242,8 @@ typedef enum a3_DemoMode0_Starter_Last_Keyframe				a3_DemoMode0_Starter_Last_Key
 			};
 		};
 
-		/////// DATA HERE - Dillon /////////
+		/////// DATA HERE /////////
 
-		/*a3_ClipController clipCtrl1;
-		a3_ClipController clipCtrl2;
-		a3_ClipController clipCtrl3;*/
 		a3_ClipControllerPool clipCtrlPool;
 		a3ui32 currentController;
 		a3ui32 numOfControllers;

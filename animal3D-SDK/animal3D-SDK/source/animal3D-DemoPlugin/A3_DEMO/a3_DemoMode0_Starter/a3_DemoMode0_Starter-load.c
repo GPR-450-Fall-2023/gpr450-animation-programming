@@ -26,6 +26,16 @@
 	********************************************
 */
 
+/*
+	animal3D SDK: Keyframe and Clip Controller Framework
+	By Dillon Drummond, Neo Kattan, Joseph Lyons
+
+	a3_DemoMode0_Starter-load.c
+	Demo mode implementations: keyframe and clip controller
+
+	LOADING FOR KEYFRAME AND CLIP CONTROLLER
+*/
+
 //-----------------------------------------------------------------------------
 
 #include "../a3_DemoMode0_Starter.h"
@@ -213,6 +223,7 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 	demoMode->currentController = 0;
 	demoMode->numOfControllers = 3;
 
+	//Reset settings
 	demoMode->shouldSpeedUp = false;
 	demoMode->shouldSlowDown = false;
 	demoMode->togglePause = false;

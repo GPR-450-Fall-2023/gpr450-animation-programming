@@ -26,6 +26,16 @@
 	********************************************
 */
 
+/*
+	animal3D SDK: Keyframe and Clip Controller Framework
+	By Dillon Drummond, Neo Kattan, Joseph Lyons
+
+	a3_DemoMode0_Starter-input.c
+	Demo mode implementations: keyframe and clip controller
+
+	INPUT FOR KEYFRAME AND CLIP CONTROLLER
+*/
+
 //-----------------------------------------------------------------------------
 
 #include "../a3_DemoMode0_Starter.h"

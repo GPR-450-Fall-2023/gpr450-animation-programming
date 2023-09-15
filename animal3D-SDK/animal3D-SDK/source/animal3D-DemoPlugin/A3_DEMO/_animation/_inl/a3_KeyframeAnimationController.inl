@@ -22,6 +22,14 @@
 	inline definitions for keyframe animation controller.
 */
 
+/*
+	animal3D SDK: Keyframe and Clip Controller Framework
+	By Dillon Drummond, Neo Kattan, Joseph Lyons
+
+	a3_KeyframeAnimationController.inl
+	Inline function definitions for clip controller
+*/
+
 #ifdef __ANIMAL3D_KEYFRAMEANIMATIONCONTROLLER_H
 #ifndef __ANIMAL3D_KEYFRAMEANIMATIONCONTROLLER_INL
 #define __ANIMAL3D_KEYFRAMEANIMATIONCONTROLLER_INL
@@ -239,11 +247,11 @@ inline a3i32 a3clipControllerSetClip(a3_ClipController* clipCtrl, const a3_ClipP
 	 
 	//Reset time values, set new clip and clip pool
 	clipCtrl->clipPool = clipPool;
-
 	clipCtrl->clip = clipIndex_pool;
 	clipCtrl->clipTime = 0;
 	clipCtrl->clipParameter = 0;
 
+	//Set keyframe index to the first keyframe in the clip
 	clipCtrl->keyframe = clipCtrl->clipPool->clip[clipCtrl->clip].firstKeyframeIndex;
 	clipCtrl->keyframeTime = 0;
 	clipCtrl->keyframeParameter = 0;

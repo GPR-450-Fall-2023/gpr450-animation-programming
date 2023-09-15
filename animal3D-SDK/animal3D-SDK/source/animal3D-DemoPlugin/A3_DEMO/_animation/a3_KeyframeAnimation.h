@@ -23,9 +23,11 @@
 */
 
 /*
-*	Joseph Lyons
-*	Filled in structs in file (a3_Keyframe, a3_KeyframePool, a3_Clip, a3_ClipPool)
-*	Created functionality for all functions in file
+	animal3D SDK: Keyframe and Clip Controller Framework
+	By Dillon Drummond, Neo Kattan, Joseph Lyons
+
+	a3_KeyframeAnimation.h
+	Declaration of keyframe, clip, keyframe pool, and clip pool
 */
 
 

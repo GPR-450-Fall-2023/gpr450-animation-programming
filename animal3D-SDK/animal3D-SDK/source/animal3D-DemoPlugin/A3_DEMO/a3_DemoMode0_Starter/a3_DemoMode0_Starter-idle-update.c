@@ -26,6 +26,16 @@
 	********************************************
 */
 
+/*
+	animal3D SDK: Keyframe and Clip Controller Framework
+	By Dillon Drummond, Neo Kattan, Joseph Lyons
+
+	a3_DemoMode0_Starter_idle-update.c
+	Demo mode implementations: keyframe and clip controller
+
+	UPDATE FOR KEYFRAME AND CLIP CONTROLLER
+*/
+
 //-----------------------------------------------------------------------------
 
 #include "../a3_DemoMode0_Starter.h"
@@ -135,13 +145,16 @@ void a3starter_update(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a
 	// put terminus action state into effect
 	clipCtrl->terminusAction = demoMode->terminus;
 
+	//Clear console before updating clip controllers so we get only the data from this frame
 	system("cls");
-	//UPDATE HERE - Dillon
+
+	//Update all controllers
 	for (a3ui32 index = 0; index < demoMode->clipCtrlPool.count; index++)
 	{
 		a3clipControllerUpdate(&demoMode->clipCtrlPool.clipControllers[index], (a3real)dt);
 	}
 
+	//Save index of previous clip to check if clip has changed later
 	demoMode->previousFrameClip = demoMode->currentClip;
 }
 

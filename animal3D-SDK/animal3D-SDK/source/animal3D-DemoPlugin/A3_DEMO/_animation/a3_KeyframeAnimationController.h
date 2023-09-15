@@ -23,6 +23,14 @@
 	limited in what one can do with this; could potentially be so much more.
 */
 
+/*
+	animal3D SDK: Keyframe and Clip Controller Framework
+	By Dillon Drummond, Neo Kattan, Joseph Lyons
+
+	a3_KeyframeAnimationController.h
+	Declaration of clip controller and clip controller pool
+*/
+
 #ifndef __ANIMAL3D_KEYFRAMEANIMATIONCONTROLLER_H
 #define __ANIMAL3D_KEYFRAMEANIMATIONCONTROLLER_H
 
