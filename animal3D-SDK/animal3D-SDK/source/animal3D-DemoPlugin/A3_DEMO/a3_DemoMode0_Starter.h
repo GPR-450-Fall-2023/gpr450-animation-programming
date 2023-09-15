@@ -236,9 +236,10 @@ typedef enum a3_DemoMode0_Starter_Last_Keyframe				a3_DemoMode0_Starter_Last_Key
 
 		/////// DATA HERE - Dillon /////////
 
-		a3_ClipController clipCtrl1;
+		/*a3_ClipController clipCtrl1;
 		a3_ClipController clipCtrl2;
-		a3_ClipController clipCtrl3;
+		a3_ClipController clipCtrl3;*/
+		a3_ClipControllerPool clipCtrlPool;
 		a3ui32 currentController;
 		a3ui32 numOfControllers;
 		a3_ClipPool clipPool;

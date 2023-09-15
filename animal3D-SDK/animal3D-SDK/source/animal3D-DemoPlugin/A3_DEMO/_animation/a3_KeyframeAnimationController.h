@@ -37,6 +37,7 @@ extern "C"
 {
 #else	// !__cplusplus
 typedef struct a3_ClipController			a3_ClipController;
+typedef struct a3_ClipControllerPool		a3_ClipControllerPool;
 #endif	// __cplusplus
 
 
@@ -53,7 +54,11 @@ enum TerminusAction {
 // metaphor: playhead
 struct a3_ClipController
 {
+	//Name of clip controller
 	a3byte name[a3keyframeAnimation_nameLenMax];
+
+	// index in clip controller pool
+	a3ui32 index;
 
 	//Index of current referenced clip in pool
 	a3ui32 clip;
@@ -79,6 +84,15 @@ struct a3_ClipController
 	const a3_ClipPool* clipPool;
 };
 
+struct a3_ClipControllerPool 
+{
+	//Array of clipControllers
+	a3_ClipController* clipControllers;
+
+	//Amount of controllers in clipControllers
+	a3ui32 count;
+};
+
 
 //-----------------------------------------------------------------------------
 
@@ -91,6 +105,11 @@ a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt);
 // set clip to play
 a3i32 a3clipControllerSetClip(a3_ClipController* clipCtrl, const a3_ClipPool* clipPool, const a3ui32 clipIndex_pool);
 
+//Create clip controller pool
+a3ui32 a3clipControllerPoolCreate(a3_ClipControllerPool* clipCtrlPool, a3_ClipPool* clipPool, const a3ui32 count);
+
+//Release clip controller pool
+a3ui32 a3clipControllerPoolRelease(a3_ClipControllerPool* clipCtrlPool);
 
 //-----------------------------------------------------------------------------
 

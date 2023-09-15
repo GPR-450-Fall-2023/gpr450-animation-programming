@@ -206,9 +206,10 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 	// we can change this later
 	
 	// Initializing Clip Controllers
-	a3clipControllerInit(&demoMode->clipCtrl1, "Clip Controller 1", &demoMode->clipPool, 0);
-	a3clipControllerInit(&demoMode->clipCtrl2, "Clip Controller 2", &demoMode->clipPool, 2);
-	a3clipControllerInit(&demoMode->clipCtrl3, "Clip Controller 3", &demoMode->clipPool, 2);
+	a3clipControllerPoolCreate(&demoMode->clipCtrlPool, &demoMode->clipPool, 3);
+	a3clipControllerInit(&demoMode->clipCtrlPool.clipControllers[0], "Clip Controller 1", &demoMode->clipPool, 0);
+	a3clipControllerInit(&demoMode->clipCtrlPool.clipControllers[1], "Clip Controller 2", &demoMode->clipPool, 2);
+	a3clipControllerInit(&demoMode->clipCtrlPool.clipControllers[2], "Clip Controller 3", &demoMode->clipPool, 2);
 	demoMode->currentController = 0;
 	demoMode->numOfControllers = 3;
 
@@ -218,8 +219,8 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 	demoMode->shouldRewind = false;
 
 	////// Test Code
-	demoMode->clipCtrl1.playbackDirection = 1;
-	demoMode->clipCtrl1.terminusAction = PING_PONG;
+	//demoMode->clipCtrl1.playbackDirection = 1;
+	//demoMode->clipCtrl1.terminusAction = PING_PONG;
 
 	//Used to move playhead to the end of the clip so we can test backward movement (like the stop terminus)
 	/*a3_Clip clip = demoMode->clipCtrl.clipPool->clip[demoMode->clipCtrl.clip];

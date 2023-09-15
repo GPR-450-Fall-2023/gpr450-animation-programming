@@ -87,8 +87,8 @@ void a3starter_update(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a
 	}
 
 	// select the active clip controller to make changes to the clip
-	a3_ClipController* clipCtrl;
-	switch (demoMode->currentController)
+	a3_ClipController* clipCtrl = &demoMode->clipCtrlPool.clipControllers[demoMode->currentController];
+	/*switch (demoMode->currentController)
 	{
 	case 0:
 		clipCtrl = &demoMode->clipCtrl1;
@@ -102,7 +102,7 @@ void a3starter_update(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a
 	default:
 		clipCtrl = &demoMode->clipCtrl1;
 		break;
-	}
+	}*/
 
 	// setting to start/end of clip
 	if (demoMode->first == 1) {
@@ -129,6 +129,7 @@ void a3starter_update(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a
 			playbackDirectionStorage = clipCtrl->playbackDirection;
 			clipCtrl->playbackDirection = 0;
 		}
+		demoMode->togglePause = false;
 	}
 	if (demoMode->shouldRewind) {	//backward
 		clipCtrl->playbackDirection *= -1;
@@ -146,9 +147,12 @@ void a3starter_update(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a
 	// put terminus action state into effect
 	clipCtrl->terminusAction = demoMode->terminus;
 
-
+	system("cls");
 	//UPDATE HERE - Dillon
-	a3clipControllerUpdate(clipCtrl, (a3real)dt);
+	for (a3ui32 index = 0; index < demoMode->clipCtrlPool.count; index++)
+	{
+		a3clipControllerUpdate(&demoMode->clipCtrlPool.clipControllers[index], (a3real)dt);
+	}
 }
 
 

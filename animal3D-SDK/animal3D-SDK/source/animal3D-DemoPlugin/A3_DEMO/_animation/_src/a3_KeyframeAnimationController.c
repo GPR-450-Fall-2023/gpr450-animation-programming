@@ -49,5 +49,59 @@ a3i32 a3clipControllerInit(a3_ClipController* clipCtrl_out, const a3byte ctrlNam
 	return 0;
 }
 
+a3ui32 a3clipControllerPoolCreate(a3_ClipControllerPool* clipCtrlPool_out, a3_ClipPool* clipPool, const a3ui32 count)
+{
+	//clipCtrlPool = (a3_ClipControllerPool*) malloc(sizeof(a3_ClipControllerPool) + (sizeof(a3_ClipController) * count));
+	//clipCtrlPool->count = count;
+
+	// default values for clips
+	const a3byte DEFAULT_CLIP_CONTROLLER_NAME[] = "Clip Controller";
+	const a3ui32 DEFAULT_FIRST_INDEX = 0;
+
+	if (clipCtrlPool_out == NULL) return -1; // return if clipCtrlPool_out doesn't exist
+	if (clipPool == NULL) return -1; // return if clip pool doesn't exist
+
+	clipCtrlPool_out->count = count; // set count
+
+	clipCtrlPool_out->clipControllers = (a3_ClipController*)malloc(sizeof(a3_ClipController) * count); // create clip array
+
+	if (clipCtrlPool_out->clipControllers == NULL) return -1;
+
+	for (a3ui32 i = 0; i < count; i++)
+	{
+		// init each clip with default values
+		a3clipControllerInit(clipCtrlPool_out->clipControllers + i, DEFAULT_CLIP_CONTROLLER_NAME, clipPool, DEFAULT_FIRST_INDEX);
+
+		if ((clipCtrlPool_out->clipControllers + i) == NULL) return -1; // return if controller is null
+
+		(clipCtrlPool_out->clipControllers + i)->index = i; //Log controllers index in pool
+	}
+
+	return 0;
+}
+
+a3ui32 a3clipControllerPoolRelease(a3_ClipControllerPool* clipCtrlPool)
+{
+
+	if (clipCtrlPool == NULL) return -1; // return if clipPool doesn't exist
+
+	int returnCode = 0;
+
+	if (clipCtrlPool->clipControllers == NULL) // only free clip array if it exists
+	{
+		returnCode = 1;
+	}
+	else
+	{
+		free(clipCtrlPool->clipControllers);
+	}
+
+	free(clipCtrlPool);
+
+	return returnCode;
+
+	return 0;
+}
+
 
 //-----------------------------------------------------------------------------
