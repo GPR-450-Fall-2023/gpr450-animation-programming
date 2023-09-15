@@ -221,8 +221,8 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 	clipCtrl->clipParameter = clipCtrl->clipTime * clip.durationInverse;
 
 	//For debugging/testing only, prints out clipCtrl info
-	printf("\nClip Time: %f\nClip Duration: %f\nClip Normalized: %f\n\nKeyframeTime: %f\nKeyframe Duration: %f\nKeyframe Normalized: %f\n", clipCtrl->clipTime, clip.duration, clipCtrl->clipParameter, clipCtrl->keyframeTime, keyframe.duration, clipCtrl->keyframeParameter);
-	printf("\n------ Update Finished, Data = %i ------\n\n", keyframe.data);
+	printf("\nClip Time: %f\nClip Duration: %f\nClip Normalized: %f\n\nKeyframe Index: %i\nKeyframeTime: %f\nKeyframe Duration: %f\nKeyframe Normalized: %f\n", clipCtrl->clipTime, clip.duration, clipCtrl->clipParameter, clipCtrl->keyframe, clipCtrl->keyframeTime, keyframe.duration, clipCtrl->keyframeParameter);
+	printf("\n------ Update Finished, Data = %i,  ------\n\n", keyframe.data);
 
 	return 0;
 }

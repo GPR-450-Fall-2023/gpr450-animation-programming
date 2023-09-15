@@ -179,7 +179,7 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 
 	// Initializing Keyframes UNCOMMENT THIS BEFORE SAYING DONE
 	for (a3ui32 i = 0; i < demoMode->numOfKeyframes; i++) {
-		a3keyframeInit(&demoMode->keyPool.keyframe[i], 0.5f, i);
+		a3keyframeInit(&demoMode->keyPool.keyframe[i], 0.5f, i + 1);
 	}
 
 	//demoMode->keyPool.keyframe[0].data = 0;
