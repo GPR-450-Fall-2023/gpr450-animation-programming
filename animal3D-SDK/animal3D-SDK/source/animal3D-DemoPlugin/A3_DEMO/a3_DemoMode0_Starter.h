@@ -190,9 +190,9 @@ typedef enum a3_DemoMode0_Starter_Last_Keyframe				a3_DemoMode0_Starter_Last_Key
 		a3_DemoMode0_Starter_PassName pass;
 		a3_DemoMode0_Starter_TargetName targetIndex[starter_pass_max], targetCount[starter_pass_max];
 
-		a3_DemoMode0_Starter_Play_Pause playPause;
-		a3_DemoMode0_Starter_Playing_Direction forwardBackward;
-		a3_DemoMode0_Starter_Slowmo_Speed slowmo;
+		//a3_DemoMode0_Starter_Play_Pause playPause;
+		//a3_DemoMode0_Starter_Playing_Direction forwardBackward;
+		//a3_DemoMode0_Starter_Slowmo_Speed slowmo;
 		a3_DemoMode0_Starter_Terminus_Action terminus;
 		a3_DemoMode0_Starter_First_Keyframe first;
 		a3_DemoMode0_Starter_Last_Keyframe last;
