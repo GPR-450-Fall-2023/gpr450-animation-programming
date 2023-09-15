@@ -179,7 +179,7 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 
 	// Initializing Keyframes UNCOMMENT THIS BEFORE SAYING DONE
 	for (a3ui32 i = 0; i < demoMode->numOfKeyframes; i++) {
-		a3keyframeInit(&demoMode->keyPool.keyframe[i], 0.5f, (i/2)+1);
+		a3keyframeInit(&demoMode->keyPool.keyframe[i], 0.5f, i);
 	}
 
 	//demoMode->keyPool.keyframe[0].data = 0;
@@ -195,7 +195,7 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 	//////////
 
 	// Initializing Clips
-	a3clipInit(&demoMode->clipPool.clip[0], "Clip " + (1), &demoMode->keyPool, 0, 6);
+	a3clipInit(&demoMode->clipPool.clip[0], "Clip " + (1), &demoMode->keyPool, 1, 6);
 	a3clipInit(&demoMode->clipPool.clip[1], "Clip " + (2), &demoMode->keyPool, 4, 10);
 	a3clipInit(&demoMode->clipPool.clip[2], "Clip " + (3), &demoMode->keyPool, 8, 14);
 	a3clipInit(&demoMode->clipPool.clip[3], "Clip " + (4), &demoMode->keyPool, 12, 18);

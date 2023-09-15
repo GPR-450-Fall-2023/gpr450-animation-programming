@@ -247,6 +247,7 @@ typedef enum a3_DemoMode0_Starter_Last_Keyframe				a3_DemoMode0_Starter_Last_Key
 		a3ui32 currentClip;
 		a3ui32 numOfKeyframes;
 		a3ui32 numOfClips;
+		a3ui32 previousFrameClip;
 	};
 
 //-----------------------------------------------------------------------------

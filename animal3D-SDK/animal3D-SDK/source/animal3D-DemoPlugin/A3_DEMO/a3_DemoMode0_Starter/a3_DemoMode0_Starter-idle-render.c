@@ -152,40 +152,45 @@ void a3starter_render_controls(a3_DemoState const* demoState, a3_DemoMode0_Start
 	a3_DemoMode0_Starter_Terminus_Action const terminus = demoMode->terminus;
 
 	// demo modes
-	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"    Pipeline (%u / %u) ('[' | ']'): %s", pipeline + 1, starter_pipeline_max, pipelineText[pipeline]);
-	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"    Display pass (%u / %u) ('(' | ')'): %s", pass + 1, starter_pass_max, passName[pass]);
-	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"        Target (%u / %u) ('{' | '}'): %s", targetIndex + 1, targetCount, targetText[pass][targetIndex]);
+	//a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+	//	"    Pipeline (%u / %u) ('[' | ']'): %s", pipeline + 1, starter_pipeline_max, pipelineText[pipeline]);
+	//a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+	//	"    Display pass (%u / %u) ('(' | ')'): %s", pass + 1, starter_pass_max, passName[pass]);
+	//a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+	//	"        Target (%u / %u) ('{' | '}'): %s", targetIndex + 1, targetCount, targetText[pass][targetIndex]);
 
 	// lighting modes
-	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"    Rendering mode (%u / %u) ('j' | 'k'): %s", render + 1, starter_render_max, renderProgramName[render]);
-	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"    Display mode (%u / %u) ('J' | 'K'): %s", display + 1, starter_display_max, displayProgramName[display]);
-	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"    Active camera (%u / %u) ('c' prev | next 'v'): %s", activeCamera + 1, starter_camera_max, cameraText[activeCamera]);
+	//a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+	//	"    Rendering mode (%u / %u) ('j' | 'k'): %s", render + 1, starter_render_max, renderProgramName[render]);
+	//a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+	//	"    Display mode (%u / %u) ('J' | 'K'): %s", display + 1, starter_display_max, displayProgramName[display]);
+	//a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+	//	"    Active camera (%u / %u) ('c' prev | next 'v'): %s", activeCamera + 1, starter_camera_max, cameraText[activeCamera]);
 
 	// Basic Testing Interface
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"Controls:");
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"    Change Clip Controller ('q' prev | next 'w'): %s", clipControllers[demoMode->currentController]);
-	/*a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"    Play/Pause (p): %s", playingState[playPause]);*/
+		"    Select clip controller to edit (q/w): %s", clipControllers[demoMode->currentController]);
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"    Start of Clip (e)");
+		"    Play/pause controller playback (p)");
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"    End of Clip (r)");
+		"    Set to first/last frame in current clip (e/r)");
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"    Current Clip ('a' prev | next 's'): %s", clips[demoMode->currentClip]);
-	/*a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"    Forward/Backward (b): %s", playbackDirection[forwardBackward]);*/
-	/*a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"    Slowmo Speed (m): %s", slowmoSpeed[slowmo]);*/
+		"    Change clip to control (a/s): %s", clips[demoMode->clipCtrlPool.clipControllers[demoMode->currentController].clip]);
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"    Flip playback direction (b)");
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"    Slow-motion (n/m)");
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"    Terminus Action (%u / %u) ( , | . ): %s", terminus + 1, starter_terminus_max, terminusAction[terminus]);
+
+	//a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+	//	"Clip 1:");
+	//a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+	//	"\nClip Time : % f\nClip Duration : % f\nClip Normalized : % f\n\nKeyframeTime: % f\nKeyframe Duration : % f\nKeyframe Normalized : % f\n",
+	//	clipCtrl->clipTime, clip.duration, clipCtrl->clipParameter, clipCtrl->keyframeTime, keyframe.duration, clipCtrl->keyframeParameter);
+
 
 }
 

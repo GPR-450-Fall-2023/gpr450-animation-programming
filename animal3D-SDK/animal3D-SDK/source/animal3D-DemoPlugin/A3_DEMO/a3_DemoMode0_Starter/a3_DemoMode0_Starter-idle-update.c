@@ -88,21 +88,9 @@ void a3starter_update(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a
 
 	// select the active clip controller to make changes to the clip
 	a3_ClipController* clipCtrl = &demoMode->clipCtrlPool.clipControllers[demoMode->currentController];
-	/*switch (demoMode->currentController)
-	{
-	case 0:
-		clipCtrl = &demoMode->clipCtrl1;
-		break;
-	case 1:
-		clipCtrl = &demoMode->clipCtrl2;
-		break;
-	case 2:
-		clipCtrl = &demoMode->clipCtrl3;
-		break;
-	default:
-		clipCtrl = &demoMode->clipCtrl1;
-		break;
-	}*/
+	if (demoMode->currentClip != demoMode->previousFrameClip) {
+		a3clipControllerSetClip(clipCtrl, clipCtrl->clipPool, demoMode->currentClip);
+	}
 
 	// setting to start/end of clip
 	if (demoMode->first == 1) {
@@ -153,6 +141,8 @@ void a3starter_update(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a
 	{
 		a3clipControllerUpdate(&demoMode->clipCtrlPool.clipControllers[index], (a3real)dt);
 	}
+
+	demoMode->previousFrameClip = demoMode->currentClip;
 }
 
 
