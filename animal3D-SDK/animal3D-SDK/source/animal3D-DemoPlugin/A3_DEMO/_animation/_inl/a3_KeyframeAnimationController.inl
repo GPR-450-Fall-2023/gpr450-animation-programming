@@ -102,7 +102,7 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 					case PING_PONG:
 						//Reverse playback direction and calculate new playhead location by
 						//sending it backwards as far is it went past the end of the clip
-						clipCtrl->playbackDirection = -1;
+						clipCtrl->playbackDirection *= -1;
 						a3real clipOverflow = (clipCtrl->clipTime - clip.duration);
 						clipCtrl->clipTime = clip.duration - clipOverflow; //Reverse direction of overflowed time
 						
@@ -168,7 +168,7 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 					break;
 				case PING_PONG:
 					//Reverse the playhead direction
-					clipCtrl->playbackDirection = 1;
+					clipCtrl->playbackDirection *= -1;
 
 					//Reverse direction of overflowed time
 					//clipTime should be negative if it has gone past 0 so the 

@@ -48,6 +48,8 @@ void a3demo_update_pointLight(a3_DemoSceneObject* obj_camera, a3_DemoPointLight*
 
 void a3demo_applyScale_internal(a3_DemoSceneObject* sceneObject, a3real4x4p s);
 
+a3f32 playbackDirectionStorage = 1;
+
 void a3starter_update(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a3f64 const dt)
 {
 	a3ui32 i;
@@ -119,23 +121,31 @@ void a3starter_update(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a
 	}
 
 	// turning play/pause/slowmo/forward/backward into effect
-	a3f32 playbackSpd = 1;
-	if (demoMode->playPause == 1) {			//pause
-		playbackSpd *= 0;
+	if (demoMode->togglePause) {
+		if(clipCtrl->playbackDirection == 0) {
+			clipCtrl->playbackDirection = playbackDirectionStorage;
+		}
+		else {
+			playbackDirectionStorage = clipCtrl->playbackDirection;
+			clipCtrl->playbackDirection = 0;
+		}
 	}
-	if (demoMode->forwardBackward == 1) {	//backward
-		playbackSpd *= -1;
+	if (demoMode->shouldRewind) {	//backward
+		clipCtrl->playbackDirection *= -1;
+		demoMode->shouldRewind = false;
 	}
-	if (demoMode->slowmo == 1) {			//half speed
-		playbackSpd *= 0.5;
+	if (demoMode->shouldSpeedUp) {			//double speed
+		clipCtrl->playbackDirection *= 2;
+		demoMode->shouldSpeedUp = false;
 	}
-	else if (demoMode->slowmo == 2) {		//quarter speed
-		playbackSpd *= 0.25;
+	if (demoMode->shouldSlowDown) {			//half speed
+		clipCtrl->playbackDirection *= 0.5;
+		demoMode->shouldSlowDown = false;
 	}
-	clipCtrl->playbackDirection = playbackSpd;
 
 	// put terminus action state into effect
 	clipCtrl->terminusAction = demoMode->terminus;
+
 
 	//UPDATE HERE - Dillon
 	a3clipControllerUpdate(clipCtrl, (a3real)dt);

@@ -197,6 +197,11 @@ typedef enum a3_DemoMode0_Starter_Last_Keyframe				a3_DemoMode0_Starter_Last_Key
 		a3_DemoMode0_Starter_First_Keyframe first;
 		a3_DemoMode0_Starter_Last_Keyframe last;
 
+		a3boolean shouldSpeedUp;
+		a3boolean shouldSlowDown;
+		a3boolean togglePause;
+		a3boolean shouldRewind;
+
 		// objects
 		union {
 			a3_DemoSceneObject object_scene[starterMaxCount_sceneObject];

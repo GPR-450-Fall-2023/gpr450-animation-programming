@@ -66,7 +66,8 @@ void a3starter_input_keyCharPress(a3_DemoState const* demoState, a3_DemoMode0_St
 		a3demoCtrlCasesLoop(demoMode->currentController, demoMode->numOfControllers, 'w', 'q');
 
 		// toggle pause
-		a3demoCtrlCasesLoop(demoMode->playPause, starter_play_pause_max, 'p', 'o');
+		a3demoCtrlCaseToggle(demoMode->togglePause, 'p');
+		//a3demoCtrlCasesLoop(demoMode->playPause, starter_play_pause_max, 'p', 'o');
 
 		// set to first/last frame in current clip
 		a3demoCtrlCasesLoop(demoMode->first, starter_first_keyframe_max, 'e', 'd');
@@ -76,10 +77,13 @@ void a3starter_input_keyCharPress(a3_DemoState const* demoState, a3_DemoMode0_St
 		a3demoCtrlCasesLoop(demoMode->currentClip, demoMode->numOfClips, 's', 'a');
 
 		// toggle backwards
-		a3demoCtrlCasesLoop(demoMode->forwardBackward, starter_playing_max, 'b', 'g');
+		a3demoCtrlCaseToggle(demoMode->shouldRewind, 'b');
+		//a3demoCtrlCasesLoop(demoMode->forwardBackward, starter_playing_max, 'b', 'g');
 
 		// toggle slowmo
-		a3demoCtrlCasesLoop(demoMode->slowmo, starter_slowmo_speed_max, 'm', 'n');
+		a3demoCtrlCaseToggle(demoMode->shouldSpeedUp, 'm');
+		a3demoCtrlCaseToggle(demoMode->shouldSlowDown, 'n');
+		//a3demoCtrlCasesLoop(demoMode->slowmo, starter_slowmo_speed_max, 'm', 'n');
 
 		// toggle terminus actions
 		a3demoCtrlCasesLoop(demoMode->terminus, starter_terminus_max, ',', '.');

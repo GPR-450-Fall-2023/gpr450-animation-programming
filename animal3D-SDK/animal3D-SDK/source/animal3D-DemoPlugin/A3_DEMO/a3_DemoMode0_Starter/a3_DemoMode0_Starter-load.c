@@ -212,6 +212,11 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 	demoMode->currentController = 0;
 	demoMode->numOfControllers = 3;
 
+	demoMode->shouldSpeedUp = false;
+	demoMode->shouldSlowDown = false;
+	demoMode->togglePause = false;
+	demoMode->shouldRewind = false;
+
 	////// Test Code
 	demoMode->clipCtrl1.playbackDirection = 1;
 	demoMode->clipCtrl1.terminusAction = PING_PONG;
