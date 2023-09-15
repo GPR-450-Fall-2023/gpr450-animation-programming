@@ -244,7 +244,7 @@ inline a3i32 a3clipControllerSetClip(a3_ClipController* clipCtrl, const a3_ClipP
 	clipCtrl->clipTime = 0;
 	clipCtrl->clipParameter = 0;
 
-	clipCtrl->keyframe = 0;
+	clipCtrl->keyframe = clipCtrl->clipPool->clip[clipCtrl->clip].firstKeyframeIndex;
 	clipCtrl->keyframeTime = 0;
 	clipCtrl->keyframeParameter = 0;
 

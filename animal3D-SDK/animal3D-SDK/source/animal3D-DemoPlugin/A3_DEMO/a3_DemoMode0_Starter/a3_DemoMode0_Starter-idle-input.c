@@ -76,7 +76,8 @@ void a3starter_input_keyCharPress(a3_DemoState const* demoState, a3_DemoMode0_St
 		a3demoCtrlCasesLoop(demoMode->last, starter_last_keyframe_max, 'r', 'f');
 
 		// toggle clip
-		a3demoCtrlCasesLoop(demoMode->clipCtrlPool.clipControllers[demoMode->currentController].clip, demoMode->numOfClips, 's', 'a');
+		//a3demoCtrlCasesLoop(demoMode->clipCtrlPool.clipControllers[demoMode->currentController].clip, demoMode->numOfClips, 's', 'a');
+		a3demoCtrlCasesLoop(demoMode->currentClip, demoMode->numOfClips, 's', 'a');
 
 		// toggle backwards
 		a3demoCtrlCaseToggle(demoMode->shouldRewind, 'b');
