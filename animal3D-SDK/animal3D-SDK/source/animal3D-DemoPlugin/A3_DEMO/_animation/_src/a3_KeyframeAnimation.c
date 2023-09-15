@@ -178,7 +178,7 @@ a3i32 a3clipInit(a3_Clip* clip_out, const a3byte clipName[a3keyframeAnimation_na
 	// set variables
 	clip_out->keyframePool = keyframePool;
 	clip_out->firstKeyframeIndex = firstKeyframeIndex;
-	clip_out->lastKeyFrameIndex = finalKeyframeIndex;
+	clip_out->lastKeyframeIndex = finalKeyframeIndex;
 	clip_out->keyframeCount = finalKeyframeIndex - firstKeyframeIndex + 1; // +1 since both final and first are included in pool
 	a3clipCalculateDuration(clip_out);
 

@@ -44,7 +44,7 @@ inline a3i32 a3clipCalculateDuration(a3_Clip* clip)
 	a3real duration = 0;
 
 	// add together all keyframe durations
-	for (a3ui32 i = clip->firstKeyframeIndex; i <= clip->lastKeyFrameIndex; i++)
+	for (a3ui32 i = clip->firstKeyframeIndex; i <= clip->lastKeyframeIndex; i++)
 	{
 		duration += clip->keyframePool->keyframe[i].duration;
 	}
@@ -79,7 +79,7 @@ inline a3i32 a3clipDistributeDuration(a3_Clip* clip, const a3real newClipDuratio
 	a3real durationPerKeyframe = newClipDuration / clip->keyframeCount;
 
 	// loop through each keyframe and set their duration
-	for (a3ui32 i = clip->firstKeyframeIndex; i <= clip->lastKeyFrameIndex; i++)
+	for (a3ui32 i = clip->firstKeyframeIndex; i <= clip->lastKeyframeIndex; i++)
 	{
 		keyframe = (clip->keyframePool->keyframe + i);
 		a3keyframeSetDuration(keyframe, durationPerKeyframe);

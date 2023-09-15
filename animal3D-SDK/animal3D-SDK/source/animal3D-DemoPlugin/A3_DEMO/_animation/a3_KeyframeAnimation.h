@@ -134,7 +134,7 @@ struct a3_Clip
 	a3ui32 firstKeyframeIndex;
 
 	// index of last keyframe in pool
-	a3ui32 lastKeyFrameIndex;
+	a3ui32 lastKeyframeIndex;
 
 	// pool with keyframes clip uses
 	const a3_KeyframePool* keyframePool;

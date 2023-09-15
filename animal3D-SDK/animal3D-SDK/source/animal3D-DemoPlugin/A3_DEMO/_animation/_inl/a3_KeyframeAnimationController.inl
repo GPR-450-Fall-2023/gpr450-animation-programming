@@ -94,7 +94,7 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 						clipCtrl->clipTime = clip.duration;
 						clipCtrl->keyframeTime = keyframe.duration;
 						clipCtrl->playbackDirection = 0;
-						clipCtrl->keyframe = clip.lastKeyFrameIndex;
+						clipCtrl->keyframe = clip.lastKeyframeIndex;
 
 						//For debugging/testing only
 						printf("Playhead Forward Stop Terminus - ");
@@ -107,7 +107,7 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 						clipCtrl->clipTime = clip.duration - clipOverflow; //Reverse direction of overflowed time
 						
 						//Reset keyframe to make sure we're at the last one (could have skipped it)
-						clipCtrl->keyframe = clip.lastKeyFrameIndex;
+						clipCtrl->keyframe = clip.lastKeyframeIndex;
 						keyframe = clip.keyframePool->keyframe[clipCtrl->keyframe];
 
 						//Calculate keyframe time in the same way as the clipTime, use clipDiff 
@@ -143,7 +143,7 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 				{
 				case LOOP:
 					//Loop keyframe to end of clip
-					clipCtrl->keyframe = clipCtrl->clipPool->clip[clipCtrl->clip].lastKeyFrameIndex;
+					clipCtrl->keyframe = clipCtrl->clipPool->clip[clipCtrl->clip].lastKeyframeIndex;
 					
 					//Calculate keyframe time based on duration of the new frame
 					a3_Keyframe nextFrame = clipCtrl->clipPool->clip[clipCtrl->clip].keyframePool->keyframe[clipCtrl->keyframe];

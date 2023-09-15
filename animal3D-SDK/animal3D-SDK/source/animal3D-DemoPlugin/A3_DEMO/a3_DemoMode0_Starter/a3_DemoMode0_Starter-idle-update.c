@@ -104,11 +104,17 @@ void a3starter_update(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a
 
 	// setting to start/end of clip
 	if (demoMode->first == 1) {
-		//call function to set to first keyframe of clip
+		clipCtrl->keyframe = clipCtrl->clipPool->clip[clipCtrl->clip].firstKeyframeIndex;
+		clipCtrl->clipTime = 0;
+		clipCtrl->keyframeTime = 0;
+		clipCtrl->keyframeParameter = 0;
 		demoMode->first = 0;
 	}
 	if (demoMode->last == 1) {
-		//call function to set to last keyframe of clip
+		clipCtrl->keyframe = clipCtrl->clipPool->clip[clipCtrl->clip].lastKeyframeIndex;
+		clipCtrl->clipTime = clipCtrl->clipPool->clip[clipCtrl->clip].duration;
+		clipCtrl->keyframeTime = clipCtrl->clipPool->clip->keyframePool->keyframe[clipCtrl->keyframe].duration;
+		clipCtrl->keyframeParameter = 1;
 		demoMode->last = 0;
 	}
 
@@ -132,7 +138,7 @@ void a3starter_update(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a
 	clipCtrl->terminusAction = demoMode->terminus;
 
 	//UPDATE HERE - Dillon
-	a3clipControllerUpdate(&demoMode->clipCtrl1, (a3real)dt);
+	a3clipControllerUpdate(clipCtrl, (a3real)dt);
 }
 
 
