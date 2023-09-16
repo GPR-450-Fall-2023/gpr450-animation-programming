@@ -177,8 +177,8 @@ typedef enum a3_DemoMode0_Starter_Last_Keyframe				a3_DemoMode0_Starter_Last_Key
 	// terminus actions
 	enum a3_DemoMode0_Starter_Terminus_Action
 	{
-		starter_terminus_stop = 0,		// stop when clip ends
-		starter_terminus_loop,			// repeat when clip ends
+		starter_terminus_loop = 0,		// repeat when clip ends
+		starter_terminus_stop,			// stop when clip ends
 		starter_terminus_ping_pong,		// rewind when clip ends then repeat
 
 		starter_terminus_max,
@@ -253,6 +253,7 @@ typedef enum a3_DemoMode0_Starter_Last_Keyframe				a3_DemoMode0_Starter_Last_Key
 		a3ui32 numOfKeyframes;
 		a3ui32 numOfClips;
 		a3ui32 previousFrameClip;
+		a3ui32 previousFrameClipCtrl;
 	};
 
 //-----------------------------------------------------------------------------

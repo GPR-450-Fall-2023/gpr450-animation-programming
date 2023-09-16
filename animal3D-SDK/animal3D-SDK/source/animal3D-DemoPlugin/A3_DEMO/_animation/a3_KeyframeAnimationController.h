@@ -86,7 +86,8 @@ struct a3_ClipController
 	a3real playbackDirection;
 
 	//How the clip controller ends clips
-	enum TerminusAction terminusAction;
+	enum TerminusAction terminusAction; //////////////////////////// DELETE
+	a3ui32 (*executeTerminusAction)(a3_ClipController* clipCtrl);
 
 	//Pointer to all clips controller controls
 	const a3_ClipPool* clipPool;
@@ -118,6 +119,18 @@ a3ui32 a3clipControllerPoolCreate(a3_ClipControllerPool* clipCtrlPool, a3_ClipPo
 
 //Release clip controller pool
 a3ui32 a3clipControllerPoolRelease(a3_ClipControllerPool* clipCtrlPool);
+
+/*
+
+	Functions for handling setting indices and times for their respective terminus actions in their respective directions
+
+*/
+a3ui32 a3terminusForwardLoop(a3_ClipController* clipCtrl);
+a3ui32 a3terminusForwardStop(a3_ClipController* clipCtrl);
+a3ui32 a3terminusForwardPingPong(a3_ClipController* clipCtrl);
+a3ui32 a3terminusBackwardLoop(a3_ClipController* clipCtrl);
+a3ui32 a3terminusBackwardStop(a3_ClipController* clipCtrl);
+a3ui32 a3terminusBackwardPingPong(a3_ClipController* clipCtrl);
 
 //-----------------------------------------------------------------------------
 

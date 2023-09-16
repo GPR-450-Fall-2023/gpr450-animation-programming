@@ -74,7 +74,7 @@ void a3starter_input_keyCharPress(a3_DemoState const* demoState, a3_DemoMode0_St
 
 		// toggle clip controllers
 		a3demoCtrlCasesLoop(demoMode->currentController, demoMode->numOfControllers, 'w', 'q');
-		demoMode->terminus = demoMode->clipCtrlPool.clipControllers[demoMode->currentController].terminusAction;
+		
 		//demoMode->currentClip = demoMode->clipCtrlPool.clipControllers[demoMode->currentController].clip;
 
 		// toggle pause

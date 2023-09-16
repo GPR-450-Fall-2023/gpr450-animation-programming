@@ -87,43 +87,14 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 				switch (clipCtrl->terminusAction)
 				{
 					case LOOP:
-						//Reset to beginning of clip while saving how far past the end
-						//of the clip the playhead went
-						clipCtrl->keyframe = clip.firstKeyframeIndex;
-						clipCtrl->clipTime = clipDiff;
-						clipCtrl->keyframeTime = clipDiff;
-
-						//For debugging/testing only
-						printf("Playhead Forward Loop Terminus - ");
+						a3terminusForwardLoop(clipCtrl);
 						break;
 
 					case STOP:
-						//Pause clipController and clamp times to their max values
-						clipCtrl->clipTime = clip.duration;
-						clipCtrl->keyframeTime = keyframe.duration;
-						clipCtrl->playbackDirection = 0;
-						clipCtrl->keyframe = clip.lastKeyframeIndex;
-
-						//For debugging/testing only
-						printf("Playhead Forward Stop Terminus - ");
+						a3terminusForwardStop(clipCtrl);
 						break;
 					case PING_PONG:
-						//Reverse playback direction and calculate new playhead location by
-						//sending it backwards as far is it went past the end of the clip
-						clipCtrl->playbackDirection *= -1;
-						a3real clipOverflow = (clipCtrl->clipTime - clip.duration);
-						clipCtrl->clipTime = clip.duration - clipOverflow; //Reverse direction of overflowed time
-						
-						//Reset keyframe to make sure we're at the last one (could have skipped it)
-						clipCtrl->keyframe = clip.lastKeyframeIndex;
-						keyframe = clip.keyframePool->keyframe[clipCtrl->keyframe];
-
-						//Calculate keyframe time in the same way as the clipTime, use clipDiff 
-						//since we are at the last keyframe
-						clipCtrl->keyframeTime = keyframe.duration - (clipDiff);	
-						
-
-						printf("Playhead Forward Ping Pong Terminus - ");
+						a3terminusForwardPingPong(clipCtrl);
 						break;
 				}
 			}
@@ -150,43 +121,13 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 				switch (clipCtrl->terminusAction)
 				{
 				case LOOP:
-					//Loop keyframe to end of clip
-					clipCtrl->keyframe = clipCtrl->clipPool->clip[clipCtrl->clip].lastKeyframeIndex;
-					
-					//Calculate keyframe time based on duration of the new frame
-					a3_Keyframe nextFrame = clipCtrl->clipPool->clip[clipCtrl->clip].keyframePool->keyframe[clipCtrl->keyframe];
-					clipCtrl->keyframeTime = clipCtrl->keyframeTime + nextFrame.duration; //Add this because keyframe time is negative
-					
-					//Set new clipTime
-					clipCtrl->clipTime = clipDiff;
-
-					//For debugging/testing only
-					printf("Playhead Backward Loop Terminus - ");
+					a3terminusBackwardLoop(clipCtrl);
 					break;
 				case STOP:
-
-					//Zero out values and pause playhead so everything stops squarely at the beginning
-					clipCtrl->clipTime = 0;
-					clipCtrl->keyframeTime = 0;
-					clipCtrl->playbackDirection = 0;
-					clipCtrl->keyframe = clip.firstKeyframeIndex;
-
-					//For debugging/testing only
-					printf("Playhead Backward Stop Terminus - ");
+					a3terminusBackwardStop(clipCtrl);
 					break;
 				case PING_PONG:
-					//Reverse the playhead direction
-					clipCtrl->playbackDirection *= -1;
-
-					//Reverse direction of overflowed time
-					//clipTime should be negative if it has gone past 0 so the 
-					//overflow is just the positive clipTime
-					clipCtrl->clipTime = -clipCtrl->clipTime; //Flip sign
-					clipCtrl->keyframeTime = clipCtrl->clipTime; //MAKE SURE you do not flip this sign (it has already been flipped)
-					clipCtrl->keyframe = clip.firstKeyframeIndex;
-
-					//For debugging/testing only
-					printf("Playhead Backward Ping Pong Terminus - ");
+					a3terminusBackwardPingPong(clipCtrl);
 					break;
 				}
 			}

@@ -142,8 +142,17 @@ void a3starter_update(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a
 		demoMode->shouldSlowDown = false;
 	}
 
-	// put terminus action state into effect
-	clipCtrl->terminusAction = demoMode->terminus;
+	//Updates displayed terminus action if the clip controller has been changed
+	if (demoMode->previousFrameClipCtrl != demoMode->currentController)
+	{
+		demoMode->terminus = clipCtrl->terminusAction;
+	}
+	else
+	{
+		//Reflects input changes to terminus action
+		clipCtrl->terminusAction = demoMode->terminus;
+	}
+	
 
 	//Clear console before updating clip controllers so we get only the data from this frame
 	system("cls");
@@ -156,6 +165,7 @@ void a3starter_update(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a
 
 	//Save index of previous clip to check if clip has changed later
 	demoMode->previousFrameClip = demoMode->currentClip;
+	demoMode->previousFrameClipCtrl = demoMode->currentController;
 }
 
 
