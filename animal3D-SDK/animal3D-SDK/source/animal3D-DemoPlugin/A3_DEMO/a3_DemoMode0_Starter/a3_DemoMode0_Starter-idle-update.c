@@ -145,13 +145,29 @@ void a3starter_update(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a
 	//Updates displayed terminus action if the clip controller has been changed
 	if (demoMode->previousFrameClipCtrl != demoMode->currentController)
 	{
-		demoMode->terminus = clipCtrl->terminusAction;
+		//demoMode->terminus = clipCtrl->terminusAction;
 	}
 	else
 	{
 		//Reflects input changes to terminus action
-		clipCtrl->terminusAction = demoMode->terminus;
+		switch (demoMode->terminus)
+		{
+		case starter_terminus_loop:
+			clipCtrl->forwardTerminusAction = a3terminusForwardLoop;
+			clipCtrl->backwardTerminusAction = a3terminusBackwardLoop;
+			break;
+		case starter_terminus_stop:
+			clipCtrl->forwardTerminusAction = a3terminusForwardStop;
+			clipCtrl->backwardTerminusAction = a3terminusBackwardStop;
+			break;
+		case starter_terminus_ping_pong:
+			clipCtrl->forwardTerminusAction = a3terminusForwardPingPong;
+			clipCtrl->backwardTerminusAction = a3terminusBackwardPingPong;
+			break;
+		}
 	}
+
+	
 	
 
 	//Clear console before updating clip controllers so we get only the data from this frame

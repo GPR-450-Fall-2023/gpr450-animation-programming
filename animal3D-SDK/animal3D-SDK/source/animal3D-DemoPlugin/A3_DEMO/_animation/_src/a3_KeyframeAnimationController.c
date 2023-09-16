@@ -37,8 +37,9 @@ a3i32 a3clipControllerInit(a3_ClipController* clipCtrl_out, const a3byte ctrlNam
 	strcpy(clipCtrl_out->name, ctrlName);
 
 	//Initialize clipCtrl values
-	clipCtrl_out->terminusAction = LOOP;
 	clipCtrl_out->playbackDirection = 1;
+	clipCtrl_out->forwardTerminusAction = a3terminusForwardLoop;
+	clipCtrl_out->backwardTerminusAction = a3terminusBackwardLoop;
 
 	//Initialize clip pool and set current clip
 	if (a3clipControllerSetClip(clipCtrl_out, clipPool, clipIndex_pool) != 0)

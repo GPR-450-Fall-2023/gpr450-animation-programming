@@ -51,13 +51,6 @@ typedef struct a3_ClipControllerPool		a3_ClipControllerPool;
 
 //-----------------------------------------------------------------------------
 
-//terminus actions - what the clip does at the end
-enum TerminusAction {
-	LOOP = 0,
-	STOP,
-	PING_PONG
-};
-
 // clip controller
 // metaphor: playhead
 struct a3_ClipController
@@ -86,8 +79,9 @@ struct a3_ClipController
 	a3real playbackDirection;
 
 	//How the clip controller ends clips
-	enum TerminusAction terminusAction; //////////////////////////// DELETE
-	a3ui32 (*executeTerminusAction)(a3_ClipController* clipCtrl);
+	//enum TerminusAction terminusAction; //////////////////////////// DELETE
+	a3ui32 (*forwardTerminusAction)(a3_ClipController* clipCtrl);
+	a3ui32 (*backwardTerminusAction)(a3_ClipController* clipCtrl);
 
 	//Pointer to all clips controller controls
 	const a3_ClipPool* clipPool;

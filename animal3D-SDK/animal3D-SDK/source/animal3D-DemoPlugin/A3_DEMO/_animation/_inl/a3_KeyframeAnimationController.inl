@@ -84,7 +84,7 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 				a3real clipDiff = clipCtrl->clipTime - clip.duration;
 
 				//Handle specific terminus actions
-				switch (clipCtrl->terminusAction)
+				/*switch (clipCtrl->terminusAction)
 				{
 					case LOOP:
 						a3terminusForwardLoop(clipCtrl);
@@ -96,7 +96,8 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 					case PING_PONG:
 						a3terminusForwardPingPong(clipCtrl);
 						break;
-				}
+				}*/
+				clipCtrl->forwardTerminusAction(clipCtrl);
 			}
 			else //Forward Skip - Case 3
 			{
@@ -118,7 +119,7 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 				a3real clipDiff = clipCtrl->clipTime + clip.duration;
 
 				//Handle clip terminus actions
-				switch (clipCtrl->terminusAction)
+				/*switch (clipCtrl->terminusAction)
 				{
 				case LOOP:
 					a3terminusBackwardLoop(clipCtrl);
@@ -129,7 +130,8 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 				case PING_PONG:
 					a3terminusBackwardPingPong(clipCtrl);
 					break;
-				}
+				}*/
+				clipCtrl->backwardTerminusAction(clipCtrl);
 			}
 			else//Backward Skip - Case 6
 			{
