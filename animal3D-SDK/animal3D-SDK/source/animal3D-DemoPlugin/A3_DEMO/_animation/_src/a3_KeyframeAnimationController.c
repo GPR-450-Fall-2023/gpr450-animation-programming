@@ -265,8 +265,6 @@ a3i32 a3terminusReversePlayback(a3_ClipController* clipCtrl, const a3_ClipTransi
 
 a3i32 a3terminusReversePause(a3_ClipController* clipCtrl, const a3_ClipTransition* transition)
 {
-	//////////////////////////////////////////////////////////////
-	////////////////////////CHECK THIS
 	if (!clipCtrl
 		|| !transition
 		|| !transition->clipPool)
@@ -291,13 +289,34 @@ a3i32 a3terminusReversePause(a3_ClipController* clipCtrl, const a3_ClipTransitio
 	clipCtrl->playbackDirection = 0;
 
 	return 0;
-	///////////////////////////////////////////////////////////////
 }
 
 
 a3i32 a3terminusForwardSkipPlayback(a3_ClipController* clipCtrl, const a3_ClipTransition* transition)
 {
-	return -1;
+	if (!clipCtrl
+		|| !transition
+		|| !transition->clipPool)
+	{
+		return -1;
+	}
+
+	//Set next clip index and pool for clip control
+	clipCtrl->clip = transition->index;
+	clipCtrl->clipPool = transition->clipPool;
+
+	//Current clip
+	a3_Clip clip = clipCtrl->clipPool->clip[clipCtrl->clip];
+
+	//Set keyframe to first in clip
+	clipCtrl->keyframe = clip.firstKeyframeIndex;
+
+	//Set time
+	a3_Keyframe keyframe = clip.keyframePool->keyframe[clipCtrl->keyframe]; //New keyframe
+	clipCtrl->keyframeTime = keyframe.duration; //End of first keyframe
+	clipCtrl->clipTime = keyframe.durationInverse * clip.duration; //Equivalent keyframe duration / clip duration
+
+	return 0;
 }
 
 
