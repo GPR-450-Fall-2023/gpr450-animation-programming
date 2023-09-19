@@ -105,41 +105,88 @@ a3i32 a3clipControllerPoolRelease(a3_ClipControllerPool* clipCtrlPool)
 }
 
 
-a3i32 a3triggerClipTransition(a3_ClipController* clipCtrl, const a3_ClipTransition* transition)
+//a3i32 a3triggerClipTransition(a3_ClipController* clipCtrl, const a3_ClipTransition* transition)
+//{
+//	if (!transition
+//		|| !transition->clipPool)
+//	{
+//		return -1;
+//	}
+//
+//	//Set clip index and pool for clip control
+//	clipCtrl->clip = transition->index;
+//	clipCtrl->clipPool = transition->clipPool;
+//
+//	//Transition
+//	transition->transitionFunction(clipCtrl, transition);
+//
+//	return 0;
+//}
+
+
+a3i32 a3terminusPause(a3_ClipController* clipCtrl, const a3_ClipTransition* transition)
 {
-	if (!transition
+	if (!clipCtrl
+		|| !transition
 		|| !transition->clipPool)
 	{
 		return -1;
 	}
 
-	//Set clip index and pool for clip control
-	clipCtrl->clip = transition->index;
-	clipCtrl->clipPool = transition->clipPool;
+	//DO NOT switch the current clip or clip pool, pausing on current clip
 
-	//Transition
-	transition->transitionFunction(clipCtrl);
+	//Current clip and keyframe
+	a3_Clip clip = clipCtrl->clipPool->clip[clipCtrl->clip];
+	a3_Keyframe keyframe = clip.keyframePool->keyframe[clipCtrl->keyframe];
+
+	if (clipCtrl->playbackDirection > 0) //Moving forward
+	{
+		//Clamp times to their max values
+		clipCtrl->clipTime = clip.duration;
+		clipCtrl->keyframeTime = keyframe.duration;
+		clipCtrl->keyframe = clip.lastKeyframeIndex;
+	}
+	else //Moving backward
+	{
+		//Zero out values and pause playhead so everything stops squarely at the beginning
+		clipCtrl->clipTime = 0;
+		clipCtrl->keyframeTime = 0;
+		clipCtrl->keyframe = clip.firstKeyframeIndex;
+	}
+
+	//Pause clip controller
+	clipCtrl->playbackDirection = 0;
 
 	return 0;
 }
 
 
-a3i32 a3terminusForwardLoop(a3_ClipController* clipCtrl)
+a3i32 a3terminusForwardPlayback(a3_ClipController* clipCtrl, const a3_ClipTransition* transition)
 {
-	//Type cast to clip controller
-	//a3_ClipController* ctrl = (a3_ClipController*)clipCtrl;
+	if (!clipCtrl
+		|| !transition
+		|| !transition->clipPool)
+	{
+		return -1;
+	}
 
-	////Null check
-	//if (!ctrl)
-	//{
-	//	return -1;
-	//}
+	//How far past the end the playhead is (direction ambiguous since current direction could be backwards)
+	a3real clipDiff = 0;
+	if (clipCtrl->clipTime > 0) //Playing forward
+	{
+		clipDiff = abs(clipCtrl->clipTime - clipCtrl->clipPool->clip[clipCtrl->clip].duration);
+	}
+	else //Playing backward
+	{
+		clipDiff = abs(clipCtrl->clipTime);
+	}
+
+	//Set next clip index and pool for clip control
+	clipCtrl->clip = transition->index;
+	clipCtrl->clipPool = transition->clipPool;
 
 	//Current clip
 	a3_Clip clip = clipCtrl->clipPool->clip[clipCtrl->clip];
-
-	//How far past the end the playhead is
-	a3real clipDiff = clipCtrl->clipTime - clip.duration;
 
 	//Reset to beginning of clip while saving how far past the end
 	//of the clip the playhead went
@@ -147,119 +194,227 @@ a3i32 a3terminusForwardLoop(a3_ClipController* clipCtrl)
 	clipCtrl->clipTime = clipDiff;
 	clipCtrl->keyframeTime = clipDiff;
 
-	//For debugging/testing only
-	printf("Playhead Forward Loop Terminus - ");
-
 	return 0;
 }
 
 
-a3i32 a3terminusForwardStop(a3_ClipController* clipCtrl)
+a3i32 a3terminusForwardPause(a3_ClipController* clipCtrl, const a3_ClipTransition* transition)
 {
-	//Current clip and keyframe
-	a3_Clip clip = clipCtrl->clipPool->clip[clipCtrl->clip];
-	a3_Keyframe keyframe = clip.keyframePool->keyframe[clipCtrl->keyframe];
+	if (!clipCtrl
+		|| !transition
+		|| !transition->clipPool)
+	{
+		return -1;
+	}
 
-	//Pause clipController and clamp times to their max values
-	clipCtrl->clipTime = clip.duration;
-	clipCtrl->keyframeTime = keyframe.duration;
+	//Set next clip index and pool for clip control
+	clipCtrl->clip = transition->index;
+	clipCtrl->clipPool = transition->clipPool;
+
+	//Zero out values and pause playhead so everything stops squarely at the beginning
+	clipCtrl->clipTime = 0;
+	clipCtrl->keyframeTime = 0;
+	clipCtrl->keyframe = clipCtrl->clipPool->clip[clipCtrl->clip].firstKeyframeIndex;
+
+	//Pause clip controller
 	clipCtrl->playbackDirection = 0;
-	clipCtrl->keyframe = clip.lastKeyframeIndex;
-
-	//For debugging/testing only
-	printf("Playhead Forward Stop Terminus - ");
 
 	return 0;
 }
 
 
-a3i32 a3terminusForwardPingPong(a3_ClipController* clipCtrl)
+a3i32 a3terminusReversePlayback(a3_ClipController* clipCtrl, const a3_ClipTransition* transition)
 {
-	//Current clip and keyframe
-	a3_Clip clip = clipCtrl->clipPool->clip[clipCtrl->clip];
-	a3_Keyframe keyframe = clip.keyframePool->keyframe[clipCtrl->keyframe];
+	if (!clipCtrl
+		|| !transition
+		|| !transition->clipPool)
+	{
+		return -1;
+	}
 
-	//How far past the end the playhead is
-	a3real clipDiff = clipCtrl->clipTime - clip.duration;
+	//How far past the end the playhead is (direction ambiguous since current direction could be backwards)
+	a3real clipDiff = 0;
+	if (clipCtrl->clipTime > 0) //Playing forward
+	{
+		clipDiff = abs(clipCtrl->clipTime - clipCtrl->clipPool->clip[clipCtrl->clip].duration);
+	}
+	else //Playing backward
+	{
+		clipDiff = abs(clipCtrl->clipTime);
+	}
+	//Set next clip index and pool for clip control
+	clipCtrl->clip = transition->index;
+	clipCtrl->clipPool = transition->clipPool;
 
-	//Reverse playback direction and calculate new playhead location by
-	//sending it backwards as far is it went past the end of the clip
-	clipCtrl->playbackDirection *= -1;
-	a3real clipOverflow = (clipCtrl->clipTime - clip.duration);
-	clipCtrl->clipTime = clip.duration - clipOverflow; //Reverse direction of overflowed time
-
-	//Reset keyframe to make sure we're at the last one (could have skipped it)
-	clipCtrl->keyframe = clip.lastKeyframeIndex;
-	keyframe = clip.keyframePool->keyframe[clipCtrl->keyframe];
-
-	//Calculate keyframe time in the same way as the clipTime, use clipDiff 
-	//since we are at the last keyframe
-	clipCtrl->keyframeTime = keyframe.duration - (clipDiff);
-
-
-	printf("Playhead Forward Ping Pong Terminus - ");
-
-	return 0;
-}
-
-
-a3i32 a3terminusBackwardLoop(a3_ClipController* clipCtrl)
-{
 	//Current clip
 	a3_Clip clip = clipCtrl->clipPool->clip[clipCtrl->clip];
-
-	//Clip duration will be negative, want to add that negative to duration so we loop back to the end
-	a3real clipDiff = clipCtrl->clipTime + clip.duration;
 
 	//Loop keyframe to end of clip
 	clipCtrl->keyframe = clipCtrl->clipPool->clip[clipCtrl->clip].lastKeyframeIndex;
 
 	//Calculate keyframe time based on duration of the new frame
-	a3_Keyframe nextFrame = clipCtrl->clipPool->clip[clipCtrl->clip].keyframePool->keyframe[clipCtrl->keyframe];
-	clipCtrl->keyframeTime = clipCtrl->keyframeTime + nextFrame.duration; //Add this because keyframe time is negative
+	a3_Keyframe keyframe = clipCtrl->clipPool->clip[clipCtrl->clip].keyframePool->keyframe[clipCtrl->keyframe];
+	clipCtrl->keyframeTime = keyframe.duration - clipDiff; //subtract overflow of clip time from keyframe duration for new keyframe time
 
 	//Set new clipTime
-	clipCtrl->clipTime = clipDiff;
-
-	//For debugging/testing only
-	printf("Playhead Backward Loop Terminus - ");
+	clipCtrl->clipTime = clip.duration - clipDiff;
 
 	return 0;
 }
 
 
-a3i32 a3terminusBackwardStop(a3_ClipController* clipCtrl)
+a3i32 a3terminusReversePause(a3_ClipController* clipCtrl, const a3_ClipTransition* transition)
 {
-	//Zero out values and pause playhead so everything stops squarely at the beginning
-	clipCtrl->clipTime = 0;
-	clipCtrl->keyframeTime = 0;
+	//////////////////////////////////////////////////////////////
+	////////////////////////CHECK THIS
+	if (!clipCtrl
+		|| !transition
+		|| !transition->clipPool)
+	{
+		return -1;
+	}
+
+	//Set next clip index and pool for clip control
+	clipCtrl->clip = transition->index;
+	clipCtrl->clipPool = transition->clipPool;
+
+	//Current clip and keyframe
+	a3_Clip clip = clipCtrl->clipPool->clip[clipCtrl->clip];
+	a3_Keyframe keyframe = clip.keyframePool->keyframe[clipCtrl->keyframe];
+
+	//Clamp times to their max values
+	clipCtrl->clipTime = clip.duration;
+	clipCtrl->keyframeTime = keyframe.duration;
+	clipCtrl->keyframe = clip.lastKeyframeIndex;
+
+	//Pause clip controller
 	clipCtrl->playbackDirection = 0;
-	clipCtrl->keyframe = clipCtrl->clipPool->clip[clipCtrl->clip].firstKeyframeIndex;
-
-	//For debugging/testing only
-	printf("Playhead Backward Stop Terminus - ");
 
 	return 0;
+	///////////////////////////////////////////////////////////////
 }
 
 
-a3i32 a3terminusBackwardPingPong(a3_ClipController* clipCtrl)
+a3i32 a3terminusForwardSkipPlayback(a3_ClipController* clipCtrl, const a3_ClipTransition* transition)
 {
-	//Reverse the playhead direction
-	clipCtrl->playbackDirection *= -1;
-
-	//Reverse direction of overflowed time
-	//clipTime should be negative if it has gone past 0 so the 
-	//overflow is just the positive clipTime
-	clipCtrl->clipTime = -clipCtrl->clipTime; //Flip sign
-	clipCtrl->keyframeTime = clipCtrl->clipTime; //MAKE SURE you do not flip this sign (it has already been flipped)
-	clipCtrl->keyframe = clipCtrl->clipPool->clip[clipCtrl->clip].firstKeyframeIndex;
-
-	//For debugging/testing only
-	printf("Playhead Backward Ping Pong Terminus - ");
-
-	return 0;
+	return -1;
 }
+
+
+a3i32 a3terminusForwardSkipPause(a3_ClipController* clipCtrl, const a3_ClipTransition* transition)
+{
+	return -1;
+}
+
+
+a3i32 a3terminusReverseSkipPlayback(a3_ClipController* clipCtrl, const a3_ClipTransition* transition)
+{
+	return -1;
+}
+
+
+a3i32 a3terminusReverseSkipPause(a3_ClipController* clipCtrl, const a3_ClipTransition* transition)
+{
+	return -1;
+}
+
+//a3i32 a3terminusForwardPingPong(a3_ClipController* clipCtrl, const a3_ClipTransition* transition)
+//{
+//	if (!clipCtrl
+//		|| !transition
+//		|| !transition->clipPool)
+//	{
+//		return -1;
+//	}
+//
+//	//Set next clip index and pool for clip control
+//	clipCtrl->clip = transition->index;
+//	clipCtrl->clipPool = transition->clipPool;
+//
+//	//Current clip and keyframe
+//	a3_Clip clip = clipCtrl->clipPool->clip[clipCtrl->clip];
+//	a3_Keyframe keyframe = clip.keyframePool->keyframe[clipCtrl->keyframe];
+//
+//	//How far past the end the playhead is
+//	a3real clipDiff = clipCtrl->clipTime - clip.duration;
+//
+//	//Reverse playback direction and calculate new playhead location by
+//	//sending it backwards as far is it went past the end of the clip
+//	clipCtrl->playbackDirection *= -1;
+//	a3real clipOverflow = (clipCtrl->clipTime - clip.duration);
+//	clipCtrl->clipTime = clip.duration - clipOverflow; //Reverse direction of overflowed time
+//
+//	//Reset keyframe to make sure we're at the last one (could have skipped it)
+//	clipCtrl->keyframe = clip.lastKeyframeIndex;
+//	keyframe = clip.keyframePool->keyframe[clipCtrl->keyframe];
+//
+//	//Calculate keyframe time in the same way as the clipTime, use clipDiff 
+//	//since we are at the last keyframe
+//	clipCtrl->keyframeTime = keyframe.duration - (clipDiff);
+//
+//
+//	printf("Playhead Forward Ping Pong Terminus - ");
+//
+//	return 0;
+//}
+
+
+
+
+
+//a3i32 a3terminusBackwardStop(a3_ClipController* clipCtrl, const a3_ClipTransition* transition)
+//{
+//	if (!clipCtrl
+//		|| !transition
+//		|| !transition->clipPool)
+//	{
+//		return -1;
+//	}
+//
+//	//Set next clip index and pool for clip control
+//	clipCtrl->clip = transition->index;
+//	clipCtrl->clipPool = transition->clipPool;
+//
+//	//Zero out values and pause playhead so everything stops squarely at the beginning
+//	clipCtrl->clipTime = 0;
+//	clipCtrl->keyframeTime = 0;
+//	clipCtrl->playbackDirection = 0;
+//	clipCtrl->keyframe = clipCtrl->clipPool->clip[clipCtrl->clip].firstKeyframeIndex;
+//
+//	//For debugging/testing only
+//	printf("Playhead Backward Stop Terminus - ");
+//
+//	return 0;
+//}
+
+
+//a3i32 a3terminusBackwardPingPong(a3_ClipController* clipCtrl, const a3_ClipTransition* transition)
+//{
+//	if (!clipCtrl
+//		|| !transition
+//		|| !transition->clipPool)
+//	{
+//		return -1;
+//	}
+//
+//	//Set next clip index and pool for clip control
+//	clipCtrl->clip = transition->index;
+//	clipCtrl->clipPool = transition->clipPool;
+//	//Reverse the playhead direction
+//	clipCtrl->playbackDirection *= -1;
+//
+//	//Reverse direction of overflowed time
+//	//clipTime should be negative if it has gone past 0 so the 
+//	//overflow is just the positive clipTime
+//	clipCtrl->clipTime = -clipCtrl->clipTime; //Flip sign
+//	clipCtrl->keyframeTime = clipCtrl->clipTime; //MAKE SURE you do not flip this sign (it has already been flipped)
+//	clipCtrl->keyframe = clipCtrl->clipPool->clip[clipCtrl->clip].firstKeyframeIndex;
+//
+//	//For debugging/testing only
+//	printf("Playhead Backward Ping Pong Terminus - ");
+//
+//	return 0;
+//}
 
 
 //-----------------------------------------------------------------------------

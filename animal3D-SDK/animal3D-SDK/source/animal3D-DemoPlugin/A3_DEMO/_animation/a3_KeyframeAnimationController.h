@@ -123,12 +123,30 @@ a3i32 a3clipControllerPoolRelease(a3_ClipControllerPool* clipCtrlPool);
 	terminus actions in their respective directions
 
 */
-a3i32 a3terminusForwardLoop(a3_ClipController* clipCtrl);
-a3i32 a3terminusForwardStop(a3_ClipController* clipCtrl);
-a3i32 a3terminusForwardPingPong(a3_ClipController* clipCtrl);
-a3i32 a3terminusBackwardLoop(a3_ClipController* clipCtrl);
-a3i32 a3terminusBackwardStop(a3_ClipController* clipCtrl);
-a3i32 a3terminusBackwardPingPong(a3_ClipController* clipCtrl);
+
+//Pause playback at beginning or end of clip dependent on playback direction
+a3i32 a3terminusPause(a3_ClipController* clipCtrl, const a3_ClipTransition* transition);
+//Forward playback starting at first frame of next clip
+a3i32 a3terminusForwardPlayback(a3_ClipController* clipCtrl, const a3_ClipTransition* transition);
+//Pause at beginning of clip pointed to by transition
+a3i32 a3terminusForwardPause(a3_ClipController* clipCtrl, const a3_ClipTransition* transition);
+//Reverse playback starting at end of last frame of next clip
+a3i32 a3terminusReversePlayback(a3_ClipController* clipCtrl, const a3_ClipTransition* transition);
+//Reverse pause at end of clip
+a3i32 a3terminusReversePause(a3_ClipController* clipCtrl, const a3_ClipTransition* transition);
+//Forward playback from end of first frame of next clip
+a3i32 a3terminusForwardSkipPlayback(a3_ClipController* clipCtrl, const a3_ClipTransition* transition);
+//Forward pause at end of first frame of next clip
+a3i32 a3terminusForwardSkipPause(a3_ClipController* clipCtrl, const a3_ClipTransition* transition);
+//Reverse playback from beginning of last frame of next clip
+a3i32 a3terminusReverseSkipPlayback(a3_ClipController* clipCtrl, const a3_ClipTransition* transition);
+//Reverse pause at beginning of first frame of next clip
+a3i32 a3terminusReverseSkipPause(a3_ClipController* clipCtrl, const a3_ClipTransition* transition);
+
+//a3i32 a3terminusForwardStop(a3_ClipController* clipCtrl, const a3_ClipTransition* transition);
+//a3i32 a3terminusForwardPingPong(a3_ClipController* clipCtrl, const a3_ClipTransition* transition);
+//a3i32 a3terminusBackwardStop(a3_ClipController* clipCtrl, const a3_ClipTransition* transition);
+//a3i32 a3terminusBackwardPingPong(a3_ClipController* clipCtrl, const a3_ClipTransition* transition);
 
 //-----------------------------------------------------------------------------
 

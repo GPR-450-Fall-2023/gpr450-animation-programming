@@ -126,7 +126,7 @@ struct a3_ClipTransition
 	a3ui32 index;
 
 	//Terminus Action
-	void (*transitionFunction)(struct a3_ClipController* clipCtrl);
+	void (*transitionFunction)(struct a3_ClipController* clipCtrl, const a3_ClipTransition* transition);
 };
 
 // description of single clip

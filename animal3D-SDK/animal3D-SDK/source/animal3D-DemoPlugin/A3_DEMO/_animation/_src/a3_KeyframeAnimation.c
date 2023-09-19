@@ -180,8 +180,8 @@ a3i32 a3clipPoolRelease(a3_ClipPool* clipPool)
 a3i32 a3clipInit(a3_Clip* clip_out, const a3byte clipName[a3keyframeAnimation_nameLenMax], const a3_ClipPool* clipPool, const a3_KeyframePool* keyframePool, const a3ui32 firstKeyframeIndex, const a3ui32 finalKeyframeIndex)
 {
 	const a3ui32 DEFAULT_TRANSITION_INDEX = 0;
-	void(*DEFAULT_FORWARD_TRANSITION) = a3terminusForwardLoop;
-	void(*DEFAULT_BACKWARD_TRANSITION) = a3terminusBackwardLoop;
+	void(*DEFAULT_FORWARD_TRANSITION) = a3terminusForwardPlayback;
+	void(*DEFAULT_BACKWARD_TRANSITION) = a3terminusBackwardPlayback;
 
 	if(clip_out == NULL) return -1; // return if clip_out doesn't exist
 
