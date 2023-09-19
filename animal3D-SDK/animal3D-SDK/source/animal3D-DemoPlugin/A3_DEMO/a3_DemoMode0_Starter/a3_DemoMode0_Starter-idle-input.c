@@ -99,7 +99,7 @@ void a3starter_input_keyCharPress(a3_DemoState const* demoState, a3_DemoMode0_St
 		//a3demoCtrlCasesLoop(demoMode->slowmo, starter_slowmo_speed_max, 'm', 'n');
 
 		// toggle terminus actions
-		a3demoCtrlCasesLoop(demoMode->terminus, starter_terminus_max, ',', '.');
+		//a3demoCtrlCasesLoop(demoMode->terminus, starter_terminus_max, ',', '.');
 	}
 }
 

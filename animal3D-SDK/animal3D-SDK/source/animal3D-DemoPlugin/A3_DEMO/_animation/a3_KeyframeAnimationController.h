@@ -80,8 +80,8 @@ struct a3_ClipController
 
 	//How the clip controller ends clips
 	//enum TerminusAction terminusAction; //////////////////////////// DELETE
-	a3ui32 (*forwardTerminusAction)(void* clipCtrl);
-	a3ui32 (*backwardTerminusAction)(void* clipCtrl);
+	//a3i32 (*forwardTerminusAction)(void* clipCtrl);
+	//a3i32 (*backwardTerminusAction)(void* clipCtrl);
 
 	//Pointer to all clips controller controls
 	const a3_ClipPool* clipPool;
@@ -106,16 +106,16 @@ a3i32 a3clipControllerInit(a3_ClipController* clipCtrl_out, const a3byte ctrlNam
 a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt);
 
 //Executres setup for clip controller based on clip transition info before calling transition terminus action function
-a3ui32 a3triggerClipTransition(a3_ClipController* clipCtrl, const a3_ClipTransition* transition);
+a3i32 a3triggerClipTransition(a3_ClipController* clipCtrl, const a3_ClipTransition* transition);
 
 // set clip to play
 a3i32 a3clipControllerSetClip(a3_ClipController* clipCtrl, const a3_ClipPool* clipPool, const a3ui32 clipIndex_pool);
 
 //Create clip controller pool
-a3ui32 a3clipControllerPoolCreate(a3_ClipControllerPool* clipCtrlPool, a3_ClipPool* clipPool, const a3ui32 count);
+a3i32 a3clipControllerPoolCreate(a3_ClipControllerPool* clipCtrlPool, a3_ClipPool* clipPool, const a3ui32 count);
 
 //Release clip controller pool
-a3ui32 a3clipControllerPoolRelease(a3_ClipControllerPool* clipCtrlPool);
+a3i32 a3clipControllerPoolRelease(a3_ClipControllerPool* clipCtrlPool);
 
 /*
 
@@ -123,12 +123,12 @@ a3ui32 a3clipControllerPoolRelease(a3_ClipControllerPool* clipCtrlPool);
 	terminus actions in their respective directions
 
 */
-a3ui32 a3terminusForwardLoop(a3_ClipController* clipCtrl);
-a3ui32 a3terminusForwardStop(a3_ClipController* clipCtrl);
-a3ui32 a3terminusForwardPingPong(a3_ClipController* clipCtrl);
-a3ui32 a3terminusBackwardLoop(a3_ClipController* clipCtrl);
-a3ui32 a3terminusBackwardStop(a3_ClipController* clipCtrl);
-a3ui32 a3terminusBackwardPingPong(a3_ClipController* clipCtrl);
+a3i32 a3terminusForwardLoop(a3_ClipController* clipCtrl);
+a3i32 a3terminusForwardStop(a3_ClipController* clipCtrl);
+a3i32 a3terminusForwardPingPong(a3_ClipController* clipCtrl);
+a3i32 a3terminusBackwardLoop(a3_ClipController* clipCtrl);
+a3i32 a3terminusBackwardStop(a3_ClipController* clipCtrl);
+a3i32 a3terminusBackwardPingPong(a3_ClipController* clipCtrl);
 
 //-----------------------------------------------------------------------------
 

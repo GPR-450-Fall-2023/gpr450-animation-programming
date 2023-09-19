@@ -31,6 +31,7 @@
 */
 
 #include "../a3_KeyframeAnimation.h"
+#include "../a3_KeyframeAnimationController.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -144,7 +145,7 @@ a3i32 a3clipPoolCreate(a3_ClipPool* clipPool_out, a3_KeyframePool* keyframePool,
 	for (a3ui32 i = 0; i < count; i++)
 	{
 		// init each clip with default values
-		a3clipInit((clipPool_out->clip + i), DEFAULT_CLIP_NAME, keyframePool, DEFAULT_FIRST_INDEX, lastIndex);
+		a3clipInit((clipPool_out->clip + i), DEFAULT_CLIP_NAME, clipPool_out, keyframePool, DEFAULT_FIRST_INDEX, lastIndex);
 		
 		if ((clipPool_out->clip + i) == NULL) return -1; // return if clip is null
 		
@@ -176,8 +177,12 @@ a3i32 a3clipPoolRelease(a3_ClipPool* clipPool)
 }
 
 // initialize clip with first and last indices
-a3i32 a3clipInit(a3_Clip* clip_out, const a3byte clipName[a3keyframeAnimation_nameLenMax], const a3_KeyframePool* keyframePool, const a3ui32 firstKeyframeIndex, const a3ui32 finalKeyframeIndex)
+a3i32 a3clipInit(a3_Clip* clip_out, const a3byte clipName[a3keyframeAnimation_nameLenMax], const a3_ClipPool* clipPool, const a3_KeyframePool* keyframePool, const a3ui32 firstKeyframeIndex, const a3ui32 finalKeyframeIndex)
 {
+	const a3ui32 DEFAULT_TRANSITION_INDEX = 0;
+	void(*DEFAULT_FORWARD_TRANSITION) = a3terminusForwardLoop;
+	void(*DEFAULT_BACKWARD_TRANSITION) = a3terminusBackwardLoop;
+
 	if(clip_out == NULL) return -1; // return if clip_out doesn't exist
 
 	// copy passed in name to clip name
@@ -188,9 +193,24 @@ a3i32 a3clipInit(a3_Clip* clip_out, const a3byte clipName[a3keyframeAnimation_na
 	clip_out->firstKeyframeIndex = firstKeyframeIndex;
 	clip_out->lastKeyframeIndex = finalKeyframeIndex;
 	clip_out->keyframeCount = finalKeyframeIndex - firstKeyframeIndex + 1; // +1 since both final and first are included in pool
+
+	a3clipTransitionInit(&clip_out->forwardTransition, DEFAULT_TRANSITION_INDEX, clipPool, DEFAULT_FORWARD_TRANSITION);
+	a3clipTransitionInit(&clip_out->backwardTransition, DEFAULT_TRANSITION_INDEX, clipPool, DEFAULT_BACKWARD_TRANSITION);
+
 	a3clipCalculateDuration(clip_out);
 
 	if(firstKeyframeIndex > finalKeyframeIndex) return 1; // return warning if first index > final index
+
+	return 0;
+}
+
+a3i32 a3clipTransitionInit(a3_ClipTransition* clipTransition, const a3ui32 index, const a3_ClipPool* clipPool, void(*transitionFunction))
+{
+	if (clipTransition == NULL || clipPool == NULL) return -1;
+
+	clipTransition->index = index;
+	clipTransition->clipPool = clipPool;
+	clipTransition->transitionFunction = transitionFunction;
 
 	return 0;
 }

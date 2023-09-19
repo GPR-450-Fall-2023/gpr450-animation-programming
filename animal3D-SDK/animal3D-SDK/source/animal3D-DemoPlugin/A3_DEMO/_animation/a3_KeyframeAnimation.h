@@ -120,7 +120,7 @@ a3i32 a3keyframeInit(a3_Keyframe* keyframe_out, const a3real duration, const a3u
 struct a3_ClipTransition
 {
 	//Clip pool passed into the clip controller
-	a3_ClipPool* clipPool;
+	const a3_ClipPool* clipPool;
 
 	//Index of clip to go to in pool
 	a3ui32 index;
@@ -180,7 +180,10 @@ a3i32 a3clipPoolCreate(a3_ClipPool* clipPool_out, a3_KeyframePool* keyframePool,
 a3i32 a3clipPoolRelease(a3_ClipPool* clipPool);
 
 // initialize clip with first and last indices
-a3i32 a3clipInit(a3_Clip* clip_out, const a3byte clipName[a3keyframeAnimation_nameLenMax], const a3_KeyframePool* keyframePool, const a3ui32 firstKeyframeIndex, const a3ui32 finalKeyframeIndex);
+a3i32 a3clipInit(a3_Clip* clip_out, const a3byte clipName[a3keyframeAnimation_nameLenMax], const a3_ClipPool* clipPool, const a3_KeyframePool* keyframePool, const a3ui32 firstKeyframeIndex, const a3ui32 finalKeyframeIndex);
+
+// initialize clip transition with next clip, transition function, and clip pool
+a3i32 a3clipTransitionInit(a3_ClipTransition* clipTransition, const a3ui32 index, const a3_ClipPool* clipPool, void(*transitionFunction));
 
 // get clip index from pool
 a3i32 a3clipGetIndexInPool(const a3_ClipPool* clipPool, const a3byte clipName[a3keyframeAnimation_nameLenMax]);

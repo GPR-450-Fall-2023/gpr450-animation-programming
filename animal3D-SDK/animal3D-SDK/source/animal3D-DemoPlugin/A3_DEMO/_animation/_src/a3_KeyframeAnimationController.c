@@ -38,8 +38,8 @@ a3i32 a3clipControllerInit(a3_ClipController* clipCtrl_out, const a3byte ctrlNam
 
 	//Initialize clipCtrl values
 	clipCtrl_out->playbackDirection = 1;
-	clipCtrl_out->forwardTerminusAction = a3terminusForwardLoop;
-	clipCtrl_out->backwardTerminusAction = a3terminusBackwardLoop;
+	//clipCtrl_out->forwardTerminusAction = a3terminusForwardLoop;
+	//clipCtrl_out->backwardTerminusAction = a3terminusBackwardLoop;
 
 	//Initialize clip pool and set current clip
 	if (a3clipControllerSetClip(clipCtrl_out, clipPool, clipIndex_pool) != 0)
@@ -50,7 +50,7 @@ a3i32 a3clipControllerInit(a3_ClipController* clipCtrl_out, const a3byte ctrlNam
 	return 0;
 }
 
-a3ui32 a3clipControllerPoolCreate(a3_ClipControllerPool* clipCtrlPool_out, a3_ClipPool* clipPool, const a3ui32 count)
+a3i32 a3clipControllerPoolCreate(a3_ClipControllerPool* clipCtrlPool_out, a3_ClipPool* clipPool, const a3ui32 count)
 {
 	//clipCtrlPool = (a3_ClipControllerPool*) malloc(sizeof(a3_ClipControllerPool) + (sizeof(a3_ClipController) * count));
 	//clipCtrlPool->count = count;
@@ -81,7 +81,7 @@ a3ui32 a3clipControllerPoolCreate(a3_ClipControllerPool* clipCtrlPool_out, a3_Cl
 	return 0;
 }
 
-a3ui32 a3clipControllerPoolRelease(a3_ClipControllerPool* clipCtrlPool)
+a3i32 a3clipControllerPoolRelease(a3_ClipControllerPool* clipCtrlPool)
 {
 
 	if (clipCtrlPool == NULL) return -1; // return if clipPool doesn't exist
@@ -105,7 +105,7 @@ a3ui32 a3clipControllerPoolRelease(a3_ClipControllerPool* clipCtrlPool)
 }
 
 
-a3ui32 a3triggerClipTransition(a3_ClipController* clipCtrl, const a3_ClipTransition* transition)
+a3i32 a3triggerClipTransition(a3_ClipController* clipCtrl, const a3_ClipTransition* transition)
 {
 	if (!transition
 		|| !transition->clipPool)
@@ -124,7 +124,7 @@ a3ui32 a3triggerClipTransition(a3_ClipController* clipCtrl, const a3_ClipTransit
 }
 
 
-a3ui32 a3terminusForwardLoop(a3_ClipController* clipCtrl)
+a3i32 a3terminusForwardLoop(a3_ClipController* clipCtrl)
 {
 	//Type cast to clip controller
 	//a3_ClipController* ctrl = (a3_ClipController*)clipCtrl;
@@ -154,7 +154,7 @@ a3ui32 a3terminusForwardLoop(a3_ClipController* clipCtrl)
 }
 
 
-a3ui32 a3terminusForwardStop(a3_ClipController* clipCtrl)
+a3i32 a3terminusForwardStop(a3_ClipController* clipCtrl)
 {
 	//Current clip and keyframe
 	a3_Clip clip = clipCtrl->clipPool->clip[clipCtrl->clip];
@@ -173,7 +173,7 @@ a3ui32 a3terminusForwardStop(a3_ClipController* clipCtrl)
 }
 
 
-a3ui32 a3terminusForwardPingPong(a3_ClipController* clipCtrl)
+a3i32 a3terminusForwardPingPong(a3_ClipController* clipCtrl)
 {
 	//Current clip and keyframe
 	a3_Clip clip = clipCtrl->clipPool->clip[clipCtrl->clip];
@@ -203,7 +203,7 @@ a3ui32 a3terminusForwardPingPong(a3_ClipController* clipCtrl)
 }
 
 
-a3ui32 a3terminusBackwardLoop(a3_ClipController* clipCtrl)
+a3i32 a3terminusBackwardLoop(a3_ClipController* clipCtrl)
 {
 	//Current clip
 	a3_Clip clip = clipCtrl->clipPool->clip[clipCtrl->clip];
@@ -228,7 +228,7 @@ a3ui32 a3terminusBackwardLoop(a3_ClipController* clipCtrl)
 }
 
 
-a3ui32 a3terminusBackwardStop(a3_ClipController* clipCtrl)
+a3i32 a3terminusBackwardStop(a3_ClipController* clipCtrl)
 {
 	//Zero out values and pause playhead so everything stops squarely at the beginning
 	clipCtrl->clipTime = 0;
@@ -243,7 +243,7 @@ a3ui32 a3terminusBackwardStop(a3_ClipController* clipCtrl)
 }
 
 
-a3ui32 a3terminusBackwardPingPong(a3_ClipController* clipCtrl)
+a3i32 a3terminusBackwardPingPong(a3_ClipController* clipCtrl)
 {
 	//Reverse the playhead direction
 	clipCtrl->playbackDirection *= -1;

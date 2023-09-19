@@ -83,21 +83,8 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 				//How far past the end the playhead is
 				a3real clipDiff = clipCtrl->clipTime - clip.duration;
 
-				//Handle specific terminus actions
-				/*switch (clipCtrl->terminusAction)
-				{
-					case LOOP:
-						a3terminusForwardLoop(clipCtrl);
-						break;
-
-					case STOP:
-						a3terminusForwardStop(clipCtrl);
-						break;
-					case PING_PONG:
-						a3terminusForwardPingPong(clipCtrl);
-						break;
-				}*/
-				clipCtrl->forwardTerminusAction(clipCtrl);
+				//Call the function from clips forward transition
+				a3triggerClipTransition(clipCtrl, &clip.forwardTransition);
 			}
 			else //Forward Skip - Case 3
 			{
@@ -118,20 +105,8 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 				//Clip duration will be negative, want to add that negative to duration so we loop back to the end
 				a3real clipDiff = clipCtrl->clipTime + clip.duration;
 
-				//Handle clip terminus actions
-				/*switch (clipCtrl->terminusAction)
-				{
-				case LOOP:
-					a3terminusBackwardLoop(clipCtrl);
-					break;
-				case STOP:
-					a3terminusBackwardStop(clipCtrl);
-					break;
-				case PING_PONG:
-					a3terminusBackwardPingPong(clipCtrl);
-					break;
-				}*/
-				clipCtrl->backwardTerminusAction(clipCtrl);
+				//Call the function from clips backward transition
+				a3triggerClipTransition(clipCtrl, &clip.backwardTransition);
 			}
 			else//Backward Skip - Case 6
 			{
