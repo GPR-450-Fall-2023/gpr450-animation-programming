@@ -50,10 +50,14 @@ typedef struct a3_Keyframe					a3_Keyframe;
 typedef struct a3_KeyframePool				a3_KeyframePool;
 typedef struct a3_Clip						a3_Clip;
 typedef struct a3_ClipPool					a3_ClipPool;
+typedef struct a3_ClipTransition			a3_ClipTransition;
 #endif	// __cplusplus
 
 
 //-----------------------------------------------------------------------------
+
+//Forward declarations
+struct a3_ClipController;
 
 // constant values
 enum
@@ -113,6 +117,18 @@ a3i32 a3keyframeInit(a3_Keyframe* keyframe_out, const a3real duration, const a3u
 
 //-----------------------------------------------------------------------------
 
+struct a3_ClipTransition
+{
+	//Clip pool passed into the clip controller
+	a3_ClipPool* clipPool;
+
+	//Index of clip to go to in pool
+	a3ui32 index;
+
+	//Terminus Action
+	void (*transitionFunction)(struct a3_ClipController* clipCtrl);
+};
+
 // description of single clip
 // metaphor: timeline
 struct a3_Clip
@@ -140,6 +156,10 @@ struct a3_Clip
 
 	// pool with keyframes clip uses
 	const a3_KeyframePool* keyframePool;
+
+	//Clip transitions on either side of the clip
+	a3_ClipTransition forwardTransition;
+	a3_ClipTransition backwardTransition;
 };
 
 // group of clips

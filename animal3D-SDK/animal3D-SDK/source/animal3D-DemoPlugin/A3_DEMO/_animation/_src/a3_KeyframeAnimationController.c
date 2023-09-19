@@ -105,8 +105,36 @@ a3ui32 a3clipControllerPoolRelease(a3_ClipControllerPool* clipCtrlPool)
 }
 
 
+a3ui32 a3triggerClipTransition(a3_ClipController* clipCtrl, const a3_ClipTransition* transition)
+{
+	if (!transition
+		|| !transition->clipPool)
+	{
+		return -1;
+	}
+
+	//Set clip index and pool for clip control
+	clipCtrl->clip = transition->index;
+	clipCtrl->clipPool = transition->clipPool;
+
+	//Transition
+	transition->transitionFunction(clipCtrl);
+
+	return 0;
+}
+
+
 a3ui32 a3terminusForwardLoop(a3_ClipController* clipCtrl)
 {
+	//Type cast to clip controller
+	//a3_ClipController* ctrl = (a3_ClipController*)clipCtrl;
+
+	////Null check
+	//if (!ctrl)
+	//{
+	//	return -1;
+	//}
+
 	//Current clip
 	a3_Clip clip = clipCtrl->clipPool->clip[clipCtrl->clip];
 
