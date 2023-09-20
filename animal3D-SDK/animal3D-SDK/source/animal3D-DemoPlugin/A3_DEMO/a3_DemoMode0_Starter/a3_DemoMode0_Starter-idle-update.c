@@ -58,6 +58,9 @@ void a3demo_update_pointLight(a3_DemoSceneObject* obj_camera, a3_DemoPointLight*
 
 void a3demo_applyScale_internal(a3_DemoSceneObject* sceneObject, a3real4x4p s);
 
+//Function we run our animation data through
+void a3demo0_update_customAnimation(a3_DemoSceneObject* object, a3_ClipController* clipCtrl);
+
 //a3f32 playbackDirectionStorage = 1;
 
 void a3starter_update(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a3f64 const dt)
@@ -80,6 +83,8 @@ void a3starter_update(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a
 	a3demo_updateProjectorViewProjectionMat(demoMode->proj_camera_main);
 
 	a3demo_update_defaultAnimation(demoState, dt, demoMode->obj_box, 6, 2);
+
+	a3demo0_update_customAnimation(demoMode->obj_box, &demoMode->clipCtrlPool.clipControllers[0]);
 
 	// apply scales to starter objects
 	for (i = 0; i < starterMaxCount_sceneObject; ++i)
@@ -183,6 +188,18 @@ void a3starter_update(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a
 	//Save index of previous clip to check if clip has changed later
 	demoMode->previousFrameClip = demoMode->currentClip;
 	demoMode->previousFrameClipCtrl = demoMode->currentController;
+}
+
+void a3demo0_update_customAnimation(a3_DemoSceneObject* object, a3_ClipController* clipCtrl)
+{
+	a3real data;
+	a3lerpKeyframeData(clipCtrl, &data);
+
+	object->euler.v[0] = 0;
+	object->euler.v[1] = 0;
+	object->euler.v[2] = 0;
+
+	object->position.x = data;
 }
 
 
