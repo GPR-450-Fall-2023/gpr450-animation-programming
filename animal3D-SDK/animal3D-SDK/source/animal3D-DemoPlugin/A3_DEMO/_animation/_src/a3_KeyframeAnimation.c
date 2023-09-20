@@ -181,7 +181,7 @@ a3i32 a3clipInit(a3_Clip* clip_out, const a3byte clipName[a3keyframeAnimation_na
 {
 	const a3ui32 DEFAULT_TRANSITION_INDEX = 0;
 	void(*DEFAULT_FORWARD_TRANSITION) = a3terminusForwardPlayback;
-	void(*DEFAULT_BACKWARD_TRANSITION) = a3terminusBackwardPlayback;
+	void(*DEFAULT_BACKWARD_TRANSITION) = a3terminusReversePlayback;
 
 	if(clip_out == NULL) return -1; // return if clip_out doesn't exist
 

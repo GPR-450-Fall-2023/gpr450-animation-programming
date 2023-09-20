@@ -26,6 +26,7 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <math.h>
 
 
 //-----------------------------------------------------------------------------
@@ -174,11 +175,11 @@ a3i32 a3terminusForwardPlayback(a3_ClipController* clipCtrl, const a3_ClipTransi
 	a3real clipDiff = 0;
 	if (clipCtrl->clipTime > 0) //Playing forward
 	{
-		clipDiff = abs(clipCtrl->clipTime - clipCtrl->clipPool->clip[clipCtrl->clip].duration);
+		clipDiff = (a3real)fabs(clipCtrl->clipTime - clipCtrl->clipPool->clip[clipCtrl->clip].duration);
 	}
 	else //Playing backward
 	{
-		clipDiff = abs(clipCtrl->clipTime);
+		clipDiff = (a3real)fabs(clipCtrl->clipTime);
 	}
 
 	//Set next clip index and pool for clip control
@@ -193,6 +194,9 @@ a3i32 a3terminusForwardPlayback(a3_ClipController* clipCtrl, const a3_ClipTransi
 	clipCtrl->keyframe = clip.firstKeyframeIndex;
 	clipCtrl->clipTime = clipDiff;
 	clipCtrl->keyframeTime = clipDiff;
+
+	//Move clip controller forward
+	clipCtrl->playbackDirection = 1;
 
 	return 0;
 }
@@ -236,11 +240,11 @@ a3i32 a3terminusReversePlayback(a3_ClipController* clipCtrl, const a3_ClipTransi
 	a3real clipDiff = 0;
 	if (clipCtrl->clipTime > 0) //Playing forward
 	{
-		clipDiff = abs(clipCtrl->clipTime - clipCtrl->clipPool->clip[clipCtrl->clip].duration);
+		clipDiff = (a3real)fabs(clipCtrl->clipTime - clipCtrl->clipPool->clip[clipCtrl->clip].duration);
 	}
 	else //Playing backward
 	{
-		clipDiff = abs(clipCtrl->clipTime);
+		clipDiff = (a3real)fabs(clipCtrl->clipTime);
 	}
 	//Set next clip index and pool for clip control
 	clipCtrl->clip = transition->index;
@@ -250,7 +254,7 @@ a3i32 a3terminusReversePlayback(a3_ClipController* clipCtrl, const a3_ClipTransi
 	a3_Clip clip = clipCtrl->clipPool->clip[clipCtrl->clip];
 
 	//Loop keyframe to end of clip
-	clipCtrl->keyframe = clipCtrl->clipPool->clip[clipCtrl->clip].lastKeyframeIndex;
+	clipCtrl->keyframe = clip.lastKeyframeIndex;
 
 	//Calculate keyframe time based on duration of the new frame
 	a3_Keyframe keyframe = clipCtrl->clipPool->clip[clipCtrl->clip].keyframePool->keyframe[clipCtrl->keyframe];
@@ -258,6 +262,9 @@ a3i32 a3terminusReversePlayback(a3_ClipController* clipCtrl, const a3_ClipTransi
 
 	//Set new clipTime
 	clipCtrl->clipTime = clip.duration - clipDiff;
+
+	//Reverse clip controller
+	clipCtrl->playbackDirection = -1;
 
 	return 0;
 }
@@ -301,6 +308,48 @@ a3i32 a3terminusForwardSkipPlayback(a3_ClipController* clipCtrl, const a3_ClipTr
 		return -1;
 	}
 
+	//How far past the end the playhead is (direction ambiguous since current direction could be backwards)
+	a3real clipDiff = 0;
+	if (clipCtrl->clipTime > 0) //Playing forward
+	{
+		clipDiff = (a3real)fabs(clipCtrl->clipTime - clipCtrl->clipPool->clip[clipCtrl->clip].duration);
+	}
+	else //Playing backward
+	{
+		clipDiff = (a3real)fabs(clipCtrl->clipTime);
+	}
+
+	//Set next clip index and pool for clip control
+	clipCtrl->clip = transition->index;
+	clipCtrl->clipPool = transition->clipPool;
+
+	//Current clip
+	a3_Clip clip = clipCtrl->clipPool->clip[clipCtrl->clip];
+
+	//Set keyframe to first in clip
+	clipCtrl->keyframe = clip.firstKeyframeIndex;
+
+	//Set time
+	a3_Keyframe keyframe = clip.keyframePool->keyframe[clipCtrl->keyframe]; //New keyframe
+	clipCtrl->keyframeTime = keyframe.duration + clipDiff; //End of first keyframe
+	clipCtrl->clipTime = keyframe.duration + clipDiff; //Equivalent keyframe duration / clip duration
+
+	//Move clip controller forward
+	clipCtrl->playbackDirection = 1;
+
+	return 0;
+}
+
+
+a3i32 a3terminusForwardSkipPause(a3_ClipController* clipCtrl, const a3_ClipTransition* transition)
+{
+	if (!clipCtrl
+		|| !transition
+		|| !transition->clipPool)
+	{
+		return -1;
+	}
+
 	//Set next clip index and pool for clip control
 	clipCtrl->clip = transition->index;
 	clipCtrl->clipPool = transition->clipPool;
@@ -314,27 +363,84 @@ a3i32 a3terminusForwardSkipPlayback(a3_ClipController* clipCtrl, const a3_ClipTr
 	//Set time
 	a3_Keyframe keyframe = clip.keyframePool->keyframe[clipCtrl->keyframe]; //New keyframe
 	clipCtrl->keyframeTime = keyframe.duration; //End of first keyframe
-	clipCtrl->clipTime = keyframe.durationInverse * clip.duration; //Equivalent keyframe duration / clip duration
+	clipCtrl->clipTime = keyframe.duration; //Equivalent keyframe duration / clip duration
+
+	//Pause clip controller
+	clipCtrl->playbackDirection = 0;
 
 	return 0;
 }
 
 
-a3i32 a3terminusForwardSkipPause(a3_ClipController* clipCtrl, const a3_ClipTransition* transition)
-{
-	return -1;
-}
-
-
 a3i32 a3terminusReverseSkipPlayback(a3_ClipController* clipCtrl, const a3_ClipTransition* transition)
 {
-	return -1;
+	if (!clipCtrl
+		|| !transition
+		|| !transition->clipPool)
+	{
+		return -1;
+	}
+
+	//How far past the end the playhead is (direction ambiguous since current direction could be backwards)
+	a3real clipDiff = 0;
+	if (clipCtrl->clipTime > 0) //Playing forward
+	{
+		clipDiff = (a3real)fabs(clipCtrl->clipTime - clipCtrl->clipPool->clip[clipCtrl->clip].duration);
+	}
+	else //Playing backward
+	{
+		clipDiff = (a3real)fabs(clipCtrl->clipTime);
+	}
+	//Set next clip index and pool for clip control
+	clipCtrl->clip = transition->index;
+	clipCtrl->clipPool = transition->clipPool;
+
+	//Current clip
+	a3_Clip clip = clipCtrl->clipPool->clip[clipCtrl->clip];
+
+	//Loop keyframe to end of clip
+	clipCtrl->keyframe = clipCtrl->clipPool->clip[clipCtrl->clip].lastKeyframeIndex;
+
+	//Calculate keyframe time based on duration of the new frame
+	a3_Keyframe keyframe = clipCtrl->clipPool->clip[clipCtrl->clip].keyframePool->keyframe[clipCtrl->keyframe];
+	clipCtrl->keyframeTime = keyframe.duration - clipDiff; //subtract overflow of clip time from keyframe duration for new keyframe time
+
+	//Set new clipTime
+	clipCtrl->clipTime = clip.duration - keyframe.duration - clipDiff;
+
+	//Reverse clip controller
+	clipCtrl->playbackDirection = -1;
+
+	return 0;
 }
 
 
 a3i32 a3terminusReverseSkipPause(a3_ClipController* clipCtrl, const a3_ClipTransition* transition)
 {
-	return -1;
+	if (!clipCtrl
+		|| !transition
+		|| !transition->clipPool)
+	{
+		return -1;
+	}
+
+	//Set next clip index and pool for clip control
+	clipCtrl->clip = transition->index;
+	clipCtrl->clipPool = transition->clipPool;
+
+	//Current clip and keyframe
+	a3_Clip clip = clipCtrl->clipPool->clip[clipCtrl->clip];
+	a3_Keyframe keyframe = clip.keyframePool->keyframe[clipCtrl->keyframe];
+
+	//Clamp times to their max values
+	clipCtrl->clipTime = clip.duration - keyframe.duration;
+	clipCtrl->keyframeTime = 0;
+	clipCtrl->keyframe = clip.lastKeyframeIndex;
+
+	//Pause clip controller
+	clipCtrl->playbackDirection = 0;
+
+	return 0;
 }
 
 //a3i32 a3terminusForwardPingPong(a3_ClipController* clipCtrl, const a3_ClipTransition* transition)

@@ -84,7 +84,7 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 				a3real clipDiff = clipCtrl->clipTime - clip.duration;
 
 				//Call the function from clips forward transition
-				a3triggerClipTransition(clipCtrl, &clip.forwardTransition);
+				clip.forwardTransition.transitionFunction(clipCtrl, &clip.forwardTransition);
 			}
 			else //Forward Skip - Case 3
 			{
@@ -106,7 +106,7 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 				a3real clipDiff = clipCtrl->clipTime + clip.duration;
 
 				//Call the function from clips backward transition
-				a3triggerClipTransition(clipCtrl, &clip.backwardTransition);
+				clip.backwardTransition.transitionFunction(clipCtrl, &clip.backwardTransition);
 			}
 			else//Backward Skip - Case 6
 			{

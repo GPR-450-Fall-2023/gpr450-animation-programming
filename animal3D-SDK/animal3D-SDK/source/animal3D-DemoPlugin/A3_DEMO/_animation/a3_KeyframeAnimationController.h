@@ -105,9 +105,6 @@ a3i32 a3clipControllerInit(a3_ClipController* clipCtrl_out, const a3byte ctrlNam
 // update clip controller
 a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt);
 
-//Executres setup for clip controller based on clip transition info before calling transition terminus action function
-a3i32 a3triggerClipTransition(a3_ClipController* clipCtrl, const a3_ClipTransition* transition);
-
 // set clip to play
 a3i32 a3clipControllerSetClip(a3_ClipController* clipCtrl, const a3_ClipPool* clipPool, const a3ui32 clipIndex_pool);
 
