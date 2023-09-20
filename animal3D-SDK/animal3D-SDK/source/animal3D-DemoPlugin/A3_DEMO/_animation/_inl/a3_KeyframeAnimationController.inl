@@ -218,17 +218,23 @@ inline a3i32 a3lerpKeyframeData(a3_ClipController* clipCtrl, a3real3p out_data)
 		clip.firstKeyframeIndex + indexOffset, 
 		nextKeyframe.data[0], nextKeyframe.data[1], nextKeyframe.data[2]);
 	
-	/////////////////////////////////////////////
-	a3real3r sub = a3real3Sub(nextKeyframe.data, keyframe.data);
-	a3real3r mul = a3real3MulS(sub, clipCtrl->keyframeParameter);
-	a3real3r add = a3real3Add(keyframe.data, mul);
-
-	out_data[0] = add[0];
-	out_data[1] = add[1];
-	out_data[2] = add[2];
-	/////////////////////////////////////////////
+	//Lerp values using keyframe data
+	a3real3Lerp(out_data, keyframe.data, nextKeyframe.data, clipCtrl->keyframeParameter);
 
 	return 0;
+}
+
+inline a3real3r a3real3GenericLerp(a3real3p out, a3real3p x0, a3real3p x1, a3real u)
+{
+	a3real3r sub = a3real3Sub(x1, x0); //x1 - x0
+	a3real3r mul = a3real3MulS(sub, u); // (x1 - x0) * u
+	a3real3r add = a3real3Add(x0, mul); // x0 + ((x1 - x0) * u)
+
+	out[0] = add[0];
+	out[1] = add[1];
+	out[2] = add[2];
+
+	return out;
 }
 
 

@@ -118,6 +118,9 @@ a3i32 a3clipControllerPoolRelease(a3_ClipControllerPool* clipCtrlPool);
 // lerp data within keyframe
 a3i32 a3lerpKeyframeData(struct a3_ClipController* clipCtrl, a3real3p out_data);
 
+//Generic lerp for a3real3 values
+a3real3r a3real3GenericLerp(a3real3p out, a3real3p x0, a3real3p x1, a3real u);
+
 /*
 
 	Functions for handling setting indices and times for their respective 
