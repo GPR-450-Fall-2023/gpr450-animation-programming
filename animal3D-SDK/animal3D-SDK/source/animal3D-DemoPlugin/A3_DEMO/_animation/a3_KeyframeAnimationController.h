@@ -77,6 +77,7 @@ struct a3_ClipController
 
 	//Indicates play direction and speed (+1 means forward at normal pace, 0 is paused, -1 is backwards)
 	a3real playbackDirection;
+	a3real lastPlaybackDirection;
 
 	//How the clip controller ends clips
 	//enum TerminusAction terminusAction; //////////////////////////// DELETE
@@ -113,6 +114,9 @@ a3i32 a3clipControllerPoolCreate(a3_ClipControllerPool* clipCtrlPool, a3_ClipPoo
 
 //Release clip controller pool
 a3i32 a3clipControllerPoolRelease(a3_ClipControllerPool* clipCtrlPool);
+
+// lerp data within keyframe
+a3i32 a3lerpKeyframeData(struct a3_ClipController* clipCtrl, a3real* out_data);
 
 /*
 

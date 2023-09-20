@@ -197,6 +197,7 @@ a3i32 a3terminusForwardPlayback(a3_ClipController* clipCtrl, const a3_ClipTransi
 
 	//Move clip controller forward
 	clipCtrl->playbackDirection = 1;
+	clipCtrl->lastPlaybackDirection = 1;
 
 	return 0;
 }
@@ -222,6 +223,7 @@ a3i32 a3terminusForwardPause(a3_ClipController* clipCtrl, const a3_ClipTransitio
 
 	//Pause clip controller
 	clipCtrl->playbackDirection = 0;
+	clipCtrl->lastPlaybackDirection = 1; //Ensures we move forward when unpausing
 
 	return 0;
 }
@@ -265,6 +267,7 @@ a3i32 a3terminusReversePlayback(a3_ClipController* clipCtrl, const a3_ClipTransi
 
 	//Reverse clip controller
 	clipCtrl->playbackDirection = -1;
+	clipCtrl->lastPlaybackDirection = -1;
 
 	return 0;
 }
@@ -294,6 +297,7 @@ a3i32 a3terminusReversePause(a3_ClipController* clipCtrl, const a3_ClipTransitio
 
 	//Pause clip controller
 	clipCtrl->playbackDirection = 0;
+	clipCtrl->lastPlaybackDirection = -1; //Ensures we move backward when unpausing
 
 	return 0;
 }
@@ -336,6 +340,7 @@ a3i32 a3terminusForwardSkipPlayback(a3_ClipController* clipCtrl, const a3_ClipTr
 
 	//Move clip controller forward
 	clipCtrl->playbackDirection = 1;
+	clipCtrl->lastPlaybackDirection = 1;
 
 	return 0;
 }
@@ -367,6 +372,7 @@ a3i32 a3terminusForwardSkipPause(a3_ClipController* clipCtrl, const a3_ClipTrans
 
 	//Pause clip controller
 	clipCtrl->playbackDirection = 0;
+	clipCtrl->lastPlaybackDirection = 1; //Ensures we move forward when unpausing
 
 	return 0;
 }
@@ -403,13 +409,14 @@ a3i32 a3terminusReverseSkipPlayback(a3_ClipController* clipCtrl, const a3_ClipTr
 
 	//Calculate keyframe time based on duration of the new frame
 	a3_Keyframe keyframe = clipCtrl->clipPool->clip[clipCtrl->clip].keyframePool->keyframe[clipCtrl->keyframe];
-	clipCtrl->keyframeTime = keyframe.duration - clipDiff; //subtract overflow of clip time from keyframe duration for new keyframe time
+	clipCtrl->keyframeTime = -clipDiff; //clip diff is negative so we update the keyframe on the next loop through resolution
 
 	//Set new clipTime
 	clipCtrl->clipTime = clip.duration - keyframe.duration - clipDiff;
 
 	//Reverse clip controller
 	clipCtrl->playbackDirection = -1;
+	clipCtrl->lastPlaybackDirection = -1;
 
 	return 0;
 }
@@ -439,6 +446,7 @@ a3i32 a3terminusReverseSkipPause(a3_ClipController* clipCtrl, const a3_ClipTrans
 
 	//Pause clip controller
 	clipCtrl->playbackDirection = 0;
+	clipCtrl->lastPlaybackDirection = -1; //Ensures we move backward when unpausing
 
 	return 0;
 }

@@ -146,9 +146,19 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 	clipCtrl->keyframeParameter = clipCtrl->keyframeTime * keyframe.durationInverse;
 	clipCtrl->clipParameter = clipCtrl->clipTime * clip.durationInverse;
 
+	//store last direction not including pause
+	//Used to figure out which direction to go when unpausing
+	if (clipCtrl->playbackDirection != 0)
+	{
+		clipCtrl->lastPlaybackDirection = clipCtrl->playbackDirection; 
+	}
+
+	a3real data;
+	a3lerpKeyframeData(clipCtrl, &data);
+
 	//For debugging/testing only, prints out clipCtrl info
 	printf("\nClip Time: %f\nClip Duration: %f\nClip Normalized: %f\n\nKeyframe Index: %i\nKeyframeTime: %f\nKeyframe Duration: %f\nKeyframe Normalized: %f\n", clipCtrl->clipTime, clip.duration, clipCtrl->clipParameter, clipCtrl->keyframe, clipCtrl->keyframeTime, keyframe.duration, clipCtrl->keyframeParameter);
-	printf("\n------ Update Finished, Data = %i,  ------\n\n", keyframe.data);
+	printf("\n------ Update Finished, Data = %f,  ------\n\n", data);
 
 	return 0;
 }
@@ -173,6 +183,36 @@ inline a3i32 a3clipControllerSetClip(a3_ClipController* clipCtrl, const a3_ClipP
 	clipCtrl->keyframe = clipCtrl->clipPool->clip[clipCtrl->clip].firstKeyframeIndex;
 	clipCtrl->keyframeTime = 0;
 	clipCtrl->keyframeParameter = 0;
+
+	return 0;
+}
+
+
+inline a3i32 a3lerpKeyframeData(a3_ClipController* clipCtrl, a3real* out_data)
+{
+	if (!clipCtrl
+		|| !clipCtrl->clipPool)
+	{
+		return -1;
+	}
+
+	a3_Clip clip = clipCtrl->clipPool->clip[clipCtrl->clip];
+
+	if (!clip.keyframePool)
+	{
+		return -1;
+	}
+
+	a3_Keyframe keyframe = clip.keyframePool->keyframe[clipCtrl->keyframe];
+
+	a3ui32 indexOffset = (clipCtrl->keyframe - clip.firstKeyframeIndex + 1) 
+		% (clip.lastKeyframeIndex - clip.firstKeyframeIndex + 1);
+	a3_Keyframe nextKeyframe = clip.keyframePool->keyframe
+		[clip.firstKeyframeIndex + indexOffset];
+
+	printf("\nIndex: %i   Data: %f\nIndex %i   Data: %f\n\n", clipCtrl->keyframe, keyframe.data, clip.firstKeyframeIndex + indexOffset, nextKeyframe.data);
+
+	*out_data = keyframe.data + ((nextKeyframe.data - keyframe.data) * clipCtrl->keyframeParameter);
 
 	return 0;
 }

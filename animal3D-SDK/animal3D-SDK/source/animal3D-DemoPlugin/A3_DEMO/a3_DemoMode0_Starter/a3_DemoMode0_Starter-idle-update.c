@@ -58,7 +58,7 @@ void a3demo_update_pointLight(a3_DemoSceneObject* obj_camera, a3_DemoPointLight*
 
 void a3demo_applyScale_internal(a3_DemoSceneObject* sceneObject, a3real4x4p s);
 
-a3f32 playbackDirectionStorage = 1;
+//a3f32 playbackDirectionStorage = 1;
 
 void a3starter_update(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a3f64 const dt)
 {
@@ -121,10 +121,9 @@ void a3starter_update(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a
 	// turning play/pause/slowmo/forward/backward into effect
 	if (demoMode->togglePause) {
 		if(clipCtrl->playbackDirection == 0) {
-			clipCtrl->playbackDirection = playbackDirectionStorage;
+			clipCtrl->playbackDirection = clipCtrl->lastPlaybackDirection;
 		}
 		else {
-			playbackDirectionStorage = clipCtrl->playbackDirection;
 			clipCtrl->playbackDirection = 0;
 		}
 		demoMode->togglePause = false;
@@ -178,6 +177,8 @@ void a3starter_update(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a
 	{
 		a3clipControllerUpdate(&demoMode->clipCtrlPool.clipControllers[index], (a3real)dt);
 	}
+
+	
 
 	//Save index of previous clip to check if clip has changed later
 	demoMode->previousFrameClip = demoMode->currentClip;

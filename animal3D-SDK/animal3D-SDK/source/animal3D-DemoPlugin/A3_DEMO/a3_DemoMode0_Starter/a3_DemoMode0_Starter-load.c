@@ -189,7 +189,7 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 
 	// Initializing Keyframes UNCOMMENT THIS BEFORE SAYING DONE
 	for (a3ui32 i = 0; i < demoMode->numOfKeyframes; i++) {
-		a3keyframeInit(&demoMode->keyPool.keyframe[i], 0.5f, i + 1);
+		a3keyframeInit(&demoMode->keyPool.keyframe[i], 0.5f, (a3real)i + 1);
 	}
 
 	//demoMode->keyPool.keyframe[0].data = 0;
@@ -215,10 +215,9 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 	// but also not go out of bounds, so i just did it manually
 	// we can change this later
 
+	//Test assingmnet of clip 0 transition indices pointing to the next clip in the pool
 	demoMode->clipPool.clip[0].forwardTransition.index = 1;
 	demoMode->clipPool.clip[0].backwardTransition.index = 1;
-
-	demoMode->clipPool.clip[0].backwardTransition.transitionFunction = a3terminusPause;
 	
 	// Initializing Clip Controllers
 	a3clipControllerPoolCreate(&demoMode->clipCtrlPool, &demoMode->clipPool, 3);
@@ -239,13 +238,15 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 	//demoMode->clipCtrl1.terminusAction = PING_PONG;
 
 	//Used to move playhead to the end of the clip so we can test backward movement (like the stop terminus)
-	/*a3_Clip clip = demoMode->clipCtrl.clipPool->clip[demoMode->clipCtrl.clip];
+	/*a3_Clip clip = demoMode->clipCtrlPool.clipControllers[0].clipPool->clip[demoMode->clipCtrlPool.clipControllers[0].clip];
 	a3_Keyframe keyframe = clip.keyframePool->keyframe[clip.keyframeCount - 1];
-	demoMode->clipCtrl.clipTime = clip.duration;
-	demoMode->clipCtrl.clipParameter = 1;
-	demoMode->clipCtrl.keyframe = clip.keyframeCount - 1;
-	demoMode->clipCtrl.keyframeTime = keyframe.duration;
-	demoMode->clipCtrl.keyframeParameter = 1;*/
+	demoMode->clipCtrlPool.clipControllers[0].clipTime = clip.duration;
+	demoMode->clipCtrlPool.clipControllers[0].clipParameter = 1;
+	demoMode->clipCtrlPool.clipControllers[0].keyframe = clip.keyframeCount - 1;
+	demoMode->clipCtrlPool.clipControllers[0].keyframeTime = keyframe.duration;
+	demoMode->clipCtrlPool.clipControllers[0].keyframeParameter = 1;
+	demoMode->clipCtrlPool.clipControllers[0].playbackDirection = -1;
+	demoMode->clipCtrlPool.clipControllers[0].lastPlaybackDirection = -1;*/
 	//////
 }
 
