@@ -35,6 +35,7 @@
 #define __ANIMAL3D_KEYFRAMEANIMATIONCONTROLLER_INL
 
 #include <stdio.h> 
+#include <math.h> 
 
 #include "animal3D-A3DM/a3math/a3vector.h"
 
@@ -213,8 +214,8 @@ inline a3i32 a3lerpKeyframeData(a3_ClipController* clipCtrl, a3real3p out_data)
 
 	a3_Keyframe keyframe = clip.keyframePool->keyframe[clipCtrl->keyframe];
 
-	a3ui32 indexOffset = (clipCtrl->keyframe - clip.firstKeyframeIndex + 1) 
-		% (clip.lastKeyframeIndex - clip.firstKeyframeIndex + 1);
+	a3ui32 indexOffset = (clipCtrl->keyframe - clip.firstKeyframeIndex + 1) //Add 1 to get next
+		% (clip.lastKeyframeIndex - clip.firstKeyframeIndex + 1);	//Mod so it does not go out of range
 	a3_Keyframe nextKeyframe = clip.keyframePool->keyframe
 		[clip.firstKeyframeIndex + indexOffset];
 
@@ -226,6 +227,39 @@ inline a3i32 a3lerpKeyframeData(a3_ClipController* clipCtrl, a3real3p out_data)
 	
 	//Lerp values using keyframe data
 	a3real3Lerp(out_data, keyframe.data, nextKeyframe.data, clipCtrl->keyframeParameter);
+
+
+	///////// CATMULL ROM ///////////
+
+	//a3ui32 indexOffsetNext = (clipCtrl->keyframe - clip.firstKeyframeIndex + 2)
+	//	% (clip.lastKeyframeIndex - clip.firstKeyframeIndex + 1);
+	//a3_Keyframe nextSkipKeyframe = clip.keyframePool->keyframe
+	//	[clip.firstKeyframeIndex + indexOffsetNext];
+
+	//a3ui32 indexOffsetPrev = (clipCtrl->keyframe - clip.firstKeyframeIndex - 1 + clip.lastKeyframeIndex - clip.firstKeyframeIndex + 1) //Add the mod value to make this positive
+	//	% (clip.lastKeyframeIndex - clip.firstKeyframeIndex + 1);
+	//a3_Keyframe prevKeyframe = clip.keyframePool->keyframe
+	//	[clip.firstKeyframeIndex + indexOffsetPrev];
+
+	//printf("\nIndex: %i   Data: (%f, %f, %f)\nIndex %i   Data: (%f, %f, %f)\nIndex %i   Data: (%f, %f, %f)\nIndex %i   Data: (%f, %f, %f)\n\n",
+	//	clip.firstKeyframeIndex + indexOffsetPrev,
+	//	prevKeyframe.data[0], prevKeyframe.data[1], prevKeyframe.data[2],
+	//	clipCtrl->keyframe,
+	//	keyframe.data[0], keyframe.data[1], keyframe.data[2],
+	//	clip.firstKeyframeIndex + indexOffset,
+	//	nextKeyframe.data[0], nextKeyframe.data[1], nextKeyframe.data[2],
+	//	clip.firstKeyframeIndex + indexOffsetNext,
+	//	nextSkipKeyframe.data[0], nextSkipKeyframe.data[1], nextSkipKeyframe.data[2]
+	//);
+
+	//a3real3GenericCatmullRom(
+	//	out_data, 
+	//	prevKeyframe.data,
+	//	keyframe.data, 
+	//	nextKeyframe.data, 
+	//	nextSkipKeyframe.data, 
+	//	clipCtrl->keyframeParameter
+	//);
 
 	return 0;
 }
@@ -243,9 +277,49 @@ inline a3real3r a3real3GenericLerp(a3real3p out, a3real3p x0, a3real3p x1, a3rea
 	return out;
 }
 
-//a3real3r a3real3GenericCatmullRom(a3real3p out, a3real3p xP, a3real3p x0, a3real3p x1, a3real3p xN, a3real u)
+//Adapted from https://en.wikipedia.org/wiki/Centripetal_Catmull%E2%80%93Rom_spline#Definition
+//inline a3real3r a3real3GenericCatmullRom(a3real3p out, a3real3p xP, a3real3p x0, a3real3p x1, a3real3p xN, a3real u)
 //{
+//	a3real tP = 0.0f;
+//	a3real3r d = a3real3Sub(x0, xP);
+//	a3real t0 = (a3real)pow(a3real3Dot(d, d), .25) + u;
+//	d = a3real3Sub(x1, x0);
+//	a3real t1 = (a3real)pow(a3real3Dot(d, d), .25) + u;
+//	d = a3real3Sub(xN, x1);
+//	a3real tN = (a3real)pow(a3real3Dot(d, d), .25) + u;
 //
+//	a3real t = t0 + ((t1 - t0) * u); //Calculate new u by lerping it between current and next frame
+//
+//	a3real3r A1 = a3real3Add(
+//		a3real3MulS(xP, ((t0 - t) / (t0 - tP))), 
+//		a3real3MulS(x0, ((t - tP) / (t0 - tP)))
+//	);
+//	a3real3r A2 = a3real3Add(
+//		a3real3MulS(x0, ((t1 - t) / (t1 - t0))),
+//		a3real3MulS(x1, ((t - t0) / (t1 - t0)))
+//	);
+//	a3real3r A3val = a3real3Add( //A3 is reserved
+//		a3real3MulS(x1, ((tN - t) / (tN - t1))),
+//		a3real3MulS(xN, ((t - t1) / (tN - t1)))
+//	);
+//
+//	a3real3r B1 = a3real3Add(
+//		a3real3MulS(A1, ((t1 - t) / (t1 - tP))),
+//		a3real3MulS(A2, ((t - tP) / (t1 - tP)))
+//	);
+//	a3real3r B2 = a3real3Add(
+//		a3real3MulS(A2, ((tN - t) / (tN - t0))),
+//		a3real3MulS(A3val, ((t - t0) / (tN - t0)))
+//	);
+//
+//	a3real3r C = a3real3Add(
+//		a3real3MulS(B1, ((t1 - t) / (t1 - t0))),
+//		a3real3MulS(B2, ((t - t0) / (t1 - t0)))
+//	);
+//
+//	out[0] = C[0];
+//	out[1] = C[1];
+//	out[2] = C[2];
 //
 //	return out;
 //}
