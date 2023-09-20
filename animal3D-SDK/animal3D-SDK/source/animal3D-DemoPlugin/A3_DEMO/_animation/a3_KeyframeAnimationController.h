@@ -116,7 +116,7 @@ a3i32 a3clipControllerPoolCreate(a3_ClipControllerPool* clipCtrlPool, a3_ClipPoo
 a3i32 a3clipControllerPoolRelease(a3_ClipControllerPool* clipCtrlPool);
 
 // lerp data within keyframe
-a3i32 a3lerpKeyframeData(struct a3_ClipController* clipCtrl, a3real* out_data);
+a3i32 a3lerpKeyframeData(struct a3_ClipController* clipCtrl, a3real3p out_data);
 
 /*
 

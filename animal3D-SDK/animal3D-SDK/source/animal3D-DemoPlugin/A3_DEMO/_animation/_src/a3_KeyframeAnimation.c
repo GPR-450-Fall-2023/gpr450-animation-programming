@@ -67,7 +67,7 @@ void a3keyframeSetDuration(a3_Keyframe* keyframe, const a3real duration)
 a3i32 a3keyframePoolCreate(a3_KeyframePool* keyframePool_out, const a3ui32 count)
 {
 	const a3real KEYFRAME_DEFAULT_DURATION = 1; // init each keyframe with this duration
-	const a3real KEYFRAME_DEFAULT_DATA = 0.0f; // init each keyframe with this value
+	const a3real3 KEYFRAME_DEFAULT_DATA = { 0.0f, 0.0f, 0.0f }; // init each keyframe with this value
 
 	if (keyframePool_out == NULL) return -1; // return if keyframePool doesn't already exist
 
@@ -111,12 +111,14 @@ a3i32 a3keyframePoolRelease(a3_KeyframePool* keyframePool)
 }
 
 // initialize keyframe
-a3i32 a3keyframeInit(a3_Keyframe* keyframe_out, const a3real duration, const a3real value_x)
+a3i32 a3keyframeInit(a3_Keyframe* keyframe_out, const a3real duration, const a3real3 value)
 {
 	if(keyframe_out == NULL) return -1; // return if keyframe_out is null
 
 	// set keyframe variables
-	keyframe_out->data = value_x;
+	keyframe_out->data[0] = value[0];
+	keyframe_out->data[1] = value[1];
+	keyframe_out->data[2] = value[2];
 	keyframe_out->setDuration = a3keyframeSetDuration; // give keyframe appropriate setter function
 	keyframe_out->setDuration(keyframe_out, duration);
 

@@ -36,6 +36,8 @@
 
 #include <stdio.h> 
 
+#include "animal3D-A3DM/a3math/a3vector.h"
+
 
 //-----------------------------------------------------------------------------
 
@@ -153,12 +155,12 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 		clipCtrl->lastPlaybackDirection = clipCtrl->playbackDirection; 
 	}
 
-	a3real data;
-	a3lerpKeyframeData(clipCtrl, &data);
+	a3real lerpData[3];
+	a3lerpKeyframeData(clipCtrl, lerpData);
 
 	//For debugging/testing only, prints out clipCtrl info
 	printf("\nClip Time: %f\nClip Duration: %f\nClip Normalized: %f\n\nKeyframe Index: %i\nKeyframeTime: %f\nKeyframe Duration: %f\nKeyframe Normalized: %f\n", clipCtrl->clipTime, clip.duration, clipCtrl->clipParameter, clipCtrl->keyframe, clipCtrl->keyframeTime, keyframe.duration, clipCtrl->keyframeParameter);
-	printf("\n------ Update Finished, Data = %f,  ------\n\n", data);
+	printf("\n------ Update Finished, Data = (%f, %f, %f)  ------\n\n", lerpData[0], lerpData[1], lerpData[2]);
 
 	return 0;
 }
@@ -188,7 +190,7 @@ inline a3i32 a3clipControllerSetClip(a3_ClipController* clipCtrl, const a3_ClipP
 }
 
 
-inline a3i32 a3lerpKeyframeData(a3_ClipController* clipCtrl, a3real* out_data)
+inline a3i32 a3lerpKeyframeData(a3_ClipController* clipCtrl, a3real3p out_data)
 {
 	if (!clipCtrl
 		|| !clipCtrl->clipPool)
@@ -210,9 +212,21 @@ inline a3i32 a3lerpKeyframeData(a3_ClipController* clipCtrl, a3real* out_data)
 	a3_Keyframe nextKeyframe = clip.keyframePool->keyframe
 		[clip.firstKeyframeIndex + indexOffset];
 
-	printf("\nIndex: %i   Data: %f\nIndex %i   Data: %f\n\n", clipCtrl->keyframe, keyframe.data, clip.firstKeyframeIndex + indexOffset, nextKeyframe.data);
+	printf("\nIndex: %i   Data: (%f, %f, %f)\nIndex %i   Data: (%f, %f, %f)\n\n", 
+		clipCtrl->keyframe, 
+		keyframe.data[0], keyframe.data[1], keyframe.data[2],
+		clip.firstKeyframeIndex + indexOffset, 
+		nextKeyframe.data[0], nextKeyframe.data[1], nextKeyframe.data[2]);
+	
+	/////////////////////////////////////////////
+	a3real3r sub = a3real3Sub(nextKeyframe.data, keyframe.data);
+	a3real3r mul = a3real3MulS(sub, clipCtrl->keyframeParameter);
+	a3real3r add = a3real3Add(keyframe.data, mul);
 
-	*out_data = keyframe.data + ((nextKeyframe.data - keyframe.data) * clipCtrl->keyframeParameter);
+	out_data[0] = add[0];
+	out_data[1] = add[1];
+	out_data[2] = add[2];
+	/////////////////////////////////////////////
 
 	return 0;
 }

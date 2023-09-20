@@ -192,14 +192,16 @@ void a3starter_update(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a
 
 void a3demo0_update_customAnimation(a3_DemoSceneObject* object, a3_ClipController* clipCtrl)
 {
-	a3real data;
-	a3lerpKeyframeData(clipCtrl, &data);
+	a3real data[3];
+	a3lerpKeyframeData(clipCtrl, data);
 
 	object->euler.v[0] = 0;
 	object->euler.v[1] = 0;
 	object->euler.v[2] = 0;
 
-	object->position.x = data;
+	object->position.x = data[0];
+	object->position.y = data[1];
+	object->position.z = data[2];
 }
 
 
