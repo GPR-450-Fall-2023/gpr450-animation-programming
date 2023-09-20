@@ -65,6 +65,8 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 	a3_Clip clip = clipCtrl->clipPool->clip[clipCtrl->clip];
 	a3_Keyframe keyframe = clip.keyframePool->keyframe[clipCtrl->keyframe];
 
+	const a3real FLOATING_POINT_ERROR = .00001f;
+
 	//Loop through to make sure we start at a valid keyframe time
 	//(i.e. playhead may have skipped over a keyframe so we have to do case 3 twice)
 	while (!resolved)
@@ -80,7 +82,9 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 			&& clipCtrl->keyframeTime >= keyframe.duration) //Playhead is past keyframe end - Forward Case 3 and 4
 		{
 			//Playhead is at or past end of clip
-			if (clipCtrl->clipTime >= clip.duration) //Forward Terminus - Case 4
+			//Be mindful of floating point error to make sure we don't accidentally move to wrong keyframe
+			//if keyframeTime = .5 (keyframe duration .5) and clipTime = 2.999998 (clip duration 3)
+			if (clipCtrl->clipTime >= clip.duration - FLOATING_POINT_ERROR) //Forward Terminus - Case 4
 			{
 				//How far past the end the playhead is
 				a3real clipDiff = clipCtrl->clipTime - clip.duration;
@@ -102,7 +106,9 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 		}
 		else if (clipCtrl->keyframeTime < 0) //playhead passed keyframe end - Backward - Case 6 and 7
 		{
-			if (clipCtrl->clipTime < 0) //Playhead passed clip end - Backward Terminus - Case 7
+			//Be mindful of floating point error to make sure we don't accidentally move to wrong keyframe
+			//if keyframeTime = 0 and clipTime = .00001 or some other trivially small value
+			if (clipCtrl->clipTime < 0 + FLOATING_POINT_ERROR) //Playhead passed clip end - Backward Terminus - Case 7
 			{
 				//Clip duration will be negative, want to add that negative to duration so we loop back to the end
 				a3real clipDiff = clipCtrl->clipTime + clip.duration;
@@ -236,6 +242,13 @@ inline a3real3r a3real3GenericLerp(a3real3p out, a3real3p x0, a3real3p x1, a3rea
 
 	return out;
 }
+
+//a3real3r a3real3GenericCatmullRom(a3real3p out, a3real3p xP, a3real3p x0, a3real3p x1, a3real3p xN, a3real u)
+//{
+//
+//
+//	return out;
+//}
 
 
 //-----------------------------------------------------------------------------

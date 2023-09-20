@@ -203,12 +203,36 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 	//demoMode->keyPool.keyframe[3].data = 3;
 	//a3keyframeSetDuration(&demoMode->keyPool.keyframe[3], .5);
 
+	demoMode->keyPool.keyframe[0].data[0] = 0;
+	demoMode->keyPool.keyframe[0].data[1] = 0;
+	demoMode->keyPool.keyframe[0].data[2] = 0;
+
+	demoMode->keyPool.keyframe[1].data[0] = 3;
+	demoMode->keyPool.keyframe[1].data[1] = 0;
+	demoMode->keyPool.keyframe[1].data[2] = 0;
+
+	demoMode->keyPool.keyframe[2].data[0] = 3;
+	demoMode->keyPool.keyframe[2].data[1] = 3;
+	demoMode->keyPool.keyframe[2].data[2] = 0;
+
+	demoMode->keyPool.keyframe[3].data[0] = 3;
+	demoMode->keyPool.keyframe[3].data[1] = 3;
+	demoMode->keyPool.keyframe[3].data[2] = 3;
+
+	demoMode->keyPool.keyframe[4].data[0] = 3;
+	demoMode->keyPool.keyframe[4].data[1] = 0;
+	demoMode->keyPool.keyframe[4].data[2] = 3;
+
+	demoMode->keyPool.keyframe[5].data[0] = 0;
+	demoMode->keyPool.keyframe[5].data[1] = 0;
+	demoMode->keyPool.keyframe[5].data[2] = 3;
+
 	//a3clipCalculateDuration(&demoMode->clipPool.clip[0]);
 	//////////
 
 	// Initializing Clips
-	a3clipInit(&demoMode->clipPool.clip[0], "Clip " + (1), &demoMode->clipPool, &demoMode->keyPool, 1, 6);
-	a3clipInit(&demoMode->clipPool.clip[1], "Clip " + (2), &demoMode->clipPool, &demoMode->keyPool, 7, 14);
+	a3clipInit(&demoMode->clipPool.clip[0], "Clip " + (1), &demoMode->clipPool, &demoMode->keyPool, 0, 5);
+	a3clipInit(&demoMode->clipPool.clip[1], "Clip " + (2), &demoMode->clipPool, &demoMode->keyPool, 6, 14);
 	a3clipInit(&demoMode->clipPool.clip[2], "Clip " + (3), &demoMode->clipPool, &demoMode->keyPool, 8, 14);
 	a3clipInit(&demoMode->clipPool.clip[3], "Clip " + (4), &demoMode->clipPool, &demoMode->keyPool, 12, 18);
 	a3clipInit(&demoMode->clipPool.clip[4], "Clip " + (5), &demoMode->clipPool, &demoMode->keyPool, 16, 20);
