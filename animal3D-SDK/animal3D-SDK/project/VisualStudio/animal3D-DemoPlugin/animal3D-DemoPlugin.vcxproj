@@ -237,6 +237,7 @@
     <None Include="..\..\..\resource\glsl\4x\fs\drawColorUnif_fs4x.glsl" />
     <None Include="..\..\..\resource\glsl\4x\gs\00-common\drawTangentBasis_gs4x.glsl" />
     <None Include="..\..\..\resource\glsl\4x\gs\00-common\utilCommon_gs4x.glsl" />
+    <None Include="..\..\..\resource\glsl\4x\gs\custom\drawSpline_gs4x.glsl" />
     <None Include="..\..\..\resource\glsl\4x\vs\00-common\passTangentBasis_morph5_transform_instanced_vs4x.glsl" />
     <None Include="..\..\..\resource\glsl\4x\vs\00-common\passTangentBasis_morph5_transform_vs4x.glsl" />
     <None Include="..\..\..\resource\glsl\4x\vs\00-common\passTangentBasis_skin_transform_instanced_vs4x.glsl" />
@@ -248,6 +249,7 @@
     <None Include="..\..\..\resource\glsl\4x\vs\00-common\utilCommon_vs4x.glsl" />
     <None Include="..\..\..\resource\glsl\4x\vs\passColor_transform_instanced_vs4x.glsl" />
     <None Include="..\..\..\resource\glsl\4x\vs\passColor_transform_vs4x.glsl" />
+    <None Include="..\..\..\resource\glsl\4x\vs\passIDs_vs4x.glsl" />
     <None Include="..\..\..\resource\glsl\4x\vs\passthru_transform_instanced_vs4x.glsl" />
     <None Include="..\..\..\resource\glsl\4x\vs\passthru_transform_vs4x.glsl" />
     <None Include="..\..\..\resource\glsl\4x\vs\passthru_vs4x.glsl" />

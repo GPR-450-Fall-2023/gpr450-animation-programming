@@ -272,6 +272,8 @@ struct a3_DemoState
 			a3_DemoStateShaderProgram
 				prog_drawTangentBasis_instanced[1],			// draw vertex/face tangent bases and wireframe with instancing
 				prog_drawTangentBasis[1];					// draw vertex/face tangent bases and wireframe
+			a3_DemoStateShaderProgram
+				prog_drawSpline[1];							// CUSTOM spline interpolation
 		};
 	};
 

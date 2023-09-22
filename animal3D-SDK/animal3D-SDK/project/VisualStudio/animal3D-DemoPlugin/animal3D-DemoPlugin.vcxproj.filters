@@ -88,6 +88,9 @@
     <Filter Include="Resource Files\A3_DEMO\glsl\4x\vs\00-common">
       <UniqueIdentifier>{169282bb-c283-4ebc-b9e7-f24c489c69af}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\A3_DEMO\glsl\4x\gs\custom">
+      <UniqueIdentifier>{ec83609a-ef54-4293-88fb-43457386e429}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="_src_win\main_dll.c">
@@ -288,6 +291,12 @@
     </None>
     <None Include="..\..\..\resource\glsl\4x\gs\00-common\utilCommon_gs4x.glsl">
       <Filter>Resource Files\A3_DEMO\glsl\4x\gs\00-common</Filter>
+    </None>
+    <None Include="..\..\..\resource\glsl\4x\vs\passIDs_vs4x.glsl">
+      <Filter>Resource Files\A3_DEMO\glsl\4x\vs</Filter>
+    </None>
+    <None Include="..\..\..\resource\glsl\4x\gs\custom\drawSpline_gs4x.glsl">
+      <Filter>Resource Files\A3_DEMO\glsl\4x\gs\custom</Filter>
     </None>
   </ItemGroup>
 </Project>
