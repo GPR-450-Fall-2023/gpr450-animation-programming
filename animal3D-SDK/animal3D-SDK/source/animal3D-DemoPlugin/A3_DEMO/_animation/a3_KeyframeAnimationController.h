@@ -163,6 +163,10 @@ a3i32 a3getNextKeyframeFromNextClip(a3_ClipController* clipCtrl, a3_Keyframe* ou
 //Gets keyframes from the beginning of the current clip
 a3i32 a3getNextKeyframeLoop(a3_ClipController* clipCtrl, a3_Keyframe* out_data, const a3ui32 offset);
 
+//Gets keyframes from next clip after skipping a frame
+//Same as a3getNextKeyframeFromNextClip but with a +1 hardcoded into the passed offset
+a3i32 a3getNextKeyframeSkipFromNextClip(a3_ClipController* clipCtrl, a3_Keyframe* out_data, const a3ui32 offset);
+
 //a3i32 a3terminusForwardStop(a3_ClipController* clipCtrl, const a3_ClipTransition* transition);
 //a3i32 a3terminusForwardPingPong(a3_ClipController* clipCtrl, const a3_ClipTransition* transition);
 //a3i32 a3terminusBackwardStop(a3_ClipController* clipCtrl, const a3_ClipTransition* transition);

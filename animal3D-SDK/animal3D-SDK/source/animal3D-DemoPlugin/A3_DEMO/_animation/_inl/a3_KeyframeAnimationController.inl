@@ -278,14 +278,12 @@ inline a3i32 a3lerpKeyframeData(a3_ClipController* clipCtrl, a3real3p out_data)
 
 
 //Gets keyframes from the next clip if the offset is out of bounds of the current clips keyframes
+//Used in forward playback, reverse playback, forward pause, and reverse pause
 inline a3i32 a3getNextKeyframeFromNextClip(a3_ClipController* clipCtrl, a3_Keyframe* out_data, const a3ui32 offset)
 {
 	a3_Clip clip = clipCtrl->clipPool->clip[clipCtrl->clip]; //Current clip
 	a3_Keyframe keyframe = clip.keyframePool->keyframe[clipCtrl->keyframe]; //Current keyframe
-
-	/*if (clipCtrl->playbackDirection >= 0)
-	{*/
-	a3_Clip nextClip = clipCtrl->clipPool->clip[clip.forwardTransition.index];
+	a3_Clip nextClip = clipCtrl->clipPool->clip[clip.forwardTransition.index]; //Next clip from transition
 
 	//Moving forward
 	a3_Keyframe nextKeyframe;
@@ -295,58 +293,87 @@ inline a3i32 a3getNextKeyframeFromNextClip(a3_ClipController* clipCtrl, a3_Keyfr
 		//into the next keyframe
 		a3i32 diff = (clipCtrl->keyframe + offset) - clip.lastKeyframeIndex - 1;
 
+		//Next keyframe is firstIndex + difference
 		nextKeyframe = nextClip.keyframePool->keyframe[nextClip.firstKeyframeIndex + diff];
 	}
 	else
 	{
+		//Next keyframe is the same
 		nextKeyframe = clip.keyframePool->keyframe[clipCtrl->keyframe + offset];
 	}
 
+	//Debug
 	printf("\nIndex: %i   Data: (%f, %f, %f)\nIndex %i   Data: (%f, %f, %f)\n\n",
 		clipCtrl->keyframe,
 		keyframe.data[0], keyframe.data[1], keyframe.data[2],
 		nextKeyframe.index,
 		nextKeyframe.data[0], nextKeyframe.data[1], nextKeyframe.data[2]);
-	//}
-	//else
-	//{
-	//	a3_Clip nextClip = clipCtrl->clipPool->clip[clip.forwardTransition.index];
 
-	//	//Moving backward
-	//	a3_Keyframe nextKeyframe;
-	//	if (clipCtrl->keyframe + indexOffset < clip.lastKeyframeIndex)
-	//	{
-	//		a3i32 diff = (clipCtrl->keyframe + indexOffset) - clip.lastKeyframeIndex;
+	//Set out parameter
+	*out_data = nextKeyframe;
 
-	//		nextKeyframe = nextClip.keyframePool->keyframe[nextClip.firstKeyframeIndex + diff];
-	//	}
-	//	else
-	//	{
-	//		nextKeyframe = clip.keyframePool->keyframe[clip.firstKeyframeIndex + indexOffset];
-	//	}
-	//}
+	return 0;
+}
 
+
+inline a3i32 a3getNextKeyframeSkipFromNextClip(a3_ClipController* clipCtrl, a3_Keyframe* out_data, const a3ui32 offset)
+{
+	//Hardcoded + 1 to skip a frame
+	a3i32 skipOffset = offset + 1;
+
+	a3_Clip clip = clipCtrl->clipPool->clip[clipCtrl->clip]; //Current clip
+	a3_Keyframe keyframe = clip.keyframePool->keyframe[clipCtrl->keyframe]; //Current keyframe
+	a3_Clip nextClip = clipCtrl->clipPool->clip[clip.forwardTransition.index]; //Next clip from transition
+
+	//Moving forward
+	a3_Keyframe nextKeyframe;
+	if (clipCtrl->keyframe + offset > clip.lastKeyframeIndex) //Use offset to check, only skip if in next clip already
+	{
+		//Example: if keyframe = 4, offset = 3, and last keyframe is 5, we should be 2 keyframes
+		//into the next keyframe
+		a3i32 diff = (clipCtrl->keyframe + skipOffset) - clip.lastKeyframeIndex - 1;
+
+		//Next keyframe is firstIndex + difference
+		nextKeyframe = nextClip.keyframePool->keyframe[nextClip.firstKeyframeIndex + diff];
+	}
+	else
+	{
+		//Next keyframe the same
+		nextKeyframe = clip.keyframePool->keyframe[clipCtrl->keyframe + offset];
+	}
+
+	//Debug
+	printf("\nIndex: %i   Data: (%f, %f, %f)\nIndex %i   Data: (%f, %f, %f)\n\n",
+		clipCtrl->keyframe,
+		keyframe.data[0], keyframe.data[1], keyframe.data[2],
+		nextKeyframe.index,
+		nextKeyframe.data[0], nextKeyframe.data[1], nextKeyframe.data[2]);
+
+	//Set out parameter
 	*out_data = nextKeyframe;
 
 	return 0;
 }
 
 //Gets keyframes from the beginning of the current clip
+//Used for Pause terminus potentially
 inline a3i32 a3getNextKeyframeLoop(a3_ClipController* clipCtrl, a3_Keyframe* out_data, const a3ui32 offset)
 {
-	a3_Clip clip = clipCtrl->clipPool->clip[clipCtrl->clip];
-	a3_Keyframe keyframe = clip.keyframePool->keyframe[clipCtrl->keyframe];
+	a3_Clip clip = clipCtrl->clipPool->clip[clipCtrl->clip]; // Current clip
+	a3_Keyframe keyframe = clip.keyframePool->keyframe[clipCtrl->keyframe]; //Current keyframe
 
 	a3ui32 indexOffset = (clipCtrl->keyframe - clip.firstKeyframeIndex + 1) //Add 1 to get next
 		% (clip.lastKeyframeIndex - clip.firstKeyframeIndex + 1);	//Mod so it does not go out of range
 	a3_Keyframe nextKeyframe = clip.keyframePool->keyframe[clip.firstKeyframeIndex + indexOffset];
 
+	//Debug
 	printf("\nIndex: %i   Data: (%f, %f, %f)\nIndex %i   Data: (%f, %f, %f)\n\n",
 		clipCtrl->keyframe,
 		keyframe.data[0], keyframe.data[1], keyframe.data[2],
 		clip.firstKeyframeIndex + indexOffset,
 		nextKeyframe.data[0], nextKeyframe.data[1], nextKeyframe.data[2]);
 
+	//Set out parameter
 	*out_data = nextKeyframe;
 
 	return 0;
