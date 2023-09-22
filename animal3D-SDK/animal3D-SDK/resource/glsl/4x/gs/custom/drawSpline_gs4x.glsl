@@ -37,6 +37,12 @@ layout (line_strip, max_vertices = MAX_VERTICES) out;
 uniform vec3 uAxis[MAX_DATA];
 
 
+vec3 lerp(vec3 start, vec3 end, float u)
+{
+	return start + ((end - start) * u);
+}
+
+
 void main()
 {
 	// BASIC GEOMETRY SHADERING
@@ -55,13 +61,12 @@ void main()
 	//	(if no GS then by the end of TS, if no TS then by the end of VS)
 
 
-	vec4 v0 = vec4(uAxis[0], 1.0);
-	gl_Position = v0;
-	EmitVertex();
-
-	vec4 v1 = vec4(uAxis[1], 1.0);
-	gl_Position = v1;
-	EmitVertex();
+	for(int i = 0; i <= MAX_VERTICES; i++)
+	{
+		vec4 v = vec4(lerp(uAxis[0], uAxis[1], float(i) / MAX_VERTICES), 1.0);
+		gl_Position = v;
+		EmitVertex();
+	}
 
 	// INTERPOLATE using algorithm of choice between uAxis[k] and uAxis[k+1]
 	//	from param = [0,1)
