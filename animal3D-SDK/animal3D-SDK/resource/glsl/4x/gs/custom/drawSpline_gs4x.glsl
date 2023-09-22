@@ -43,6 +43,15 @@ vec3 lerp(vec3 start, vec3 end, float u)
 }
 
 
+vec3 catmullRom(vec3 pPrev, vec3 p0, vec3 p1, vec3 pNext, float t)
+{
+	vec3 pPrevCalc = (-t + (2 * pow(t, 2)) - pow(t, 3)) * pPrev;
+	vec3 p0Calc = (2 - (5 * pow(t, 2)) + (3 * pow(t, 3))) * p0;
+	vec3 p1Calc = (t + (4 * pow(t, 2)) - (3 * pow(t, 3))) * p1;
+	return vec3(0);
+}
+
+
 void main()
 {
 	// BASIC GEOMETRY SHADERING
