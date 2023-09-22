@@ -184,6 +184,7 @@ a3i32 a3clipInit(a3_Clip* clip_out, const a3byte clipName[a3keyframeAnimation_na
 	const a3ui32 DEFAULT_TRANSITION_INDEX = 0;
 	void(*DEFAULT_FORWARD_TRANSITION) = a3terminusForwardPlayback;
 	void(*DEFAULT_BACKWARD_TRANSITION) = a3terminusReversePlayback;
+	void(*DEFAULT_NEXT_KEYFRAME) = a3getNextKeyframeLoop;
 
 	if(clip_out == NULL) return -1; // return if clip_out doesn't exist
 
@@ -196,8 +197,8 @@ a3i32 a3clipInit(a3_Clip* clip_out, const a3byte clipName[a3keyframeAnimation_na
 	clip_out->lastKeyframeIndex = finalKeyframeIndex;
 	clip_out->keyframeCount = finalKeyframeIndex - firstKeyframeIndex + 1; // +1 since both final and first are included in pool
 
-	a3clipTransitionInit(&clip_out->forwardTransition, DEFAULT_TRANSITION_INDEX, clipPool, DEFAULT_FORWARD_TRANSITION);
-	a3clipTransitionInit(&clip_out->backwardTransition, DEFAULT_TRANSITION_INDEX, clipPool, DEFAULT_BACKWARD_TRANSITION);
+	a3clipTransitionInit(&clip_out->forwardTransition, DEFAULT_TRANSITION_INDEX, clipPool, DEFAULT_FORWARD_TRANSITION, DEFAULT_NEXT_KEYFRAME);
+	a3clipTransitionInit(&clip_out->backwardTransition, DEFAULT_TRANSITION_INDEX, clipPool, DEFAULT_BACKWARD_TRANSITION, DEFAULT_NEXT_KEYFRAME);
 
 	a3clipCalculateDuration(clip_out);
 
@@ -206,13 +207,14 @@ a3i32 a3clipInit(a3_Clip* clip_out, const a3byte clipName[a3keyframeAnimation_na
 	return 0;
 }
 
-a3i32 a3clipTransitionInit(a3_ClipTransition* clipTransition, const a3ui32 index, const a3_ClipPool* clipPool, void(*transitionFunction))
+a3i32 a3clipTransitionInit(a3_ClipTransition* clipTransition, const a3ui32 index, const a3_ClipPool* clipPool, void(*transitionFunction), void(*getKeyframe))
 {
 	if (clipTransition == NULL || clipPool == NULL) return -1;
 
 	clipTransition->index = index;
 	clipTransition->clipPool = clipPool;
 	clipTransition->transitionFunction = transitionFunction;
+	clipTransition->getNextKeyframe = getKeyframe;
 
 	return 0;
 }

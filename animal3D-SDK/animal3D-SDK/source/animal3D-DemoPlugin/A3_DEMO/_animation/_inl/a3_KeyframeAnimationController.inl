@@ -214,16 +214,28 @@ inline a3i32 a3lerpKeyframeData(a3_ClipController* clipCtrl, a3real3p out_data)
 
 	a3_Keyframe keyframe = clip.keyframePool->keyframe[clipCtrl->keyframe];
 
-	a3ui32 indexOffset = (clipCtrl->keyframe - clip.firstKeyframeIndex + 1) //Add 1 to get next
-		% (clip.lastKeyframeIndex - clip.firstKeyframeIndex + 1);	//Mod so it does not go out of range
-	a3_Keyframe nextKeyframe = clip.keyframePool->keyframe
-		[clip.firstKeyframeIndex + indexOffset];
+	//a3ui32 indexOffset = (clipCtrl->keyframe - clip.firstKeyframeIndex + 1) //Add 1 to get next
+	//	% (clip.lastKeyframeIndex - clip.firstKeyframeIndex + 1);	//Mod so it does not go out of range
+	//a3_Keyframe nextKeyframe = clip.keyframePool->keyframe
+	//	[clip.firstKeyframeIndex + indexOffset];
 
-	printf("\nIndex: %i   Data: (%f, %f, %f)\nIndex %i   Data: (%f, %f, %f)\n\n", 
+
+	/*printf("\nIndex: %i   Data: (%f, %f, %f)\nIndex %i   Data: (%f, %f, %f)\n\n", 
 		clipCtrl->keyframe, 
 		keyframe.data[0], keyframe.data[1], keyframe.data[2],
 		clip.firstKeyframeIndex + indexOffset, 
-		nextKeyframe.data[0], nextKeyframe.data[1], nextKeyframe.data[2]);
+		nextKeyframe.data[0], nextKeyframe.data[1], nextKeyframe.data[2]);*/
+
+	a3_Keyframe nextKeyframe;
+	if (clipCtrl->playbackDirection >= 0)
+	{
+		clip.forwardTransition.getNextKeyframe(clipCtrl, &nextKeyframe, 1);
+	}
+	else
+	{
+		clip.backwardTransition.getNextKeyframe(clipCtrl, &nextKeyframe, 1);
+	}
+	
 	
 	//Lerp values using keyframe data
 	a3real3Lerp(out_data, keyframe.data, nextKeyframe.data, clipCtrl->keyframeParameter);
@@ -278,51 +290,127 @@ inline a3real3r a3real3GenericLerp(a3real3p out, a3real3p x0, a3real3p x1, a3rea
 }
 
 //Adapted from https://en.wikipedia.org/wiki/Centripetal_Catmull%E2%80%93Rom_spline#Definition
-//inline a3real3r a3real3GenericCatmullRom(a3real3p out, a3real3p xP, a3real3p x0, a3real3p x1, a3real3p xN, a3real u)
-//{
-//	a3real tP = 0.0f;
-//	a3real3r d = a3real3Sub(x0, xP);
-//	a3real t0 = (a3real)pow(a3real3Dot(d, d), .25) + u;
-//	d = a3real3Sub(x1, x0);
-//	a3real t1 = (a3real)pow(a3real3Dot(d, d), .25) + u;
-//	d = a3real3Sub(xN, x1);
-//	a3real tN = (a3real)pow(a3real3Dot(d, d), .25) + u;
-//
-//	a3real t = t0 + ((t1 - t0) * u); //Calculate new u by lerping it between current and next frame
-//
-//	a3real3r A1 = a3real3Add(
-//		a3real3MulS(xP, ((t0 - t) / (t0 - tP))), 
-//		a3real3MulS(x0, ((t - tP) / (t0 - tP)))
-//	);
-//	a3real3r A2 = a3real3Add(
-//		a3real3MulS(x0, ((t1 - t) / (t1 - t0))),
-//		a3real3MulS(x1, ((t - t0) / (t1 - t0)))
-//	);
-//	a3real3r A3val = a3real3Add( //A3 is reserved
-//		a3real3MulS(x1, ((tN - t) / (tN - t1))),
-//		a3real3MulS(xN, ((t - t1) / (tN - t1)))
-//	);
-//
-//	a3real3r B1 = a3real3Add(
-//		a3real3MulS(A1, ((t1 - t) / (t1 - tP))),
-//		a3real3MulS(A2, ((t - tP) / (t1 - tP)))
-//	);
-//	a3real3r B2 = a3real3Add(
-//		a3real3MulS(A2, ((tN - t) / (tN - t0))),
-//		a3real3MulS(A3val, ((t - t0) / (tN - t0)))
-//	);
-//
-//	a3real3r C = a3real3Add(
-//		a3real3MulS(B1, ((t1 - t) / (t1 - t0))),
-//		a3real3MulS(B2, ((t - t0) / (t1 - t0)))
-//	);
-//
-//	out[0] = C[0];
-//	out[1] = C[1];
-//	out[2] = C[2];
-//
-//	return out;
-//}
+inline a3real3r a3real3GenericCatmullRom(a3real3p out, a3real3p xP, a3real3p x0, a3real3p x1, a3real3p xN, a3real u)
+{
+	//a3real tP = 0.0f;
+	//a3real3r d = a3real3Sub(x0, xP);
+	//a3real t0 = (a3real)pow(a3real3Dot(d, d), .25) + u;
+	//d = a3real3Sub(x1, x0);
+	//a3real t1 = (a3real)pow(a3real3Dot(d, d), .25) + u;
+	//d = a3real3Sub(xN, x1);
+	//a3real tN = (a3real)pow(a3real3Dot(d, d), .25) + u;
+
+	//a3real t = t0 + ((t1 - t0) * u); //Calculate new u by lerping it between current and next frame
+
+	//a3real3r A1 = a3real3Add(
+	//	a3real3MulS(xP, ((t0 - t) / (t0 - tP))), 
+	//	a3real3MulS(x0, ((t - tP) / (t0 - tP)))
+	//);
+	//a3real3r A2 = a3real3Add(
+	//	a3real3MulS(x0, ((t1 - t) / (t1 - t0))),
+	//	a3real3MulS(x1, ((t - t0) / (t1 - t0)))
+	//);
+	//a3real3r A3val = a3real3Add( //A3 is reserved
+	//	a3real3MulS(x1, ((tN - t) / (tN - t1))),
+	//	a3real3MulS(xN, ((t - t1) / (tN - t1)))
+	//);
+
+	//a3real3r B1 = a3real3Add(
+	//	a3real3MulS(A1, ((t1 - t) / (t1 - tP))),
+	//	a3real3MulS(A2, ((t - tP) / (t1 - tP)))
+	//);
+	//a3real3r B2 = a3real3Add(
+	//	a3real3MulS(A2, ((tN - t) / (tN - t0))),
+	//	a3real3MulS(A3val, ((t - t0) / (tN - t0)))
+	//);
+
+	//a3real3r C = a3real3Add(
+	//	a3real3MulS(B1, ((t1 - t) / (t1 - t0))),
+	//	a3real3MulS(B2, ((t - t0) / (t1 - t0)))
+	//);
+
+	a3real tP = -u + (2 * u * u) - (u * u * u);
+	a3real t0 = 2 - (5 * u * u) - (3 * u * u * u);
+	a3real t1 = u + (4 * u * u) - (3 * u * u * u);
+	a3real tN = (-3 * u * u) + (u * u * u);
+
+	a3real3r catRom = a3real3Add(a3real3Add(a3real3MulS(xP, tP), a3real3MulS(x0, t0)), a3real3Add(a3real3MulS(x1, t1), a3real3MulS(xN, tN)));
+
+	out[0] = catRom[0];
+	out[1] = catRom[1];
+	out[2] = catRom[2];
+
+	return out;
+}
+
+
+//Gets keyframes from the next clip if the offset is out of bounds of the current clips keyframes
+inline a3i32 a3getNextKeyframeFromNextClip(a3_ClipController* clipCtrl, a3_Keyframe* out_data, const a3ui32 offset)
+{
+	//a3_Clip clip = clipCtrl->clipPool->clip[clipCtrl->clip];
+	//a3_Keyframe keyframe = clip.keyframePool->keyframe[clipCtrl->keyframe];
+
+	//a3ui32 indexOffset = (clipCtrl->keyframe - clip.firstKeyframeIndex + offset) //Add 1 to get next, 2 to get the one after
+	//	% (clip.lastKeyframeIndex - clip.firstKeyframeIndex + 1);	//Mod so it does not go out of range
+
+	//if (clipCtrl->playbackDirection >= 0)
+	//{
+	//	a3_Clip nextClip = clipCtrl->clipPool->clip[clip.forwardTransition.index];
+
+	//	//Moving forward
+	//	a3_Keyframe nextKeyframe;
+	//	if (clipCtrl->keyframe + indexOffset > clip.lastKeyframeIndex)
+	//	{
+	//		a3i32 diff = (clipCtrl->keyframe + indexOffset) - clip.lastKeyframeIndex;
+
+	//		nextKeyframe = nextClip.keyframePool->keyframe[nextClip.firstKeyframeIndex + diff];
+	//	}
+	//	else
+	//	{
+	//		nextKeyframe = clip.keyframePool->keyframe[clip.firstKeyframeIndex + indexOffset];
+	//	}
+	//}
+	//else
+	//{
+	//	a3_Clip nextClip = clipCtrl->clipPool->clip[clip.forwardTransition.index];
+
+	//	//Moving backward
+	//	a3_Keyframe nextKeyframe;
+	//	if (clipCtrl->keyframe + indexOffset < clip.lastKeyframeIndex)
+	//	{
+	//		a3i32 diff = (clipCtrl->keyframe + indexOffset) - clip.lastKeyframeIndex;
+
+	//		nextKeyframe = nextClip.keyframePool->keyframe[nextClip.firstKeyframeIndex + diff];
+	//	}
+	//	else
+	//	{
+	//		nextKeyframe = clip.keyframePool->keyframe[clip.firstKeyframeIndex + indexOffset];
+	//	}
+	//}
+
+	return 0;
+}
+
+//Gets keyframes from the beginning of the current clip
+inline a3i32 a3getNextKeyframeLoop(a3_ClipController* clipCtrl, a3_Keyframe* out_data, const a3ui32 offset)
+{
+	a3_Clip clip = clipCtrl->clipPool->clip[clipCtrl->clip];
+	a3_Keyframe keyframe = clip.keyframePool->keyframe[clipCtrl->keyframe];
+
+	a3ui32 indexOffset = (clipCtrl->keyframe - clip.firstKeyframeIndex + 1) //Add 1 to get next
+		% (clip.lastKeyframeIndex - clip.firstKeyframeIndex + 1);	//Mod so it does not go out of range
+	a3_Keyframe nextKeyframe = clip.keyframePool->keyframe[clip.firstKeyframeIndex + indexOffset];
+
+	printf("\nIndex: %i   Data: (%f, %f, %f)\nIndex %i   Data: (%f, %f, %f)\n\n",
+		clipCtrl->keyframe,
+		keyframe.data[0], keyframe.data[1], keyframe.data[2],
+		clip.firstKeyframeIndex + indexOffset,
+		nextKeyframe.data[0], nextKeyframe.data[1], nextKeyframe.data[2]);
+
+	*out_data = nextKeyframe;
+
+	return 0;
+}
 
 
 //-----------------------------------------------------------------------------

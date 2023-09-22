@@ -122,7 +122,7 @@ a3i32 a3lerpKeyframeData(struct a3_ClipController* clipCtrl, a3real3p out_data);
 a3real3r a3real3GenericLerp(a3real3p out, a3real3p x0, a3real3p x1, a3real u);
 
 //Generic catmull rom function from a3real3 values
-//a3real3r a3real3GenericCatmullRom(a3real3p out, a3real3p xP, a3real3p x0, a3real3p x1, a3real3p xN, a3real u);
+a3real3r a3real3GenericCatmullRom(a3real3p out, a3real3p xP, a3real3p x0, a3real3p x1, a3real3p xN, a3real u);
 
 /*
 
@@ -149,6 +149,19 @@ a3i32 a3terminusForwardSkipPause(a3_ClipController* clipCtrl, const a3_ClipTrans
 a3i32 a3terminusReverseSkipPlayback(a3_ClipController* clipCtrl, const a3_ClipTransition* transition);
 //Reverse pause at beginning of first frame of next clip
 a3i32 a3terminusReverseSkipPause(a3_ClipController* clipCtrl, const a3_ClipTransition* transition);
+
+
+/*
+
+	Functions for handling how we determine what the next keyframe is
+
+*/
+
+//Gets keyframes from the next clip if the offset is out of bounds of the current clips keyframes
+a3i32 a3getNextKeyframeFromNextClip(a3_ClipController* clipCtrl, a3_Keyframe* out_data, const a3ui32 offset);
+
+//Gets keyframes from the beginning of the current clip
+a3i32 a3getNextKeyframeLoop(a3_ClipController* clipCtrl, a3_Keyframe* out_data, const a3ui32 offset);
 
 //a3i32 a3terminusForwardStop(a3_ClipController* clipCtrl, const a3_ClipTransition* transition);
 //a3i32 a3terminusForwardPingPong(a3_ClipController* clipCtrl, const a3_ClipTransition* transition);
