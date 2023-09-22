@@ -90,6 +90,12 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 				//How far past the end the playhead is
 				a3real clipDiff = clipCtrl->clipTime - clip.duration;
 
+				//Set last clip to current clip before switching
+				clipCtrl->lastClip = clipCtrl->clip;
+
+				//Set last keyframe before switching
+				//clipCtrl->lastKeyframe = clipCtrl->keyframe;
+
 				//Call the function from clips forward transition
 				clip.forwardTransition.transitionFunction(clipCtrl, &clip.forwardTransition);
 			}
@@ -113,6 +119,12 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 			{
 				//Clip duration will be negative, want to add that negative to duration so we loop back to the end
 				a3real clipDiff = clipCtrl->clipTime + clip.duration;
+
+				//Set last clip to current clip before switching
+				clipCtrl->lastClip = clipCtrl->clip;
+
+				//Set last keyframe before switching
+				//clipCtrl->lastKeyframe = clipCtrl->keyframe;
 
 				//Call the function from clips backward transition
 				clip.backwardTransition.transitionFunction(clipCtrl, &clip.backwardTransition);
@@ -185,6 +197,7 @@ inline a3i32 a3clipControllerSetClip(a3_ClipController* clipCtrl, const a3_ClipP
 	//Reset time values, set new clip and clip pool
 	clipCtrl->clipPool = clipPool;
 	clipCtrl->clip = clipIndex_pool;
+	clipCtrl->lastClip = clipCtrl->index;
 	clipCtrl->clipTime = 0;
 	clipCtrl->clipParameter = 0;
 
@@ -234,6 +247,13 @@ inline a3i32 a3lerpKeyframeData(a3_ClipController* clipCtrl, a3real3p out_data)
 	else
 	{
 		clip.backwardTransition.getNextKeyframe(clipCtrl, &nextKeyframe, 1);
+
+		//If we are in reverse playback and the next keyframe is past the end of the clip, 
+		//we need to use the lastClip.backwardTransition.getNextFrame of the last clip
+		/*if (nextKeyframe.index > clipCtrl->clipPool->clip[clip.backwardTransition.index].firstKeyframeIndex)
+		{
+			clipCtrl->clipPool->clip[clipCtrl->lastClip].backwardTransition.getNextKeyframe(clipCtrl, &nextKeyframe, 1);
+		}*/
 	}
 	
 	
@@ -283,7 +303,16 @@ inline a3i32 a3getNextKeyframeFromNextClip(a3_ClipController* clipCtrl, a3_Keyfr
 {
 	a3_Clip clip = clipCtrl->clipPool->clip[clipCtrl->clip]; //Current clip
 	a3_Keyframe keyframe = clip.keyframePool->keyframe[clipCtrl->keyframe]; //Current keyframe
-	a3_Clip nextClip = clipCtrl->clipPool->clip[clip.forwardTransition.index]; //Next clip from transition
+	a3_Clip nextClip;
+	if (clipCtrl->playbackDirection >= 0)
+	{
+		nextClip = clipCtrl->clipPool->clip[clip.forwardTransition.index]; //Next clip from transition
+	}
+	else
+	{
+		//If moving backwards, need to use the clip we were at before
+		nextClip = clipCtrl->clipPool->clip[clipCtrl->lastClip]; 
+	}
 
 	//Moving forward
 	a3_Keyframe nextKeyframe;
@@ -323,7 +352,16 @@ inline a3i32 a3getNextKeyframeSkipFromNextClip(a3_ClipController* clipCtrl, a3_K
 
 	a3_Clip clip = clipCtrl->clipPool->clip[clipCtrl->clip]; //Current clip
 	a3_Keyframe keyframe = clip.keyframePool->keyframe[clipCtrl->keyframe]; //Current keyframe
-	a3_Clip nextClip = clipCtrl->clipPool->clip[clip.forwardTransition.index]; //Next clip from transition
+	a3_Clip nextClip; //Next clip from transition
+	if (clipCtrl->playbackDirection >= 0)
+	{
+		nextClip = clipCtrl->clipPool->clip[clip.forwardTransition.index]; //Next clip from transition
+	}
+	else
+	{
+		//If moving backwards, need to use the clip we were at before
+		nextClip = clipCtrl->clipPool->clip[clipCtrl->lastClip];
+	}
 
 	//Moving forward
 	a3_Keyframe nextKeyframe;

@@ -250,11 +250,11 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 
 	//Test assingmnet of clip 0 transition indices pointing to the next clip in the pool
 	demoMode->clipPool.clip[0].forwardTransition.index = 1;
-	demoMode->clipPool.clip[0].forwardTransition.getNextKeyframe = a3getNextKeyframeSkipFromNextClip;
-	demoMode->clipPool.clip[0].forwardTransition.transitionFunction = a3terminusForwardSkipPlayback;
+	demoMode->clipPool.clip[0].forwardTransition.getNextKeyframe = a3getNextKeyframeFromNextClip;
+	demoMode->clipPool.clip[0].forwardTransition.transitionFunction = a3terminusForwardPlayback;
 	demoMode->clipPool.clip[0].backwardTransition.index = 1;
-	demoMode->clipPool.clip[0].backwardTransition.getNextKeyframe = a3getNextKeyframeSkipFromNextClip;
-	demoMode->clipPool.clip[0].backwardTransition.transitionFunction = a3terminusReverseSkipPlayback;
+	demoMode->clipPool.clip[0].backwardTransition.getNextKeyframe = a3getNextKeyframeFromNextClip;
+	demoMode->clipPool.clip[0].backwardTransition.transitionFunction = a3terminusReversePlayback;
 	
 	// Initializing Clip Controllers
 	a3clipControllerPoolCreate(&demoMode->clipCtrlPool, &demoMode->clipPool, 3);

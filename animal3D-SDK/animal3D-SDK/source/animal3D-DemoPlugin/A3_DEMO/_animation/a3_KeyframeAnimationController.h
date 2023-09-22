@@ -68,6 +68,12 @@ struct a3_ClipController
 	//Normalized clip time [0, 1) (only 1 if clip ends)
 	a3real clipParameter;
 
+	//Index of the last clip played for use in lerp after reverse skip playback
+	a3ui32 lastClip;
+
+	//Index of the last keyframe played for use in lerp for reverse playback
+	//a3ui32 lastKeyframe;
+
 	//Index of current frame in keyframe pool
 	a3ui32 keyframe;
 	//Current time from start of keyframe
