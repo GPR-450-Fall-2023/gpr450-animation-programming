@@ -569,7 +569,21 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 		// hidden volumes
 		if (demoState->displayHiddenVolumes)
 		{
-
+			// DRAW SPLINE
+			currentDemoProgram = demoState->prog_drawSpline;
+			a3shaderProgramActivate(currentDemoProgram->program);
+			a3vertexDrawableDeactivate();
+			a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, red);
+			{
+				// TEST keyframe data
+				a3vec3 k[] = {
+					{ -0.75f, -0.75f, -0.75f },
+					{ 0.0f, 0.5f, -0.3f },
+					{ 1.0f, 0.5f, -0.3f },
+				};
+				a3shaderUniformSendFloat(a3unif_vec3, currentDemoProgram->uAxis, sizeof(k)/sizeof(*k), (a3f32*)k);
+			}
+			glDrawArrays(GL_POINTS, 0, 1);
 		}
 
 
