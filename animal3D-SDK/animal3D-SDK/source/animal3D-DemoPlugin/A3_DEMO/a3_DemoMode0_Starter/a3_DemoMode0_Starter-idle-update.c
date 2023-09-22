@@ -192,6 +192,11 @@ void a3starter_update(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a
 
 void a3demo0_update_customAnimation(a3_DemoSceneObject* object, a3_ClipController* clipCtrl)
 {
+	if (!object || !clipCtrl)
+	{
+		return;
+	}
+
 	a3real data[3];
 	a3lerpKeyframeData(clipCtrl, data);
 
