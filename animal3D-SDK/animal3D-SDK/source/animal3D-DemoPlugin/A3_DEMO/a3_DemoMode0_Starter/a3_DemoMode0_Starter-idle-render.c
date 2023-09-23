@@ -658,12 +658,33 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 			a3vertexDrawableDeactivate();
 			a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, red);
 			{
+				a3_ClipController* controller = demoMode->clipCtrlPool.clipControllers + demoMode->currentController;
+				a3_Clip* clip = controller->clipPool->clip + controller->clip;
+
+				a3ui32 k0Index = controller->keyframe;
+				a3ui32 prevIndex;
+				a3ui32 k1Index;
+				a3ui32 nextIndex;
+
+				if (k0Index <= 0)
+				{
+					prevIndex = 0;
+				}
+				else
+				{
+					prevIndex = max(k0Index - 1, clip->firstKeyframeIndex);
+				}
+
+				 k1Index = min(k0Index + 1, clip->lastKeyframeIndex);
+				 nextIndex = min(k1Index + 1, clip->lastKeyframeIndex);
+
 				// TEST keyframe data
 				a3vec3 k[] = {
-					{ -0.75f, -0.75f, -0.75f },
-					{ 0.0f, 0.5f, -0.3f },
-					{ .5f, 0.5f, -0.3f },
-					{ 1.0f, 0.0f, 0.0f }
+					*clip->keyframePool->keyframe[prevIndex].data,
+					*clip->keyframePool->keyframe[k0Index].data,
+					*clip->keyframePool->keyframe[k1Index].data,
+					*clip->keyframePool->keyframe[nextIndex].data,
+
 				};
 				a3shaderUniformSendFloat(a3unif_vec3, currentDemoProgram->uAxis, sizeof(k)/sizeof(*k), (a3f32*)k);
 			}
