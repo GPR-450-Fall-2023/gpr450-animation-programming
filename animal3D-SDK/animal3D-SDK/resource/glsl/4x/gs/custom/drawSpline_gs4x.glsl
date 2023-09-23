@@ -48,7 +48,8 @@ vec3 catmullRom(vec3 pPrev, vec3 p0, vec3 p1, vec3 pNext, float t)
 	vec3 pPrevCalc = (-t + (2 * pow(t, 2)) - pow(t, 3)) * pPrev;
 	vec3 p0Calc = (2 - (5 * pow(t, 2)) + (3 * pow(t, 3))) * p0;
 	vec3 p1Calc = (t + (4 * pow(t, 2)) - (3 * pow(t, 3))) * p1;
-	return vec3(0);
+	vec3 pNextCalc = (-1 * pow(t, 2) + pow(t, 3)) * pNext;
+	return (pPrevCalc + p0Calc + p1Calc + pNextCalc) / 2.0;
 }
 
 
@@ -72,7 +73,14 @@ void main()
 
 	for(int i = 0; i <= MAX_VERTICES; i++)
 	{
-		vec4 v = vec4(lerp(uAxis[0], uAxis[1], float(i) / MAX_VERTICES), 1.0);
+		// LERP VERSION
+		//vec4 v = vec4(lerp(uAxis[0], uAxis[1], float(i) / MAX_VERTICES), 1.0);
+
+		// CATMULL ROM VERSION
+		vec3 v3 = catmullRom(uAxis[0], uAxis[1], uAxis[2], uAxis[3], float(i) / MAX_VERTICES);
+		v3.x = (2 * float(i) / MAX_VERTICES) - 1;
+		vec4 v = vec4(v3, 1.0f);
+
 		gl_Position = v;
 		EmitVertex();
 	}

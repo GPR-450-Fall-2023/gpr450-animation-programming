@@ -662,7 +662,8 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 				a3vec3 k[] = {
 					{ -0.75f, -0.75f, -0.75f },
 					{ 0.0f, 0.5f, -0.3f },
-					{ 1.0f, 0.5f, -0.3f },
+					{ .5f, 0.5f, -0.3f },
+					{ 1.0f, 0.0f, 0.0f }
 				};
 				a3shaderUniformSendFloat(a3unif_vec3, currentDemoProgram->uAxis, sizeof(k)/sizeof(*k), (a3f32*)k);
 			}
