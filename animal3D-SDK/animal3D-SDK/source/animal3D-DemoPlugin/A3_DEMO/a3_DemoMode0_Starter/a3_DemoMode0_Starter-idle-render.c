@@ -663,22 +663,22 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 				a3_ClipController controller = demoMode->clipCtrlPool.clipControllers[0];//demoMode->currentController;
 				a3_Clip clip = controller.clipPool->clip[controller.clip];
 
-				a3ui32 k0Index = controller.keyframe;
-				a3ui32 prevIndex;
-				a3ui32 k1Index;
-				a3ui32 nextIndex;
+				//a3ui32 k0Index = controller.keyframe;
+				//a3ui32 prevIndex;
+				//a3ui32 k1Index;
+				//a3ui32 nextIndex;
 
-				if (k0Index <= 0)
-				{
-					prevIndex = 0;
-				}
-				else
-				{
-					prevIndex = max(k0Index - 1, clip.firstKeyframeIndex);
-				}
+				//if (k0Index <= 0)
+				//{
+				//	prevIndex = 0;
+				//}
+				//else
+				//{
+				//	prevIndex = max(k0Index - 1, clip.firstKeyframeIndex);
+				//}
 
-				 k1Index = min(k0Index + 1, clip.lastKeyframeIndex);
-				 nextIndex = min(k1Index + 1, clip.lastKeyframeIndex);
+				// k1Index = min(k0Index + 1, clip.lastKeyframeIndex);
+				// nextIndex = min(k1Index + 1, clip.lastKeyframeIndex);
 
 				// TEST keyframe data
 				/*  a3vec3 k[] = {
@@ -689,11 +689,6 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 
 				}; */
 
-				int arr[4];
-				for (int i = 0; i < 4; i++)
-				{
-					arr[i] = i;
-				}
 
 				a3vec3 k[MAX_KEYFRAMES];
 
@@ -741,24 +736,67 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 
 				//a3shaderUniformSendFloat(a3unif_vec3, currentDemoProgram->uAxis, sizeof(k)/sizeof(*k), (a3f32*)k);
 
-				a3ui32 currentKeyframeIndex = k0Index - clip.firstKeyframeIndex;
+				/*a3ui32 currentKeyframeIndex = k0Index - clip.firstKeyframeIndex;
 				a3ui32 highlightCount = 2;
-				a3ui32 highlightIndex = 0;
+				a3ui32 highlightIndex = 0;*/
 
-				a3vec3 highlight[2];
+				//a3vec3 highlight[2];
 
-				if (controller.playbackDirection >= 0)
+				//if (controller.playbackDirection >= 0)
+				//{
+				//	// https://stackoverflow.com/questions/66000809/deferred-array-initialization
+				//	memcpy(highlight, (a3vec3[2]) { k[currentKeyframeIndex], k[min(currentKeyframeIndex + 1, clip.lastKeyframeIndex)] }, sizeof(highlight));
+				//	//highlight = { k[currentKeyframeIndex], k[min(currentKeyframeIndex + 1, clip.lastKeyframeIndex)] };
+				//}
+				//else
+				//{
+				//	memcpy(highlight, (a3vec3[2]) { k[currentKeyframeIndex], k[max(currentKeyframeIndex - 1, clip.firstKeyframeIndex)] }, sizeof(highlight));
+				//}
+
+				for (a3ui32 i = 0; i < clip.keyframeCount - 1; i++)
 				{
-					// https://stackoverflow.com/questions/66000809/deferred-array-initialization
-					memcpy(highlight, (a3vec3[2]) { k[currentKeyframeIndex], k[min(currentKeyframeIndex + 1, clip.lastKeyframeIndex)] }, sizeof(highlight));
-					//highlight = { k[currentKeyframeIndex], k[min(currentKeyframeIndex + 1, clip.lastKeyframeIndex)] };
-				}
-				else
-				{
-					memcpy(highlight, (a3vec3[2]) { k[currentKeyframeIndex], k[max(currentKeyframeIndex - 1, clip.firstKeyframeIndex)] }, sizeof(highlight));
+					a3ui32 sectionDataCount = 4;
+
+					a3ui32 iPrev;
+
+					if (i == 0)
+					{
+						iPrev = 0;
+					}
+					else
+					{
+						iPrev = i - 1;
+					}
+
+					a3ui32 i0 = i;
+					a3ui32 i1 = min(i + 1, clip.keyframeCount - 1);
+					a3ui32 iNext = min(i + 2, clip.keyframeCount - 1);
+
+
+					a3vec3 sectionData[] =
+					{
+						k[iPrev],
+						k[i0],
+						k[i1],
+						k[iNext]
+					};
+
+					if (i == controller.keyframe - controller.clipPool->clip[controller.clip].firstKeyframeIndex)
+					{
+						a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, blue);
+					}
+					else
+					{
+						a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, red);
+					}
+
+					a3shaderUniformSendFloat(a3unif_vec3, currentDemoProgram->uAxis, 4, (a3f32*) sectionData);
+					a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uCount, 1, &sectionDataCount);
+
+					glDrawArrays(GL_POINTS, 0, 1);
 				}
 
-				a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, red);
+				/*a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, red);
 				a3shaderUniformSendFloat(a3unif_vec3, currentDemoProgram->uAxis, clip.keyframeCount, (a3f32*) k);
 				a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uCount, 1, &clip.keyframeCount);
 				a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uIndex, 1, &currentKeyframeIndex);
@@ -770,7 +808,7 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 				a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uCount, 1, &highlightCount);
 				a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uIndex, 1, &highlightIndex);
 
-				glDrawArrays(GL_POINTS, 0, 1);
+				glDrawArrays(GL_POINTS, 0, 1);*/
 			}
 		}
 
