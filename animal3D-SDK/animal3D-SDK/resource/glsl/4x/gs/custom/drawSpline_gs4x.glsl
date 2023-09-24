@@ -36,6 +36,7 @@ layout (line_strip, max_vertices = MAX_VERTICES) out;
 #define MAX_DATA 128
 uniform vec3 uAxis[MAX_DATA];
 uniform int uCount;
+uniform int uIndex;
 
 
 vec3 lerp(vec3 start, vec3 end, float u)

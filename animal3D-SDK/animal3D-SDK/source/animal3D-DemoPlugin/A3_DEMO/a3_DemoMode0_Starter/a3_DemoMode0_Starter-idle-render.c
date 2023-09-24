@@ -178,7 +178,8 @@ void a3starter_render_controls(a3_DemoState const* demoState, a3_DemoMode0_Start
 	//	"    Active camera (%u / %u) ('c' prev | next 'v'): %s", activeCamera + 1, starter_camera_max, cameraText[activeCamera]);
 
 	// Basic Testing Interface
-	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+	// COMMENTED OUT BY JOEY, THERE IS A BUG HERE THAT CAUSES A CRASH
+	/*a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"Controls:");
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"    Select clip controller to edit (q/w): %s", clipControllers[demoMode->currentController]);
@@ -191,7 +192,7 @@ void a3starter_render_controls(a3_DemoState const* demoState, a3_DemoMode0_Start
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"    Flip playback direction (b)");
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"    Slow-motion (n/m)");
+		"    Slow-motion (n/m)");*/
 	/*a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"    Terminus Action (%u / %u) ( , | . ): %s", terminus + 1, starter_terminus_max, terminusAction[terminus]);*/
 
@@ -658,7 +659,6 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 			currentDemoProgram = demoState->prog_drawSpline;
 			a3shaderProgramActivate(currentDemoProgram->program);
 			a3vertexDrawableDeactivate();
-			a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, red);
 			{
 				a3_ClipController controller = demoMode->clipCtrlPool.clipControllers[0];//demoMode->currentController;
 				a3_Clip clip = controller.clipPool->clip[controller.clip];
@@ -741,10 +741,37 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 
 				//a3shaderUniformSendFloat(a3unif_vec3, currentDemoProgram->uAxis, sizeof(k)/sizeof(*k), (a3f32*)k);
 
+				a3ui32 currentKeyframeIndex = k0Index - clip.firstKeyframeIndex;
+				a3ui32 highlightCount = 2;
+				a3ui32 highlightIndex = 0;
+
+				a3vec3 highlight[2];
+
+				if (controller.playbackDirection >= 0)
+				{
+					// https://stackoverflow.com/questions/66000809/deferred-array-initialization
+					memcpy(highlight, (a3vec3[2]) { k[currentKeyframeIndex], k[min(currentKeyframeIndex + 1, clip.lastKeyframeIndex)] }, sizeof(highlight));
+					//highlight = { k[currentKeyframeIndex], k[min(currentKeyframeIndex + 1, clip.lastKeyframeIndex)] };
+				}
+				else
+				{
+					memcpy(highlight, (a3vec3[2]) { k[currentKeyframeIndex], k[max(currentKeyframeIndex - 1, clip.firstKeyframeIndex)] }, sizeof(highlight));
+				}
+
+				a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, red);
 				a3shaderUniformSendFloat(a3unif_vec3, currentDemoProgram->uAxis, clip.keyframeCount, (a3f32*) k);
 				a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uCount, 1, &clip.keyframeCount);
+				a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uIndex, 1, &currentKeyframeIndex);
+
+				glDrawArrays(GL_POINTS, 0, 1);
+
+				a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, blue);
+				a3shaderUniformSendFloat(a3unif_vec3, currentDemoProgram->uAxis, highlightCount, (a3f32*) highlight);
+				a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uCount, 1, &highlightCount);
+				a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uIndex, 1, &highlightIndex);
+
+				glDrawArrays(GL_POINTS, 0, 1);
 			}
-			glDrawArrays(GL_POINTS, 0, 1);
 		}
 
 
