@@ -361,11 +361,14 @@ a3ui32 a3readClipPoolFromFile(a3_ClipPool* clipPool, a3_KeyframePool* keyframePo
 	};
 
 	for (a3ui32 i = 0; i < lineCount; i++) {
-		//a3clipInit(&clipPool->clip[lineCount], fileData[i][0], clipPool, keyframePool, stoi(fileData[i][2]), stoi(fileData[i][3]));
+		a3clipInit(&clipPool->clip[lineCount], fileData[i][0], clipPool, keyframePool, atoi(fileData[i][2]), atoi(fileData[i][3]));
 		
 		//setting clip duration to fileData[i][1]
+		//clipPool->clip[lineCount].duration = atoi(fileData[i][1]);
+		//what is a3real?
 
 		//a3clipTransitionInit(a3_ClipTransition, index, clipPool, fileData[i][4]);
+		// 
 		//setting reverse transition function to fileData[i][4]
 
 		if (transition3 == "#") {	//if only 2 terms, then no clips are referenced
