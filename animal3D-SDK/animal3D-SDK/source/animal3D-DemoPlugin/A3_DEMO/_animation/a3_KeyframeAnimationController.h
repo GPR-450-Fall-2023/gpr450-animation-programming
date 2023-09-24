@@ -71,6 +71,11 @@ struct a3_ClipController
 	//Index of the last clip played for use in lerp after reverse skip playback
 	a3ui32 lastClip;
 
+	//Keyframe we started at in this playback
+	//I.e. if we skipped a frame when transitionining to this clip and it has 5 keyframes,
+	//we would start at keyframe 4 and that is that value we would store in here
+	a3ui32 firstKeyframeOfCurrentPlayback;
+
 	//Index of the last keyframe played for use in lerp for reverse playback
 	//a3ui32 lastKeyframe;
 
