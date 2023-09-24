@@ -652,16 +652,18 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 		// hidden volumes
 		if (demoState->displayHiddenVolumes)
 		{
+			#define MAX_KEYFRAMES 1024
+
 			// DRAW SPLINE
 			currentDemoProgram = demoState->prog_drawSpline;
 			a3shaderProgramActivate(currentDemoProgram->program);
 			a3vertexDrawableDeactivate();
 			a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, red);
 			{
-				a3_ClipController* controller = demoMode->clipCtrlPool.clipControllers + demoMode->currentController;
-				a3_Clip* clip = controller->clipPool->clip + controller->clip;
+				a3_ClipController controller = demoMode->clipCtrlPool.clipControllers[0];//demoMode->currentController;
+				a3_Clip clip = controller.clipPool->clip[controller.clip];
 
-				a3ui32 k0Index = controller->keyframe;
+				a3ui32 k0Index = controller.keyframe;
 				a3ui32 prevIndex;
 				a3ui32 k1Index;
 				a3ui32 nextIndex;
@@ -672,21 +674,75 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 				}
 				else
 				{
-					prevIndex = max(k0Index - 1, clip->firstKeyframeIndex);
+					prevIndex = max(k0Index - 1, clip.firstKeyframeIndex);
 				}
 
-				 k1Index = min(k0Index + 1, clip->lastKeyframeIndex);
-				 nextIndex = min(k1Index + 1, clip->lastKeyframeIndex);
+				 k1Index = min(k0Index + 1, clip.lastKeyframeIndex);
+				 nextIndex = min(k1Index + 1, clip.lastKeyframeIndex);
 
 				// TEST keyframe data
-				a3vec3 k[] = {
+				/*  a3vec3 k[] = {
 					*clip->keyframePool->keyframe[prevIndex].data,
 					*clip->keyframePool->keyframe[k0Index].data,
 					*clip->keyframePool->keyframe[k1Index].data,
 					*clip->keyframePool->keyframe[nextIndex].data,
 
-				};
-				a3shaderUniformSendFloat(a3unif_vec3, currentDemoProgram->uAxis, sizeof(k)/sizeof(*k), (a3f32*)k);
+				}; */
+
+				int arr[4];
+				for (int i = 0; i < 4; i++)
+				{
+					arr[i] = i;
+				}
+
+				a3vec3 k[MAX_KEYFRAMES];
+
+				float xProgress = -1.2f;
+				float yMin = 999999;
+				float yMax = -999999;
+
+				for (a3ui32 i = 0; i < clip.keyframeCount; i++)
+				{
+					a3_Keyframe keyframe = clip.keyframePool->keyframe[clip.firstKeyframeIndex + i];
+					
+					a3vec3 vec;
+
+					float xPortion = (keyframe.duration / clip.duration) * 2;
+
+					vec.x = xProgress + xPortion; // replace with * durationInverse later
+					xProgress += xPortion;
+
+					// Y is our dependent variable, for now we'll say it's the y value of keyframe data
+					vec.y = keyframe.data[2];//keyframe.data[1];
+
+					if (vec.y < yMin)
+					{
+						yMin = vec.y;
+					}
+
+					if (vec.y > yMax)
+					{
+						yMax = vec.y;
+					}
+
+					vec.z = 0;
+
+					k[i] = vec;
+					//k[i] = clip->keyframePool->keyframe[clip->firstKeyframeIndex + i].data;
+				}
+
+				for (a3ui32 i = 0; i < clip.keyframeCount; i++)
+				{
+					k[i].y = (k[i].y - yMin) / (yMax - yMin);
+					k[i].y = (k[i].y * 1.8f) - .9f;
+				}
+
+				// Reason for switching is because of different clips
+
+				//a3shaderUniformSendFloat(a3unif_vec3, currentDemoProgram->uAxis, sizeof(k)/sizeof(*k), (a3f32*)k);
+
+				a3shaderUniformSendFloat(a3unif_vec3, currentDemoProgram->uAxis, clip.keyframeCount, (a3f32*) k);
+				a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uCount, 1, &clip.keyframeCount);
 			}
 			glDrawArrays(GL_POINTS, 0, 1);
 		}

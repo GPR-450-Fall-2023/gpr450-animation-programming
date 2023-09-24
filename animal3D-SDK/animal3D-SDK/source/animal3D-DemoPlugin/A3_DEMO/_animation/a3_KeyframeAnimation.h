@@ -148,7 +148,7 @@ struct a3_Clip
 	// reciprocal of duration
 	a3real durationInverse;
 
-	// number of keyframes in keyframe pool
+	// number of keyframes that clip is using
 	a3ui32 keyframeCount;
 
 	// index of first keyframe in pool

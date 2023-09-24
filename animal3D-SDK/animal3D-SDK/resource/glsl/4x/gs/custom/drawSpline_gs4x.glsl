@@ -35,6 +35,7 @@ layout (line_strip, max_vertices = MAX_VERTICES) out;
 // uniforms: modelviewproj, actual keyframe values, etc.
 #define MAX_DATA 128
 uniform vec3 uAxis[MAX_DATA];
+uniform int uCount;
 
 
 vec3 lerp(vec3 start, vec3 end, float u)
@@ -71,17 +72,26 @@ void main()
 	//	(if no GS then by the end of TS, if no TS then by the end of VS)
 
 
-	for(int i = 0; i <= MAX_VERTICES; i++)
+//	for(int i = 0; i <= MAX_VERTICES; i++)
+//	{
+//		// LERP VERSION
+//		//vec4 v = vec4(lerp(uAxis[0], uAxis[1], float(i) / MAX_VERTICES), 1.0);
+//
+//		// CATMULL ROM VERSION
+////		vec3 v3 = catmullRom(uAxis[0], uAxis[1], uAxis[2], uAxis[3], float(i) / MAX_VERTICES);
+////		v3.x = (2 * float(i) / MAX_VERTICES) - 1;
+////		vec4 v = vec4(v3, 1.0f);
+//
+//		// LINE OF CODE SHOULD MAKE HORIZONTAL LINE FROM 0 TO 1 IF NO SHADER ERRORS
+//		//vec4 v = vec4(float(i) / MAX_VERTICES, 0, 0, 1.0f);
+//
+//		//gl_Position = v;
+//		//EmitVertex();
+//	}
+
+	for(int i = 0; i < uCount; i++)
 	{
-		// LERP VERSION
-		//vec4 v = vec4(lerp(uAxis[0], uAxis[1], float(i) / MAX_VERTICES), 1.0);
-
-		// CATMULL ROM VERSION
-		vec3 v3 = catmullRom(uAxis[0], uAxis[1], uAxis[2], uAxis[3], float(i) / MAX_VERTICES);
-		v3.x = (2 * float(i) / MAX_VERTICES) - 1;
-		vec4 v = vec4(v3, 1.0f);
-
-		gl_Position = v;
+		gl_Position = vec4(uAxis[i], 1.0f);
 		EmitVertex();
 	}
 
