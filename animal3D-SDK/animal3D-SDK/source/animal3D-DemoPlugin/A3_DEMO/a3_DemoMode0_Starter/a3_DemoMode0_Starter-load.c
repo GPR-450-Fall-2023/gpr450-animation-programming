@@ -306,10 +306,11 @@ a3ui32 a3countClips(const a3byte filePath[1024]) {
 	// @ clip_name duration_s first_frame last_frame reverse_transition forward_transition comments(ignored)
 
 	a3ui32 lineCount = 0;
-	char lineStarter[100];
-	while (fscanf(fptr, "%s %*s %*s %*s %*s %*s %*s %*s", lineStarter) == 1) {
+	char lineStarter[5];
+	while (fscanf(fptr, "%4s", lineStarter) == 1) {
 		if (lineStarter == "@") {
 			lineCount++;
+			printf(lineStarter);
 		}
 	};
 
@@ -338,14 +339,14 @@ a3ui32 a3readClipPoolFromFile(a3_ClipPool* clipPool, a3_KeyframePool* keyframePo
 	// @ clip_name duration_s first_frame last_frame reverse_transition forward_transition comments(ignored)
 
 	a3ui32 lineCount = 0;
-	a3byte lineStarter[100], clip_name[100], duration_s[100],
-		first_frame[100], last_frame[100],
-		transition1[100], transition2[100], transition3[100], transition4[100];
-	a3byte fileData[100][8][100];
+	a3byte lineStarter[25], clip_name[25], duration_s[25],
+		first_frame[25], last_frame[25],
+		transition1[25], transition2[25], transition3[25], transition4[25];
+	a3byte fileData[25][8][25];
 	while (fscanf(fptr, "%s %s %s %s %s %s %s %s %s", lineStarter, clip_name, duration_s, first_frame, last_frame, transition1, transition2, transition3, transition4) == 1) {
 		if (lineStarter == "@") {
 			printf("%s\n", clip_name);
-			for (a3ui32 i = 0; i < 100; i++) {
+			for (a3ui32 i = 0; i < 25; i++) {
 				fileData[lineCount][0][i] = clip_name[i];
 				fileData[lineCount][1][i] = duration_s[i];
 				fileData[lineCount][2][i] = first_frame[i];
