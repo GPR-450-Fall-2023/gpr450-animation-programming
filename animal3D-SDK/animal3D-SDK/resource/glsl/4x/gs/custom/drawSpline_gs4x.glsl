@@ -90,10 +90,23 @@ void main()
 //		//EmitVertex();
 //	}
 
-	for(int i = 0; i < uCount; i++)
+	for(int i = 0; i < uCount - 1; i++)
 	{
-		gl_Position = vec4(uAxis[i], 1.0f);
-		EmitVertex();
+		for(int k = 0; k <= 10; k++)
+		{
+//			vec3 v3 = catmullRom(uAxis[max(0, i - 1)], uAxis[i], uAxis[min(uCount - 1, i + 1)], uAxis[min(uCount - 1, i + 2)], float(k) / MAX_VERTICES);
+//			//v3.x = (2 * float(k) / MAX_VERTICES) - 1;
+//			vec4 v = vec4(v3, 1.0f);
+
+			//vec4 v = vec4(lerp(uAxis[0], uAxis[i + 1], float(k) / MAX_VERTICES), 1.0);
+
+			//gl_Position = v;
+//			gl_Position = vec4(uAxis[i], 1.0f);
+//			EmitVertex();
+
+			gl_Position = vec4(lerp(uAxis[max(i, 0)], uAxis[min(i + 1, uCount - 1)], 0.0f), 1.0f);
+			EmitVertex();
+		}
 	}
 
 	// INTERPOLATE using algorithm of choice between uAxis[k] and uAxis[k+1]
