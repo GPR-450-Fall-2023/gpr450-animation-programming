@@ -229,14 +229,6 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 	demoMode->keyPool.keyframe[5].data[1] = 0;
 	demoMode->keyPool.keyframe[5].data[2] = 3;
 
-	demoMode->keyPool.keyframe[6].data[0] = -50;
-	demoMode->keyPool.keyframe[6].data[1] = -50;
-	demoMode->keyPool.keyframe[6].data[2] = -50;
-
-	demoMode->keyPool.keyframe[7].data[0] = -50;
-	demoMode->keyPool.keyframe[7].data[1] = -50;
-	demoMode->keyPool.keyframe[7].data[2] = -50;
-
 	//a3clipCalculateDuration(&demoMode->clipPool.clip[0]);
 	//////////
 
