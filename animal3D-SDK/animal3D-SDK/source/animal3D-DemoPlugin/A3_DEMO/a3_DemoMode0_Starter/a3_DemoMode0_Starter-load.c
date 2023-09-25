@@ -346,7 +346,6 @@ a3ui32 a3readClipPoolFromFile(a3_ClipPool* clipPool, a3_KeyframePool* keyframePo
 	a3byte line[200];
 	const a3byte s[4] = "	";
 	a3byte* tok;
-	//clip_name[32], duration_s[32], first_frame[32], last_frame[32], transition1[32], transition2[32], transition3[32], transition4[32];
 	a3byte fileData[25][6][32];
 	while (fgets(line, 200, fptr)) {
 		if (line[0] == '#') {
@@ -379,11 +378,6 @@ a3ui32 a3readClipPoolFromFile(a3_ClipPool* clipPool, a3_KeyframePool* keyframePo
 	}
 
 	for (a3ui32 i = 0; i < lineCount; i++) {
-		//a3clipInit(&clipPool->clip[i], fileData[i][0], clipPool, keyframePool, atoi(fileData[i][2]), atoi(fileData[i][3]));
-		
-		//setting clip duration to fileData[i][1]
-		//clipPool->clip[lineCount].duration = (a3real)atoi(fileData[i][1]);
-
 		a3byte prevOp[5];
 		a3byte nextOp[5];
 		a3byte prevClip[32];
@@ -395,7 +389,7 @@ a3ui32 a3readClipPoolFromFile(a3_ClipPool* clipPool, a3_KeyframePool* keyframePo
 		const a3byte s[4] = " ";
 		a3byte* tok;
 
-
+		//checking if there is reference to another clip in the transition
 		if(strlen(fileData[i][4]) > 4){
 			specRev = true;
 			tok = strtok(fileData[i][4], s);
@@ -406,7 +400,6 @@ a3ui32 a3readClipPoolFromFile(a3_ClipPool* clipPool, a3_KeyframePool* keyframePo
 		else {
 			specRev = false;
 		}
-
 		if (strlen(fileData[i][5]) > 4) {
 			specFor = true;
 			tok = strtok(fileData[i][5], s);
@@ -417,39 +410,6 @@ a3ui32 a3readClipPoolFromFile(a3_ClipPool* clipPool, a3_KeyframePool* keyframePo
 		else {
 			specFor = false;
 		}
-
-		//check if the reverse and forward transitions refer to specific clips
-		//a3boolean specRev, specFor;
-		//if (fileData[lineCount][6] == "#") {	//if only 2 terms, then no clips are referenced
-		//	specRev = false;
-		//	specFor = false;
-		//	strcpy(prevOp, fileData[i][4]);
-		//	strcpy(nextOp, fileData[i][5]);
-		//}
-		//else if (fileData[lineCount][7] == "#") {	//if 3 terms, then 1 clip is referenced
-		//	if (fileData[i][5] == "|" || fileData[i][5] == ">" || fileData[i][5] == ">|" || fileData[i][5] == "<" || fileData[i][5] == "<|" || fileData[i][5] == ">>" || fileData[i][5] == ">>|" || fileData[i][5] == "<<" || fileData[i][5] == "<<|") {	//forward transition references the clip
-		//		specRev = false;
-		//		specFor = true;
-		//		strcpy(prevOp, fileData[i][4]);
-		//		strcpy(nextOp, fileData[i][5]);
-		//		strcpy(nextClip, fileData[i][6]);
-		//	}
-		//	else {	//reverse transition references the clip
-		//		specRev = true;
-		//		specFor = false;
-		//		strcpy(prevOp, fileData[i][4]);
-		//		strcpy(prevClip, fileData[i][5]);
-		//		strcpy(nextOp, fileData[i][6]);
-		//	}
-		//}
-		//else {	//if 4 terms, then 2 clips are referenced
-		//	specRev = true;
-		//	specFor = true;
-		//	strcpy(prevOp, fileData[i][4]);
-		//	strcpy(prevClip, fileData[i][5]);
-		//	strcpy(nextOp, fileData[i][6]);
-		//	strcpy(nextClip, fileData[i][7]);
-		//}
 
 		//find which index the previous clip transition has
 		if (specRev) {
