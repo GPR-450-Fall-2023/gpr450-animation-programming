@@ -240,11 +240,15 @@ inline a3i32 a3lerpKeyframeData(a3_ClipController* clipCtrl, a3real3p out_data)
 		nextKeyframe.data[0], nextKeyframe.data[1], nextKeyframe.data[2]);*/
 
 	a3_Keyframe nextKeyframe;
-	if (clipCtrl->playbackDirection >= 0)
+	if (clipCtrl->playbackDirection >= 0) //Use getNextKeyframe of forwardTransition
 	{
 		clip.forwardTransition.getNextKeyframe(clipCtrl, &nextKeyframe, 1);
 	}
-	else
+	else if (clipCtrl->keyframe >= clipCtrl->firstKeyframeOfCurrentPlayback) //Use last clip backwardTransition.getNextKeyframe
+	{
+		clipCtrl->clipPool->clip[clipCtrl->lastClip].backwardTransition.getNextKeyframe(clipCtrl, &nextKeyframe, 1);
+	}
+	else //Use getNextKeyframe from this clips backwardTransition
 	{
 		clip.backwardTransition.getNextKeyframe(clipCtrl, &nextKeyframe, 1);
 
@@ -365,7 +369,7 @@ inline a3i32 a3getNextKeyframeSkipFromNextClip(a3_ClipController* clipCtrl, a3_K
 
 	//Moving forward
 	a3_Keyframe nextKeyframe;
-	if (clipCtrl->keyframe + offset > clip.lastKeyframeIndex) //Use offset to check, only skip if in next clip already
+	if (clipCtrl->keyframe + (clipCtrl->playbackDirection >= 0 ? offset : skipOffset) > clip.lastKeyframeIndex) //Use offset to check, only skip if in next clip already
 	{
 		//Example: if keyframe = 4, offset = 3, and last keyframe is 5, we should be 2 keyframes
 		//into the next keyframe

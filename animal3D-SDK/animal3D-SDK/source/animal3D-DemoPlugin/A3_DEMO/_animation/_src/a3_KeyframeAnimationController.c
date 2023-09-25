@@ -49,6 +49,9 @@ a3i32 a3clipControllerInit(a3_ClipController* clipCtrl_out, const a3byte ctrlNam
 		return -1;
 	}
 
+	//Initialize the first keyframe of this playback
+	clipCtrl_out->firstKeyframeOfCurrentPlayback = clipCtrl_out->clip;
+
 	return 0;
 }
 
@@ -200,6 +203,9 @@ a3i32 a3terminusForwardPlayback(a3_ClipController* clipCtrl, const a3_ClipTransi
 	clipCtrl->playbackDirection = 1;
 	clipCtrl->lastPlaybackDirection = 1;
 
+	//First keyframe would be first index
+	clipCtrl->firstKeyframeOfCurrentPlayback = clip.firstKeyframeIndex;
+
 	return 0;
 }
 
@@ -225,6 +231,9 @@ a3i32 a3terminusForwardPause(a3_ClipController* clipCtrl, const a3_ClipTransitio
 	//Pause clip controller
 	clipCtrl->playbackDirection = 0;
 	clipCtrl->lastPlaybackDirection = 1; //Ensures we move forward when unpausing
+
+	//First keyframe would be first index
+	clipCtrl->firstKeyframeOfCurrentPlayback = clipCtrl->clipPool->clip[clipCtrl->clip].firstKeyframeIndex;
 
 	return 0;
 }
@@ -270,6 +279,9 @@ a3i32 a3terminusReversePlayback(a3_ClipController* clipCtrl, const a3_ClipTransi
 	clipCtrl->playbackDirection = -1;
 	clipCtrl->lastPlaybackDirection = -1;
 
+	//First keyframe would be last index
+	clipCtrl->firstKeyframeOfCurrentPlayback = clip.lastKeyframeIndex;
+
 	return 0;
 }
 
@@ -299,6 +311,9 @@ a3i32 a3terminusReversePause(a3_ClipController* clipCtrl, const a3_ClipTransitio
 	//Pause clip controller
 	clipCtrl->playbackDirection = 0;
 	clipCtrl->lastPlaybackDirection = -1; //Ensures we move backward when unpausing
+
+	//First keyframe would be last index
+	clipCtrl->firstKeyframeOfCurrentPlayback = clip.lastKeyframeIndex;
 
 	return 0;
 }
@@ -343,6 +358,17 @@ a3i32 a3terminusForwardSkipPlayback(a3_ClipController* clipCtrl, const a3_ClipTr
 	clipCtrl->playbackDirection = 1;
 	clipCtrl->lastPlaybackDirection = 1;
 
+	if (clip.firstKeyframeIndex + 1 < clip.lastKeyframeIndex)
+	{
+		//First keyframe would be second index
+		clipCtrl->firstKeyframeOfCurrentPlayback = clip.firstKeyframeIndex + 1;
+	}
+	else
+	{
+		//First keyframe would be second index, but that index doesn't exist in this clip
+		clipCtrl->firstKeyframeOfCurrentPlayback = clip.firstKeyframeIndex;
+	}
+
 	return 0;
 }
 
@@ -374,6 +400,17 @@ a3i32 a3terminusForwardSkipPause(a3_ClipController* clipCtrl, const a3_ClipTrans
 	//Pause clip controller
 	clipCtrl->playbackDirection = 0;
 	clipCtrl->lastPlaybackDirection = 1; //Ensures we move forward when unpausing
+
+	if (clip.firstKeyframeIndex + 1 <= clip.lastKeyframeIndex)
+	{
+		//First keyframe would be second index
+		clipCtrl->firstKeyframeOfCurrentPlayback = clip.firstKeyframeIndex + 1;
+	}
+	else
+	{
+		//First keyframe would be second index, but that index doesn't exist in this clip
+		clipCtrl->firstKeyframeOfCurrentPlayback = clip.firstKeyframeIndex;
+	}
 
 	return 0;
 }
@@ -419,6 +456,17 @@ a3i32 a3terminusReverseSkipPlayback(a3_ClipController* clipCtrl, const a3_ClipTr
 	clipCtrl->playbackDirection = -1;
 	clipCtrl->lastPlaybackDirection = -1;
 
+	if (clip.lastKeyframeIndex - 1 >= clip.firstKeyframeIndex)
+	{
+		//First keyframe would be second to last index
+		clipCtrl->firstKeyframeOfCurrentPlayback = clip.lastKeyframeIndex - 1;
+	}
+	else
+	{
+		//First keyframe would be second to last index, but that index doesn't exist in this clip
+		clipCtrl->firstKeyframeOfCurrentPlayback = clip.lastKeyframeIndex;
+	}
+
 	return 0;
 }
 
@@ -448,6 +496,17 @@ a3i32 a3terminusReverseSkipPause(a3_ClipController* clipCtrl, const a3_ClipTrans
 	//Pause clip controller
 	clipCtrl->playbackDirection = 0;
 	clipCtrl->lastPlaybackDirection = -1; //Ensures we move backward when unpausing
+
+	if (clip.lastKeyframeIndex - 1 >= clip.firstKeyframeIndex)
+	{
+		//First keyframe would be second to last index
+		clipCtrl->firstKeyframeOfCurrentPlayback = clip.lastKeyframeIndex - 1;
+	}
+	else
+	{
+		//First keyframe would be second to last index, but that index doesn't exist in this clip
+		clipCtrl->firstKeyframeOfCurrentPlayback = clip.lastKeyframeIndex;
+	}
 
 	return 0;
 }
