@@ -655,6 +655,7 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 		{
 			#define MAX_KEYFRAMES 1024
 			#define NUM_VEC_COMPONENTS 3
+			#define START_X_PROGRESS -.9f
 
 			// DRAW SPLINE
 			currentDemoProgram = demoState->prog_drawSpline;
@@ -670,7 +671,7 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 
 				a3vec3 k[MAX_KEYFRAMES];
 
-				float xProgress = -1.2f;
+				float xProgress = -.9f;
 				float yMin = 999999;
 				float yMax = -999999;
 
@@ -682,7 +683,7 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 
 					float xPortion = (keyframe.duration / clip.duration) * 2;
 
-					vec.x = xProgress + xPortion; // replace with * durationInverse later
+					vec.x = xProgress;
 					xProgress += xPortion;
 
 					// Y is our dependent variable, for now we'll say it's the y value of keyframe data
@@ -756,10 +757,9 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 
 			a3real normalizedTime = controller.clipTime / clip.duration;
 
-			normalizedTime = (2 * normalizedTime) - 1;
+			normalizedTime = ((2 * normalizedTime) - 1) - (-1 - START_X_PROGRESS);
 
 			a3ui32 negOne = -1;
-
 
 
 			a3shaderUniformSendFloat(a3unif_single, currentDemoProgram->uFlag, 1, &normalizedTime);
