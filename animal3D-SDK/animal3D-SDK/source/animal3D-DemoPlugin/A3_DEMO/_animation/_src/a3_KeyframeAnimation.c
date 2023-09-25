@@ -210,7 +210,8 @@ a3i32 a3clipInit(a3_Clip* clip_out, const a3byte clipName[a3keyframeAnimation_na
 a3i32 a3clipTransitionInit(a3_ClipTransition* clipTransition, const a3ui32 index, const a3_ClipPool* clipPool, void(*transitionFunction), void(*getKeyframe))
 {
 	if (clipTransition == NULL || clipPool == NULL) return -1;
-
+	
+	//Set values of each member
 	clipTransition->index = index;
 	clipTransition->clipPool = clipPool;
 	clipTransition->transitionFunction = transitionFunction;
