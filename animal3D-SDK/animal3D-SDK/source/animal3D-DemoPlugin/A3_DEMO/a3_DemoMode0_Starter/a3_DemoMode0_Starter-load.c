@@ -373,9 +373,16 @@ a3ui32 a3readClipPoolFromFile(a3_ClipPool* clipPool, a3_KeyframePool* keyframePo
 
 	for (a3ui32 i = 0; i < lineCount; i++) {
 		a3clipInit(&clipPool->clip[i], fileData[i][0], clipPool, keyframePool, atoi(fileData[i][2]), atoi(fileData[i][3]));
+
+		//setting clip duration to fileData[i][1]
+		clipPool->clip[lineCount].duration = (a3real)atof(fileData[i][1]);
+	}
+
+	for (a3ui32 i = 0; i < lineCount; i++) {
+		//a3clipInit(&clipPool->clip[i], fileData[i][0], clipPool, keyframePool, atoi(fileData[i][2]), atoi(fileData[i][3]));
 		
 		//setting clip duration to fileData[i][1]
-		clipPool->clip[lineCount].duration = (a3real)atoi(fileData[i][1]);
+		//clipPool->clip[lineCount].duration = (a3real)atoi(fileData[i][1]);
 
 		a3byte prevOp[5];
 		a3byte nextOp[5];
@@ -383,39 +390,66 @@ a3ui32 a3readClipPoolFromFile(a3_ClipPool* clipPool, a3_KeyframePool* keyframePo
 		a3byte nextClip[32];
 		a3i32 prevIndex = -1;
 		a3i32 nextIndex = -1;
+		a3boolean specRev, specFor;
+
+		const a3byte s[4] = " ";
+		a3byte* tok;
+
+
+		if(strlen(fileData[i][4]) > 4){
+			specRev = true;
+			tok = strtok(fileData[i][4], s);
+			strcpy(prevOp, tok);
+			tok = strtok(0, s);
+			strcpy(prevClip, tok);
+		}
+		else {
+			specRev = false;
+		}
+
+		if (strlen(fileData[i][5]) > 4) {
+			specFor = true;
+			tok = strtok(fileData[i][5], s);
+			strcpy(nextOp, tok);
+			tok = strtok(0, s);
+			strcpy(nextClip, tok);
+		}
+		else {
+			specFor = false;
+		}
 
 		//check if the reverse and forward transitions refer to specific clips
-		a3boolean specRev, specFor;
-		if (fileData[lineCount][6] == "#") {	//if only 2 terms, then no clips are referenced
-			specRev = false;
-			specFor = false;
-			strcpy(prevOp, fileData[i][4]);
-			strcpy(nextOp, fileData[i][5]);
-		}
-		else if (fileData[lineCount][7] == "#") {	//if 3 terms, then 1 clip is referenced
-			if (fileData[i][5] == "|" || fileData[i][5] == ">" || fileData[i][5] == ">|" || fileData[i][5] == "<" || fileData[i][5] == "<|" || fileData[i][5] == ">>" || fileData[i][5] == ">>|" || fileData[i][5] == "<<" || fileData[i][5] == "<<|") {	//forward transition references the clip
-				specRev = false;
-				specFor = true;
-				strcpy(prevOp, fileData[i][4]);
-				strcpy(nextOp, fileData[i][5]);
-				strcpy(nextClip, fileData[i][6]);
-			}
-			else {	//reverse transition references the clip
-				specRev = true;
-				specFor = false;
-				strcpy(prevOp, fileData[i][4]);
-				strcpy(prevClip, fileData[i][5]);
-				strcpy(nextOp, fileData[i][6]);
-			}
-		}
-		else {	//if 4 terms, then 2 clips are referenced
-			specRev = true;
-			specFor = true;
-			strcpy(prevOp, fileData[i][4]);
-			strcpy(prevClip, fileData[i][5]);
-			strcpy(nextOp, fileData[i][6]);
-			strcpy(nextClip, fileData[i][7]);
-		}
+		//a3boolean specRev, specFor;
+		//if (fileData[lineCount][6] == "#") {	//if only 2 terms, then no clips are referenced
+		//	specRev = false;
+		//	specFor = false;
+		//	strcpy(prevOp, fileData[i][4]);
+		//	strcpy(nextOp, fileData[i][5]);
+		//}
+		//else if (fileData[lineCount][7] == "#") {	//if 3 terms, then 1 clip is referenced
+		//	if (fileData[i][5] == "|" || fileData[i][5] == ">" || fileData[i][5] == ">|" || fileData[i][5] == "<" || fileData[i][5] == "<|" || fileData[i][5] == ">>" || fileData[i][5] == ">>|" || fileData[i][5] == "<<" || fileData[i][5] == "<<|") {	//forward transition references the clip
+		//		specRev = false;
+		//		specFor = true;
+		//		strcpy(prevOp, fileData[i][4]);
+		//		strcpy(nextOp, fileData[i][5]);
+		//		strcpy(nextClip, fileData[i][6]);
+		//	}
+		//	else {	//reverse transition references the clip
+		//		specRev = true;
+		//		specFor = false;
+		//		strcpy(prevOp, fileData[i][4]);
+		//		strcpy(prevClip, fileData[i][5]);
+		//		strcpy(nextOp, fileData[i][6]);
+		//	}
+		//}
+		//else {	//if 4 terms, then 2 clips are referenced
+		//	specRev = true;
+		//	specFor = true;
+		//	strcpy(prevOp, fileData[i][4]);
+		//	strcpy(prevClip, fileData[i][5]);
+		//	strcpy(nextOp, fileData[i][6]);
+		//	strcpy(nextClip, fileData[i][7]);
+		//}
 
 		//find which index the previous clip transition has
 		if (specRev) {
@@ -426,7 +460,7 @@ a3ui32 a3readClipPoolFromFile(a3_ClipPool* clipPool, a3_KeyframePool* keyframePo
 		}
 		if (prevIndex == -1) {
 			printf("There is no clip referenced by the reverse transition\n");
-			return 0;
+			//return 0;
 		}
 
 		//find which index the next clip transition has
@@ -438,64 +472,64 @@ a3ui32 a3readClipPoolFromFile(a3_ClipPool* clipPool, a3_KeyframePool* keyframePo
 		}
 		if (nextIndex == -1) {
 			printf("There is no clip referenced by the forward transition\n");
-			return 0;
+			//return 0;
 		}
 		
 		//setting backward/previous transition
-		if (prevOp == "|") {
+		if (prevOp[0] == '|' && prevOp[1] == '\0') {
 			a3clipTransitionInit(&clipPool->clip[i].backwardTransition, prevIndex, clipPool, a3terminusPause, a3getNextKeyframeLoop);
 		}
-		else if (prevOp == ">") {
+		else if (prevOp[0] == '>' && prevOp[1] == '\0') {
 			a3clipTransitionInit(&clipPool->clip[i].backwardTransition, prevIndex, clipPool, a3terminusForwardPlayback, a3getNextKeyframeFromNextClip);
 		}
-		else if (prevOp == ">|") {
+		else if (prevOp[0] == '>' && prevOp[1] == '|' && prevOp[2] == '\0') {
 			a3clipTransitionInit(&clipPool->clip[i].backwardTransition, prevIndex, clipPool, a3terminusForwardPause, a3getNextKeyframeFromNextClip);
 		}
-		else if (prevOp == "<") {
+		else if (prevOp[0] == '<' && prevOp[1] == '\0') {
 			a3clipTransitionInit(&clipPool->clip[i].backwardTransition, prevIndex, clipPool, a3terminusReversePlayback, a3getNextKeyframeFromNextClip);
 		}
-		else if (prevOp == "<|") {
+		else if (prevOp[0] == '<' && prevOp[1] == '|' && prevOp[2] == '\0') {
 			a3clipTransitionInit(&clipPool->clip[i].backwardTransition, prevIndex, clipPool, a3terminusReversePause, a3getNextKeyframeFromNextClip);
 		}
-		else if (prevOp == ">>") {
+		else if (prevOp[0] == '>' && prevOp[1] == '>' && prevOp[2] == '\0') {
 			a3clipTransitionInit(&clipPool->clip[i].backwardTransition, prevIndex, clipPool, a3terminusForwardSkipPlayback, a3getNextKeyframeSkipFromNextClip);
 		}
-		else if (prevOp == ">>|") {
+		else if (prevOp[0] == '>' && prevOp[1] == '>' && prevOp[2] == '|' && prevOp[3] == '\0') {
 			a3clipTransitionInit(&clipPool->clip[i].backwardTransition, prevIndex, clipPool, a3terminusForwardSkipPause, a3getNextKeyframeSkipFromNextClip);
 		}
-		else if (prevOp == "<<") {
+		else if (prevOp[0] == '<' && prevOp[1] == '<' && prevOp[2] == '\0') {
 			a3clipTransitionInit(&clipPool->clip[i].backwardTransition, prevIndex, clipPool, a3terminusReverseSkipPlayback, a3getNextKeyframeSkipFromNextClip);
 		}
-		else if (prevOp == "<<|") {
+		else if (prevOp[0] == '<' && prevOp[1] == '<' && prevOp[2] == '|' && prevOp[3] == '\0') {
 			a3clipTransitionInit(&clipPool->clip[i].backwardTransition, prevIndex, clipPool, a3terminusReverseSkipPause, a3getNextKeyframeSkipFromNextClip);
 		}
 
 		//setting forward transition
-		if (prevOp == "|") {
+		if (nextOp[0] == '|' && nextOp[1] == '\0') {
 			a3clipTransitionInit(&clipPool->clip[i].forwardTransition, nextIndex, clipPool, a3terminusPause, a3getNextKeyframeLoop);
 		}
-		else if (prevOp == ">") {
+		else if (nextOp[0] == '>' && nextOp[1] == '\0') {
 			a3clipTransitionInit(&clipPool->clip[i].forwardTransition, nextIndex, clipPool, a3terminusForwardPlayback, a3getNextKeyframeFromNextClip);
 		}
-		else if (prevOp == ">|") {
+		else if (nextOp[0] == '>' && nextOp[1] == '|' && nextOp[2] == '\0') {
 			a3clipTransitionInit(&clipPool->clip[i].forwardTransition, nextIndex, clipPool, a3terminusForwardPause, a3getNextKeyframeFromNextClip);
 		}
-		else if (prevOp == "<") {
+		else if (nextOp[0] == '<' && nextOp[1] == '\0') {
 			a3clipTransitionInit(&clipPool->clip[i].forwardTransition, nextIndex, clipPool, a3terminusReversePlayback, a3getNextKeyframeFromNextClip);
 		}
-		else if (prevOp == "<|") {
+		else if (nextOp[0] == '<' && nextOp[1] == '|' && nextOp[2] == '\0') {
 			a3clipTransitionInit(&clipPool->clip[i].forwardTransition, nextIndex, clipPool, a3terminusReversePause, a3getNextKeyframeFromNextClip);
 		}
-		else if (prevOp == ">>") {
+		else if (nextOp[0] == '>' && nextOp[1] == '>' && nextOp[2] == '\0') {
 			a3clipTransitionInit(&clipPool->clip[i].forwardTransition, nextIndex, clipPool, a3terminusForwardSkipPlayback, a3getNextKeyframeSkipFromNextClip);
 		}
-		else if (prevOp == ">>|") {
+		else if (nextOp[0] == '>' && nextOp[1] == '>' && nextOp[2] == '|' && nextOp[3] == '\0') {
 			a3clipTransitionInit(&clipPool->clip[i].forwardTransition, nextIndex, clipPool, a3terminusForwardSkipPause, a3getNextKeyframeSkipFromNextClip);
 		}
-		else if (prevOp == "<<") {
+		else if (nextOp[0] == '<' && nextOp[1] == '<' && nextOp[2] == '\0') {
 			a3clipTransitionInit(&clipPool->clip[i].forwardTransition, nextIndex, clipPool, a3terminusReverseSkipPlayback, a3getNextKeyframeSkipFromNextClip);
 		}
-		else if (prevOp == "<<|") {
+		else if (nextOp[0] == '<' && nextOp[1] == '<' && nextOp[2] == '|' && nextOp[3] == '\0') {
 			a3clipTransitionInit(&clipPool->clip[i].forwardTransition, nextIndex, clipPool, a3terminusReverseSkipPause, a3getNextKeyframeSkipFromNextClip);
 		}
 	}
