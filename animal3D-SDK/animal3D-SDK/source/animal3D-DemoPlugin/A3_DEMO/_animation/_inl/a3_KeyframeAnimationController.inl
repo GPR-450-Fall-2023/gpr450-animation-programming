@@ -212,19 +212,23 @@ inline a3i32 a3clipControllerSetClip(a3_ClipController* clipCtrl, const a3_ClipP
 
 inline a3i32 a3lerpKeyframeData(a3_ClipController* clipCtrl, a3real3p out_data)
 {
+	//Null check
 	if (!clipCtrl
 		|| !clipCtrl->clipPool)
 	{
 		return -1;
 	}
 
+	//Get current clip
 	a3_Clip clip = clipCtrl->clipPool->clip[clipCtrl->clip];
 
+	//Check keyframe pool exists
 	if (!clip.keyframePool)
 	{
 		return -1;
 	}
 
+	//Get current keyframe
 	a3_Keyframe keyframe = clip.keyframePool->keyframe[clipCtrl->keyframe];
 
 	//a3ui32 indexOffset = (clipCtrl->keyframe - clip.firstKeyframeIndex + 1) //Add 1 to get next
@@ -239,6 +243,7 @@ inline a3i32 a3lerpKeyframeData(a3_ClipController* clipCtrl, a3real3p out_data)
 		clip.firstKeyframeIndex + indexOffset, 
 		nextKeyframe.data[0], nextKeyframe.data[1], nextKeyframe.data[2]);*/
 
+	//Get next keyframe
 	a3_Keyframe nextKeyframe;
 	if (clipCtrl->playbackDirection >= 0) //Use getNextKeyframe of forwardTransition
 	{
@@ -424,10 +429,12 @@ inline a3i32 a3getNextKeyframeLoop(a3_ClipController* clipCtrl, a3_Keyframe* out
 
 inline a3real3r a3real3GenericLerp(a3real3p out, a3real3p x0, a3real3p x1, a3real u)
 {
+	//Lerp equation
 	a3real3r sub = a3real3Sub(x1, x0); //x1 - x0
 	a3real3r mul = a3real3MulS(sub, u); // (x1 - x0) * u
 	a3real3r add = a3real3Add(x0, mul); // x0 + ((x1 - x0) * u)
 
+	//Set out parameter
 	out[0] = add[0];
 	out[1] = add[1];
 	out[2] = add[2];
