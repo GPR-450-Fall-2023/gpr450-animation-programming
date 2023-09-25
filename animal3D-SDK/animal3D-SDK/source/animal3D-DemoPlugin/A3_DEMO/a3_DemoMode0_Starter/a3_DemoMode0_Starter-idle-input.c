@@ -73,7 +73,7 @@ void a3starter_input_keyCharPress(a3_DemoState const* demoState, a3_DemoMode0_St
 		a3demoCtrlCasesLoop(demoMode->pass, starter_pass_max, ')', '(');
 
 		// toggle clip controllers
-		// a3demoCtrlCasesLoop(demoMode->currentController, demoMode->numOfControllers, 'w', 'q');
+		a3demoCtrlCasesLoop(demoMode->currentController, demoMode->numOfControllers, 'w', 'q');
 		
 		//demoMode->currentClip = demoMode->clipCtrlPool.clipControllers[demoMode->currentController].clip;
 
@@ -82,8 +82,8 @@ void a3starter_input_keyCharPress(a3_DemoState const* demoState, a3_DemoMode0_St
 		//a3demoCtrlCasesLoop(demoMode->playPause, starter_play_pause_max, 'p', 'o');
 
 		// set to first/last frame in current clip
-		//a3demoCtrlCasesLoop(demoMode->first, starter_first_keyframe_max, 'e', 'd');
-		//a3demoCtrlCasesLoop(demoMode->last, starter_last_keyframe_max, 'r', 'f');
+		a3demoCtrlCasesLoop(demoMode->first, starter_first_keyframe_max, 'e', 'd');
+		a3demoCtrlCasesLoop(demoMode->last, starter_last_keyframe_max, 'r', 'f');
 
 		// toggle clip
 		//a3demoCtrlCasesLoop(demoMode->clipCtrlPool.clipControllers[demoMode->currentController].clip, demoMode->numOfClips, 's', 'a');

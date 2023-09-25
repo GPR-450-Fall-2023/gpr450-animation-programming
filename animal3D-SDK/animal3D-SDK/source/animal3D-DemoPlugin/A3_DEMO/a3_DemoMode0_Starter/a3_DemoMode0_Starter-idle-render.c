@@ -178,8 +178,7 @@ void a3starter_render_controls(a3_DemoState const* demoState, a3_DemoMode0_Start
 	//	"    Active camera (%u / %u) ('c' prev | next 'v'): %s", activeCamera + 1, starter_camera_max, cameraText[activeCamera]);
 
 	// Basic Testing Interface
-	// COMMENTED OUT BY JOEY, THERE IS A BUG HERE THAT CAUSES A CRASH
-	/*a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"Controls:");
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"    Select clip controller to edit (q/w): %s", clipControllers[demoMode->currentController]);
@@ -187,12 +186,12 @@ void a3starter_render_controls(a3_DemoState const* demoState, a3_DemoMode0_Start
 		"    Play/pause controller playback (p)");
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"    Set to first/last frame in current clip (e/r)");
-	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"    Change clip to control (a/s): %s", clips[demoMode->clipCtrlPool.clipControllers[demoMode->currentController].clip]);
+	/*a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"    Change clip to control (a/s): %s", clips[demoMode->clipCtrlPool.clipControllers[demoMode->currentController].clip]);*/
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"    Flip playback direction (b)");
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"    Slow-motion (n/m)");*/
+		"    Slow-motion (n/m)");
 	/*a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"    Terminus Action (%u / %u) ( , | . ): %s", terminus + 1, starter_terminus_max, terminusAction[terminus]);*/
 
@@ -662,7 +661,7 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 			a3shaderProgramActivate(currentDemoProgram->program);
 			a3vertexDrawableDeactivate();
 
-			a3_ClipController controller = demoMode->clipCtrlPool.clipControllers[0];
+			a3_ClipController controller = demoMode->clipCtrlPool.clipControllers[demoMode->currentController];
 			a3_Clip clip = controller.clipPool->clip[controller.clip];
 
 			for(a3ui32 axisIndex = 0; axisIndex < NUM_VEC_COMPONENTS; axisIndex++)
