@@ -661,12 +661,12 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 			a3shaderProgramActivate(currentDemoProgram->program);
 			a3vertexDrawableDeactivate();
 
+			a3_ClipController controller = demoMode->clipCtrlPool.clipControllers[0];
+			a3_Clip clip = controller.clipPool->clip[controller.clip];
+
 			for(a3ui32 axisIndex = 0; axisIndex < NUM_VEC_COMPONENTS; axisIndex++)
 			{
 				a3real verticalOffsetOnScreen = ((2.0f / NUM_VEC_COMPONENTS) * axisIndex) + (1.0f / NUM_VEC_COMPONENTS);
-
-				a3_ClipController controller = demoMode->clipCtrlPool.clipControllers[0];
-				a3_Clip clip = controller.clipPool->clip[controller.clip];
 
 				a3vec3 k[MAX_KEYFRAMES];
 
@@ -753,6 +753,21 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 					glDrawArrays(GL_POINTS, 0, 1);
 				}
 			}
+
+			a3real normalizedTime = controller.clipTime / clip.duration;
+
+			normalizedTime = (2 * normalizedTime) - 1;
+
+			a3ui32 negOne = -1;
+
+
+
+			a3shaderUniformSendFloat(a3unif_single, currentDemoProgram->uFlag, 1, &normalizedTime);
+			a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uCount, 1, &negOne);
+
+			glDrawArrays(GL_POINTS, 0, 1);
+
+
 		}
 
 

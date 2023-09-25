@@ -36,6 +36,7 @@ layout (line_strip, max_vertices = MAX_VERTICES) out;
 #define MAX_DATA 128
 uniform vec3 uAxis[MAX_DATA];
 uniform int uCount;
+uniform float uFlag;
 
 
 vec3 lerp(vec3 start, vec3 end, float u)
@@ -89,20 +90,29 @@ void main()
 //		//EmitVertex();
 //	}
 
-	for(int k = 0; k <= MAX_VERTICES; k++)
+	if(uCount != -1)
 	{
-			vec3 v3 = catmullRom(uAxis[0], uAxis[1], uAxis[2], uAxis[3], float(k) / MAX_VERTICES);
-			//v3.x = (2 * float(k) / MAX_VERTICES) - 1;
-			vec4 v = vec4(v3, 1.0f);
+		for(int k = 0; k <= MAX_VERTICES; k++)
+		{
+			// Lerp
+			gl_Position = vec4(lerp(uAxis[1], uAxis[2], float(k) / MAX_VERTICES), 1.0f);
+			
+			// Catmull Rom
+//			vec3 v3 = catmullRom(uAxis[0], uAxis[1], uAxis[2], uAxis[3], float(k) / MAX_VERTICES);
+//			vec4 v = vec4(v3, 1.0f);
+//			gl_Position = v;
 
-		//vec4 v = vec4(lerp(uAxis[0], uAxis[i + 1], float(k) / MAX_VERTICES), 1.0);
+			EmitVertex();
+		}
+	}
+	else
+	{
+		vec4 bottom = vec4(uFlag, -1, 0, 1.0f);
+		gl_Position = bottom;
+		EmitVertex();
 
-		//gl_Position = v;
-//			gl_Position = vec4(uAxis[i], 1.0f);
-//			EmitVertex();
-
-		gl_Position = v;
-		//gl_Position = vec4(lerp(uAxis[1], uAxis[2], float(k) / MAX_VERTICES), 1.0f);
+		vec4 top = vec4(uFlag, 1, 0, 1.0f);
+		gl_Position = top;
 		EmitVertex();
 	}
 
