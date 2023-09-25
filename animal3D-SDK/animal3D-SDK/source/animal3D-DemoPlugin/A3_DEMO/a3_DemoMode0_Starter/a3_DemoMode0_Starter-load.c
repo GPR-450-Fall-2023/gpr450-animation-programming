@@ -191,8 +191,8 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 	a3keyframePoolCreate(&demoMode->keyPool, demoMode->numOfKeyframes);
 
 	// Creating Pool of Clips
-	//demoMode->numOfClips = a3countClips(filePath);
-	demoMode->numOfClips = 12;
+	demoMode->numOfClips = a3countClips(filePath);
+	//demoMode->numOfClips = 12;
 	demoMode->currentClip = 0;
 	a3clipPoolCreate(&demoMode->clipPool, &demoMode->keyPool, demoMode->numOfClips);
 
@@ -203,16 +203,7 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 		a3keyframeInit(&demoMode->keyPool.keyframe[i], 0.5f, newData);
 	}
 
-	//a3readClipPoolFromFile(&demoMode->clipPool, &demoMode->keyPool, filePath);
-
-	//demoMode->keyPool.keyframe[0].data = 0;
-	//a3keyframeSetDuration(&demoMode->keyPool.keyframe[0], .41f);
-	//demoMode->keyPool.keyframe[1].data = 1;
-	//a3keyframeSetDuration(&demoMode->keyPool.keyframe[1], .01f); //Tests skipping of keyframes
-	//demoMode->keyPool.keyframe[2].data = 2;
-	//a3keyframeSetDuration(&demoMode->keyPool.keyframe[2], .5);
-	//demoMode->keyPool.keyframe[3].data = 3;
-	//a3keyframeSetDuration(&demoMode->keyPool.keyframe[3], .5);
+	a3readClipPoolFromFile(&demoMode->clipPool, &demoMode->keyPool, filePath);
 
 	demoMode->keyPool.keyframe[0].data[0] = 0;
 	demoMode->keyPool.keyframe[0].data[1] = 0;
@@ -250,23 +241,23 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 	//////////
 
 	// Initializing Clips
-	a3clipInit(&demoMode->clipPool.clip[0], "Clip " + (1), &demoMode->clipPool, &demoMode->keyPool, 0, 5);
+	/*a3clipInit(&demoMode->clipPool.clip[0], "Clip " + (1), &demoMode->clipPool, &demoMode->keyPool, 0, 5);
 	a3clipInit(&demoMode->clipPool.clip[1], "Clip " + (2), &demoMode->clipPool, &demoMode->keyPool, 8, 14);
 	a3clipInit(&demoMode->clipPool.clip[2], "Clip " + (3), &demoMode->clipPool, &demoMode->keyPool, 8, 14);
 	a3clipInit(&demoMode->clipPool.clip[3], "Clip " + (4), &demoMode->clipPool, &demoMode->keyPool, 12, 18);
-	a3clipInit(&demoMode->clipPool.clip[4], "Clip " + (5), &demoMode->clipPool, &demoMode->keyPool, 16, 20);
+	a3clipInit(&demoMode->clipPool.clip[4], "Clip " + (5), &demoMode->clipPool, &demoMode->keyPool, 16, 20);*/
 	// I didnt put this in a for loop because it was getting annoying
 	// to think of a mathematical function to make the clips share keyframes
 	// but also not go out of bounds, so i just did it manually
 	// we can change this later
 
 	//Test assingmnet of clip 0 transition indices pointing to the next clip in the pool
-	demoMode->clipPool.clip[0].forwardTransition.index = 1;
+	/*demoMode->clipPool.clip[0].forwardTransition.index = 1;
 	demoMode->clipPool.clip[0].forwardTransition.getNextKeyframe = a3getNextKeyframeSkipFromNextClip;
 	demoMode->clipPool.clip[0].forwardTransition.transitionFunction = a3terminusForwardSkipPlayback;
 	demoMode->clipPool.clip[0].backwardTransition.index = 1;
 	demoMode->clipPool.clip[0].backwardTransition.getNextKeyframe = a3getNextKeyframeSkipFromNextClip;
-	demoMode->clipPool.clip[0].backwardTransition.transitionFunction = a3terminusReverseSkipPlayback;
+	demoMode->clipPool.clip[0].backwardTransition.transitionFunction = a3terminusReverseSkipPlayback;*/
 	
 	// Initializing Clip Controllers
 	a3clipControllerPoolCreate(&demoMode->clipCtrlPool, &demoMode->clipPool, 3);
@@ -313,9 +304,12 @@ a3ui32 a3countClips(const a3byte filePath[1024]) {
 	//check if line has @ instead of # at front
 	//counts amount of lines with @ and that's the amount of clips
 	a3ui32 lineCount = 0;
-	a3byte lineStarter[5];
-	while (fscanf(fptr, "%4s", lineStarter) == 1) {
-		if (lineStarter == "@") {
+	a3byte lineStarter[100];
+	while (fgets(lineStarter, 100, fptr)) {
+		if (lineStarter[0] == '#') {
+			//skip line
+		}
+		if (lineStarter[0] == '@') {
 			lineCount++;
 			printf(lineStarter);
 		}
@@ -349,21 +343,30 @@ a3ui32 a3readClipPoolFromFile(a3_ClipPool* clipPool, a3_KeyframePool* keyframePo
 	// @ clip_name duration_s first_frame last_frame reverse_transition forward_transition comments(ignored)
 
 	a3ui32 lineCount = 0;
-	a3byte lineStarter[32], clip_name[32], duration_s[32],
-		first_frame[32], last_frame[32],
-		transition1[32], transition2[32], transition3[32], transition4[32];
-	a3byte fileData[25][8][32];
-	while (fscanf(fptr, "%32s %32s %32s %32s %32s %32s %32s %32s %32s", lineStarter, clip_name, duration_s, first_frame, last_frame, transition1, transition2, transition3, transition4) == 1) {
-		if (lineStarter == "@") {
-			printf("%s\n", clip_name);
-			strcpy(fileData[lineCount][0], clip_name);
-			strcpy(fileData[lineCount][1], duration_s);
-			strcpy(fileData[lineCount][2], first_frame);
-			strcpy(fileData[lineCount][3], last_frame);
-			strcpy(fileData[lineCount][4], transition1);
-			strcpy(fileData[lineCount][5], transition2);
-			strcpy(fileData[lineCount][6], transition3);
-			strcpy(fileData[lineCount][7], transition4);
+	a3byte line[200];
+	const a3byte s[4] = "	";
+	a3byte* tok;
+	//clip_name[32], duration_s[32], first_frame[32], last_frame[32], transition1[32], transition2[32], transition3[32], transition4[32];
+	a3byte fileData[25][6][32];
+	while (fgets(line, 200, fptr)) {
+		if (line[0] == '#') {
+			
+		}
+		else if (line[0] == '@') {
+			tok = strtok(line, s);
+			tok = strtok(0, s);
+			strcpy(fileData[lineCount][0], tok);
+			tok = strtok(0, s);
+			strcpy(fileData[lineCount][1], tok);
+			tok = strtok(0, s);
+			strcpy(fileData[lineCount][2], tok);
+			tok = strtok(0, s);
+			strcpy(fileData[lineCount][3], tok);
+			tok = strtok(0, s);
+			strcpy(fileData[lineCount][4], tok);
+			tok = strtok(0, s);
+			strcpy(fileData[lineCount][5], tok);
+			
 			lineCount++;
 		}
 	};
