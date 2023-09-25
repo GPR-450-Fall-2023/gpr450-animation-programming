@@ -339,14 +339,14 @@ a3ui32 a3readClipPoolFromFile(a3_ClipPool* clipPool, a3_KeyframePool* keyframePo
 	// @ clip_name duration_s first_frame last_frame reverse_transition forward_transition comments(ignored)
 
 	a3ui32 lineCount = 0;
-	a3byte lineStarter[25], clip_name[25], duration_s[25],
-		first_frame[25], last_frame[25],
-		transition1[25], transition2[25], transition3[25], transition4[25];
-	a3byte fileData[25][8][25];
-	while (fscanf(fptr, "%s %s %s %s %s %s %s %s %s", lineStarter, clip_name, duration_s, first_frame, last_frame, transition1, transition2, transition3, transition4) == 1) {
+	a3byte lineStarter[32], clip_name[32], duration_s[32],
+		first_frame[32], last_frame[32],
+		transition1[32], transition2[32], transition3[32], transition4[32];
+	a3byte fileData[25][8][32];
+	while (fscanf(fptr, "%32s %32s %32s %32s %32s %32s %32s %32s %32s", lineStarter, clip_name, duration_s, first_frame, last_frame, transition1, transition2, transition3, transition4) == 1) {
 		if (lineStarter == "@") {
 			printf("%s\n", clip_name);
-			for (a3ui32 i = 0; i < 25; i++) {
+			for (a3ui32 i = 0; i < 32; i++) {
 				fileData[lineCount][0][i] = clip_name[i];
 				fileData[lineCount][1][i] = duration_s[i];
 				fileData[lineCount][2][i] = first_frame[i];
@@ -361,42 +361,106 @@ a3ui32 a3readClipPoolFromFile(a3_ClipPool* clipPool, a3_KeyframePool* keyframePo
 	};
 
 	for (a3ui32 i = 0; i < lineCount; i++) {
-		a3clipInit(&clipPool->clip[lineCount], fileData[i][0], clipPool, keyframePool, atoi(fileData[i][2]), atoi(fileData[i][3]));
+		a3clipInit(&clipPool->clip[i], fileData[i][0], clipPool, keyframePool, atoi(fileData[i][2]), atoi(fileData[i][3]));
 		
 		//setting clip duration to fileData[i][1]
 		//clipPool->clip[lineCount].duration = atoi(fileData[i][1]);
 		//what is a3real?
 
-		//a3clipTransitionInit(a3_ClipTransition, index, clipPool, fileData[i][4]);
-		// 
-		//setting reverse transition function to fileData[i][4]
-
-		if (transition3 == "#") {	//if only 2 terms, then no clips are referenced
-			//setting reverse transition destination to self
-			//setting forward transition function to fileData[i][5]
-			//setting forward transition destination to self
+		a3byte prevOp[5];
+		for (a3ui32 j = 0; j < 5; j++) {
+			prevOp[i] = fileData[i][4][j];
 		}
-		else if (transition4 == "#") {	//if 3 terms, then 1 clip is referenced
-			if (1 == 1/*fileData[i][4][0] == "<" || fileData[i][4][0] == ">" || fileData[i][4][0] == "|"*/) {	//forward transition references the clip
-				//setting reverse transition destination to self
-				//setting forward transition function to fileData[i][5]
-				//setting forward transition destination to fileData[i][6]
+		a3byte nextOp[5];
+		a3byte prevClip[32];
+		a3byte nextClip[32];
+		a3i32 prevIndex = -1;
+		a3i32 nextIndex = -1;
+
+		a3boolean specRev, specFor;
+		if (fileData[lineCount][6] == "#") {	//if only 2 terms, then no clips are referenced
+			specRev = false;
+			specFor = false;
+			for (a3ui32 j = 0; j < 5; j++) {
+				nextOp[i] = fileData[i][5][j];
+			}
+		}
+		else if (fileData[lineCount][7] == "#") {	//if 3 terms, then 1 clip is referenced
+			if (fileData[i][5] == "<" || fileData[i][5] == ">" || fileData[i][5] == "|") {	//forward transition references the clip
+				specRev = false;
+				specFor = true;
+				for (a3ui32 j = 0; j < 5; j++) {
+					nextOp[i] = fileData[i][5][j];
+				}
+				for (a3ui32 j = 0; j < 32; j++) {
+					nextClip[j] = fileData[i][6][j];
+				}
 			}
 			else {	//reverse transition references the clip
-				//setting reverse transition destination to fileData[i][5]
-				//setting forward transition function to fileData[i][6]
-				//setting forward transition destination to self
+				specRev = true;
+				specFor = false;
+				for (a3ui32 j = 0; j < 5; j++) {
+					nextOp[i] = fileData[i][6][j];
+				}
+				for (a3ui32 j = 0; j < 32; j++) {
+					prevClip[j] = fileData[i][5][j];
+				}
 			}
 		}
 		else {	//if 4 terms, then 2 clips are referenced
-			//setting reverse transition destination to fileData[i][5]
-			//setting forward transition function to fileData[i][6]
-			//setting forward transition destination to fileData[i][7]
+			specRev = true;
+			specFor = true;
+			for (a3ui32 j = 0; j < 5; j++) {
+				nextOp[i] = fileData[i][6][j];
+			}
+			for (a3ui32 j = 0; j < 32; j++) {
+				prevClip[j] = fileData[i][5][j];
+				nextClip[j] = fileData[i][7][j];
+			}
 		}
+
+		//find which index the previous clip transition has
+		if (specRev) {
+			for (a3ui32 j = 0; j < clipPool->count; j++) {
+				if (clipPool->clip[j].name == prevClip) {
+					prevIndex = j;
+				}
+			}
+		}
+		else {
+			prevIndex = i;
+		}
+
+		//find which index the next clip transition has
+		if (specFor) {
+			for (a3ui32 j = 0; j < clipPool->count; j++) {
+				if (clipPool->clip[j].name == nextClip) {
+					nextIndex = j;
+				}
+			}
+		}
+		else {
+			nextIndex = i;
+		}
+		
+		if (prevIndex == -1) {
+			printf("There is no clip referenced by the reverse transition\n");
+			return 0;
+		}
+		if (nextIndex == -1) {
+			printf("There is no clip referenced by the forward transition\n");
+			return 0;
+		}
+
+		//a3clipTransitionInit(&clipPool->clip[i].backwardTransition, prevIndex, clipPool, DEFAULT_BACKWARD_TRANSITION, DEFAULT_NEXT_KEYFRAME);
+		//a3clipTransitionInit(&clipPool->clip[i].forwardTransition, nextIndex, clipPool, DEFAULT_FORWARD_TRANSITION, DEFAULT_NEXT_KEYFRAME);
+		
 	}
 
 	fclose(fptr);
 	return 1;
 }
+
+
 
 //-----------------------------------------------------------------------------
