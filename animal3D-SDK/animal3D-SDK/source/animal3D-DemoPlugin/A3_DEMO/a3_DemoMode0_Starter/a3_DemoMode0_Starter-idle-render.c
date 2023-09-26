@@ -34,6 +34,8 @@
 	Demo mode implementations: keyframe and clip controller
 
 	RENDER FOR KEYFRAME AND CLIP CONTROLLER
+
+	Render for Graph View
 */
 
 //-----------------------------------------------------------------------------
@@ -652,70 +654,88 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 		// hidden volumes
 		if (demoState->displayHiddenVolumes)
 		{
-			#define MAX_KEYFRAMES 1024
-			#define NUM_VEC_COMPONENTS 3
-			#define START_X_PROGRESS -.9f
+			// Code below to draw graph view written by Joseph Lyons, major help / code snippets provided by Dan Buckstein
 
-			// DRAW SPLINE
+			#define MAX_KEYFRAMES 1024 // Max number of keyframes we can display
+			#define NUM_VEC_COMPONENTS 3 // Number of components in vector (x, y, z)
+			#define START_X_PROGRESS -.9f // Where to start graph view from
+			#define GRAPH_VIEW_HEIGHT .4f // How big on the y axis each graph view should be
+
+			// DRAW SPLINE (Dan Buckstein)
 			currentDemoProgram = demoState->prog_drawSpline;
 			a3shaderProgramActivate(currentDemoProgram->program);
 			a3vertexDrawableDeactivate();
 
+			// Current controller
 			a3_ClipController controller = demoMode->clipCtrlPool.clipControllers[demoMode->currentController];
+
+			// Current clip in controller
 			a3_Clip clip = controller.clipPool->clip[controller.clip];
 
+			// Loop through once per each different vector component, draw individual graph for each
 			for(a3ui32 axisIndex = 0; axisIndex < NUM_VEC_COMPONENTS; axisIndex++)
 			{
+				// Where graph should be drawn on screen
+				// Note: Opengl screen cube goes from -1 to 1, so total size of 2
 				a3real verticalOffsetOnScreen = ((2.0f / NUM_VEC_COMPONENTS) * axisIndex) + (1.0f / NUM_VEC_COMPONENTS);
 
-				a3vec3 k[MAX_KEYFRAMES];
+				a3vec3 pointsToDraw[MAX_KEYFRAMES]; // Array of points we will draw
 
-				float xProgress = -.9f;
-				float yMin = 999999;
-				float yMax = -999999;
+				a3real xProgress = -.9f; // How far along x axis of screen to start drawing keyframes
+
+				a3_Keyframe firstKeyframe = clip.keyframePool->keyframe[clip.firstKeyframeIndex + i];
+
+				// Initialize maximum and minimum y of all keyframes in clip to be first keyframe value
+				a3real yMin = firstKeyframe.data[axisIndex];
+				a3real yMax = firstKeyframe.data[axisIndex];
 
 				for (a3ui32 i = 0; i < clip.keyframeCount; i++)
 				{
+					// Current keyframe we're looking at
 					a3_Keyframe keyframe = clip.keyframePool->keyframe[clip.firstKeyframeIndex + i];
 					
-					a3vec3 vec;
+					a3real xPortion = (keyframe.duration / clip.duration) * 2;
 
-					float xPortion = (keyframe.duration / clip.duration) * 2;
+					// Create vec that we will use to determine where to draw on screen
+					a3vec3 vec = { 0, 0, 0 };
 
+					// Set keyframe start draw point to correct offset
 					vec.x = xProgress;
+
+					// Increase xProgress so that each keyframe will be drawn next to each other
 					xProgress += xPortion;
 
-					// Y is our dependent variable, for now we'll say it's the y value of keyframe data
+					// Y is our dependent variable, this will be either x, y, or z of the keyframe data
 					vec.y = keyframe.data[axisIndex];
 
+					// Update the min and max y so we know later the portion between 0 and 1 each keyframe point should be drawn at
 					if (vec.y < yMin)
 					{
 						yMin = vec.y;
 					}
-
 					if (vec.y > yMax)
 					{
 						yMax = vec.y;
 					}
 
-					vec.z = 0;
-
-					k[i] = vec;
+					// Load pointsToDraw with calculated vec
+					pointsToDraw[i] = vec;
 				}
 
+				// Normalize y value for each pointsToDraw between yMin and yMax
 				for (a3ui32 i = 0; i < clip.keyframeCount; i++)
 				{
-					k[i].y = (k[i].y - yMin) / (yMax - yMin);
-					k[i].y = (k[i].y * .4f) - .2f;
-					k[i].y += -1 + (2.0f * axisIndex / NUM_VEC_COMPONENTS) + (1.0f / NUM_VEC_COMPONENTS);
+					pointsToDraw[i].y = (pointsToDraw[i].y - yMin) / (yMax - yMin);
+					pointsToDraw[i].y = (pointsToDraw[i].y * GRAPH_VIEW_HEIGHT) - (GRAPH_VIEW_HEIGHT / 2.0f);
+					pointsToDraw[i].y += -1 + (2.0f * axisIndex / NUM_VEC_COMPONENTS) + (1.0f / NUM_VEC_COMPONENTS);
 				}
 
+				// For each keyframe, draw to screen
 				for (a3ui32 i = 0; i < clip.keyframeCount; i++)
 				{
-					a3ui32 sectionDataCount = 4;
+					const a3ui32 sectionDataCount = 4; // How many points we're passing in
 
-					a3ui32 iPrev;
-
+					a3ui32 iPrev; // Previous index for catmull rom, clamps to 0 if i would try to go negative
 					if (i == 0)
 					{
 						iPrev = 0;
@@ -725,45 +745,54 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 						iPrev = i - 1;
 					}
 
+					// Calculate indexes for catmull rom
 					a3ui32 i0 = i;
 					a3ui32 i1 = min(i + 1, clip.keyframeCount - 1);
 					a3ui32 iNext = min(i + 2, clip.keyframeCount - 1);
 
-
+					// Load data into array
 					a3vec3 sectionData[] =
 					{
-						k[iPrev],
-						k[i0],
-						k[i1],
-						k[iNext]
+						pointsToDraw[iPrev],
+						pointsToDraw[i0],
+						pointsToDraw[i1],
+						pointsToDraw[iNext]
 					};
 
+					// If we're drawing current keyframe, color is blue
 					if (i == controller.keyframe - controller.clipPool->clip[controller.clip].firstKeyframeIndex)
 					{
 						a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, blue);
 					}
-					else
+					else // If we're drawing rest of clip, color is red
 					{
 						a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, red);
 					}
 
+					// Pass in sectionData using uAxis
 					a3shaderUniformSendFloat(a3unif_vec3, currentDemoProgram->uAxis, 4, (a3f32*) sectionData);
+
+					// Pass in sectionDataCount using uCount
 					a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uCount, 1, &sectionDataCount);
 
+					// Draw keyframe
 					glDrawArrays(GL_POINTS, 0, 1);
 				}
 			}
 
+			// Calculate x where we should draw playhead
 			a3real normalizedTime = controller.clipTime / clip.duration;
-
 			normalizedTime = ((2 * normalizedTime) - 1) - (-1 - START_X_PROGRESS);
 
-			a3ui32 negOne = -1;
+			const a3ui32 negOne = -1;
 
-
+			// Pass in where playhead should be
 			a3shaderUniformSendFloat(a3unif_single, currentDemoProgram->uFlag, 1, &normalizedTime);
+
+			// Pass in negative one to tell shader to draw playhead
 			a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uCount, 1, &negOne);
 
+			// Draw playhead
 			glDrawArrays(GL_POINTS, 0, 1);
 
 

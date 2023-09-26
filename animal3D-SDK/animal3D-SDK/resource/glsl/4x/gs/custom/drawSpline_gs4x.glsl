@@ -24,6 +24,12 @@
 		determined by flag passed to program.
 */
 
+/*
+	Joseph Lyons, Neo Kattan, Dillon Drummond
+
+	Shader for drawing keyframe data / playhead of controller
+*/
+
 #version 450
 
 #define MAX_VERTICES 32
@@ -35,17 +41,19 @@ layout (line_strip, max_vertices = MAX_VERTICES) out;
 
 // uniforms: modelviewproj, actual keyframe values, etc.
 #define MAX_DATA 128
-uniform vec3 uAxis[MAX_DATA];
-uniform int uCount;
-uniform float uFlag;
+uniform vec3 uAxis[MAX_DATA]; // Holds keyframe points
+uniform int uCount; // Represents number of keyframe points in uAxis
+uniform float uFlag; // Normalized time for playhead drawing
 
 
+// Use lerp to draw straight line between keyframe points
 vec3 lerp(vec3 start, vec3 end, float u)
 {
 	return start + ((end - start) * u);
 }
 
 
+// Use catmull rom calculation to make smooth curve
 vec3 catmullRom(vec3 pPrev, vec3 p0, vec3 p1, vec3 pNext, float t)
 {
 	vec3 pPrevCalc = (-t + (2 * pow(t, 2)) - pow(t, 3)) * pPrev;
@@ -58,6 +66,7 @@ vec3 catmullRom(vec3 pPrev, vec3 p0, vec3 p1, vec3 pNext, float t)
 
 void main()
 {
+	// Dan Buckstein
 	// BASIC GEOMETRY SHADERING
 	// TEST: draw line from left to right
 	// NOTE: we are in NDC (normalized-device-coordinates)
@@ -74,49 +83,34 @@ void main()
 	//	(if no GS then by the end of TS, if no TS then by the end of VS)
 
 
-//	for(int i = 0; i <= MAX_VERTICES; i++)
-//	{
-//		// LERP VERSION
-//		//vec4 v = vec4(lerp(uAxis[0], uAxis[1], float(i) / MAX_VERTICES), 1.0);
-//
-//		// CATMULL ROM VERSION
-////		vec3 v3 = catmullRom(uAxis[0], uAxis[1], uAxis[2], uAxis[3], float(i) / MAX_VERTICES);
-////		v3.x = (2 * float(i) / MAX_VERTICES) - 1;
-////		vec4 v = vec4(v3, 1.0f);
-//
-//		// LINE OF CODE SHOULD MAKE HORIZONTAL LINE FROM 0 TO 1 IF NO SHADER ERRORS
-//		//vec4 v = vec4(float(i) / MAX_VERTICES, 0, 0, 1.0f);
-//
-//		//gl_Position = v;
-//		//EmitVertex();
-//	}
-
-	if(uCount != -1)
+	if(uCount != -1) // Draw keyframes
 	{
-		for(int k = 0; k <= MAX_VERTICES; k++)
+		for(int k = 0; k <= MAX_VERTICES; k++) // For this keyframe, split into multiple subsections and draw
 		{
 			// Lerp
 			gl_Position = vec4(lerp(uAxis[1], uAxis[2], float(k) / MAX_VERTICES), 1.0f);
 			
 			// Catmull Rom
 //			vec3 v3 = catmullRom(uAxis[0], uAxis[1], uAxis[2], uAxis[3], float(k) / MAX_VERTICES);
-//			vec4 v = vec4(v3, 1.0f);
-//			gl_Position = v;
+//			gl_Position = vec4(v3, 1.0f);
 
 			EmitVertex();
 		}
 	}
-	else
+	else // Draw playhead
 	{
+		// Draw point at bottom of screen
 		vec4 bottom = vec4(uFlag, -1, 0, 1.0f);
 		gl_Position = bottom;
 		EmitVertex();
 
+		// Draw point at top of screen
 		vec4 top = vec4(uFlag, 1, 0, 1.0f);
 		gl_Position = top;
 		EmitVertex();
 	}
 
+	// Dan Buckstein
 	// INTERPOLATE using algorithm of choice between uAxis[k] and uAxis[k+1]
 	//	from param = [0,1)
 	// total number of emits will be MAX_VERTICES
