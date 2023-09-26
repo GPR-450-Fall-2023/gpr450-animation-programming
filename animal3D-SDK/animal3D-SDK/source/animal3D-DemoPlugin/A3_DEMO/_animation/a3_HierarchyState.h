@@ -51,7 +51,8 @@ typedef struct a3_HierarchyState		a3_HierarchyState;
 // makes algorithms easier to keep this as a separate data type
 struct a3_HierarchyPose
 {
-	a3_SpatialPose* spatialPose;
+	//Start of array of spatial poses
+	a3_SpatialPose* sPoses;
 };
 
 
@@ -61,8 +62,25 @@ struct a3_HierarchyPoseGroup
 	// pointer to hierarchy
 	const a3_Hierarchy* hierarchy;
 
+	//Pool of Hierarchy poses
+	const a3_HierarchyPose* hPoses;
+
+	//Pool of spatial poses
+	const a3_SpatialPose* sPoses;
+
+	//Channels controlling what can be transformed in each corresponding pose
+	a3_SpatialPoseChannel* channel;
+
+	//Order of euler angles in vec3 in each corresponding pose
+	a3_SpatialPoseEulerOrder order;
+
 	// number of hierarchical poses
-	a3ui32 poseCount;
+	a3ui32 hPoseCount;
+
+	//Number of spatial poses
+	a3ui32 sPoseCount;
+
+
 };
 
 
@@ -71,13 +89,22 @@ struct a3_HierarchyState
 {
 	// pointer to hierarcy
 	const a3_Hierarchy* hierarchy;
+
+	//Pose representing animated pose at current time
+	const a3_HierarchyPose* objectSpaceBindToCurrent;
+
+	//Pose representing local space transofrmations relative to parent of each node
+	const a3_HierarchyPose* localSpace;
+
+	//Pose representing object space transformations relative to root
+	const a3_HierarchyPose* objectSpace;
 };
 	
 
 //-----------------------------------------------------------------------------
 
 // initialize pose set given an initialized hierarchy and key pose count
-a3i32 a3hierarchyPoseGroupCreate(a3_HierarchyPoseGroup *poseGroup_out, const a3_Hierarchy *hierarchy, const a3ui32 poseCount);
+a3i32 a3hierarchyPoseGroupCreate(a3_HierarchyPoseGroup *poseGroup_out, const a3_Hierarchy *hierarchy, const a3ui32 poseCount, const a3_SpatialPoseEulerOrder order);
 
 // release pose set
 a3i32 a3hierarchyPoseGroupRelease(a3_HierarchyPoseGroup *poseGroup);
@@ -95,7 +122,7 @@ a3i32 a3hierarchyPoseGroupGetNodePoseOffsetIndex(const a3_HierarchyPoseGroup *po
 a3i32 a3hierarchyPoseReset(const a3_HierarchyPose* pose_inout, const a3ui32 nodeCount);
 
 // convert full hierarchy pose to hierarchy transforms
-a3i32 a3hierarchyPoseConvert(const a3_HierarchyPose* pose_inout, const a3ui32 nodeCount, const a3_SpatialPoseChannel channel, const a3_SpatialPoseEulerOrder order);
+a3i32 a3hierarchyPoseConvert(const a3_HierarchyPose* pose_inout, const a3ui32 nodeCount, const a3_SpatialPoseChannel* channel, const a3_SpatialPoseEulerOrder order);
 
 // copy full hierarchy pose
 a3i32 a3hierarchyPoseCopy(const a3_HierarchyPose* pose_out, const a3_HierarchyPose* pose_in, const a3ui32 nodeCount);

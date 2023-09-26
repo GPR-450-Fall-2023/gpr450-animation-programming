@@ -31,7 +31,7 @@
 //-----------------------------------------------------------------------------
 
 // initialize pose set given an initialized hierarchy and key pose count
-a3i32 a3hierarchyPoseGroupCreate(a3_HierarchyPoseGroup *poseGroup_out, const a3_Hierarchy *hierarchy, const a3ui32 poseCount)
+a3i32 a3hierarchyPoseGroupCreate(a3_HierarchyPoseGroup *poseGroup_out, const a3_Hierarchy *hierarchy, const a3ui32 poseCount, const a3_SpatialPoseEulerOrder order)
 {
 	// validate params and initialization states
 	//	(output is not yet initialized, hierarchy is initialized)
@@ -44,6 +44,7 @@ a3i32 a3hierarchyPoseGroupCreate(a3_HierarchyPoseGroup *poseGroup_out, const a3_
 
 		// set pointers
 		poseGroup_out->hierarchy = hierarchy;
+		poseGroup_out->order = order;
 
 		// reset all data
 
@@ -121,7 +122,7 @@ a3i32 a3hierarchyStateRelease(a3_HierarchyState *state)
 // load HTR file, read and store complete pose group and hierarchy
 a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hierarchy* hierarchy_out, const a3byte* resourceFilePath)
 {
-	if (poseGroup_out && !poseGroup_out->poseCount && hierarchy_out && !hierarchy_out->numNodes && resourceFilePath && *resourceFilePath)
+	if (poseGroup_out && !poseGroup_out->hPoseCount && hierarchy_out && !hierarchy_out->numNodes && resourceFilePath && *resourceFilePath)
 	{
 
 	}
@@ -131,7 +132,7 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 // load BVH file, read and store complete pose group and hierarchy
 a3i32 a3hierarchyPoseGroupLoadBVH(a3_HierarchyPoseGroup* poseGroup_out, a3_Hierarchy* hierarchy_out, const a3byte* resourceFilePath)
 {
-	if (poseGroup_out && !poseGroup_out->poseCount && hierarchy_out && !hierarchy_out->numNodes && resourceFilePath && *resourceFilePath)
+	if (poseGroup_out && !poseGroup_out->hPoseCount && hierarchy_out && !hierarchy_out->numNodes && resourceFilePath && *resourceFilePath)
 	{
 
 	}
