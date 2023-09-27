@@ -65,6 +65,7 @@ a3ret a3hierarchyCreate(a3_Hierarchy *hierarchy_out, const a3ui32 numNodes, cons
 			const a3byte *tmpName;
 			hierarchy_out->nodes = (a3_HierarchyNode *)malloc(dataSize);
 			memset(hierarchy_out->nodes, 0, dataSize);
+			
 			hierarchy_out->numNodes = numNodes;
 			if (names_opt)
 			{

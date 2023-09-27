@@ -62,11 +62,11 @@ struct a3_HierarchyPoseGroup
 	// pointer to hierarchy
 	const a3_Hierarchy* hierarchy;
 
-	//Pool of Hierarchy poses
-	const a3_HierarchyPose* hPoses;
+	//Pool of Hierarchy poses, refererences sPoses
+	a3_HierarchyPose* hPoses;
 
-	//Pool of spatial poses
-	const a3_SpatialPose* sPoses;
+	//Pool of spatial poses, owned here
+	a3_SpatialPose* sPoses;
 
 	//Channels controlling what can be transformed in each corresponding pose
 	a3_SpatialPoseChannel* channel;
@@ -79,8 +79,6 @@ struct a3_HierarchyPoseGroup
 
 	//Number of spatial poses
 	a3ui32 sPoseCount;
-
-
 };
 
 
@@ -99,7 +97,15 @@ struct a3_HierarchyState
 	//Pose representing object space transformations relative to root
 	const a3_HierarchyPose* objectSpace;
 };
-	
+
+
+//-----------------------------------------------------------------------------
+
+////Initialize pose group and initiailize spatial poses
+//a3i32 a3hierarchyPoseCreate(a3_HierarchyPose* pose_out, const a3ui32 sPoseCount);
+//
+////Initialize pose group and initiailize spatial poses
+//a3i32 a3hierarchyPoseCeanup(a3_HierarchyPose* pose_out);
 
 //-----------------------------------------------------------------------------
 

@@ -99,9 +99,17 @@ enum a3_SpatialPoseChannel
 // single pose for a single node
 struct a3_SpatialPose
 {
+	//Matrix representing the transform for the spatial pose
 	a3mat4 transform;
 
+	//real3 representing position in 3D space
+	a3real3 translation;
 
+	//real3 representing euler rotation of pose
+	a3real3 rotation;
+
+	//real3 representing 3D scale
+	a3real3 scale;
 };
 
 
