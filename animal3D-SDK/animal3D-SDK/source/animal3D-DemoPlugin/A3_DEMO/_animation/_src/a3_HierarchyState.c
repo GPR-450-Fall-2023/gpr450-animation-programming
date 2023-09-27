@@ -29,44 +29,6 @@
 
 //-----------------------------------------------------------------------------
 
-//a3i32 a3hierarchyPoseCreate(a3_HierarchyPose* pose_out, const a3ui32 sPoseCount)
-//{
-//	if (pose_out && !pose_out->sPoses)
-//	{
-//		//Allocate memory for spatial poses and set to 0
-//		const a3ui32 dataSize = sizeof(a3_SpatialPose) * sPoseCount;
-//		a3ui32 i;
-//		pose_out->sPoses = (a3_SpatialPose*)malloc(dataSize);
-//		memset(pose_out->sPoses, 0, dataSize);
-//
-//		return 1;
-//	}
-//	return -1;
-//}
-//
-//
-//a3i32 a3hierarchyPoseCeanup(a3_HierarchyPose* pose_out)
-//{
-//
-//	// validate param exists and is initialized
-//	if (pose_out && pose_out->sPoses)
-//	{
-//		// release everything (one free)
-//		//free(???);
-//		free(pose_out->sPoses);
-//
-//		// reset pointers
-//		pose_out->sPoses = 0;
-//
-//		// done
-//		return 1;
-//	}
-//	return -1;
-//}
-
-
-//-----------------------------------------------------------------------------
-
 // initialize pose set given an initialized hierarchy and key pose count
 a3i32 a3hierarchyPoseGroupCreate(a3_HierarchyPoseGroup *poseGroup_out, const a3_Hierarchy *hierarchy, const a3ui32 poseCount, const a3_SpatialPoseEulerOrder order)
 {
@@ -77,36 +39,11 @@ a3i32 a3hierarchyPoseGroupCreate(a3_HierarchyPoseGroup *poseGroup_out, const a3_
 		// determine memory requirements
 
 		// allocate everything (one malloc)
-		//??? = (...)malloc(sz);
-
 		//One hierarchy pose struct per hpose
 		const a3ui32 dataSize = sizeof(a3_HierarchyPose) * poseCount
 			+ sizeof(a3_SpatialPose) * hierarchy->numNodes * poseCount
 			+ sizeof(a3_SpatialPoseChannel) * hierarchy->numNodes;
 		poseGroup_out->hPoses = (a3_HierarchyPose*)malloc(dataSize);
-
-		//if (poseGroup_out->hPoses)
-		//{
-		//	memset(poseGroup_out->hPoses, 0, dataSize);
-		//}
-		//
-		////spatial pose for each node in each pose
-		//const a3ui32 spatialSize = sizeof(a3_SpatialPose) * hierarchy->numNodes * poseCount;
-		//poseGroup_out->sPoses = (a3_SpatialPose*)malloc(spatialSize);
-
-		//if (poseGroup_out->sPoses)
-		//{
-		//	memset(poseGroup_out->sPoses, 0, spatialSize);
-		//}
-		//
-		////One channel for each node regardless of number of poses
-		//const a3ui32 channelSize = sizeof(a3_SpatialPoseChannel) * hierarchy->numNodes;
-		//poseGroup_out->channel = (a3_SpatialPoseChannel*)malloc(channelSize);
-
-		//if (poseGroup_out->channel)
-		//{
-		//	memset(poseGroup_out->channel, 0, channelSize);
-		//}
 
 		// set pointers
 
@@ -134,6 +71,7 @@ a3i32 a3hierarchyPoseGroupCreate(a3_HierarchyPoseGroup *poseGroup_out, const a3_
 			(poseGroup_out->hPoses + hIndex)->sPoses = (poseGroup_out->sPoses + (hIndex * hierarchy->numNodes));
 		}
 
+		//Initialize channels
 		for (a3ui32 cIndex = 0; cIndex < hierarchy->numNodes; cIndex++)
 		{
 			*(poseGroup_out->channel) = a3poseChannel_translate_xyz | a3poseChannel_orient_xyz | a3poseChannel_scale_xyz;
@@ -169,8 +107,6 @@ a3i32 a3hierarchyPoseGroupRelease(a3_HierarchyPoseGroup *poseGroup)
 //Initialize hierarchy pose
 a3i32 a3hierarchyPoseInitialize(a3_HierarchyPose* pose_inout, const a3_SpatialPose* sPoses)
 {
-
-
 	if (pose_inout && sPoses)
 	{
 		//Cast from const to normal pointer

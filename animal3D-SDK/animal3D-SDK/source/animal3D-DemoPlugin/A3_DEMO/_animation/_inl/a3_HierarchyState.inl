@@ -98,12 +98,61 @@ inline a3i32 a3hierarchyPoseCopy(const a3_HierarchyPose* pose_out, const a3_Hier
 	return -1;
 }
 
+//Lerp between poses
+inline a3i32 a3hierarchyPoseLerp(a3_HierarchyPose* pose_out, const a3_HierarchyPose* pose0, const a3_HierarchyPose* pose1,
+	const a3real parameter, const a3ui32 numNodes)
+{
+	if (pose_out && pose0 && pose1 && numNodes)
+	{
+		///////////////////////////////////////////////
+		// TODO - IMPLEMENT
+		///////////////////////////////////////////////
+
+		pose_out = (a3_HierarchyPose*)pose0;
+
+		return 1;
+	}
+	return -1;
+}
+
+inline a3i32 a3hierarchyPoseConcat(a3_HierarchyPose* pose_out, const a3_HierarchyPose* basePose,
+	const a3_HierarchyPose* tempStorage, const a3ui32 numNodes)
+{
+	if (pose_out && basePose && tempStorage && numNodes)
+	{
+		///////////////////////////////////////////////
+		// TODO - IMPLEMENT
+		///////////////////////////////////////////////
+
+		pose_out = (a3_HierarchyPose*)basePose;
+
+		return 1;
+	}
+	return -1;
+}
+
 
 //-----------------------------------------------------------------------------
 
 // update inverse object-space matrices
 inline a3i32 a3hierarchyStateUpdateObjectInverse(const a3_HierarchyState *state)
 {
+	return -1;
+}
+
+//Update objectBindToCurrent matrix
+inline a3i32 a3hierarchyStateUpdateObjectBindToCurrent(a3_HierarchyState* activeHS, const a3_HierarchyState* baseHS)
+{
+	if (activeHS && baseHS)
+	{
+		///////////////////////////////////////////////
+		// TODO - IMPLEMENT
+		///////////////////////////////////////////////
+
+		activeHS = (a3_HierarchyState*)baseHS;
+
+		return 1;
+	}
 	return -1;
 }
 

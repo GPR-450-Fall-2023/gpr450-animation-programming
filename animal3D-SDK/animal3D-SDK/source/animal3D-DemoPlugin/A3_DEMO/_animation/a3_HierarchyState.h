@@ -112,7 +112,6 @@ a3i32 a3hierarchyPoseGroupGetPoseOffsetIndex(const a3_HierarchyPoseGroup *poseGr
 // get offset to single node pose in contiguous set
 a3i32 a3hierarchyPoseGroupGetNodePoseOffsetIndex(const a3_HierarchyPoseGroup *poseGroup, const a3ui32 poseIndex, const a3ui32 nodeIndex);
 
-
 //-----------------------------------------------------------------------------
 
 //Initialize hierarchy pose
@@ -127,6 +126,13 @@ a3i32 a3hierarchyPoseConvert(const a3_HierarchyPose* pose_inout, const a3ui32 no
 // copy full hierarchy pose
 a3i32 a3hierarchyPoseCopy(const a3_HierarchyPose* pose_out, const a3_HierarchyPose* pose_in, const a3ui32 nodeCount);
 
+//Lerp pose between given poses
+a3i32 a3hierarchyPoseLerp(a3_HierarchyPose* pose_out, const a3_HierarchyPose* pose0, const a3_HierarchyPose* pose1,
+	const a3real parameter, const a3ui32 numNodes);
+
+//
+a3i32 a3hierarchyPoseConcat(a3_HierarchyPose* pose_out, const a3_HierarchyPose* basePose,
+	const a3_HierarchyPose* tempStorage, const a3ui32 numNodes);
 
 //-----------------------------------------------------------------------------
 
@@ -138,6 +144,9 @@ a3i32 a3hierarchyStateRelease(a3_HierarchyState *state);
 
 // update inverse object-space matrices
 a3i32 a3hierarchyStateUpdateObjectInverse(const a3_HierarchyState *state);
+
+//Update objectBindToCurrent matrix
+a3i32 a3hierarchyStateUpdateObjectBindToCurrent(a3_HierarchyState* activeHS, const a3_HierarchyState* baseHS);
 
 
 //-----------------------------------------------------------------------------

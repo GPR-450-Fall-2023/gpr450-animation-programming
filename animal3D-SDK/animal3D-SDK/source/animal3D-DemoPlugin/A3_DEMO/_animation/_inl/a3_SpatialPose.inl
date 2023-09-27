@@ -117,7 +117,9 @@ inline a3i32 a3spatialPoseConvert(a3mat4* mat_out, const a3_SpatialPose* spatial
 {
 	if (mat_out && spatialPose_in)
 	{
-		//TODO - Implement channels and order
+		///////////////////////////////////////////////
+		// TODO - IMPLEMENT
+		///////////////////////////////////////////////
 
 		//Create translation matrix
 		a3real4x4 translation;
