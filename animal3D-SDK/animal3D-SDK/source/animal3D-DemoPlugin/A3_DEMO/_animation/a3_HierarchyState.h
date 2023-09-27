@@ -89,23 +89,14 @@ struct a3_HierarchyState
 	const a3_Hierarchy* hierarchy;
 
 	//Pose representing animated pose at current time
-	const a3_HierarchyPose* objectSpaceBindToCurrent;
+	a3_HierarchyPose* objectSpaceBindToCurrent;
 
 	//Pose representing local space transofrmations relative to parent of each node
-	const a3_HierarchyPose* localSpace;
+	a3_HierarchyPose* localSpace;
 
 	//Pose representing object space transformations relative to root
-	const a3_HierarchyPose* objectSpace;
+	a3_HierarchyPose* objectSpace;
 };
-
-
-//-----------------------------------------------------------------------------
-
-////Initialize pose group and initiailize spatial poses
-//a3i32 a3hierarchyPoseCreate(a3_HierarchyPose* pose_out, const a3ui32 sPoseCount);
-//
-////Initialize pose group and initiailize spatial poses
-//a3i32 a3hierarchyPoseCeanup(a3_HierarchyPose* pose_out);
 
 //-----------------------------------------------------------------------------
 
@@ -123,6 +114,9 @@ a3i32 a3hierarchyPoseGroupGetNodePoseOffsetIndex(const a3_HierarchyPoseGroup *po
 
 
 //-----------------------------------------------------------------------------
+
+//Initialize hierarchy pose
+a3i32 a3hierarchyPoseInitialize(a3_HierarchyPose* pose_inout, const a3_SpatialPose* sPoses);
 
 // reset full hierarchy pose
 a3i32 a3hierarchyPoseReset(const a3_HierarchyPose* pose_inout, const a3ui32 nodeCount);

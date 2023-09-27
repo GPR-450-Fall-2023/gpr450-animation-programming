@@ -127,6 +127,11 @@ a3i32 a3spatialPoseSetTranslation(a3_SpatialPose* spatialPose, const a3f32 tx, c
 
 //-----------------------------------------------------------------------------
 
+//Initialize pose with default values
+//a3i32 a3spatialPoseInitDefault(a3_SpatialPose* spatialPose);
+//Initialize pose with passed values
+a3i32 a3spatialPoseInit(a3_SpatialPose* spatialPose, a3real3p translation, a3real3p rotation, a3real3p scale);
+
 // reset single node pose
 a3i32 a3spatialPoseReset(a3_SpatialPose* spatialPose);
 
