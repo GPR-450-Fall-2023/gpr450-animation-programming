@@ -112,34 +112,37 @@ inline a3i32 a3spatialPoseConvert(a3mat4* mat_out, const a3_SpatialPose* spatial
 	{
 		//TODO - Implement channels and order
 
-		//Reset transform
-		a3real4x4SetIdentity((a3real4*)mat_out); 
-
 		//Create translation matrix
 		a3real4x4 translation;
+		a3real4x4SetIdentity(translation);
 		a3real4x4Set(translation,
-			0, 0, 0, spatialPose_in->translation[0],
-			0, 0, 0, spatialPose_in->translation[1],
-			0, 0, 0, spatialPose_in->translation[2],
+			1, 0, 0, spatialPose_in->translation[0],
+			0, 1, 0, spatialPose_in->translation[1],
+			0, 0, 1, spatialPose_in->translation[2],
 			0, 0, 0, 1);
 
 		//Create scale matrix
 		a3real4x4 scale;
+		a3real4x4SetIdentity(scale);
 		a3real4x4Set(scale,
 			spatialPose_in->scale[0], 0, 0, 0,
 			0, spatialPose_in->scale[1], 0, 0,
-			0, 0, spatialPose_in->scale[2], 1,
+			0, 0, spatialPose_in->scale[2], 0,
 			0, 0, 0, 1);
 
 		//Create rotation matrix
 		a3real4x4 rotation;
+		a3real4x4SetIdentity(rotation);
 		a3real4x4SetRotateXYZ(rotation, spatialPose_in->rotation[0], spatialPose_in->rotation[1], spatialPose_in->rotation[2]);
 		
+		//Reset transform
+		a3real4x4SetIdentity((a3real4*)mat_out);
+
 		//Set mat_out to T*R*S*original
-		a3real4x4r Sm = a3real4x4MulTransform(scale, (a3real4*)mat_out);
-		a3real4x4r RSm = a3real4x4MulTransform(rotation, Sm);
-		a3real4x4r TRSm = a3real4x4MulTransform(translation, RSm);
-		mat_out = (a3mat4*)TRSm;
+		/*a3real4x4r Sm =*/ a3real4x4MulTransform(scale, (a3real4*)mat_out);
+		/*a3real4x4r RSm = */ a3real4x4MulTransform(rotation, scale);
+		/*a3real4x4r TRSm = */ a3real4x4MulTransform(translation, rotation);
+		mat_out = (a3mat4*)translation;
 
 		return 1;
 	}
