@@ -35,10 +35,12 @@ inline a3i32 a3spatialPoseSetRotation(a3_SpatialPose* spatialPose, const a3f32 r
 {
 	if (spatialPose)
 	{
+		//Set rotation
 		spatialPose->rotation[0] = rx_degrees;
 		spatialPose->rotation[1] = ry_degrees;
 		spatialPose->rotation[2] = rz_degrees;
 
+		//Recalculate transform
 		a3spatialPoseConvert(&spatialPose->transform, spatialPose, a3poseChannel_translate_xyz | a3poseChannel_orient_xyz | a3poseChannel_scale_xyz, a3poseEulerOrder_xyz);
 
 		return 1;
@@ -51,10 +53,12 @@ inline a3i32 a3spatialPoseSetScale(a3_SpatialPose* spatialPose, const a3f32 sx, 
 {
 	if (spatialPose)
 	{
+		//Set scale
 		spatialPose->scale[0] = sx;
 		spatialPose->scale[1] = sy;
 		spatialPose->scale[2] = sz;
 
+		//Recalculate transform
 		a3spatialPoseConvert(&spatialPose->transform, spatialPose, a3poseChannel_translate_xyz | a3poseChannel_orient_xyz | a3poseChannel_scale_xyz, a3poseEulerOrder_xyz);
 
 		return 1;
@@ -67,10 +71,12 @@ inline a3i32 a3spatialPoseSetTranslation(a3_SpatialPose* spatialPose, const a3f3
 {
 	if (spatialPose)
 	{
+		//Set translation
 		spatialPose->translation[0] = tx;
 		spatialPose->translation[1] = ty;
 		spatialPose->translation[2] = tz;
 
+		//Recalculate transform
 		a3spatialPoseConvert(&spatialPose->transform, spatialPose, a3poseChannel_translate_xyz | a3poseChannel_orient_xyz | a3poseChannel_scale_xyz, a3poseEulerOrder_xyz);
 
 		return 1;
@@ -86,6 +92,7 @@ inline a3i32 a3spatialPoseReset(a3_SpatialPose* spatialPose)
 {
 	if (spatialPose)
 	{
+		//Reset pose to default values
 		spatialPose->rotation[0] = 0;
 		spatialPose->rotation[1] = 0;
 		spatialPose->rotation[2] = 0;
@@ -139,9 +146,9 @@ inline a3i32 a3spatialPoseConvert(a3mat4* mat_out, const a3_SpatialPose* spatial
 		a3real4x4SetIdentity((a3real4*)mat_out);
 
 		//Set mat_out to T*R*S*original
-		/*a3real4x4r Sm =*/ a3real4x4MulTransform(scale, (a3real4*)mat_out);
-		/*a3real4x4r RSm = */ a3real4x4MulTransform(rotation, scale);
-		/*a3real4x4r TRSm = */ a3real4x4MulTransform(translation, rotation);
+		a3real4x4MulTransform(scale, (a3real4*)mat_out);
+		a3real4x4MulTransform(rotation, scale);
+		a3real4x4MulTransform(translation, rotation);
 		mat_out = (a3mat4*)translation;
 
 		return 1;
@@ -154,6 +161,7 @@ inline a3i32 a3spatialPoseCopy(a3_SpatialPose* spatialPose_out, const a3_Spatial
 {
 	if (spatialPose_out && spatialPose_in)
 	{
+		//Copy values not pointers
 		*(spatialPose_out->rotation) = *spatialPose_in->rotation;
 		*(spatialPose_out->translation) = *spatialPose_in->translation;
 		*(spatialPose_out->scale) = *spatialPose_in->scale;
