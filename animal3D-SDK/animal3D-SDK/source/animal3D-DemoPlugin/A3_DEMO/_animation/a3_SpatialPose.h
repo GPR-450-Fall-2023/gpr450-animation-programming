@@ -124,6 +124,9 @@ a3i32 a3spatialPoseSetScale(a3_SpatialPose* spatialPose, const a3f32 sx, const a
 // translation
 a3i32 a3spatialPoseSetTranslation(a3_SpatialPose* spatialPose, const a3f32 tx, const a3f32 ty, const a3f32 tz);
 
+//Set the transform and derive other values from there
+//a3i32 a3setSpatialPoseTransform(a3_SpatialPose* spatialPose, a3real4x4p trans);
+
 
 //-----------------------------------------------------------------------------
 

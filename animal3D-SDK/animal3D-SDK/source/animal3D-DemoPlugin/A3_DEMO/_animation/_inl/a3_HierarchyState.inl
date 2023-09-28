@@ -138,6 +138,14 @@ inline a3i32 a3hierarchyPoseConcat(a3_HierarchyPose* pose_out, const a3_Hierarch
 // update inverse object-space matrices
 inline a3i32 a3hierarchyStateUpdateObjectInverse(const a3_HierarchyState *state)
 {
+	if (state)
+	{
+		///////////////////////////////////////////////
+		// TODO - IMPLEMENT
+		///////////////////////////////////////////////
+
+		return 1;
+	}
 	return -1;
 }
 

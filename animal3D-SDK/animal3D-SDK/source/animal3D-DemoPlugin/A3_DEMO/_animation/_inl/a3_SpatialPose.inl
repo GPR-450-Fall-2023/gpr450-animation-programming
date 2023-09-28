@@ -84,6 +84,22 @@ inline a3i32 a3spatialPoseSetTranslation(a3_SpatialPose* spatialPose, const a3f3
 	return -1;
 }
 
+//// Transform
+//a3i32 a3setSpatialPoseTransform(a3_SpatialPose* spatialPose, a3real4x4p trans)
+//{
+//	if (spatialPose)
+//	{
+//		//Set translation
+//		a3translation
+//
+//		//Recalculate transform
+//		a3spatialPoseConvert(&spatialPose->transform, spatialPose, a3poseChannel_translate_xyz | a3poseChannel_orient_xyz | a3poseChannel_scale_xyz, a3poseEulerOrder_xyz);
+//
+//		return 1;
+//	}
+//	return -1;
+//}
+
 
 //-----------------------------------------------------------------------------
 

@@ -52,7 +52,7 @@ a3i32 a3hierarchyPoseGroupCreate(a3_HierarchyPoseGroup *poseGroup_out, const a3_
 		poseGroup_out->channel = (a3_SpatialPoseChannel*)((a3_SpatialPose*)poseGroup_out->sPoses + (poseCount * hierarchy->numNodes));
 		poseGroup_out->hierarchy = hierarchy;
 		poseGroup_out->order = order;
-
+		
 		// reset all data
 		poseGroup_out->sPoseCount = hierarchy->numNodes;
 		poseGroup_out->hPoseCount = poseCount;
