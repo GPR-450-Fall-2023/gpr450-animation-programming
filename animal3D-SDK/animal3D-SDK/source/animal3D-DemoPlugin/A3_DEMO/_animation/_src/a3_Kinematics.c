@@ -45,24 +45,25 @@ a3i32 a3kinematicsSolveForwardPartial(const a3_HierarchyState *hierarchyState, c
 		{
 			//Check if we have a parent (root or no?)
 			a3i32 parent = hierarchyState->hierarchy->nodes[i].parentIndex;
-			if (parent != -1)
+			a3i32 index = hierarchyState->hierarchy->nodes[i].index;
+			if (parent >= 0)
 			{
 				//Copy parent object matrix so we don't overwrite it
-				a3real4x4 parentObject;
-				a3real4x4SetReal4x4(parentObject, (a3real4*)&hierarchyState->objectSpace->sPoses[parent].transform);
+				//a3real4x4 parentObject;
+				//a3real4x4SetReal4x4(parentObject, hierarchyState->objectSpace->sPoses[parent].transform.m);
 
 				//object = parentObject * local
 				a3real4x4ProductTransform(
-					(a3real4*)&hierarchyState->objectSpace->sPoses[i].transform,
-					parentObject,
-					(a3real4*)&hierarchyState->localSpace->sPoses[i].transform
+					hierarchyState->objectSpace->sPoses[index].transform.m,
+					hierarchyState->objectSpace->sPoses[parent].transform.m,
+					hierarchyState->localSpace->sPoses[index].transform.m
 				);
 			}
 			else
 			{
 				//Copy the local matrix to object
-				a3real4x4SetReal4x4((a3real4*)&hierarchyState->localSpace->sPoses[i].transform, 
-					(a3real4*)&hierarchyState->objectSpace->sPoses[i].transform);
+				a3real4x4SetReal4x4(hierarchyState->objectSpace->sPoses[i].transform.m,
+					hierarchyState->localSpace->sPoses[i].transform.m);
 				//a3hierarchyPoseCopy(hierarchyState->objectSpace, hierarchyState->localSpace, nodeCount);
 			}
 		}

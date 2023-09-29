@@ -108,24 +108,49 @@ inline a3i32 a3hierarchyPoseLerp(a3_HierarchyPose* pose_out, const a3_HierarchyP
 		// TODO - IMPLEMENT
 		///////////////////////////////////////////////
 
-		pose_out = (a3_HierarchyPose*)pose0;
+		//pose_out = (a3_HierarchyPose*)pose0;
 
 		return 1;
 	}
 	return -1;
 }
 
-//
+//Add translation, add rotation, multiply scale
 inline a3i32 a3hierarchyPoseConcat(a3_HierarchyPose* pose_out, const a3_HierarchyPose* basePose,
-	const a3_HierarchyPose* tempStorage, const a3ui32 numNodes)
+	const a3_HierarchyPose* deltaPose, const a3ui32 numNodes)
 {
-	if (pose_out && basePose && tempStorage && numNodes)
+	if (pose_out && basePose && deltaPose && numNodes)
 	{
 		///////////////////////////////////////////////
 		// TODO - IMPLEMENT
 		///////////////////////////////////////////////
 
-		pose_out = (a3_HierarchyPose*)basePose;
+		//Copy each spatial pose
+		for (a3ui32 i = 0; i < numNodes; i++)
+		{
+			//Modify values not addresses, dereference
+			//Add translation
+			//*(tempStorage->sPoses[i]).translation = *(pose_out->sPoses[i]).translation + *(basePose->sPoses[i]).translation;
+			a3spatialPoseSetTranslation(&(pose_out->sPoses[i]),
+				(basePose->sPoses[i]).translation[0] + (deltaPose->sPoses[i]).translation[0],
+				(basePose->sPoses[i]).translation[1] + (deltaPose->sPoses[i]).translation[1],
+				(basePose->sPoses[i]).translation[2] + (deltaPose->sPoses[i]).translation[2]
+			);
+			//Add rotation
+			//*(tempStorage->sPoses[i]).rotation = *(pose_out->sPoses[i]).rotation + *(basePose->sPoses[i]).rotation;
+			a3spatialPoseSetRotation(&(pose_out->sPoses[i]),
+				(basePose->sPoses[i]).rotation[0] + (deltaPose->sPoses[i]).rotation[0],
+				(basePose->sPoses[i]).rotation[1] + (deltaPose->sPoses[i]).rotation[1],
+				(basePose->sPoses[i]).rotation[2] + (deltaPose->sPoses[i]).rotation[2]
+			);
+			//Multiply scale
+			//*(tempStorage->sPoses[i]).scale = *(pose_out->sPoses[i]).scale * *(basePose->sPoses[i]).scale;
+			a3spatialPoseSetTranslation(&(pose_out->sPoses[i]),
+				(basePose->sPoses[i]).scale[0] + (deltaPose->sPoses[i]).scale[0],
+				(basePose->sPoses[i]).scale[1] + (deltaPose->sPoses[i]).scale[1],
+				(basePose->sPoses[i]).scale[2] + (deltaPose->sPoses[i]).scale[2]
+			);
+		}
 
 		return 1;
 	}

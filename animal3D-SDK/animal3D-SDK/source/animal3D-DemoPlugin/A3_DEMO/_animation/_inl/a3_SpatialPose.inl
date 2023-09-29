@@ -41,8 +41,8 @@ inline a3i32 a3spatialPoseSetRotation(a3_SpatialPose* spatialPose, const a3f32 r
 		spatialPose->rotation[2] = rz_degrees;
 
 		//Recalculate transform
-		a3spatialPoseConvert(&spatialPose->transform, spatialPose, a3poseChannel_translate_xyz | a3poseChannel_orient_xyz | a3poseChannel_scale_xyz, a3poseEulerOrder_xyz);
-
+		//a3spatialPoseConvert(&spatialPose->transform, spatialPose, a3poseChannel_translate_xyz | a3poseChannel_orient_xyz | a3poseChannel_scale_xyz, a3poseEulerOrder_xyz);
+		
 		return 1;
 	}
 	return -1;
@@ -59,7 +59,7 @@ inline a3i32 a3spatialPoseSetScale(a3_SpatialPose* spatialPose, const a3f32 sx, 
 		spatialPose->scale[2] = sz;
 
 		//Recalculate transform
-		a3spatialPoseConvert(&spatialPose->transform, spatialPose, a3poseChannel_translate_xyz | a3poseChannel_orient_xyz | a3poseChannel_scale_xyz, a3poseEulerOrder_xyz);
+		//a3spatialPoseConvert(&spatialPose->transform, spatialPose, a3poseChannel_translate_xyz | a3poseChannel_orient_xyz | a3poseChannel_scale_xyz, a3poseEulerOrder_xyz);
 
 		return 1;
 	}
@@ -77,7 +77,7 @@ inline a3i32 a3spatialPoseSetTranslation(a3_SpatialPose* spatialPose, const a3f3
 		spatialPose->translation[2] = tz;
 
 		//Recalculate transform
-		a3spatialPoseConvert(&spatialPose->transform, spatialPose, a3poseChannel_translate_xyz | a3poseChannel_orient_xyz | a3poseChannel_scale_xyz, a3poseEulerOrder_xyz);
+		//a3spatialPoseConvert(&spatialPose->transform, spatialPose, a3poseChannel_translate_xyz | a3poseChannel_orient_xyz | a3poseChannel_scale_xyz, a3poseEulerOrder_xyz);
 
 		return 1;
 	}
@@ -141,10 +141,10 @@ inline a3i32 a3spatialPoseConvert(a3mat4* mat_out, const a3_SpatialPose* spatial
 		a3real4x4 translation;
 		//a3real4x4SetIdentity(translation);
 		a3real4x4Set(translation,
-			1, 0, 0, spatialPose_in->translation[0],
-			0, 1, 0, spatialPose_in->translation[1],
-			0, 0, 1, spatialPose_in->translation[2],
-			0, 0, 0, 1);
+			1, 0, 0, 0,
+			0, 1, 0, 0,
+			0, 0, 1, 0,
+			spatialPose_in->translation[0], spatialPose_in->translation[1], spatialPose_in->translation[2], 1);
 
 		//Create scale matrix
 		a3real4x4 scale;
@@ -173,10 +173,10 @@ inline a3i32 a3spatialPoseConvert(a3mat4* mat_out, const a3_SpatialPose* spatial
 		mat_out = (a3mat4*)TRSm;*/
 		
 		//Original is just identity to start
-		a3real4x4SetIdentity((a3real4*)mat_out);
+		a3real4x4SetIdentity(mat_out->m);
 		a3real4x4 RSm;
 		a3real4x4ProductTransform(RSm, rotation, scale);
-		a3real4x4ProductTransform((a3real4*)mat_out, translation, RSm);
+		a3real4x4ProductTransform(mat_out->m, translation, RSm);
 
 		return 1;
 	}

@@ -130,9 +130,9 @@ a3i32 a3hierarchyPoseCopy(const a3_HierarchyPose* pose_out, const a3_HierarchyPo
 a3i32 a3hierarchyPoseLerp(a3_HierarchyPose* pose_out, const a3_HierarchyPose* pose0, const a3_HierarchyPose* pose1,
 	const a3real parameter, const a3ui32 numNodes);
 
-//
+//Add translation, add rotation, multiply scale
 a3i32 a3hierarchyPoseConcat(a3_HierarchyPose* pose_out, const a3_HierarchyPose* basePose,
-	const a3_HierarchyPose* tempStorage, const a3ui32 numNodes);
+	const a3_HierarchyPose* deltaPose, const a3ui32 numNodes);
 
 //-----------------------------------------------------------------------------
 
