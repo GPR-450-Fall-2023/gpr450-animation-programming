@@ -27,6 +27,8 @@
 #ifndef __ANIMAL3D_HIERARCHYSTATE_INL
 #define __ANIMAL3D_HIERARCHYSTATE_INL
 
+#include <stdio.h>
+
 
 //-----------------------------------------------------------------------------
 
@@ -76,7 +78,7 @@ inline a3i32 a3hierarchyPoseConvert(const a3_HierarchyPose* pose_inout, const a3
 		//Update transform matrix of every spatial pose in h pose
 		for (a3ui32 i = 0; i < nodeCount; i++)
 		{
-			a3spatialPoseConvert(&(pose_inout->sPoses + i)->transform, (pose_inout->sPoses) + 1,
+			a3spatialPoseConvert(&(pose_inout->sPoses + i)->transform, (pose_inout->sPoses + i),
 				a3poseChannel_translate_xyz | a3poseChannel_orient_xyz | a3poseChannel_scale_xyz, a3poseEulerOrder_xyz);
 		}
 	}
@@ -146,10 +148,34 @@ inline a3i32 a3hierarchyPoseConcat(a3_HierarchyPose* pose_out, const a3_Hierarch
 			//Multiply scale
 			//*(tempStorage->sPoses[i]).scale = *(pose_out->sPoses[i]).scale * *(basePose->sPoses[i]).scale;
 			a3spatialPoseSetTranslation(&(pose_out->sPoses[i]),
-				(basePose->sPoses[i]).scale[0] + (deltaPose->sPoses[i]).scale[0],
-				(basePose->sPoses[i]).scale[1] + (deltaPose->sPoses[i]).scale[1],
-				(basePose->sPoses[i]).scale[2] + (deltaPose->sPoses[i]).scale[2]
+				(basePose->sPoses[i]).scale[0] * (deltaPose->sPoses[i]).scale[0],
+				(basePose->sPoses[i]).scale[1] * (deltaPose->sPoses[i]).scale[1],
+				(basePose->sPoses[i]).scale[2] * (deltaPose->sPoses[i]).scale[2]
 			);
+		}
+
+		return 1;
+	}
+	return -1;
+}
+
+
+//Prints out all spatial pose data
+inline a3i32 a3hierarchyPosePrint(a3_HierarchyPose* pose, const a3ui32 numNodes)
+{
+	if (pose && numNodes)
+	{
+		for (a3ui32 i = 0; i < numNodes; i++)
+		{
+			printf("\nSpatial Pose\nTransform:\n%f  %f  %f  %f\n%f  %f  %f  %f\n%f  %f  %f  %f\n%f  %f  %f  %f\n\nTranslation: (%f, %f, %f)\n\nRotation: (%f, %f, %f)\n\nScale: (%f, %f, %f)\n\n",
+				pose->sPoses[i].transform.x0, pose->sPoses[i].transform.x1, pose->sPoses[i].transform.x2, pose->sPoses[i].transform.x3,
+				pose->sPoses[i].transform.y0, pose->sPoses[i].transform.y1, pose->sPoses[i].transform.y2, pose->sPoses[i].transform.y3,
+				pose->sPoses[i].transform.z0, pose->sPoses[i].transform.z1, pose->sPoses[i].transform.z2, pose->sPoses[i].transform.z3,
+				pose->sPoses[i].transform.w0, pose->sPoses[i].transform.w1, pose->sPoses[i].transform.w2, pose->sPoses[i].transform.w3,
+				pose->sPoses[i].translation[0], pose->sPoses[i].translation[1], pose->sPoses[i].translation[2],
+				pose->sPoses[i].rotation[0], pose->sPoses[i].rotation[1], pose->sPoses[i].rotation[2],
+				pose->sPoses[i].scale[0], pose->sPoses[i].scale[1], pose->sPoses[i].scale[2]
+				);
 		}
 
 		return 1;

@@ -143,6 +143,9 @@ a3i32 a3spatialPoseConvert(a3mat4* mat_out, const a3_SpatialPose* spatialPose_in
 // copy operation for single node pose
 a3i32 a3spatialPoseCopy(a3_SpatialPose* spatialPose_out, const a3_SpatialPose* spatialPose_in);
 
+//prints out data for a mat4
+a3i32 a3mat4Print(const a3mat4* mat);
+
 
 //-----------------------------------------------------------------------------
 

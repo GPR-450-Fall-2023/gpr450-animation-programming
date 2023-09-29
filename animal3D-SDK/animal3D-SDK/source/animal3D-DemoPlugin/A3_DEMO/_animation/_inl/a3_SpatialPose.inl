@@ -27,6 +27,7 @@
 #ifndef __ANIMAL3D_SPATIALPOSE_INL
 #define __ANIMAL3D_SPATIALPOSE_INL
 
+#include <stdio.h>
 
 //-----------------------------------------------------------------------------
 
@@ -193,6 +194,24 @@ inline a3i32 a3spatialPoseCopy(a3_SpatialPose* spatialPose_out, const a3_Spatial
 		*(spatialPose_out->translation) = *spatialPose_in->translation;
 		*(spatialPose_out->scale) = *spatialPose_in->scale;
 		spatialPose_out->transform = spatialPose_in->transform;
+
+		return 1;
+	}
+	return -1;
+}
+
+
+//prints out data for a mat4
+inline a3i32 a3mat4Print(const a3mat4* mat)
+{
+	if (mat)
+	{
+		printf("\n%f  %f  %f  %f\n%f  %f  %f  %f\n%f  %f  %f  %f\n%f  %f  %f  %f\n\n",
+			mat->x0, mat->x1, mat->x2, mat->x3,
+			mat->y0, mat->y1, mat->y2, mat->y3,
+			mat->z0, mat->z1, mat->z2, mat->z3,
+			mat->w0, mat->w1, mat->w2, mat->w3
+		);
 
 		return 1;
 	}

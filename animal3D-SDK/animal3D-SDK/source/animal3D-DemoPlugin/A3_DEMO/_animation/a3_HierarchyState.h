@@ -134,6 +134,9 @@ a3i32 a3hierarchyPoseLerp(a3_HierarchyPose* pose_out, const a3_HierarchyPose* po
 a3i32 a3hierarchyPoseConcat(a3_HierarchyPose* pose_out, const a3_HierarchyPose* basePose,
 	const a3_HierarchyPose* deltaPose, const a3ui32 numNodes);
 
+//Prints out all spatial pose data
+a3i32 a3hierarchyPosePrint(a3_HierarchyPose* pose, const a3ui32 numNodes);
+
 //-----------------------------------------------------------------------------
 
 // initialize hierarchy state given an initialized hierarchy
