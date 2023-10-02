@@ -62,6 +62,23 @@ void a3demo_update_pointLight(a3_DemoSceneObject* obj_camera, a3_DemoPointLight*
 
 void a3demo_applyScale_internal(a3_DemoSceneObject* sceneObject, a3real4x4p s);
 
+
+// Called in update, handle the testing interface
+void a3demo_animation_testingInterfaceInput(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode, a3f64 const dt)
+{
+	// Try cycle through hierarchyState when F pressed
+	if (a3keyboardIsPressed(demoState->keyboard, a3key_F))
+	{
+		demoState->hierarchyState = (((a3ui32)demoState->hierarchyState) + 1) % 3;
+	}
+
+	// Debug inputs
+	//printf("%i", (int) demoState->hierarchyState);
+	//printf("Button pressed this frame: %i", a3keyboardIsPressed(demoState->keyboard, a3key_Y));
+	//printf("\n");
+}
+
+
 void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode, a3f64 const dt)
 {
 	a3ui32 i;
@@ -205,6 +222,8 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		a3bufferRefill(demoState->ubo_transformMVPB, 0, mvp_size, demoMode->mvp_bone);
 		a3bufferRefill(demoState->ubo_transformBlend, 0, t_skin_size, demoMode->t_skin);
 		a3bufferRefillOffset(demoState->ubo_transformBlend, 0, t_skin_size, dq_skin_size, demoMode->dq_skin);
+
+		a3demo_animation_testingInterfaceInput(demoState, demoMode, dt);
 	}
 }
 

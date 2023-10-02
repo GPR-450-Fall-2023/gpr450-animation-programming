@@ -57,6 +57,7 @@ typedef struct	a3_DemoState					a3_DemoState;
 typedef struct	a3_DemoModeCallbacks			a3_DemoModeCallbacks;
 typedef enum	a3_DemoState_ModeName			a3_DemoState_ModeName;
 typedef enum	a3_DemoState_TextDisplayName	a3_DemoState_TextDisplayName;
+typedef enum a3_DemoState_HierarchyState		a3_DemoState_HierarchyState;
 #endif	// __cplusplus
 
 
@@ -104,6 +105,15 @@ enum a3_DemoState_ObjectMaxCount
 	demoStateMaxCount_framebuffer = 2,
 };
 
+
+// Joseph Lyons
+enum a3_DemoState_HierarchyState
+{
+	demoState_basePose,
+	demoState_userFlip,
+	demoState_playPoseSequence
+};
+
 	
 //-----------------------------------------------------------------------------
 
@@ -128,6 +138,9 @@ struct a3_DemoState
 {
 	//-------------------------------------------------------------------------
 	// general variables pertinent to the state
+
+	// Joseph Lyons
+	a3_DemoState_HierarchyState hierarchyState;
 
 	// terminate key pressed
 	a3i32 exitFlag;
