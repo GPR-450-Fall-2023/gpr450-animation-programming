@@ -119,10 +119,10 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	//	demoMode->hierarchyPoseGroup_skel->hPoses + demoMode->hierarchyKeyPose_display[1] + 1,
 	//	demoMode->hierarchyKeyPose_param,
 	//	demoMode->hierarchy_skel->numNodes);
-	//a3hierarchyPoseConcat(activeHS->localSpace,	// goal to calculate
-	//	baseHS->localSpace, // holds base pose
-	//	activeHS->objectSpace, // temp storage
-	//	demoMode->hierarchy_skel->numNodes);
+	a3hierarchyPoseConcat(activeHS->localSpace,	// goal to calculate
+		baseHS->localSpace, // holds base pose
+		activeHS->objectSpace, // temp storage
+		demoMode->hierarchy_skel->numNodes);
 
 	a3hierarchyPoseConvert(activeHS->localSpace,
 		demoMode->hierarchy_skel->numNodes,

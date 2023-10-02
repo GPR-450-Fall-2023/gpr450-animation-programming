@@ -42,7 +42,7 @@ inline a3i32 a3spatialPoseSetRotation(a3_SpatialPose* spatialPose, const a3f32 r
 		spatialPose->rotation[2] = rz_degrees;
 
 		//Recalculate transform
-		//a3spatialPoseConvert(&spatialPose->transform, spatialPose, a3poseChannel_translate_xyz | a3poseChannel_orient_xyz | a3poseChannel_scale_xyz, a3poseEulerOrder_xyz);
+		a3spatialPoseConvert(&spatialPose->transform, spatialPose, a3poseChannel_translate_xyz | a3poseChannel_orient_xyz | a3poseChannel_scale_xyz, a3poseEulerOrder_xyz);
 		
 		return 1;
 	}
@@ -60,7 +60,7 @@ inline a3i32 a3spatialPoseSetScale(a3_SpatialPose* spatialPose, const a3f32 sx, 
 		spatialPose->scale[2] = sz;
 
 		//Recalculate transform
-		//a3spatialPoseConvert(&spatialPose->transform, spatialPose, a3poseChannel_translate_xyz | a3poseChannel_orient_xyz | a3poseChannel_scale_xyz, a3poseEulerOrder_xyz);
+		a3spatialPoseConvert(&spatialPose->transform, spatialPose, a3poseChannel_translate_xyz | a3poseChannel_orient_xyz | a3poseChannel_scale_xyz, a3poseEulerOrder_xyz);
 
 		return 1;
 	}
@@ -78,7 +78,7 @@ inline a3i32 a3spatialPoseSetTranslation(a3_SpatialPose* spatialPose, const a3f3
 		spatialPose->translation[2] = tz;
 
 		//Recalculate transform
-		//a3spatialPoseConvert(&spatialPose->transform, spatialPose, a3poseChannel_translate_xyz | a3poseChannel_orient_xyz | a3poseChannel_scale_xyz, a3poseEulerOrder_xyz);
+		a3spatialPoseConvert(&spatialPose->transform, spatialPose, a3poseChannel_translate_xyz | a3poseChannel_orient_xyz | a3poseChannel_scale_xyz, a3poseEulerOrder_xyz);
 
 		return 1;
 	}

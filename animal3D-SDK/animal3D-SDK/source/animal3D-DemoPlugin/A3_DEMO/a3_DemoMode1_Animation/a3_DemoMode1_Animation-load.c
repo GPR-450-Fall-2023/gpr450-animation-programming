@@ -125,7 +125,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	// scene objects
 	demoMode->obj_skeleton->position.y = +a3real_four;
 	demoMode->obj_skeleton->euler.z = +a3real_oneeighty;
-	demoMode->obj_skeleton->euler.x = -a3real_ninety;
+	//demoMode->obj_skeleton->euler.x = -a3real_ninety; //Commented out because this causes the rig to be lying on its back
 
 	// next set up hierarchy poses
 	hierarchy = demoMode->hierarchy_skel;
@@ -357,6 +357,12 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	hierarchyState = demoMode->hierarchyState_skel + 1;
 	hierarchyState->hierarchy = 0;
 	a3hierarchyStateCreate(hierarchyState, hierarchy);
+	//j = a3hierarchyGetNodeIndex(hierarchy, "skel:root");
+	//a3hierarchyPoseInitialize(hierarchyState->localSpace, hierarchyPoseGroup->hPoses[2].sPoses + j);
+	a3hierarchyPoseCopy(hierarchyState->localSpace, hierarchyPoseGroup->hPoses, hierarchy->numNodes); 
+	a3hierarchyPoseConvert(hierarchyState->localSpace, hierarchy->numNodes, hierarchyPoseGroup->channel, hierarchyPoseGroup->order);
+	a3kinematicsSolveForward(hierarchyState);
+	a3hierarchyStateUpdateObjectInverse(hierarchyState);
 }
 
 
