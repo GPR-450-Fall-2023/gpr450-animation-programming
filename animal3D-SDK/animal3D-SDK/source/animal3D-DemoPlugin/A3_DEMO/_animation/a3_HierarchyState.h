@@ -96,6 +96,9 @@ struct a3_HierarchyState
 
 	//Pose representing object space transformations relative to root
 	a3_HierarchyPose* objectSpace;
+
+	// Time progressed in this state
+	a3real time;
 };
 
 //-----------------------------------------------------------------------------

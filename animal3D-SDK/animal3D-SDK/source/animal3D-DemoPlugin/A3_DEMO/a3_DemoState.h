@@ -105,15 +105,6 @@ enum a3_DemoState_ObjectMaxCount
 	demoStateMaxCount_framebuffer = 2,
 };
 
-
-// Joseph Lyons
-enum a3_DemoState_HierarchyState
-{
-	demoState_basePose,
-	demoState_userFlip,
-	demoState_playPoseSequence
-};
-
 	
 //-----------------------------------------------------------------------------
 
@@ -138,9 +129,6 @@ struct a3_DemoState
 {
 	//-------------------------------------------------------------------------
 	// general variables pertinent to the state
-
-	// Joseph Lyons
-	a3_DemoState_HierarchyState hierarchyState;
 
 	// terminate key pressed
 	a3i32 exitFlag;
