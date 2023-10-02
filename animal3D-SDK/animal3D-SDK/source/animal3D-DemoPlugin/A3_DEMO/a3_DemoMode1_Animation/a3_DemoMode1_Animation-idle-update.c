@@ -69,14 +69,14 @@ void a3demo_animation_testingInterfaceInput(a3_DemoState* demoState, a3_DemoMode
 	// Try cycle through hierarchyState when F pressed
 	if (a3keyboardIsPressed(demoState->keyboard, a3key_F))
 	{
-		demoMode->test++;
+		demoMode->hierarchyStateIndex++;
 
-		if (demoMode->test >= 3)
+		if (demoMode->hierarchyStateIndex >= 4)
 		{
-			demoMode->test = 1;
+			demoMode->hierarchyStateIndex = 1;
 		}
 
-		printf("%i", demoMode->test);
+		printf("%i", demoMode->hierarchyStateIndex);
 	}
 
 	// Debug inputs
@@ -91,7 +91,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	a3ui32 i;
 	a3_DemoModelMatrixStack matrixStack[animationMaxCount_sceneObject];
 
-	a3_HierarchyState* activeHS = demoMode->hierarchyState_skel + demoMode->test, *baseHS = demoMode->hierarchyState_skel;
+	a3_HierarchyState* activeHS = demoMode->hierarchyState_skel + demoMode->hierarchyStateIndex, *baseHS = demoMode->hierarchyState_skel;
 
 	// active camera
 	a3_DemoProjector const* activeCamera = demoMode->projector + demoMode->activeCamera;
@@ -126,23 +126,32 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	// skeletal
 	if (demoState->updateAnimation && activeHS != baseHS)
 	{
-		//i = (a3ui32)(demoState->timer_display->totalTime);
-		
-		i = (a3ui32) activeHS->time;
-		
-		demoMode->hierarchyKeyPose_display[0] = (i + 0) % (demoMode->hierarchyPoseGroup_skel->hPoseCount - 1);
-		demoMode->hierarchyKeyPose_display[1] = (i + 1) % (demoMode->hierarchyPoseGroup_skel->hPoseCount - 1);
-//		demoMode->hierarchyKeyPose_param = (a3real)(demoState->timer_display->totalTime - (a3f64)i);
-		demoMode->hierarchyKeyPose_param = (a3real)(activeHS->time - (a3real)i);
+		if (demoMode->hierarchyStateIndex == 1) // Just base pose, don't actually do anything
+		{
+			demoMode->hierarchyKeyPose_display[0] = (0) % (demoMode->hierarchyPoseGroup_skel->hPoseCount - 1);
+			demoMode->hierarchyKeyPose_display[1] = (1) % (demoMode->hierarchyPoseGroup_skel->hPoseCount - 1);
+			demoMode->hierarchyKeyPose_param = 0;
+		}
+		else if(demoMode->hierarchyStateIndex == 2)
+		{
+			i = (a3ui32)activeHS->time;
 
-		activeHS->time += (a3real) dt;
+			demoMode->hierarchyKeyPose_display[0] = (i + 0) % (demoMode->hierarchyPoseGroup_skel->hPoseCount - 1);
+			demoMode->hierarchyKeyPose_display[1] = (i + 1) % (demoMode->hierarchyPoseGroup_skel->hPoseCount - 1);
+			demoMode->hierarchyKeyPose_param = (a3real)(activeHS->time - (a3real)i);
 
-		/*
-			activeHS->time += (a3real) dt;
+			activeHS->time += (a3real)dt;
+		}
+		else // if hierarchyStateIndex == 3
+		{
+			i = (a3ui32)activeHS->time;
 
-			//activeHS->time = activeHS->time - ((int) activeHS->time);
-			}
-		*/
+			demoMode->hierarchyKeyPose_display[0] = (i + 0) % (demoMode->hierarchyPoseGroup_skel->hPoseCount - 1);
+			demoMode->hierarchyKeyPose_display[1] = (i + 1) % (demoMode->hierarchyPoseGroup_skel->hPoseCount - 1);
+			demoMode->hierarchyKeyPose_param = (a3real)(activeHS->time - (a3real)i);
+
+			activeHS->time += (a3real)dt;
+		}
 	}
 
 	//Step instead of lerp for now
@@ -156,6 +165,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		demoMode->hierarchyPoseGroup_skel->hPoses + demoMode->hierarchyKeyPose_display[1] + 1,
 		demoMode->hierarchyKeyPose_param,
 		demoMode->hierarchy_skel->numNodes);
+
 	a3hierarchyPoseConcat(activeHS->localSpace,	// goal to calculate
 		baseHS->localSpace, // holds base pose
 		activeHS->objectSpace, // temp storage
@@ -165,6 +175,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		demoMode->hierarchy_skel->numNodes,
 		demoMode->hierarchyPoseGroup_skel->channel,
 		demoMode->hierarchyPoseGroup_skel->order);
+
 	a3kinematicsSolveForward(activeHS);
 
 	//Next Week
