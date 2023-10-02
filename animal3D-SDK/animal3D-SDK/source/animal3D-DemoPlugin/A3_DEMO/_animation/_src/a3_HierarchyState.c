@@ -170,9 +170,6 @@ a3i32 a3hierarchyStateRelease(a3_HierarchyState *state)
 	if (state && state->hierarchy)
 	{
 		// release everything (one free)
-		//free(???);
-		//free(state->localSpace);
-		//free(state->objectSpace);
 		free(state->objectSpaceBindToCurrent);
 
 		// reset pointers

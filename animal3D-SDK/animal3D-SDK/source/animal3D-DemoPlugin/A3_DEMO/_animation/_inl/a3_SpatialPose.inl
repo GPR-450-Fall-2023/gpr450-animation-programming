@@ -85,22 +85,6 @@ inline a3i32 a3spatialPoseSetTranslation(a3_SpatialPose* spatialPose, const a3f3
 	return -1;
 }
 
-//// Transform
-//a3i32 a3setSpatialPoseTransform(a3_SpatialPose* spatialPose, a3real4x4p trans)
-//{
-//	if (spatialPose)
-//	{
-//		//Set translation
-//		a3translation
-//
-//		//Recalculate transform
-//		a3spatialPoseConvert(&spatialPose->transform, spatialPose, a3poseChannel_translate_xyz | a3poseChannel_orient_xyz | a3poseChannel_scale_xyz, a3poseEulerOrder_xyz);
-//
-//		return 1;
-//	}
-//	return -1;
-//}
-
 
 //-----------------------------------------------------------------------------
 
@@ -110,18 +94,23 @@ inline a3i32 a3spatialPoseReset(a3_SpatialPose* spatialPose)
 	if (spatialPose)
 	{
 		//Reset pose to default values
+
+		//No translation
 		spatialPose->rotation[0] = 0;
 		spatialPose->rotation[1] = 0;
 		spatialPose->rotation[2] = 0;
 
+		//No rotation
 		spatialPose->translation[0] = 0;
 		spatialPose->translation[1] = 0;
 		spatialPose->translation[2] = 0;
 
+		//Scale must be 1
 		spatialPose->scale[0] = 1;
 		spatialPose->scale[1] = 1;
 		spatialPose->scale[2] = 1;
 
+		//Identity
 		spatialPose->transform = a3mat4_identity;
 
 		return 1;
@@ -134,10 +123,6 @@ inline a3i32 a3spatialPoseConvert(a3mat4* mat_out, const a3_SpatialPose* spatial
 {
 	if (mat_out && spatialPose_in)
 	{
-		///////////////////////////////////////////////
-		// TODO - IMPLEMENT
-		///////////////////////////////////////////////
-
 		//Create translation matrix
 		a3real4x4 translation;
 		//a3real4x4SetIdentity(translation);
@@ -161,19 +146,8 @@ inline a3i32 a3spatialPoseConvert(a3mat4* mat_out, const a3_SpatialPose* spatial
 		//a3real4x4SetIdentity(rotation);
 		a3real4x4SetRotateXYZ(rotation, spatialPose_in->rotation[0], spatialPose_in->rotation[1], spatialPose_in->rotation[2]);
 		
-		//Reset transform
-		//a3real4x4SetIdentity((a3real4*)mat_out);
-
-		//Set mat_out to T*R*S*original
-		/*a3real4x4r Sm;
-		a3real4x4ProductTransform(Sm, scale, (a3real4*)mat_out);
-		a3real4x4r RSm;
-		a3real4x4ProductTransform(RSm, rotation, Sm);
-		a3real4x4r TRSm;
-		a3real4x4ProductTransform(TRSm, translation, RSm);
-		mat_out = (a3mat4*)TRSm;*/
-		
 		//Original is just identity to start
+		//Calculate new mat_out with T*S*R
 		a3real4x4SetIdentity(mat_out->m);
 		a3real4x4 RSm;
 		a3real4x4ProductTransform(RSm, rotation, scale);
@@ -206,6 +180,7 @@ inline a3i32 a3mat4Print(const a3mat4* mat)
 {
 	if (mat)
 	{
+		//Pretty print for a single matrix
 		printf("\n%f  %f  %f  %f\n%f  %f  %f  %f\n%f  %f  %f  %f\n%f  %f  %f  %f\n\n",
 			mat->x0, mat->x1, mat->x2, mat->x3,
 			mat->y0, mat->y1, mat->y2, mat->y3,

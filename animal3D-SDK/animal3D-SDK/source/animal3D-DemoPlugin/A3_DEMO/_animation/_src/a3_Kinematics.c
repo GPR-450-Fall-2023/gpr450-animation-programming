@@ -48,10 +48,6 @@ a3i32 a3kinematicsSolveForwardPartial(const a3_HierarchyState *hierarchyState, c
 			a3i32 index = hierarchyState->hierarchy->nodes[i].index;
 			if (parent >= 0)
 			{
-				//Copy parent object matrix so we don't overwrite it
-				//a3real4x4 parentObject;
-				//a3real4x4SetReal4x4(parentObject, hierarchyState->objectSpace->sPoses[parent].transform.m);
-
 				//object = parentObject * local
 				a3real4x4ProductTransform(
 					hierarchyState->objectSpace->sPoses[index].transform.m,
@@ -64,7 +60,6 @@ a3i32 a3kinematicsSolveForwardPartial(const a3_HierarchyState *hierarchyState, c
 				//Copy the local matrix to object
 				a3real4x4SetReal4x4(hierarchyState->objectSpace->sPoses[i].transform.m,
 					hierarchyState->localSpace->sPoses[i].transform.m);
-				//a3hierarchyPoseCopy(hierarchyState->objectSpace, hierarchyState->localSpace, nodeCount);
 			}
 		}
 	}

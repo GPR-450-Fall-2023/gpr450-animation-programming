@@ -106,14 +106,12 @@ inline a3i32 a3hierarchyPoseLerp(a3_HierarchyPose* pose_out, const a3_HierarchyP
 {
 	if (pose_out && pose0 && pose1 && numNodes)
 	{
-		///////////////////////////////////////////////
-		// TODO - IMPLEMENT
-		///////////////////////////////////////////////
 
-		//Copy each spatial pose
+		//For each spatial pose
 		for (a3ui32 i = 0; i < numNodes; i++)
 		{
-			//Copying values not addresses
+			//Lerp the pose0 and pose1 values using the parameter then stick them in pose_out
+			//Translation
 			a3real3Lerp(
 				(pose_out->sPoses + i)->translation,
 				(pose0->sPoses + i)->translation,
@@ -121,6 +119,7 @@ inline a3i32 a3hierarchyPoseLerp(a3_HierarchyPose* pose_out, const a3_HierarchyP
 				parameter
 			);
 
+			//Rotation
 			a3real3Lerp(
 				(pose_out->sPoses + i)->rotation,
 				(pose0->sPoses + i)->rotation,
@@ -128,14 +127,13 @@ inline a3i32 a3hierarchyPoseLerp(a3_HierarchyPose* pose_out, const a3_HierarchyP
 				parameter
 			);
 
+			//Scale
 			a3real3Lerp(
 				(pose_out->sPoses + i)->scale,
 				(pose0->sPoses + i)->scale,
 				(pose1->sPoses + i)->scale,
 				parameter
 			);
-			//*(pose_out->sPoses + i)->rotation = *(pose_in->sPoses + i);
-			//*(pose_out->sPoses + i)->scale = *(pose_in->sPoses + i);
 		}
 
 		return 1;
@@ -153,22 +151,20 @@ inline a3i32 a3hierarchyPoseConcat(a3_HierarchyPose* pose_out, const a3_Hierarch
 		for (a3ui32 i = 0; i < numNodes; i++)
 		{
 			//Modify values not addresses, dereference
+			// 
 			//Add translation
-			//*(tempStorage->sPoses[i]).translation = *(pose_out->sPoses[i]).translation + *(basePose->sPoses[i]).translation;
 			a3spatialPoseSetTranslation(&(pose_out->sPoses[i]),
 				(basePose->sPoses[i]).translation[0] + (deltaPose->sPoses[i]).translation[0],
 				(basePose->sPoses[i]).translation[1] + (deltaPose->sPoses[i]).translation[1],
 				(basePose->sPoses[i]).translation[2] + (deltaPose->sPoses[i]).translation[2]
 			);
 			//Add rotation
-			//*(tempStorage->sPoses[i]).rotation = *(pose_out->sPoses[i]).rotation + *(basePose->sPoses[i]).rotation;
 			a3spatialPoseSetRotation(&(pose_out->sPoses[i]),
 				(basePose->sPoses[i]).rotation[0] + (deltaPose->sPoses[i]).rotation[0],
 				(basePose->sPoses[i]).rotation[1] + (deltaPose->sPoses[i]).rotation[1],
 				(basePose->sPoses[i]).rotation[2] + (deltaPose->sPoses[i]).rotation[2]
 			);
 			//Multiply scale
-			//*(tempStorage->sPoses[i]).scale = *(pose_out->sPoses[i]).scale * *(basePose->sPoses[i]).scale;
 			a3spatialPoseSetScale(&(pose_out->sPoses[i]),
 				(basePose->sPoses[i]).scale[0] * (deltaPose->sPoses[i]).scale[0],
 				(basePose->sPoses[i]).scale[1] * (deltaPose->sPoses[i]).scale[1],
@@ -187,8 +183,10 @@ inline a3i32 a3hierarchyPosePrint(a3_HierarchyPose* pose, const a3ui32 numNodes)
 {
 	if (pose && numNodes)
 	{
+		//For each spatial pose
 		for (a3ui32 i = 0; i < numNodes; i++)
 		{
+			//Pretty print
 			printf("\nSpatial Pose\nTransform:\n%f  %f  %f  %f\n%f  %f  %f  %f\n%f  %f  %f  %f\n%f  %f  %f  %f\n\nTranslation: (%f, %f, %f)\n\nRotation: (%f, %f, %f)\n\nScale: (%f, %f, %f)\n\n",
 				pose->sPoses[i].transform.x0, pose->sPoses[i].transform.x1, pose->sPoses[i].transform.x2, pose->sPoses[i].transform.x3,
 				pose->sPoses[i].transform.y0, pose->sPoses[i].transform.y1, pose->sPoses[i].transform.y2, pose->sPoses[i].transform.y3,
