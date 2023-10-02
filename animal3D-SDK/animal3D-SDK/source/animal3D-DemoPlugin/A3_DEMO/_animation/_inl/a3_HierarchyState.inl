@@ -147,7 +147,7 @@ inline a3i32 a3hierarchyPoseConcat(a3_HierarchyPose* pose_out, const a3_Hierarch
 			);
 			//Multiply scale
 			//*(tempStorage->sPoses[i]).scale = *(pose_out->sPoses[i]).scale * *(basePose->sPoses[i]).scale;
-			a3spatialPoseSetTranslation(&(pose_out->sPoses[i]),
+			a3spatialPoseSetScale(&(pose_out->sPoses[i]),
 				(basePose->sPoses[i]).scale[0] * (deltaPose->sPoses[i]).scale[0],
 				(basePose->sPoses[i]).scale[1] * (deltaPose->sPoses[i]).scale[1],
 				(basePose->sPoses[i]).scale[2] * (deltaPose->sPoses[i]).scale[2]

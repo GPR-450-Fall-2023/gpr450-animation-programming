@@ -359,7 +359,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	a3hierarchyStateCreate(hierarchyState, hierarchy);
 	//j = a3hierarchyGetNodeIndex(hierarchy, "skel:root");
 	//a3hierarchyPoseInitialize(hierarchyState->localSpace, hierarchyPoseGroup->hPoses[2].sPoses + j);
-	a3hierarchyPoseCopy(hierarchyState->localSpace, hierarchyPoseGroup->hPoses, hierarchy->numNodes); 
+	a3hierarchyPoseCopy(hierarchyState->localSpace, &hierarchyPoseGroup->hPoses[1], hierarchy->numNodes);
 	a3hierarchyPoseConvert(hierarchyState->localSpace, hierarchy->numNodes, hierarchyPoseGroup->channel, hierarchyPoseGroup->order);
 	a3kinematicsSolveForward(hierarchyState);
 	a3hierarchyStateUpdateObjectInverse(hierarchyState);
