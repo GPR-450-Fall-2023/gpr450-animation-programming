@@ -128,21 +128,30 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	{
 		if (demoMode->hierarchyStateIndex == 1) // Just base pose, don't actually do anything
 		{
+			activeHS->time = 0;
+
 			demoMode->hierarchyKeyPose_display[0] = (0) % (demoMode->hierarchyPoseGroup_skel->hPoseCount - 1);
 			demoMode->hierarchyKeyPose_display[1] = (1) % (demoMode->hierarchyPoseGroup_skel->hPoseCount - 1);
 			demoMode->hierarchyKeyPose_param = 0;
 		}
-		else if(demoMode->hierarchyStateIndex == 2)
-		{
-			i = (a3ui32)activeHS->time;
+		else if(demoMode->hierarchyStateIndex == 2) // User manually switches between different poses
+		{	
+			if (a3keyboardIsPressed(demoState->keyboard, a3key_leftArrow))
+			{
+				activeHS->time = a3maximum(activeHS->time - 1, 0);
+			}
+			else if (a3keyboardIsPressed(demoState->keyboard, a3key_rightArrow))
+			{
+				activeHS->time += 1;
+			}
+
+			i = (a3ui32) activeHS->time;
 
 			demoMode->hierarchyKeyPose_display[0] = (i + 0) % (demoMode->hierarchyPoseGroup_skel->hPoseCount - 1);
 			demoMode->hierarchyKeyPose_display[1] = (i + 1) % (demoMode->hierarchyPoseGroup_skel->hPoseCount - 1);
 			demoMode->hierarchyKeyPose_param = (a3real)(activeHS->time - (a3real)i);
-
-			activeHS->time += (a3real)dt;
 		}
-		else // if hierarchyStateIndex == 3
+		else // if hierarchyStateIndex == 3, Automatically plays lerp between poses
 		{
 			i = (a3ui32)activeHS->time;
 
