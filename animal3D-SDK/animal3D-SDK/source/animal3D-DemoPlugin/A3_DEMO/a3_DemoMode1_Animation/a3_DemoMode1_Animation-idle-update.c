@@ -109,16 +109,16 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	}
 
 	//Step instead of lerp for now
-	a3hierarchyPoseCopy(activeHS->objectSpace,
+	/*a3hierarchyPoseCopy(activeHS->objectSpace,
 		demoMode->hierarchyPoseGroup_skel->hPoses + demoMode->hierarchyKeyPose_display[0] + 1,
-		demoMode->hierarchy_skel->numNodes);
+		demoMode->hierarchy_skel->numNodes);*/
 
 	//Next Week
-	//a3hierarchyPoseLerp(activeHS->objectSpace,	// use as temp storage
-	//	demoMode->hierarchyPoseGroup_skel->hPoses + demoMode->hierarchyKeyPose_display[0] + 1,
-	//	demoMode->hierarchyPoseGroup_skel->hPoses + demoMode->hierarchyKeyPose_display[1] + 1,
-	//	demoMode->hierarchyKeyPose_param,
-	//	demoMode->hierarchy_skel->numNodes);
+	a3hierarchyPoseLerp(activeHS->objectSpace,	// use as temp storage
+		demoMode->hierarchyPoseGroup_skel->hPoses + demoMode->hierarchyKeyPose_display[0] + 1,
+		demoMode->hierarchyPoseGroup_skel->hPoses + demoMode->hierarchyKeyPose_display[1] + 1,
+		demoMode->hierarchyKeyPose_param,
+		demoMode->hierarchy_skel->numNodes);
 	a3hierarchyPoseConcat(activeHS->localSpace,	// goal to calculate
 		baseHS->localSpace, // holds base pose
 		activeHS->objectSpace, // temp storage

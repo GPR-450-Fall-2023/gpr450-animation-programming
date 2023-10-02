@@ -110,7 +110,33 @@ inline a3i32 a3hierarchyPoseLerp(a3_HierarchyPose* pose_out, const a3_HierarchyP
 		// TODO - IMPLEMENT
 		///////////////////////////////////////////////
 
-		//pose_out = (a3_HierarchyPose*)pose0;
+		//Copy each spatial pose
+		for (a3ui32 i = 0; i < numNodes; i++)
+		{
+			//Copying values not addresses
+			a3real3Lerp(
+				(pose_out->sPoses + i)->translation,
+				(pose0->sPoses + i)->translation,
+				(pose1->sPoses + i)->translation,
+				parameter
+			);
+
+			a3real3Lerp(
+				(pose_out->sPoses + i)->rotation,
+				(pose0->sPoses + i)->rotation,
+				(pose1->sPoses + i)->rotation,
+				parameter
+			);
+
+			a3real3Lerp(
+				(pose_out->sPoses + i)->scale,
+				(pose0->sPoses + i)->scale,
+				(pose1->sPoses + i)->scale,
+				parameter
+			);
+			//*(pose_out->sPoses + i)->rotation = *(pose_in->sPoses + i);
+			//*(pose_out->sPoses + i)->scale = *(pose_in->sPoses + i);
+		}
 
 		return 1;
 	}
@@ -123,10 +149,6 @@ inline a3i32 a3hierarchyPoseConcat(a3_HierarchyPose* pose_out, const a3_Hierarch
 {
 	if (pose_out && basePose && deltaPose && numNodes)
 	{
-		///////////////////////////////////////////////
-		// TODO - IMPLEMENT
-		///////////////////////////////////////////////
-
 		//Copy each spatial pose
 		for (a3ui32 i = 0; i < numNodes; i++)
 		{
