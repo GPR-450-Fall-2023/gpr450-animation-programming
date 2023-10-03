@@ -26,6 +26,14 @@
 	********************************************
 */
 
+/*
+	animal3D SDK: Minimal 3D Animation Framework
+	By Dillon Drummond, Neo Kattan, Joseph Lyons
+
+	a3_DemoMode1_Animation-idle-update.c
+	Handle testing interface and playback logic for animating skeleton
+*/
+
 //-----------------------------------------------------------------------------
 
 #include "../a3_DemoMode1_Animation.h"
@@ -133,6 +141,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		{
 			i = 0; //Reset to base pose
 			activeHS->time = 0;
+
 
 			demoMode->hierarchyKeyPose_display[0] = (0) % (demoMode->hierarchyPoseGroup_skel->hPoseCount - 1);
 			demoMode->hierarchyKeyPose_display[1] = (1) % (demoMode->hierarchyPoseGroup_skel->hPoseCount - 1);

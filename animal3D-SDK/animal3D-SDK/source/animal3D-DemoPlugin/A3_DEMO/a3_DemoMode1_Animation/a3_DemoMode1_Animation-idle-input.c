@@ -26,6 +26,14 @@
 	********************************************
 */
 
+/*
+	animal3D SDK: Minimal 3D Animation Framework
+	By Dillon Drummond, Neo Kattan, Joseph Lyons
+
+	a3_DemoMode1_Animation-idle-update.c
+	Controls for interacting with skeleton
+*/
+
 //-----------------------------------------------------------------------------
 
 #include "../a3_DemoMode1_Animation.h"
