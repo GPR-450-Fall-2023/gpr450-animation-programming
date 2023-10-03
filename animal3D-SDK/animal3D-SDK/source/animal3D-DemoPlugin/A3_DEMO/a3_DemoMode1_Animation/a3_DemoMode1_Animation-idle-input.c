@@ -75,6 +75,9 @@ void a3animation_input_keyCharPress(a3_DemoState const* demoState, a3_DemoMode1_
 
 		//Flip through clips
 		a3demoCtrlCasesLoop(demoMode->hierarchyPoseIndex, pose_max, '\'', ';');
+
+		// toggle pause
+		a3demoCtrlCaseToggle(demoMode->togglePause, 'p');
 	}
 }
 

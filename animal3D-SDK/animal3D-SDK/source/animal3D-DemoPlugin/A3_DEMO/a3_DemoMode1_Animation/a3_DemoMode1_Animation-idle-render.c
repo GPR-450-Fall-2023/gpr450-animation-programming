@@ -152,6 +152,9 @@ void a3animation_render_controls(a3_DemoState const* demoState, a3_DemoMode1_Ani
 		"    Active Hierarchy State (%u / %u) ('-' prev | next '='): %s", stateIndex + 1, state_max, stateText[stateIndex]);
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"    Active Hierarchy Pose (for State 2) (%u / %u) (';' prev | next '\''): %s", poseIndex + 1, pose_max, poseText[poseIndex]);
+
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"    Play/pause controller playback (p)");
 }
 
 

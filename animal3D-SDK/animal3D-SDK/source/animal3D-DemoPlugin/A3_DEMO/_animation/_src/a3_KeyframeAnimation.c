@@ -66,7 +66,8 @@ void a3keyframeSetDuration(a3_Keyframe* keyframe, const a3real duration)
 // allocate keyframe pool
 a3i32 a3keyframePoolCreate(a3_KeyframePool* keyframePool_out, const a3ui32 count, const a3_HierarchyPose* default_data)
 {
-	const a3real KEYFRAME_DEFAULT_DURATION = 0; // init each keyframe with this duration
+	//This is 60 fps, should look fast with the egnaro keyframes if we read the duration incorrectly
+	const a3real KEYFRAME_DEFAULT_DURATION = (a3real)(1.0 / 60.0); // init each keyframe with this duration
 	//const a3i32 KEYFRAME_DEFAULT_DATA = 0; // init each keyframe with this value
 
 	if (keyframePool_out == NULL) return -1; // return if keyframePool doesn't already exist

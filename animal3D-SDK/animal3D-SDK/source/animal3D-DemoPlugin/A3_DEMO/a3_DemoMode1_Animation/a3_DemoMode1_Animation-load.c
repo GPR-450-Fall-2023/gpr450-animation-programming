@@ -383,18 +383,16 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 
 	// Creating Pool of Clips
 	demoMode->numOfClips = a3countClips(filePath);
-	//demoMode->numOfClips = 12;
 	demoMode->currentClip = 0;
 	a3clipPoolCreate(&demoMode->clipPool, &demoMode->keyPool, demoMode->numOfClips);
 
 	// Initializing Keyframes
 	for (a3ui32 i = 0; i < demoMode->numOfKeyframes; i++) {
-		a3keyframeInit(&demoMode->keyPool.keyframe[i], 0.f, (hierarchyPoseGroup->hPoses + i));
+		a3keyframeInit(&demoMode->keyPool.keyframe[i], (a3real)(1.0 / 60.0), (hierarchyPoseGroup->hPoses + i));
 	}
 
 	a3readClipPoolFromFile(&demoMode->clipPool, &demoMode->keyPool, filePath);
 
-	//a3clipCalculateDuration(&demoMode->clipPool.clip[0]);
 	//////////
 
 	// Initializing Clips
@@ -418,7 +416,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 
 	// Initializing Clip Controllers
 	a3clipControllerPoolCreate(&demoMode->clipCtrlPool, &demoMode->clipPool, 1);
-	a3clipControllerInit(&demoMode->clipCtrlPool.clipControllers[0], "Clip Controller 1", &demoMode->clipPool, 0);
+	a3clipControllerInit(&demoMode->clipCtrlPool.clipControllers[0], "Clip Controller 1", &demoMode->clipPool, 1);
 	demoMode->currentController = 0;
 	demoMode->numOfControllers = 1;
 

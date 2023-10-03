@@ -66,6 +66,11 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 	a3_Clip clip = clipCtrl->clipPool->clip[clipCtrl->clip];
 	a3_Keyframe keyframe = clip.keyframePool->keyframe[clipCtrl->keyframe];
 
+	//We can use this if we decide to evenly divide keyframes into clip duration
+	/////////////////////////////////////////////
+	//a3real keyframeDuration = clip.duration / (clip.lastKeyframeIndex - clip.firstKeyframeIndex);
+	/////////////////////////////////////////////
+
 	const a3real FLOATING_POINT_ERROR = .00001f;
 
 	//Loop through to make sure we start at a valid keyframe time

@@ -168,6 +168,8 @@ typedef enum a3_DemoMode1_Animation_PoseIndex				a3_DemoMode1_Animation_PoseInde
 		a3ui32 hierarchyStateIndex;
 		a3ui32 hierarchyPoseIndex;
 
+		a3boolean togglePause;
+
 		// objects
 		union {
 			a3_DemoSceneObject object_scene[animationMaxCount_sceneObject];

@@ -135,6 +135,19 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 
 	/////////////// Animation Update /////////////////////
 
+	a3_ClipController* clipCtrl = &demoMode->clipCtrlPool.clipControllers[demoMode->currentController];
+
+	// turning play/pause/slowmo/forward/backward into effect
+	if (demoMode->togglePause) {
+		if(clipCtrl->playbackDirection == 0) {
+			clipCtrl->playbackDirection = clipCtrl->lastPlaybackDirection;
+		}
+		else {
+			clipCtrl->playbackDirection = 0;
+		}
+		demoMode->togglePause = false;
+	}
+
 	//Clear terminal
 	system("cls");
 
