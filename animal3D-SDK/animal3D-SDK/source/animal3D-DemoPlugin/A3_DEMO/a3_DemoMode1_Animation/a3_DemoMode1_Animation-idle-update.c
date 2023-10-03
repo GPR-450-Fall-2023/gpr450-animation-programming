@@ -140,14 +140,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		}
 		else if(demoMode->hierarchyStateIndex == state_two) // User manually switches between different poses
 		{	
-			if (a3keyboardIsPressed(demoState->keyboard, a3key_leftArrow))
-			{
-				activeHS->time = a3maximum(activeHS->time - 1, 0);
-			}
-			else if (a3keyboardIsPressed(demoState->keyboard, a3key_rightArrow))
-			{
-				activeHS->time += 1;
-			}
+			activeHS->time = (a3real)demoMode->hierarchyPoseIndex;
 
 			i = (a3ui32) activeHS->time;
 

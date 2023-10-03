@@ -82,6 +82,14 @@ void a3animation_render_controls(a3_DemoState const* demoState, a3_DemoMode1_Ani
 		"State 3"
 	};
 
+	// active state name
+	a3byte const* poseText[pose_max] = {
+		"Pose 1",
+		"Pose 2",
+		"Pose 3",
+		"Pose 4"
+	};
+
 	// constant color target names
 	a3byte const colorBufferText[] = "Color target 0: FINAL DISPLAY COLOR";
 	// constant depth target name
@@ -113,6 +121,7 @@ void a3animation_render_controls(a3_DemoState const* demoState, a3_DemoMode1_Ani
 	a3_DemoMode1_Animation_TargetName const targetIndex = demoMode->targetIndex[pass];
 	a3_DemoMode1_Animation_TargetName const targetCount = demoMode->targetCount[pass];
 	a3_DemoMode1_Animation_StateIndex const stateIndex = demoMode->hierarchyStateIndex;
+	a3_DemoMode1_Animation_PoseIndex const poseIndex = demoMode->hierarchyPoseIndex;
 
 	// demo modes
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
@@ -133,6 +142,8 @@ void a3animation_render_controls(a3_DemoState const* demoState, a3_DemoMode1_Ani
 	//Testing interface controls
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"    Active Hierarchy State (%u / %u) ('-' prev | next '='): %s", stateIndex + 1, state_max, stateText[stateIndex]);
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"    Active Hierarchy Pose (for State 2) (%u / %u) (';' prev | next '\''): %s", poseIndex + 1, pose_max, poseText[poseIndex]);
 }
 
 

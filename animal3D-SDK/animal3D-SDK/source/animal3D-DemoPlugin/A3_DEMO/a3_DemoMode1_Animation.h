@@ -52,6 +52,7 @@ typedef enum a3_DemoMode1_Animation_PipelineName			a3_DemoMode1_Animation_Pipeli
 typedef enum a3_DemoMode1_Animation_PassName				a3_DemoMode1_Animation_PassName;
 typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetName;
 typedef enum a3_DemoMode1_Animation_StateIndex				a3_DemoMode1_Animation_StateIndex;
+typedef enum a3_DemoMode1_Animation_PoseIndex				a3_DemoMode1_Animation_PoseIndex;
 #endif	// __cplusplus
 
 
@@ -128,6 +129,17 @@ typedef enum a3_DemoMode1_Animation_StateIndex				a3_DemoMode1_Animation_StateIn
 		state_max
 	};
 
+	// hierarchy poses
+	enum a3_DemoMode1_Animation_PoseIndex
+	{
+		pose_one = 0,
+		pose_two,
+		pose_three,
+		pose_four,
+
+		pose_max
+	};
+
 
 //-----------------------------------------------------------------------------
 
@@ -152,6 +164,7 @@ typedef enum a3_DemoMode1_Animation_StateIndex				a3_DemoMode1_Animation_StateIn
 		a3real hierarchyKeyPose_param;
 
 		a3ui32 hierarchyStateIndex;
+		a3ui32 hierarchyPoseIndex;
 
 		// objects
 		union {
