@@ -98,6 +98,14 @@ void a3animation_render_controls(a3_DemoState const* demoState, a3_DemoMode1_Ani
 		"Pose 4"
 	};
 
+	// clip names
+	a3byte const* clips[4] = {
+		"Clip 1",
+		"Clip 2",
+		"Clip 3",
+		"Clip 4"
+	};
+
 	// constant color target names
 	a3byte const colorBufferText[] = "Color target 0: FINAL DISPLAY COLOR";
 	// constant depth target name
@@ -155,6 +163,9 @@ void a3animation_render_controls(a3_DemoState const* demoState, a3_DemoMode1_Ani
 
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"    Play/pause controller playback (p)");
+
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"    Change Clip (a/s): %s", demoMode->clipPool.clip[demoMode->clipCtrlPool.clipControllers[demoMode->currentController].clip].name);
 }
 
 

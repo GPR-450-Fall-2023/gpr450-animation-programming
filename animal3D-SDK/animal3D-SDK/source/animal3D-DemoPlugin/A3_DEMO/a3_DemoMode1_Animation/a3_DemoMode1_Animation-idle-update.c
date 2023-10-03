@@ -137,6 +137,10 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 
 	a3_ClipController* clipCtrl = &demoMode->clipCtrlPool.clipControllers[demoMode->currentController];
 
+	if (demoMode->currentClip != demoMode->previousFrameClip) {
+		a3clipControllerSetClip(clipCtrl, clipCtrl->clipPool, demoMode->currentClip);
+	}
+
 	// turning play/pause/slowmo/forward/backward into effect
 	if (demoMode->togglePause) {
 		if(clipCtrl->playbackDirection == 0) {

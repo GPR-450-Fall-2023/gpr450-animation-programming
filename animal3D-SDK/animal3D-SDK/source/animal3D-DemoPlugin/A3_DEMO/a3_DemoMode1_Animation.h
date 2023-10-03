@@ -165,6 +165,7 @@ typedef enum a3_DemoMode1_Animation_PoseIndex				a3_DemoMode1_Animation_PoseInde
 		a3ui32 hierarchyKeyPose_display[2];
 		a3real hierarchyKeyPose_param;
 
+		//Testing values
 		a3ui32 hierarchyStateIndex;
 		a3ui32 hierarchyPoseIndex;
 

@@ -78,6 +78,9 @@ void a3animation_input_keyCharPress(a3_DemoState const* demoState, a3_DemoMode1_
 
 		// toggle pause
 		a3demoCtrlCaseToggle(demoMode->togglePause, 'p');
+
+		//Loop through clips
+		a3demoCtrlCasesLoop(demoMode->currentClip, demoMode->numOfClips, 's', 'a');
 	}
 }
 
