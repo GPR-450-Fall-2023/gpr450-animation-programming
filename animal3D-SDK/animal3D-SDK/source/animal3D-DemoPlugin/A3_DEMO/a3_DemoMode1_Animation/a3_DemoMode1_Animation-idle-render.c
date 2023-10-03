@@ -75,6 +75,13 @@ void a3animation_render_controls(a3_DemoState const* demoState, a3_DemoMode1_Ani
 		"animation scene camera",
 	};
 
+	// active state name
+	a3byte const* stateText[state_max] = {
+		"State 1",
+		"State 2",
+		"State 3"
+	};
+
 	// constant color target names
 	a3byte const colorBufferText[] = "Color target 0: FINAL DISPLAY COLOR";
 	// constant depth target name
@@ -105,6 +112,7 @@ void a3animation_render_controls(a3_DemoState const* demoState, a3_DemoMode1_Ani
 	a3_DemoMode1_Animation_PassName const pass = demoMode->pass;
 	a3_DemoMode1_Animation_TargetName const targetIndex = demoMode->targetIndex[pass];
 	a3_DemoMode1_Animation_TargetName const targetCount = demoMode->targetCount[pass];
+	a3_DemoMode1_Animation_StateIndex const stateIndex = demoMode->hierarchyStateIndex;
 
 	// demo modes
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
@@ -121,6 +129,10 @@ void a3animation_render_controls(a3_DemoState const* demoState, a3_DemoMode1_Ani
 		"    Display mode (%u / %u) ('J' | 'K'): %s", display + 1, animation_display_max, displayProgramName[display]);
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"    Active camera (%u / %u) ('c' prev | next 'v'): %s", activeCamera + 1, animation_camera_max, cameraText[activeCamera]);
+
+	//Testing interface controls
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"    Active Hierarchy State (%u / %u) ('-' prev | next '='): %s", stateIndex + 1, state_max, stateText[stateIndex]);
 }
 
 

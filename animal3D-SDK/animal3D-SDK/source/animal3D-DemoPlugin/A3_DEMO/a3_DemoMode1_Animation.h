@@ -51,6 +51,7 @@ typedef enum a3_DemoMode1_Animation_ActiveCameraName		a3_DemoMode1_Animation_Act
 typedef enum a3_DemoMode1_Animation_PipelineName			a3_DemoMode1_Animation_PipelineName;
 typedef enum a3_DemoMode1_Animation_PassName				a3_DemoMode1_Animation_PassName;
 typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetName;
+typedef enum a3_DemoMode1_Animation_StateIndex				a3_DemoMode1_Animation_StateIndex;
 #endif	// __cplusplus
 
 
@@ -115,6 +116,16 @@ typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetN
 		animation_scene_fragdepth,		// fragment depth
 	
 		animation_target_scene_max,
+	};
+
+	// render target names
+	enum a3_DemoMode1_Animation_StateIndex
+	{
+		state_one = 0,
+		state_two,
+		state_three,
+
+		state_max
 	};
 
 

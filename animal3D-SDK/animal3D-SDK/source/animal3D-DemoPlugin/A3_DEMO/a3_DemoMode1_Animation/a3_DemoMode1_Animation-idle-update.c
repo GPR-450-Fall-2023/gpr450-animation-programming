@@ -91,7 +91,10 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	a3ui32 i;
 	a3_DemoModelMatrixStack matrixStack[animationMaxCount_sceneObject];
 
-	a3_HierarchyState* activeHS = demoMode->hierarchyState_skel + demoMode->hierarchyStateIndex, *baseHS = demoMode->hierarchyState_skel;
+	a3ui32 actualIndex = demoMode->hierarchyStateIndex + 1;
+
+	//Current hierarchy state that we are displaying and modifying
+	a3_HierarchyState* activeHS = demoMode->hierarchyState_skel + actualIndex, *baseHS = demoMode->hierarchyState_skel;
 
 	// active camera
 	a3_DemoProjector const* activeCamera = demoMode->projector + demoMode->activeCamera;
@@ -126,15 +129,16 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	// skeletal
 	if (demoState->updateAnimation && activeHS != baseHS)
 	{
-		if (demoMode->hierarchyStateIndex == 1) // Just base pose, don't actually do anything
+		if (demoMode->hierarchyStateIndex == state_one) // Just base pose, don't actually do anything
 		{
+			i = 0; //Reset to base pose
 			activeHS->time = 0;
 
 			demoMode->hierarchyKeyPose_display[0] = (0) % (demoMode->hierarchyPoseGroup_skel->hPoseCount - 1);
 			demoMode->hierarchyKeyPose_display[1] = (1) % (demoMode->hierarchyPoseGroup_skel->hPoseCount - 1);
 			demoMode->hierarchyKeyPose_param = 0;
 		}
-		else if(demoMode->hierarchyStateIndex == 2) // User manually switches between different poses
+		else if(demoMode->hierarchyStateIndex == state_two) // User manually switches between different poses
 		{	
 			if (a3keyboardIsPressed(demoState->keyboard, a3key_leftArrow))
 			{
@@ -263,7 +267,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		a3bufferRefill(demoState->ubo_transformBlend, 0, t_skin_size, demoMode->t_skin);
 		a3bufferRefillOffset(demoState->ubo_transformBlend, 0, t_skin_size, dq_skin_size, demoMode->dq_skin);
 
-		a3demo_animation_testingInterfaceInput(demoState, demoMode, dt);
+		//a3demo_animation_testingInterfaceInput(demoState, demoMode, dt);
 	}
 }
 
