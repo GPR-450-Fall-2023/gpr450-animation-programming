@@ -62,6 +62,7 @@ a3i32 a3kinematicsSolveForwardPartial(const a3_HierarchyState *hierarchyState, c
 					hierarchyState->localSpace->sPoses[i].transform.m);
 			}
 		}
+		return 1;
 	}
 	return -1;
 }
@@ -81,6 +82,34 @@ a3i32 a3kinematicsSolveInversePartial(const a3_HierarchyState *hierarchyState, c
 		//			- local matrix = inverse parent object matrix * object matrix
 		//		- else
 		//			- copy object matrix to local matrix
+
+		//Loop through each of the current spatial poses corresponding to a node in the hierarchy
+		for (a3ui32 i = firstIndex; i < firstIndex + nodeCount; i++)
+		{
+			//Check if we have a parent (root or no?)
+			a3i32 parent = hierarchyState->hierarchy->nodes[i].parentIndex;
+			a3i32 index = hierarchyState->hierarchy->nodes[i].index;
+			if (parent >= 0)
+			{
+				a3real4x4 inverseParentObject = {0, 0, 0, 0};
+				a3real4x4TransformInverse(inverseParentObject, hierarchyState->objectSpace->sPoses[parent].transform.m);
+
+				//object = parentObject * local
+				a3real4x4ProductTransform(
+					hierarchyState->localSpace->sPoses[index].transform.m,
+					inverseParentObject,
+					hierarchyState->objectSpace->sPoses[index].transform.m
+				);
+			}
+			else
+			{
+				//Copy the local matrix to object
+				a3real4x4SetReal4x4(hierarchyState->localSpace->sPoses[i].transform.m,
+					hierarchyState->objectSpace->sPoses[i].transform.m);
+			}
+			a3mat4Print(&hierarchyState->localSpace->sPoses[index].transform);
+		}
+		return 1;
 	}
 	return -1;
 }
