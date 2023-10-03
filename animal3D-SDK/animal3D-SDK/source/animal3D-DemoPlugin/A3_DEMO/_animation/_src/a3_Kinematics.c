@@ -22,6 +22,14 @@
 	Implementation of kinematics solvers.
 */
 
+/*
+	animal3D SDK: Minimal 3D Animation Framework
+	By Dillon Drummond, Neo Kattan, Joseph Lyons
+
+	a3_DemoMode1_Animation-idle-update.c
+	Implemented forward kinematics
+*/
+
 #include "../a3_Kinematics.h"
 
 

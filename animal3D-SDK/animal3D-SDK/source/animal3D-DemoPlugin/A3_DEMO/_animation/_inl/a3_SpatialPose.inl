@@ -22,6 +22,14 @@
 	Implementation of inline spatial pose operations.
 */
 
+/*
+	animal3D SDK: Minimal 3D Animation Framework
+	By Dillon Drummond, Neo Kattan, Joseph Lyons
+
+	a3_DemoMode1_Animation-idle-update.c
+	Initialization and setting of spatial pose data
+*/
+
 
 #ifdef __ANIMAL3D_SPATIALPOSE_H
 #ifndef __ANIMAL3D_SPATIALPOSE_INL

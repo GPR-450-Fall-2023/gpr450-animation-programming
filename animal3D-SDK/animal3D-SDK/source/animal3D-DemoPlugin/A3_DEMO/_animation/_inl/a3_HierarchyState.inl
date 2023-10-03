@@ -22,6 +22,14 @@
 	Implementation of inline transform hierarchy state operations.
 */
 
+/*
+	animal3D SDK: Minimal 3D Animation Framework
+	By Dillon Drummond, Neo Kattan, Joseph Lyons
+
+	a3_DemoMode1_Animation-idle-update.c
+	Implemented logic for functions relating to hierarchy states and hierarchy poses
+*/
+
 
 #ifdef __ANIMAL3D_HIERARCHYSTATE_H
 #ifndef __ANIMAL3D_HIERARCHYSTATE_INL

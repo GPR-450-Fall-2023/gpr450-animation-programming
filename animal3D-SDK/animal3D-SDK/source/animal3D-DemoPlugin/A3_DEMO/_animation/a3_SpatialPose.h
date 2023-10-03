@@ -22,6 +22,14 @@ a3_SpatialPose.h
 Description of a spatial pose with rotation, translation and scale.
 */
 
+/*
+	animal3D SDK: Minimal 3D Animation Framework
+	By Dillon Drummond, Neo Kattan, Joseph Lyons
+
+	a3_DemoMode1_Animation-idle-update.c
+	Initialization and setting of spatial pose data
+*/
+
 #ifndef __ANIMAL3D_SPATIALPOSE_H
 #define __ANIMAL3D_SPATIALPOSE_H
 
