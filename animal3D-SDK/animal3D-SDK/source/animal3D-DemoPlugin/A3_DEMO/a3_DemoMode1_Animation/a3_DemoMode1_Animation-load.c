@@ -546,22 +546,28 @@ a3ui32 a3readClipPoolFromFile(a3_ClipPool* clipPool, a3_KeyframePool* keyframePo
 		a3byte* tok;
 
 		//checking if there is reference to another clip in the transition
-		if (strlen(fileData[i][4]) > 4) {
+		if (strlen(fileData[i][4]) > 0) {
 			specRev = true;
 			tok = strtok(fileData[i][4], s);
 			strcpy(prevOp, tok);
 			tok = strtok(0, s);
-			strcpy(prevClip, tok);
+			if (tok != NULL)
+			{
+				strcpy(prevClip, tok);
+			}
 		}
 		else {
 			specRev = false;
 		}
-		if (strlen(fileData[i][5]) > 4) {
+		if (strlen(fileData[i][5]) > 0) {
 			specFor = true;
 			tok = strtok(fileData[i][5], s);
 			strcpy(nextOp, tok);
 			tok = strtok(0, s);
-			strcpy(nextClip, tok);
+			if (tok != NULL)
+			{
+				strcpy(nextClip, tok);
+			}
 		}
 		else {
 			specFor = false;
