@@ -34,6 +34,8 @@
 
 #include "_a3_demo_utilities/a3_DemoSceneObject.h"
 
+#include "_animation/a3_KeyframeAnimationController.h"
+
 #include "_animation/a3_Kinematics.h"
 #include "_animation/a3_HierarchyStateBlend.h"
 
@@ -190,6 +192,18 @@ typedef enum a3_DemoMode1_Animation_PoseIndex				a3_DemoMode1_Animation_PoseInde
 					proj_camera_main[1];
 			};
 		};
+
+		/////////// Anim Data //////////////////
+		a3_ClipControllerPool clipCtrlPool;
+		a3ui32 currentController;
+		a3ui32 numOfControllers;
+		a3_ClipPool clipPool;
+		a3_KeyframePool keyPool;
+		a3ui32 currentClip;
+		a3ui32 numOfKeyframes;
+		a3ui32 numOfClips;
+		a3ui32 previousFrameClip;
+		a3ui32 previousFrameClipCtrl;
 	};
 
 

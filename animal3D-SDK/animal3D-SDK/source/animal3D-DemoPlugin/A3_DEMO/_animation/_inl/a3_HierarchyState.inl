@@ -87,7 +87,7 @@ inline a3i32 a3hierarchyPoseConvert(const a3_HierarchyPose* pose_inout, const a3
 		for (a3ui32 i = 0; i < nodeCount; i++)
 		{
 			a3spatialPoseConvert(&(pose_inout->sPoses + i)->transform, (pose_inout->sPoses + i),
-				a3poseChannel_translate_xyz | a3poseChannel_orient_xyz | a3poseChannel_scale_xyz, a3poseEulerOrder_xyz);
+				channel[i], order);
 		}
 	}
 	return -1;

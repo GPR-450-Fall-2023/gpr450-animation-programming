@@ -26,6 +26,14 @@
 	********************************************
 */
 
+/*
+	animal3D SDK: Keyframe and Clip Controller Framework
+	By Dillon Drummond, Neo Kattan, Joseph Lyons
+
+	a3_DemoMode0_Starter.h
+	Declaration of variables used to test keyframes and clip controller
+*/
+
 #ifndef __ANIMAL3D_DEMOMODE0_STARTER_H
 #define __ANIMAL3D_DEMOMODE0_STARTER_H
 
@@ -34,6 +42,7 @@
 
 #include "_a3_demo_utilities/a3_DemoSceneObject.h"
 
+#include "_animation/a3_KeyframeAnimationController.h"
 
 //-----------------------------------------------------------------------------
 
@@ -48,6 +57,13 @@ typedef enum a3_DemoMode0_Starter_ActiveCameraName			a3_DemoMode0_Starter_Active
 typedef enum a3_DemoMode0_Starter_PipelineName				a3_DemoMode0_Starter_PipelineName;
 typedef enum a3_DemoMode0_Starter_PassName					a3_DemoMode0_Starter_PassName;
 typedef enum a3_DemoMode0_Starter_TargetName				a3_DemoMode0_Starter_TargetName;
+
+typedef enum a3_DemoMode0_Starter_Play_Pause				a3_DemoMode0_Starter_Play_Pause;
+typedef enum a3_DemoMode0_Starter_Playing_Direction			a3_DemoMode0_Starter_Playing_Direction;
+typedef enum a3_DemoMode0_Starter_Slowmo_Speed				a3_DemoMode0_Starter_Slowmo_Speed;
+typedef enum a3_DemoMode0_Starter_Terminus_Action			a3_DemoMode0_Starter_Terminus_Action;
+typedef enum a3_DemoMode0_Starter_First_Keyframe			a3_DemoMode0_Starter_First_Keyframe;
+typedef enum a3_DemoMode0_Starter_Last_Keyframe				a3_DemoMode0_Starter_Last_Keyframe;
 #endif	// __cplusplus
 
 
@@ -114,6 +130,62 @@ typedef enum a3_DemoMode0_Starter_TargetName				a3_DemoMode0_Starter_TargetName;
 		starter_target_scene_max,
 	};
 
+	// play/pause states
+	enum a3_DemoMode0_Starter_Play_Pause
+	{
+		starter_play = 0,				// playing
+		starter_pause,					// paused
+
+		starter_play_pause_max,
+	};
+
+	// start of clip
+	enum a3_DemoMode0_Starter_First_Keyframe
+	{
+		starter_normal_playback_f = 0,	// play normally
+		starter_first_keyframe,			// set to first keyframe of clip
+
+		starter_first_keyframe_max,
+	};
+
+	// end of clip
+	enum a3_DemoMode0_Starter_Last_Keyframe
+	{
+		starter_normal_playback_l = 0,	// play normally
+		starter_last_keyframe,			// set to last keyframe of clip
+
+		starter_last_keyframe_max,
+	};
+
+	// playback directions
+	enum a3_DemoMode0_Starter_Playing_Direction
+	{
+		starter_playing_forward = 0,	// playing forward
+		starter_playing_backward,		// playing backward
+
+		starter_playing_max,
+	};
+
+	// slowmo speeds
+	enum a3_DemoMode0_Starter_Slowmo_Speed
+	{
+		starter_speed_normal = 0,		// 1x speed
+		starter_speed_half,				// 0.5x speed
+		starter_speed_quarter,			// 0.25x speed
+
+		starter_slowmo_speed_max,
+	};
+
+	// terminus actions
+	enum a3_DemoMode0_Starter_Terminus_Action
+	{
+		starter_terminus_loop = 0,		// repeat when clip ends
+		starter_terminus_stop,			// stop when clip ends
+		starter_terminus_ping_pong,		// rewind when clip ends then repeat
+
+		starter_terminus_max,
+	};
+
 
 //-----------------------------------------------------------------------------
 
@@ -127,6 +199,18 @@ typedef enum a3_DemoMode0_Starter_TargetName				a3_DemoMode0_Starter_TargetName;
 		a3_DemoMode0_Starter_PipelineName pipeline;
 		a3_DemoMode0_Starter_PassName pass;
 		a3_DemoMode0_Starter_TargetName targetIndex[starter_pass_max], targetCount[starter_pass_max];
+
+		//a3_DemoMode0_Starter_Play_Pause playPause;
+		//a3_DemoMode0_Starter_Playing_Direction forwardBackward;
+		//a3_DemoMode0_Starter_Slowmo_Speed slowmo;
+		//a3_DemoMode0_Starter_Terminus_Action terminus;
+		a3_DemoMode0_Starter_First_Keyframe first;
+		a3_DemoMode0_Starter_Last_Keyframe last;
+
+		a3boolean shouldSpeedUp;
+		a3boolean shouldSlowDown;
+		a3boolean togglePause;
+		a3boolean shouldRewind;
 
 		// objects
 		union {
@@ -159,8 +243,20 @@ typedef enum a3_DemoMode0_Starter_TargetName				a3_DemoMode0_Starter_TargetName;
 					proj_camera_main[1];
 			};
 		};
-	};
 
+		/////// DATA HERE /////////
+
+		a3_ClipControllerPool clipCtrlPool;
+		a3ui32 currentController;
+		a3ui32 numOfControllers;
+		a3_ClipPool clipPool;
+		a3_KeyframePool keyPool;
+		a3ui32 currentClip;
+		a3ui32 numOfKeyframes;
+		a3ui32 numOfClips;
+		a3ui32 previousFrameClip;
+		a3ui32 previousFrameClipCtrl;
+	};
 
 //-----------------------------------------------------------------------------
 

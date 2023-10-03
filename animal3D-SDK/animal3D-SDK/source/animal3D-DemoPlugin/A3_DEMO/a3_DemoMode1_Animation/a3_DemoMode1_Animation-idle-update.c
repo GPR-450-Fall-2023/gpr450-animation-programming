@@ -133,6 +133,23 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 			demoMode->object_scene[i].modelMat.m, a3mat4_identity.m);
 	}
 
+	/////////////// Animation Update /////////////////////
+
+	//Clear terminal
+	system("cls");
+
+	//Update all controllers
+	for (a3ui32 index = 0; index < demoMode->clipCtrlPool.count; index++)
+	{
+		a3clipControllerUpdate(&demoMode->clipCtrlPool.clipControllers[index], (a3real)dt);
+	}
+
+	//Save index of previous clip to check if clip has changed later
+	demoMode->previousFrameClip = demoMode->currentClip;
+	demoMode->previousFrameClipCtrl = demoMode->currentController;
+
+	//////////////////////////////////////////////////////
+
 
 	// skeletal
 	if (demoState->updateAnimation && activeHS != baseHS)

@@ -26,6 +26,16 @@
 	********************************************
 */
 
+/*
+	animal3D SDK: Keyframe and Clip Controller Framework
+	By Dillon Drummond, Neo Kattan, Joseph Lyons
+
+	a3_DemoMode0_Starter-input.c
+	Demo mode implementations: keyframe and clip controller
+
+	INPUT FOR KEYFRAME AND CLIP CONTROLLER
+*/
+
 //-----------------------------------------------------------------------------
 
 #include "../a3_DemoMode0_Starter.h"
@@ -61,6 +71,35 @@ void a3starter_input_keyCharPress(a3_DemoState const* demoState, a3_DemoMode0_St
 
 		// toggle pass to display
 		a3demoCtrlCasesLoop(demoMode->pass, starter_pass_max, ')', '(');
+
+		// toggle clip controllers
+		a3demoCtrlCasesLoop(demoMode->currentController, demoMode->numOfControllers, 'w', 'q');
+		
+		//demoMode->currentClip = demoMode->clipCtrlPool.clipControllers[demoMode->currentController].clip;
+
+		// toggle pause
+		a3demoCtrlCaseToggle(demoMode->togglePause, 'p');
+		//a3demoCtrlCasesLoop(demoMode->playPause, starter_play_pause_max, 'p', 'o');
+
+		// set to first/last frame in current clip
+		a3demoCtrlCasesLoop(demoMode->first, starter_first_keyframe_max, 'e', 'd');
+		a3demoCtrlCasesLoop(demoMode->last, starter_last_keyframe_max, 'r', 'f');
+
+		// toggle clip
+		//a3demoCtrlCasesLoop(demoMode->clipCtrlPool.clipControllers[demoMode->currentController].clip, demoMode->numOfClips, 's', 'a');
+		//a3demoCtrlCasesLoop(demoMode->currentClip, demoMode->numOfClips, 's', 'a');
+
+		// toggle backwards
+		a3demoCtrlCaseToggle(demoMode->shouldRewind, 'b');
+		//a3demoCtrlCasesLoop(demoMode->forwardBackward, starter_playing_max, 'b', 'g');
+
+		// toggle slowmo
+		a3demoCtrlCaseToggle(demoMode->shouldSpeedUp, 'm');
+		a3demoCtrlCaseToggle(demoMode->shouldSlowDown, 'n');
+		//a3demoCtrlCasesLoop(demoMode->slowmo, starter_slowmo_speed_max, 'm', 'n');
+
+		// toggle terminus actions
+		//a3demoCtrlCasesLoop(demoMode->terminus, starter_terminus_max, ',', '.');
 	}
 }
 

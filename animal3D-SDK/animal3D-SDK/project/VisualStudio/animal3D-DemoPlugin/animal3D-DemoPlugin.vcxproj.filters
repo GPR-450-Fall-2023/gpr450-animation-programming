@@ -310,5 +310,11 @@
     <None Include="..\..\..\resource\glsl\4x\gs\00-common\utilCommon_gs4x.glsl">
       <Filter>Resource Files\A3_DEMO\glsl\4x\gs\00-common</Filter>
     </None>
+    <None Include="..\..\..\resource\glsl\4x\vs\passIDs_vs4x.glsl">
+      <Filter>Resource Files\A3_DEMO\glsl\4x\vs</Filter>
+    </None>
+    <None Include="..\..\..\resource\glsl\4x\gs\custom\drawSpline_gs4x.glsl">
+      <Filter>Resource Files\A3_DEMO\glsl\4x\gs\custom</Filter>
+    </None>
   </ItemGroup>
 </Project>

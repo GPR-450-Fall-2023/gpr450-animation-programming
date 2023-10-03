@@ -22,7 +22,16 @@
 	Implementation of keyframe animation interfaces.
 */
 
+/*
+	animal3D SDK: Keyframe and Clip Controller Framework
+	By Dillon Drummond, Neo Kattan, Joseph Lyons
+
+	a3_KeyframeAnimation.c
+	Implementation of keyframe and clip controller interfaces
+*/
+
 #include "../a3_KeyframeAnimation.h"
+#include "../a3_KeyframeAnimationController.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -35,46 +44,199 @@
 
 //-----------------------------------------------------------------------------
 
-// allocate keyframe pool
-a3i32 a3keyframePoolCreate(a3_KeyframePool* keyframePool_out, const a3ui32 count)
+
+// sets keyframe duration while handling edge cases and setting duration inverse
+void a3keyframeSetDuration(a3_Keyframe* keyframe, const a3real duration)
 {
-	return -1;
+	// set keyframe duration to provided duration or minDuration, whichever is higher
+	if (duration < a3keyframeAnimation_minDuration)
+	{
+		keyframe->duration = a3keyframeAnimation_minDuration;
+	}
+	else
+	{
+		keyframe->duration = duration;
+	}
+
+	// set durationInverse to reciprocal
+	keyframe->durationInverse = 1 / keyframe->duration;
+}
+
+
+// allocate keyframe pool
+a3i32 a3keyframePoolCreate(a3_KeyframePool* keyframePool_out, const a3ui32 count, const a3_HierarchyPose* default_data)
+{
+	const a3real KEYFRAME_DEFAULT_DURATION = 0; // init each keyframe with this duration
+	//const a3i32 KEYFRAME_DEFAULT_DATA = 0; // init each keyframe with this value
+
+	if (keyframePool_out == NULL) return -1; // return if keyframePool doesn't already exist
+
+	// allocate keyframe array
+	keyframePool_out->keyframe = (a3_Keyframe*) malloc(count * sizeof(a3_Keyframe));
+
+	if(keyframePool_out->keyframe == NULL) return -1; // return if malloc failed
+
+	keyframePool_out->count = count; // set count
+
+	// init each keyframe with default values
+	for (a3ui16 i = 0; i < count; i++)
+	{
+		a3keyframeInit((keyframePool_out->keyframe + i), KEYFRAME_DEFAULT_DURATION, default_data);
+		(keyframePool_out->keyframe + i)->index = i; //Log keyframes index in pool
+	}
+
+	return 1;
 }
 
 // release keyframe pool
 a3i32 a3keyframePoolRelease(a3_KeyframePool* keyframePool)
 {
-	return -1;
+	if (keyframePool == NULL) return -1; // return if keyframePool doesn't exist
+	
+	int returnCode = 0; // code we will return
+	
+	// release keyframe array if it exists
+	if (keyframePool->keyframe == NULL)
+	{
+		returnCode = 1;
+	}
+	else
+	{
+		free(keyframePool->keyframe);
+	}
+
+	//free(keyframePool);
+
+	return returnCode;
 }
 
 // initialize keyframe
-a3i32 a3keyframeInit(a3_Keyframe* keyframe_out, const a3real duration, const a3ui32 value_x)
+a3i32 a3keyframeInit(a3_Keyframe* keyframe_out, const a3real duration, const a3_HierarchyPose* value)
 {
-	return -1;
+	if(keyframe_out == NULL) return -1; // return if keyframe_out is null
+
+	// set keyframe variables
+	//keyframe_out->data[0] = value[0];
+	//keyframe_out->data[1] = value[1];
+	//keyframe_out->data[2] = value[2];
+
+	keyframe_out->data = (a3_HierarchyPose*)value;
+	
+	keyframe_out->setDuration = a3keyframeSetDuration; // give keyframe appropriate setter function
+	keyframe_out->setDuration(keyframe_out, duration);
+
+	return 0;
 }
 
 
 // allocate clip pool
-a3i32 a3clipPoolCreate(a3_ClipPool* clipPool_out, const a3ui32 count)
+a3i32 a3clipPoolCreate(a3_ClipPool* clipPool_out, a3_KeyframePool* keyframePool, const a3ui32 count)
 {
-	return -1;
+	// default values for clips
+	const a3byte DEFAULT_CLIP_NAME[] = "Clip";
+	const a3ui32 DEFAULT_FIRST_INDEX = 0;
+
+	if(clipPool_out == NULL) return -1; // return if clipPool_out doesn't exist
+	if(keyframePool == NULL) return -1; // return if keyframePool doesn't exist
+
+	a3ui32 lastIndex = DEFAULT_FIRST_INDEX + keyframePool->count - 1; //Default last index should be the index of the last keyframe in the pool
+
+	clipPool_out->count = count; // set count
+
+	clipPool_out->clip = (a3_Clip*) malloc(sizeof(a3_Clip) * count); // create clip array
+
+	if(clipPool_out->clip == NULL) return -1;
+
+	for (a3ui32 i = 0; i < count; i++)
+	{
+		// init each clip with default values
+		a3clipInit((clipPool_out->clip + i), DEFAULT_CLIP_NAME, clipPool_out, keyframePool, DEFAULT_FIRST_INDEX, lastIndex);
+		
+		if ((clipPool_out->clip + i) == NULL) return -1; // return if clip is null
+		
+		(clipPool_out->clip + i)->index = i; //Log clips index in pool
+	}
+
+	return 0;
 }
 
 // release clip pool
 a3i32 a3clipPoolRelease(a3_ClipPool* clipPool)
 {
-	return -1;
+	if(clipPool == NULL) return -1; // return if clipPool doesn't exist
+
+	int returnCode = 0;
+
+	if (clipPool->clip == NULL) // only free clip array if it exists
+	{
+		returnCode = 1;
+	}
+	else
+	{
+		free(clipPool->clip);
+	}
+
+	//free(clipPool);
+
+	return returnCode;
 }
 
 // initialize clip with first and last indices
-a3i32 a3clipInit(a3_Clip* clip_out, const a3byte clipName[a3keyframeAnimation_nameLenMax], const a3_KeyframePool* keyframePool, const a3ui32 firstKeyframeIndex, const a3ui32 finalKeyframeIndex)
+a3i32 a3clipInit(a3_Clip* clip_out, const a3byte clipName[a3keyframeAnimation_nameLenMax], const a3_ClipPool* clipPool, const a3_KeyframePool* keyframePool, const a3ui32 firstKeyframeIndex, const a3ui32 finalKeyframeIndex)
 {
-	return -1;
+	const a3ui32 DEFAULT_TRANSITION_INDEX = 0;
+	void(*DEFAULT_FORWARD_TRANSITION) = a3terminusForwardPlayback;
+	void(*DEFAULT_BACKWARD_TRANSITION) = a3terminusReversePlayback;
+	void(*DEFAULT_NEXT_KEYFRAME) = a3getNextKeyframeFromNextClip;
+
+	if(clip_out == NULL) return -1; // return if clip_out doesn't exist
+
+	// copy passed in name to clip name
+	strcpy(clip_out->name, clipName);
+
+	// set variables
+	clip_out->keyframePool = keyframePool;
+	clip_out->firstKeyframeIndex = firstKeyframeIndex;
+	clip_out->lastKeyframeIndex = finalKeyframeIndex;
+	clip_out->keyframeCount = finalKeyframeIndex - firstKeyframeIndex + 1; // +1 since both final and first are included in pool
+
+	a3clipTransitionInit(&clip_out->forwardTransition, DEFAULT_TRANSITION_INDEX, clipPool, DEFAULT_FORWARD_TRANSITION, DEFAULT_NEXT_KEYFRAME);
+	a3clipTransitionInit(&clip_out->backwardTransition, DEFAULT_TRANSITION_INDEX, clipPool, DEFAULT_BACKWARD_TRANSITION, DEFAULT_NEXT_KEYFRAME);
+
+	a3clipCalculateDuration(clip_out);
+
+	if(firstKeyframeIndex > finalKeyframeIndex) return 1; // return warning if first index > final index
+
+	return 0;
+}
+
+a3i32 a3clipTransitionInit(a3_ClipTransition* clipTransition, const a3ui32 index, const a3_ClipPool* clipPool, void(*transitionFunction), void(*getKeyframe))
+{
+	if (clipTransition == NULL || clipPool == NULL) return -1;
+	
+	//Set values of each member
+	clipTransition->index = index;
+	clipTransition->clipPool = clipPool;
+	clipTransition->transitionFunction = transitionFunction;
+	clipTransition->getNextKeyframe = getKeyframe;
+
+	return 0;
 }
 
 // get clip index from pool
 a3i32 a3clipGetIndexInPool(const a3_ClipPool* clipPool, const a3byte clipName[a3keyframeAnimation_nameLenMax])
 {
+	if(clipPool == NULL) return -1; // return if clipPool is null
+
+	// loop through to find index of clip in pool
+	for (a3ui32 i = 0; i < clipPool->count; i++)
+	{
+		if (strcmp(clipPool->clip[i].name, clipName) == 0) // true if we've found the name we're looking for
+		{
+			return i;
+		}
+	}
+
 	return -1;
 }
 

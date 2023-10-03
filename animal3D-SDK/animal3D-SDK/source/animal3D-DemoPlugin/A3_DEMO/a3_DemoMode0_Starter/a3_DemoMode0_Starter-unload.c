@@ -26,6 +26,16 @@
 	********************************************
 */
 
+/*
+	animal3D SDK: Keyframe and Clip Controller Framework
+	By Dillon Drummond, Neo Kattan, Joseph Lyons
+
+	a3_DemoMode0_Starter-unload.c
+	Demo mode implementations: keyframe and clip controller
+
+	UNLOADING FOR KEYFRAME AND CLIP CONTROLLER
+*/
+
 //-----------------------------------------------------------------------------
 
 #include "../a3_DemoMode0_Starter.h"
@@ -37,7 +47,10 @@
 
 void a3starter_unload(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMode)
 {
-
+	//CLEANUP HERE - Dillon
+	/*a3clipControllerPoolRelease(&demoMode->clipCtrlPool);
+	a3clipPoolRelease(&demoMode->clipPool);
+	a3keyframePoolRelease(&demoMode->keyPool);*/
 }
 
 

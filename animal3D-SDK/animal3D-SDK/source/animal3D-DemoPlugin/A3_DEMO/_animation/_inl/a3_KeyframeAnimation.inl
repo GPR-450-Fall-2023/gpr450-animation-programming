@@ -22,9 +22,22 @@
 	Inline definitions for keyframe animation.
 */
 
+/*
+	animal3D SDK: Keyframe and Clip Controller Framework
+	By Dillon Drummond, Neo Kattan, Joseph Lyons
+
+	a3_KeyframeAnimation.inl
+	Inline definitions for clip
+*/
+
 #ifdef __ANIMAL3D_KEYFRAMEANIMATION_H
 #ifndef __ANIMAL3D_KEYFRAMEANIMATION_INL
 #define __ANIMAL3D_KEYFRAMEANIMATION_INL
+
+// These are here to provide this file access to NULL for error checking
+// https ://stackoverflow.com/questions/50379663/why-i-get-null-is-undefined-error
+#include <stdlib.h>
+#include <stdio.h>
 
 
 //-----------------------------------------------------------------------------
@@ -32,13 +45,59 @@
 // calculate clip duration as sum of keyframes' durations
 inline a3i32 a3clipCalculateDuration(a3_Clip* clip)
 {
-	return -1;
+	// return if anything needed is null
+	if(clip == NULL) return -1;
+	if(clip->keyframePool == NULL) return 1;
+
+	a3real duration = 0;
+
+	// add together all keyframe durations
+	for (a3ui32 i = clip->firstKeyframeIndex; i <= clip->lastKeyframeIndex; i++)
+	{
+		duration += clip->keyframePool->keyframe[i].duration;
+	}
+
+	// make sure duration is greater than minimum
+	if (duration < a3keyframeAnimation_minDuration)
+	{
+		clip->duration = a3keyframeAnimation_minDuration;
+	}
+	else
+	{
+		clip->duration = duration;
+	}
+
+	// set inverse
+	clip->durationInverse = 1 / clip->duration;
+
+	return 0;
 }
 
 // calculate keyframes' durations by distributing clip's duration
 inline a3i32 a3clipDistributeDuration(a3_Clip* clip, const a3real newClipDuration)
 {
-	return -1;
+	// return if anything needed is null
+	if(clip == NULL) return -1;
+	if(clip->keyframePool == NULL) return 1;
+	if(clip->keyframeCount <= 0) return 1;
+
+	a3_Keyframe* keyframe; // keyframe pointer we'll use for storage
+	
+	// calculate duration per keyframe
+	a3real durationPerKeyframe = newClipDuration / clip->keyframeCount;
+
+	// loop through each keyframe and set their duration
+	for (a3ui32 i = clip->firstKeyframeIndex; i <= clip->lastKeyframeIndex; i++)
+	{
+		keyframe = (clip->keyframePool->keyframe + i);
+		a3keyframeSetDuration(keyframe, durationPerKeyframe);
+	}
+
+	// do this in case durationPerKeyFrame ended up under min value
+	// if it did, each keyframe would automatically have set duration to min value
+	a3clipCalculateDuration(clip);
+
+	return 0;
 }
 
 

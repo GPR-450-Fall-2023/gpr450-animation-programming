@@ -152,7 +152,29 @@ inline a3i32 a3spatialPoseConvert(a3mat4* mat_out, const a3_SpatialPose* spatial
 		//Create rotation matrix
 		a3real4x4 rotation;
 		//a3real4x4SetIdentity(rotation);
-		a3real4x4SetRotateXYZ(rotation, spatialPose_in->rotation[0], spatialPose_in->rotation[1], spatialPose_in->rotation[2]);
+		switch (order)
+		{
+		case a3poseEulerOrder_xzy:
+			a3real4x4SetRotateXYZ(rotation, spatialPose_in->rotation[0], spatialPose_in->rotation[2], spatialPose_in->rotation[1]);
+			break;
+		case a3poseEulerOrder_yxz:
+			a3real4x4SetRotateXYZ(rotation, spatialPose_in->rotation[1], spatialPose_in->rotation[0], spatialPose_in->rotation[2]);
+			break;
+		case a3poseEulerOrder_yzx:
+			a3real4x4SetRotateXYZ(rotation, spatialPose_in->rotation[1], spatialPose_in->rotation[2], spatialPose_in->rotation[0]);
+			break;
+		case a3poseEulerOrder_zxy:
+			a3real4x4SetRotateXYZ(rotation, spatialPose_in->rotation[2], spatialPose_in->rotation[0], spatialPose_in->rotation[1]);
+			break;
+		case a3poseEulerOrder_zyx:
+			break;
+			a3real4x4SetRotateXYZ(rotation, spatialPose_in->rotation[2], spatialPose_in->rotation[1], spatialPose_in->rotation[0]);
+		case a3poseEulerOrder_xyz: //Default
+		default:
+			a3real4x4SetRotateXYZ(rotation, spatialPose_in->rotation[0], spatialPose_in->rotation[1], spatialPose_in->rotation[2]);
+			break;
+		}
+		
 		
 		//Original is just identity to start
 		//Calculate new mat_out with T*S*R
