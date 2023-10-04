@@ -36,6 +36,7 @@
 #define __ANIMAL3D_HIERARCHYSTATE_INL
 
 #include <stdio.h>
+#include <stdlib.h>
 
 
 //-----------------------------------------------------------------------------
@@ -149,6 +150,120 @@ inline a3i32 a3hierarchyPoseLerp(a3_HierarchyPose* pose_out, const a3_HierarchyP
 	return -1;
 }
 
+//step pose to given pose (just calls copy)
+inline a3i32 a3hierarchyPoseStep(a3_HierarchyPose* pose_out, const a3_HierarchyPose* pose0, const a3ui32 numNodes)
+{
+	if (pose_out && pose0 && numNodes)
+	{
+		a3hierarchyPoseCopy(pose_out, pose0, numNodes);
+
+		return 1;
+	}
+	return -1;
+}
+
+//Step pose to nearest
+inline a3i32 a3hierarchyPoseNearest(a3_HierarchyPose* pose_out, const a3_HierarchyPose* pose0, const a3_HierarchyPose* pose1,
+	const a3real parameter, const a3ui32 numNodes)
+{
+	if (pose_out && pose0 && numNodes)
+	{
+		//Latter half of keyframe, nearest is the next pose (pose1)
+		if (parameter > .5)
+		{
+			//Copy pose
+			a3hierarchyPoseCopy(pose_out, pose1, numNodes);
+		}
+		else
+		{
+			//Copy pose
+			a3hierarchyPoseCopy(pose_out, pose0, numNodes);
+		}
+		
+		return 1;
+	}
+	return -1;
+}
+
+//Smoothstep pose between given poses
+inline a3i32 a3hierarchyPoseSmoothstep(a3_HierarchyPose* pose_out, const a3_HierarchyPose* pose0, const a3_HierarchyPose* pose1,
+	const a3real parameter, const a3ui32 numNodes)
+{
+	if (pose_out && pose0 && pose1 && numNodes)
+	{
+		if (parameter >= 1) //Clamp to pose1
+		{
+			//Copy pose
+			a3hierarchyPoseCopy(pose_out, pose1, numNodes);
+		}
+		else if (parameter <= 0) //Clamp to pose0
+		{
+			//Copy pose
+			a3hierarchyPoseCopy(pose_out, pose0, numNodes);
+		}
+		else //Smoothstep between pose0 and pose1
+		{
+			//For each spatial pose
+			for (a3ui32 i = 0; i < numNodes; i++)
+			{
+				//Translation X
+				a3realSmoothstep(&((pose_out->sPoses + i)->translation[0]), (pose0->sPoses + i)->translation[0],
+					(pose1->sPoses + i)->translation[0], parameter);
+
+				//Translation Y
+				a3realSmoothstep(&((pose_out->sPoses + i)->translation[1]), (pose0->sPoses + i)->translation[1],
+					(pose1->sPoses + i)->translation[1], parameter);
+
+				//Translation Z
+				a3realSmoothstep(&((pose_out->sPoses + i)->translation[2]), (pose0->sPoses + i)->translation[2],
+					(pose1->sPoses + i)->translation[2], parameter);
+
+
+				//Rotation X
+				a3realSmoothstep(&((pose_out->sPoses + i)->rotation[0]), (pose0->sPoses + i)->rotation[0],
+					(pose1->sPoses + i)->rotation[0], parameter);
+
+				//Rotation Y
+				a3realSmoothstep(&((pose_out->sPoses + i)->rotation[1]), (pose0->sPoses + i)->rotation[1],
+					(pose1->sPoses + i)->rotation[1], parameter);
+
+				//Rotation Z
+				a3realSmoothstep(&((pose_out->sPoses + i)->rotation[2]), (pose0->sPoses + i)->rotation[2],
+					(pose1->sPoses + i)->rotation[2], parameter);
+
+
+				//Scale X
+				a3realSmoothstep(&((pose_out->sPoses + i)->scale[0]), (pose0->sPoses + i)->scale[0],
+					(pose1->sPoses + i)->scale[0], parameter);
+
+				//Scale Y
+				a3realSmoothstep(&((pose_out->sPoses + i)->scale[1]), (pose0->sPoses + i)->scale[1],
+					(pose1->sPoses + i)->scale[1], parameter);
+
+				//Scale Z
+				a3realSmoothstep(&((pose_out->sPoses + i)->scale[2]), (pose0->sPoses + i)->scale[2],
+					(pose1->sPoses + i)->scale[2], parameter);
+			}
+		}
+
+		return 1;
+	}
+	return -1;
+}
+
+//Executes smoothstep and returns value in val_out
+inline a3i32 a3realSmoothstep(a3real* val_out, const a3real val0, const a3real val1, const a3real parameter)
+{
+	if (val_out)
+	{
+		//Smoothstep is just lerp with a (clamped) smoothstep function in the parameter
+		*val_out = val0 + ((val1 - val0) * a3clamp(0, 1, (parameter * parameter * (3 - (2 * parameter))))); //(-2x^3 + 3x^2)
+
+		return 1;
+	}
+	return -1;
+}
+
 //Add translation, add rotation, multiply scale, applies delta pose changes to base pose and returns pose_out
 inline a3i32 a3hierarchyPoseConcat(a3_HierarchyPose* pose_out, const a3_HierarchyPose* basePose,
 	const a3_HierarchyPose* deltaPose, const a3ui32 numNodes)
@@ -159,7 +274,7 @@ inline a3i32 a3hierarchyPoseConcat(a3_HierarchyPose* pose_out, const a3_Hierarch
 		for (a3ui32 i = 0; i < numNodes; i++)
 		{
 			//Modify values not addresses, dereference
-			// 
+			
 			//Add translation
 			a3spatialPoseSetTranslation(&(pose_out->sPoses[i]),
 				(basePose->sPoses[i]).translation[0] + (deltaPose->sPoses[i]).translation[0],

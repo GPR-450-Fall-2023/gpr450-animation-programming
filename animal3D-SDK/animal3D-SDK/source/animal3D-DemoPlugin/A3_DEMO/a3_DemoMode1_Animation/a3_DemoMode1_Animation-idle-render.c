@@ -112,6 +112,14 @@ void a3animation_render_controls(a3_DemoState const* demoState, a3_DemoMode1_Ani
 		"Backward",
 	};
 
+	// interpolation function names
+	a3byte const* interps[4] = {
+		"Step",
+		"Nearest",
+		"Lerp",
+		"Smoothstep"
+	};
+
 	// constant color target names
 	a3byte const colorBufferText[] = "Color target 0: FINAL DISPLAY COLOR";
 	// constant depth target name
@@ -175,6 +183,9 @@ void a3animation_render_controls(a3_DemoState const* demoState, a3_DemoMode1_Ani
 
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"    Flip playback direction (b)");
+
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"    Interpolation Function (%u / %u) ('9' | '0'): %s", demoMode->interpFunc + 1, 4, interps[demoMode->interpFunc]);
 }
 
 

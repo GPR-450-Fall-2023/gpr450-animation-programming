@@ -200,11 +200,39 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		demoMode->hierarchy_skel->numNodes);*/
 
 	//Next Week
-	a3hierarchyPoseLerp(activeHS->objectSpace,	// use as temp storage
-		keyframe.data,
-		nextKeyframe.data,
-		clipCtrl->keyframeParameter,
-		demoMode->hierarchy_skel->numNodes);
+	switch (demoMode->interpFunc)
+	{
+	case interp_smoothstep:
+		a3hierarchyPoseSmoothstep(activeHS->objectSpace,	// use as temp storage
+			keyframe.data,
+			nextKeyframe.data,
+			clipCtrl->keyframeParameter,
+			demoMode->hierarchy_skel->numNodes);
+		break;
+
+	case interp_lerp:
+		a3hierarchyPoseLerp(activeHS->objectSpace,	// use as temp storage
+			keyframe.data,
+			nextKeyframe.data,
+			clipCtrl->keyframeParameter,
+			demoMode->hierarchy_skel->numNodes);
+		break;
+
+	case interp_nearest:
+		a3hierarchyPoseNearest(activeHS->objectSpace,	// use as temp storage
+			keyframe.data,
+			nextKeyframe.data,
+			clipCtrl->keyframeParameter,
+			demoMode->hierarchy_skel->numNodes);
+		break;
+
+	case interp_step:
+	default:
+		a3hierarchyPoseStep(activeHS->objectSpace,	// use as temp storage
+			keyframe.data,
+			demoMode->hierarchy_skel->numNodes);
+		break;
+	}
 
 	a3hierarchyPoseConcat(activeHS->localSpace,	// goal to calculate
 		baseHS->localSpace, // holds base pose

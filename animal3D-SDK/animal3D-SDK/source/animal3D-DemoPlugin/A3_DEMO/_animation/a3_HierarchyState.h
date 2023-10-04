@@ -141,6 +141,20 @@ a3i32 a3hierarchyPoseCopy(const a3_HierarchyPose* pose_out, const a3_HierarchyPo
 a3i32 a3hierarchyPoseLerp(a3_HierarchyPose* pose_out, const a3_HierarchyPose* pose0, const a3_HierarchyPose* pose1,
 	const a3real parameter, const a3ui32 numNodes);
 
+//step pose to given pose (just calls copy)
+a3i32 a3hierarchyPoseStep(a3_HierarchyPose* pose_out, const a3_HierarchyPose* pose0, const a3ui32 numNodes);
+
+//Step pose to nearest
+a3i32 a3hierarchyPoseNearest(a3_HierarchyPose* pose_out, const a3_HierarchyPose* pose0, const a3_HierarchyPose* pose1,
+	const a3real parameter, const a3ui32 numNodes);
+
+//Smoothstep pose between given poses
+a3i32 a3hierarchyPoseSmoothstep(a3_HierarchyPose* pose_out, const a3_HierarchyPose* pose0, const a3_HierarchyPose* pose1,
+	const a3real parameter, const a3ui32 numNodes);
+
+//Executes smoothstep and returns value in val_out
+a3i32 a3realSmoothstep(a3real* val_out, const a3real val0, const a3real val1, const a3real parameter);
+
 //Add translation, add rotation, multiply scale, applies delta pose changes to base pose and returns pose_out
 a3i32 a3hierarchyPoseConcat(a3_HierarchyPose* pose_out, const a3_HierarchyPose* basePose,
 	const a3_HierarchyPose* deltaPose, const a3ui32 numNodes);

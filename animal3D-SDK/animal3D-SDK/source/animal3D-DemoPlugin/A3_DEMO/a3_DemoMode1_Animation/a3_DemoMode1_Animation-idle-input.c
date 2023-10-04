@@ -84,6 +84,9 @@ void a3animation_input_keyCharPress(a3_DemoState const* demoState, a3_DemoMode1_
 
 		// toggle backwards
 		a3demoCtrlCaseToggle(demoMode->shouldRewind, 'b');
+
+		// toggle target
+		a3demoCtrlCasesLoop(demoMode->interpFunc, interp_max, '0', '9');
 	}
 }
 
