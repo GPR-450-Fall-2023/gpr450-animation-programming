@@ -137,6 +137,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 
 	a3_ClipController* clipCtrl = &demoMode->clipCtrlPool.clipControllers[demoMode->currentController];
 
+	//Set clip if switched to different one in input
 	if (demoMode->currentClip != demoMode->previousFrameClip) {
 		a3clipControllerSetClip(clipCtrl, clipCtrl->clipPool, demoMode->currentClip);
 	}
@@ -150,6 +151,11 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 			clipCtrl->playbackDirection = 0;
 		}
 		demoMode->togglePause = false;
+	}
+
+	if (demoMode->shouldRewind) {	//backward
+		clipCtrl->playbackDirection *= -1;
+		demoMode->shouldRewind = false;
 	}
 
 	//Clear terminal
@@ -168,38 +174,23 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	//////////////////////////////////////////////////////
 
 
-	// skeletal
+	// skeletal, determine current and next keyframe for interpolation
+	a3_Clip clip = clipCtrl->clipPool->clip[clipCtrl->clip]; //Current clip
+	a3_Keyframe keyframe = clip.keyframePool->keyframe[clipCtrl->keyframe]; //Current keyframe
+	a3_Keyframe nextKeyframe = keyframe;
 	if (demoState->updateAnimation && activeHS != baseHS)
 	{
-		if (demoMode->hierarchyStateIndex == state_one) // Just base pose, don't actually do anything
+		if (clipCtrl->playbackDirection >= 0) //Use getNextKeyframe of forwardTransition
 		{
-			i = 0; //Reset to base pose
-			activeHS->time = 0;
-
-
-			demoMode->hierarchyKeyPose_display[0] = (0) % (demoMode->hierarchyPoseGroup_skel->hPoseCount - 1);
-			demoMode->hierarchyKeyPose_display[1] = (1) % (demoMode->hierarchyPoseGroup_skel->hPoseCount - 1);
-			demoMode->hierarchyKeyPose_param = 0;
+			clip.forwardTransition.getNextKeyframe(clipCtrl, &nextKeyframe, 1);
 		}
-		else if(demoMode->hierarchyStateIndex == state_two) // User manually switches between different poses
-		{	
-			activeHS->time = (a3real)demoMode->hierarchyPoseIndex;
-
-			i = (a3ui32) activeHS->time;
-
-			demoMode->hierarchyKeyPose_display[0] = (i + 0) % (demoMode->hierarchyPoseGroup_skel->hPoseCount - 1);
-			demoMode->hierarchyKeyPose_display[1] = (i + 1) % (demoMode->hierarchyPoseGroup_skel->hPoseCount - 1);
-			demoMode->hierarchyKeyPose_param = (a3real)(activeHS->time - (a3real)i);
-		}
-		else // if hierarchyStateIndex == 3, Automatically plays lerp between poses
+		else if (clipCtrl->keyframe >= clipCtrl->firstKeyframeOfCurrentPlayback) //Use last clip backwardTransition.getNextKeyframe
 		{
-			i = (a3ui32)activeHS->time;
-
-			demoMode->hierarchyKeyPose_display[0] = (i + 0) % (demoMode->hierarchyPoseGroup_skel->hPoseCount - 1);
-			demoMode->hierarchyKeyPose_display[1] = (i + 1) % (demoMode->hierarchyPoseGroup_skel->hPoseCount - 1);
-			demoMode->hierarchyKeyPose_param = (a3real)(activeHS->time - (a3real)i);
-
-			activeHS->time += (a3real)dt;
+			clipCtrl->clipPool->clip[clipCtrl->lastClip].backwardTransition.getNextKeyframe(clipCtrl, &nextKeyframe, 1);
+		}
+		else //Use getNextKeyframe from this clips backwardTransition
+		{
+			clip.backwardTransition.getNextKeyframe(clipCtrl, &nextKeyframe, 1);
 		}
 	}
 
@@ -210,9 +201,9 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 
 	//Next Week
 	a3hierarchyPoseLerp(activeHS->objectSpace,	// use as temp storage
-		demoMode->hierarchyPoseGroup_skel->hPoses + demoMode->hierarchyKeyPose_display[0] + 1,
-		demoMode->hierarchyPoseGroup_skel->hPoses + demoMode->hierarchyKeyPose_display[1] + 1,
-		demoMode->hierarchyKeyPose_param,
+		keyframe.data,
+		nextKeyframe.data,
+		clipCtrl->keyframeParameter,
 		demoMode->hierarchy_skel->numNodes);
 
 	a3hierarchyPoseConcat(activeHS->localSpace,	// goal to calculate

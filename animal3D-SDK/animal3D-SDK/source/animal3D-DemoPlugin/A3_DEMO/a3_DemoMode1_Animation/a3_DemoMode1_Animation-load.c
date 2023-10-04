@@ -389,6 +389,16 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	// Initializing Keyframes
 	for (a3ui32 i = 0; i < demoMode->numOfKeyframes; i++) {
 		a3keyframeInit(&demoMode->keyPool.keyframe[i], (a3real)(1.0 / 60.0), (hierarchyPoseGroup->hPoses + i));
+		
+		/////////// TEST DATA /////////////
+		if (i == 0) continue; //Don't mess with the base pose
+		j = a3hierarchyGetNodeIndex(hierarchy, "skel:root");
+		a3real t = (a3real)(10.0 / 81.0) * i; //Evenly distrubute a translation from 0, 0, 0 to 10, 10, 10 across keyframes
+		a3real r = (a3real)(360 / 81.0) * i; //Evenly distrubute a rotation from 0 to 360 across keyframes
+		a3real s = (a3real)(4.0 / 81.0) * i; //Evenly distrubute a scale from 0 to 4 across keyframes
+		a3spatialPoseSetTranslation(&demoMode->keyPool.keyframe[i].data->sPoses[j], t, t, t);
+		a3spatialPoseSetRotation(&demoMode->keyPool.keyframe[i].data->sPoses[j], r, r, r);
+		a3spatialPoseSetScale(&demoMode->keyPool.keyframe[i].data->sPoses[j], s, s, s);
 	}
 
 	a3readClipPoolFromFile(&demoMode->clipPool, &demoMode->keyPool, filePath);
@@ -416,7 +426,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 
 	// Initializing Clip Controllers
 	a3clipControllerPoolCreate(&demoMode->clipCtrlPool, &demoMode->clipPool, 1);
-	demoMode->currentClip = 1;
+	demoMode->currentClip = 0;
 	a3clipControllerInit(&demoMode->clipCtrlPool.clipControllers[0], "Clip Controller 1", &demoMode->clipPool, demoMode->currentClip);
 	demoMode->currentController = 0;
 	demoMode->numOfControllers = 1;

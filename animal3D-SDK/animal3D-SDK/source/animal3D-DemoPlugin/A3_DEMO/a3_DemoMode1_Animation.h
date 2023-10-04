@@ -163,13 +163,14 @@ typedef enum a3_DemoMode1_Animation_PoseIndex				a3_DemoMode1_Animation_PoseInde
 		a3mat4 mvp_joint[128], mvp_bone[128], t_skin[128];
 		a3dualquat dq_skin[128];
 		a3ui32 hierarchyKeyPose_display[2];
-		a3real hierarchyKeyPose_param;
+		//a3real hierarchyKeyPose_param;
 
 		//Testing values
 		a3ui32 hierarchyStateIndex;
 		a3ui32 hierarchyPoseIndex;
 
 		a3boolean togglePause;
+		a3boolean shouldRewind;
 
 		// objects
 		union {

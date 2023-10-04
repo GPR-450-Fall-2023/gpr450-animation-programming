@@ -71,16 +71,19 @@ void a3animation_input_keyCharPress(a3_DemoState const* demoState, a3_DemoMode1_
 		a3demoCtrlCasesLoop(demoMode->pass, animation_pass_max, ')', '(');
 
 		// toggle hierarchy state
-		a3demoCtrlCasesLoop(demoMode->hierarchyStateIndex, state_max, '=', '-');
+		//a3demoCtrlCasesLoop(demoMode->hierarchyStateIndex, state_max, '=', '-');
 
 		//Flip through clips
-		a3demoCtrlCasesLoop(demoMode->hierarchyPoseIndex, pose_max, '\'', ';');
+		//a3demoCtrlCasesLoop(demoMode->hierarchyPoseIndex, pose_max, '\'', ';');
 
 		// toggle pause
 		a3demoCtrlCaseToggle(demoMode->togglePause, 'p');
 
 		//Loop through clips
 		a3demoCtrlCasesLoop(demoMode->currentClip, demoMode->numOfClips, 's', 'a');
+
+		// toggle backwards
+		a3demoCtrlCaseToggle(demoMode->shouldRewind, 'b');
 	}
 }
 

@@ -106,6 +106,12 @@ void a3animation_render_controls(a3_DemoState const* demoState, a3_DemoMode1_Ani
 		"Clip 4"
 	};
 
+	// playback direction names
+	a3byte const* playbackDirection[starter_playing_max] = {
+		"Forward",
+		"Backward",
+	};
+
 	// constant color target names
 	a3byte const colorBufferText[] = "Color target 0: FINAL DISPLAY COLOR";
 	// constant depth target name
@@ -156,16 +162,19 @@ void a3animation_render_controls(a3_DemoState const* demoState, a3_DemoMode1_Ani
 		"    Active camera (%u / %u) ('c' prev | next 'v'): %s", activeCamera + 1, animation_camera_max, cameraText[activeCamera]);
 
 	//Testing interface controls
-	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"    Active Hierarchy State (%u / %u) ('-' prev | next '='): %s", stateIndex + 1, state_max, stateText[stateIndex]);
-	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"    Active Hierarchy Pose (for State 2) (%u / %u) (';' prev | next '\''): %s", poseIndex + 1, pose_max, poseText[poseIndex]);
+	/*a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"    Active Hierarchy State (%u / %u) ('-' prev | next '='): %s", stateIndex + 1, state_max, stateText[stateIndex]);*/
+	/*a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"    Active Hierarchy Pose (for State 2) (%u / %u) (';' prev | next '\''): %s", poseIndex + 1, pose_max, poseText[poseIndex]);*/
 
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"    Play/pause controller playback (p)");
 
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"    Change Clip (a/s): %s", demoMode->clipPool.clip[demoMode->clipCtrlPool.clipControllers[demoMode->currentController].clip].name);
+
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"    Flip playback direction (b)");
 }
 
 
