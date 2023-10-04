@@ -149,7 +149,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 
 
 	// allocate poses
-	a3hierarchyPoseGroupCreate(hierarchyPoseGroup, hierarchy, 81, a3poseEulerOrder_xyz);
+	a3hierarchyPoseGroupCreate(hierarchyPoseGroup, hierarchy, 82, a3poseEulerOrder_xyz); //base pose + 81 keyframes (hardcode for now)
 
 	// define "bind pose" or "base pose" or the initial transformation 
 	//	description for each joint (not a literal transform)
@@ -378,7 +378,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	//////// Many values here are hardcoded for now /////////////
 	
 	// Creating Pool of Keyframes
-	demoMode->numOfKeyframes = 81;
+	demoMode->numOfKeyframes = 81; //Just keyframes, don't make a keyframe for base pose (i.e. 81 keyframes, 82 h poses)
 	a3keyframePoolCreate(&demoMode->keyPool, demoMode->numOfKeyframes, 0);
 
 	// Creating Pool of Clips
@@ -388,14 +388,14 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 
 	// Initializing Keyframes
 	for (a3ui32 i = 0; i < demoMode->numOfKeyframes; i++) {
-		a3keyframeInit(&demoMode->keyPool.keyframe[i], (a3real)(1.0 / 60.0), (hierarchyPoseGroup->hPoses + i));
+		a3keyframeInit(&demoMode->keyPool.keyframe[i], (a3real)(1.0 / 10.0), (hierarchyPoseGroup->hPoses + i + 1));
 		
 		/////////// TEST DATA /////////////
-		if (i == 0) continue; //Don't mess with the base pose
+		if (i == 0) continue;//Dont mess with base pose
 		j = a3hierarchyGetNodeIndex(hierarchy, "skel:root");
-		a3real t = (a3real)(10.0 / 81.0) * i; //Evenly distrubute a translation from 0, 0, 0 to 10, 10, 10 across keyframes
-		a3real r = (a3real)(360 / 81.0) * i; //Evenly distrubute a rotation from 0 to 360 across keyframes
-		a3real s = (a3real)(4.0 / 81.0) * i; //Evenly distrubute a scale from 0 to 4 across keyframes
+		a3real t = (a3real)(10.0 / demoMode->numOfKeyframes) * i; //Evenly distrubute a translation from 0, 0, 0 to 10, 10, 10 across keyframes
+		a3real r = (a3real)(360 / demoMode->numOfKeyframes) * i; //Evenly distrubute a rotation from 0 to 360 across keyframes
+		a3real s = (a3real)(((3.0 / demoMode->numOfKeyframes) * i) + 1); //Evenly distrubute a scale from 1 to 4 across keyframes
 		a3spatialPoseSetTranslation(&demoMode->keyPool.keyframe[i].data->sPoses[j], t, t, t);
 		a3spatialPoseSetRotation(&demoMode->keyPool.keyframe[i].data->sPoses[j], r, r, r);
 		a3spatialPoseSetScale(&demoMode->keyPool.keyframe[i].data->sPoses[j], s, s, s);
