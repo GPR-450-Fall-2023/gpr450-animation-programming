@@ -54,7 +54,8 @@ a3ui32 a3readClipPoolFromFile(a3_ClipPool* clipPool, a3_KeyframePool* keyframePo
 void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Animation* demoMode)
 {
 	// general counters
-	a3ui32 j, p;
+	//a3ui32 j;
+	//a3ui32 p;
 
 	// object pointers
 	a3_Hierarchy* hierarchy = 0;
@@ -78,6 +79,9 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	// not streaming or stream doesn't exist
 	else if (!demoState->streaming || a3fileStreamOpenWrite(fileStream, geometryStream))
 	{
+		// COMMENT STARTING HERE
+		/*
+		
 		// manually set up a skeleton
 		// first is the hierarchy: the general non-spatial relationship between bones
 		const a3ui32 jointCount = 32;
@@ -131,6 +135,9 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 
 		// save hierarchy assets
 		a3hierarchySaveBinary(hierarchy, fileStream);
+
+		*/
+		// COMMENT ENDING HERE
 	
 		// done
 		a3fileStreamClose(fileStream);
@@ -147,6 +154,8 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	hierarchyPoseGroup = demoMode->hierarchyPoseGroup_skel;
 	hierarchyPoseGroup->hierarchy = 0;
 
+	//COMMENT STARTING HERE
+	/*
 
 	// allocate poses
 	a3hierarchyPoseGroupCreate(hierarchyPoseGroup, hierarchy, 82, a3poseEulerOrder_xyz); //base pose + 81 keyframes (hardcode for now)
@@ -346,11 +355,16 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	spatialPose = hierarchyPoseGroup->hPoses[p].sPoses + j;
 	a3spatialPoseSetTranslation(spatialPose, +3.0f, +4.0f, +5.0f);	// shift whole figure by some vector
 
+	*/
+	//COMMENT ENDING HERE
 
 	// load from file
 	a3hierarchyPoseGroupLoadHTR(demoMode->hierarchyPoseGroup_skel, demoMode->hierarchy_skel,
 		"../../../../resource/animdata/egnaro/egnaro_skel_anim.htr");
 	
+	//COMMENT STARTING HERE
+	/*
+
 	// finally set up hierarchy states
 
 	// base state for skeleton
@@ -361,6 +375,9 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	a3hierarchyPoseConvert(hierarchyState->localSpace, hierarchy->numNodes, hierarchyPoseGroup->channel, hierarchyPoseGroup->order);
 	a3kinematicsSolveForward(hierarchyState);
 	a3hierarchyStateUpdateObjectInverse(hierarchyState);
+
+	*/
+	//COMMENT ENDING HERE
 
 	// real-time state
 
@@ -386,6 +403,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	demoMode->currentClip = 0;
 	a3clipPoolCreate(&demoMode->clipPool, &demoMode->keyPool, demoMode->numOfClips);
 
+	/*
 	// Initializing Keyframes
 	for (a3ui32 i = 0; i < demoMode->numOfKeyframes; i++) {
 		a3keyframeInit(&demoMode->keyPool.keyframe[i], (a3real)(1.0 / 2.0), (hierarchyPoseGroup->hPoses + i + 1));
@@ -400,6 +418,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		a3spatialPoseSetRotation(&demoMode->keyPool.keyframe[i].data->sPoses[j], r, r, r);
 		a3spatialPoseSetScale(&demoMode->keyPool.keyframe[i].data->sPoses[j], s, s, s);
 	}
+	*/
 
 	a3readClipPoolFromFile(&demoMode->clipPool, &demoMode->keyPool, filePath);
 

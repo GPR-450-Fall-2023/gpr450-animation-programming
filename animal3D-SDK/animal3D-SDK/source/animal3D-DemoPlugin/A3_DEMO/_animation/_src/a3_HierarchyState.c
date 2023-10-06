@@ -215,50 +215,132 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 		const a3byte newline[2] =	"\n";
 		a3byte* tok;
 
-		a3byte header[50];// = "Header";
+		a3byte header[50] = "Header";
 
 		a3i32 numSegments;
 		a3i32 numFrames;
+		a3f32 frameRate = 1;
+		a3f32 scaleFactor = 1;
 
-		//while (header[0] == 'H') {								//[Header]
-		//	if (line[0] != '#') {
-		//		fgets(line, 200, fptr);
-		//		tok = strtok(line, space);
-		//		if (tok[0] == 'F' && tok[4] == 'T') {				//FileType
-		//		}
-		//		else if (tok[0] == 'D' && tok[4] == 'T') {			//DataType
-		//		}
-		//		else if (tok[0] == 'F' && tok[4] == 'V') {			//FileVersion
-		//		}
-		//		else if (tok[0] == 'N' && tok[3] == 'S') {			//NumSegments
-		//			numSegments = atoi(strtok(0, newline));
-		//		}
-		//		else if (tok[0] == 'N' && tok[3] == 'F') {			//NumFrames
-		//			numFrames = atoi(strtok(0, newline));
-		//		}
-		//		else if (tok[0] == 'D' && tok[4] == 'F') {			//DataFrameRate
-		//		}
-		//		else if (tok[0] == 'E') {							//EulerRotationOrder
-		//		}
-		//		else if (tok[0] == 'C') {							//CalibrationUnits
-		//		}
-		//		else if (tok[0] == 'R') {							//RotationUnits
-		//		}
-		//		else if (tok[0] == 'G') {							//GlobalAxisofGravity
-		//		}
-		//		else if (tok[0] == 'B') {							//BoneLengthAxis
-		//		}
-		//		else if (tok[0] == 'S') {							//ScaleFactor
-		//		}
-		//	}
-		//}
+		a3i32 poseIndex = 0;
+
+		a3i32 jointIndex = 0;
+		a3i32 jointParentIndex = -1;
+		a3byte jointName[50];
+		a3byte jointParentName[50];
+
+		a3f32 translationxyz[3] = { 0,0,0 };
+		a3boolean degrees = true;
+		a3f32 rotationxyz[3] = { 0,0,0 };
+		a3f32 boneLength = 1;
+		a3byte boneLengthAxis = 'X';
+
+		a3_SpatialPoseEulerOrder eulerRotationOrder = 0;
+		a3_SpatialPose* spatialPose;
+
+		while (header[0] == 'H') {								//[Header]
+			fgets(line, 200, fptr);
+			if (line[0] != '#' && line[0] == '[') {
+				if (line[1] == 'S' && line[2] == 'e') {	//[SegmentNames&Hierarchy]
+					strcpy(header, "SegmentNames&Hierarchy");
+				}
+			}
+			if (line[0] != '#' && line[0] != '[') {
+				tok = strtok(line, space);
+				if (tok[0] == 'F' && tok[4] == 'T') {				//FileType
+				}
+				else if (tok[0] == 'D' && tok[4] == 'T') {			//DataType
+				}
+				else if (tok[0] == 'F' && tok[4] == 'V') {			//FileVersion
+				}
+				else if (tok[0] == 'N' && tok[3] == 'S') {			//NumSegments
+					numSegments = atoi(strtok(0, newline));
+				}
+				else if (tok[0] == 'N' && tok[3] == 'F') {			//NumFrames
+					numFrames = atoi(strtok(0, newline));
+					numFrames++;
+				}
+				else if (tok[0] == 'D' && tok[4] == 'F') {			//DataFrameRate
+					tok = strtok(0, newline);
+					frameRate = (a3f32)atof(tok);
+				}
+				else if (tok[0] == 'E') {							//EulerRotationOrder
+					tok = strtok(0, newline);
+					if (tok[0] == 'X') {
+						if (tok[1] == 'Y') {
+							eulerRotationOrder = 0;						//XYZ
+						}
+						else if (tok[1] == 'Z') {
+							eulerRotationOrder = 4;						//XZY
+						}
+						else {
+							printf("Error under Euler Rotation Order\n");
+						}
+					}
+					else if (tok[0] == 'Y') {
+						if (tok[1] == 'X') {
+							eulerRotationOrder = 3;						//YXZ
+						}
+						else if (tok[1] == 'Z') {
+							eulerRotationOrder = 1;						//YZX
+						}
+						else {
+							printf("Error under Euler Rotation Order\n");
+						}
+					}
+					else if (tok[0] == 'Z') {
+						if (tok[1] == 'X') {
+							eulerRotationOrder = 2;						//ZXY
+						}
+						else if (tok[1] == 'Y') {
+							eulerRotationOrder = 5;						//ZYX
+						}
+						else {
+							printf("Error under Euler Rotation Order\n");
+						}
+					}
+					else {
+						printf("Error under Euler Rotation Order\n");
+					}
+				}
+				else if (tok[0] == 'C') {							//CalibrationUnits
+				}
+				else if (tok[0] == 'R') {							//RotationUnits
+					tok = strtok(0, newline);
+					if (tok[0] == 'D') {
+						degrees = true;
+					}
+					else if (tok[0] == 'R') {
+						degrees = false;
+					}
+					else {
+						printf("Error under Rotation Units\n");
+					}
+				}
+				else if (tok[0] == 'G') {							//GlobalAxisofGravity
+				}
+				else if (tok[0] == 'B') {							//BoneLengthAxis
+					tok = strtok(0, newline);
+					boneLengthAxis = tok[0];
+				}
+				else if (tok[0] == 'S') {							//ScaleFactor
+					tok = strtok(0, newline);
+					scaleFactor = (a3f32)atof(tok);
+				}
+				else {
+					printf("Error under [Header]\n");
+				}
+			}
+		}
 		//a3byte fileData[numSegments][numFrames][8][50];
+		a3hierarchyCreate(hierarchy_out, numSegments, 0);
+		a3hierarchyPoseGroupCreate(poseGroup_out, hierarchy_out, numFrames, eulerRotationOrder);
 
 		//a3byte parentData[100][2][50];
 		//a3byte fileData[100][100][8][50];
-		a3i32 segmentCount = 0;
 
 		while (fgets(line, 200, fptr)) {
+			printf(line);
 			if (line[0] != '#') {
 				if (line[0] == '[') {
 					if (line[1] == 'H') {							//[Header]
@@ -266,11 +348,9 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 					}
 					else if (line[1] == 'S' && line[2] == 'e') {	//[SegmentNames&Hierarchy]
 						strcpy(header, "SegmentNames&Hierarchy");
-						segmentCount = 0;
 					}
 					else if (line[1] == 'B') {						//[BasePosition]
 						strcpy(header, "BasePosition");
-						segmentCount = 0;
 					}
 					else if (line[1] == 'E') {						//[EndOfFile]
 						fclose(fptr);
@@ -283,85 +363,103 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 					}
 				}
 				else {
-					if (header[0] == 'H') {								//Header
-						tok = strtok(line, space);
-						if (tok[0] == 'F' && tok[4] == 'T') {				//FileType
-
-						}
-						else if (tok[0] == 'D' && tok[4] == 'T') {			//DataType
-
-						}
-						else if (tok[0] == 'F' && tok[4] == 'V') {			//FileVersion
-
-						}
-						else if (tok[0] == 'N' && tok[3] == 'S') {			//NumSegments
-							numSegments = atoi(strtok(0, newline));
-						}
-						else if (tok[0] == 'N' && tok[3] == 'F') {			//NumFrames
-							numFrames = atoi(strtok(0, newline));
-						}
-						else if (tok[0] == 'D' && tok[4] == 'F') {			//DataFrameRate
-
-						}
-						else if (tok[0] == 'E') {							//EulerRotationOrder
-
-						}
-						else if (tok[0] == 'C') {							//CalibrationUnits
-
-						}
-						else if (tok[0] == 'R') {							//RotationUnits
-
-						}
-						else if (tok[0] == 'G') {							//GlobalAxisofGravity
-
-						}
-						else if (tok[0] == 'B') {							//BoneLengthAxis
-
-						}
-						else if (tok[0] == 'S') {							//ScaleFactor
-
-						}
-					}
-					else if (header[0] == 'S' && header[1] == 'e') {	//SegmentNames&Hierarchy
+					if (header[0] == 'S' && header[1] == 'e') {			//SegmentNames&Hierarchy
 						tok = strtok(line, tab);							//Object Name
-						//strcpy(parentData[segmentCount][0], tok);
+						strcpy(jointName, tok);
 						tok = strtok(0, newline);							//Parent Object Name
-						//strcpy(parentData[segmentCount][1], tok);
-						segmentCount++;
+						strcpy(jointParentName, tok);
+						jointParentIndex = a3hierarchyGetNodeIndex(hierarchy_out, jointParentName);
+						a3hierarchySetNode(hierarchy_out, jointIndex++, jointParentIndex, jointName);
 					}
 					else if (header[0] == 'B') {						//BasePosition
 						tok = strtok(line, tab);							//Object Name
-						//strcpy(fileData[segmentCount][0][0], tok);
+						strcpy(jointName, tok);
 						tok = strtok(0, tab);								//X Translation
-						//strcpy(fileData[segmentCount][0][1], tok);
+						translationxyz[0] = (a3real)atof(tok);
 						tok = strtok(0, tab);								//Y Translation
-						//strcpy(fileData[segmentCount][0][2], tok);
+						translationxyz[1] = (a3real)atof(tok);
 						tok = strtok(0, tab);								//Z Translation
-						//strcpy(fileData[segmentCount][0][3], tok);
+						translationxyz[2] = (a3real)atof(tok);
 						tok = strtok(0, tab);								//X Rotation
-						//strcpy(fileData[segmentCount][0][4], tok);
+						rotationxyz[0] = (a3real)atof(tok);
 						tok = strtok(0, tab);								//Y Rotation
-						//strcpy(fileData[segmentCount][0][5], tok);
+						rotationxyz[1] = (a3real)atof(tok);
 						tok = strtok(0, tab);								//Z Rotation
-						//strcpy(fileData[segmentCount][0][6], tok);
+						rotationxyz[2] = (a3real)atof(tok);
 						tok = strtok(0, newline);							//Bone Length
-						//strcpy(fileData[segmentCount][0][7], tok);
-						segmentCount++;
-					}
-					else {												//Bone Name
+						boneLength = scaleFactor * (a3real)atof(tok);
+
+						jointIndex = a3hierarchyGetNodeIndex(hierarchy_out, jointName);
+						spatialPose = poseGroup_out->hPoses[0].sPoses + jointIndex;
+
+						a3spatialPoseSetTranslation(spatialPose, translationxyz[0], translationxyz[1], translationxyz[2]);
 						
+						if (!degrees) {
+							rotationxyz[0] = rotationxyz[0] * (a3f32)180 / (a3f32)3.14159;
+							rotationxyz[1] = rotationxyz[1] * (a3f32)180 / (a3f32)3.14159;
+							rotationxyz[2] = rotationxyz[2] * (a3f32)180 / (a3f32)3.14159;
+						}
+						a3spatialPoseSetRotation(spatialPose, rotationxyz[0], rotationxyz[1], rotationxyz[2]);
+
+						if (boneLengthAxis == 'X') {
+							a3spatialPoseSetScale(spatialPose, boneLength, 1, 1);
+						}
+						else if (boneLengthAxis == 'Y') {
+							a3spatialPoseSetScale(spatialPose, 1, boneLength, 1);
+						}
+						else if (boneLengthAxis == 'Z') {
+							a3spatialPoseSetScale(spatialPose, 1, 1, boneLength);
+						}
+
+						poseGroup_out->channel[jointIndex] = a3poseChannel_orient_xyz | a3poseChannel_scale_xyz | a3poseChannel_translate_xyz;
+					}
+					else {												//Bone Specific Pose Data
+						strcpy(jointName, header);							//Object Name
+						tok = strtok(line, tab);							//Pose Index
+						poseIndex = atoi(tok);
+						tok = strtok(0, tab);								//X Translation
+						translationxyz[0] = (a3real)atof(tok);
+						tok = strtok(0, tab);								//Y Translation
+						translationxyz[1] = (a3real)atof(tok);
+						tok = strtok(0, tab);								//Z Translation
+						translationxyz[2] = (a3real)atof(tok);
+						tok = strtok(0, tab);								//X Rotation
+						rotationxyz[0] = (a3real)atof(tok);
+						tok = strtok(0, tab);								//Y Rotation
+						rotationxyz[1] = (a3real)atof(tok);
+						tok = strtok(0, tab);								//Z Rotation
+						rotationxyz[2] = (a3real)atof(tok);
+						tok = strtok(0, newline);							//Bone Length
+						boneLength = (a3real)atof(tok);
+
+						jointIndex = a3hierarchyGetNodeIndex(hierarchy_out, jointName);
+						spatialPose = poseGroup_out->hPoses[poseIndex+1].sPoses + jointIndex;
+						//DONT FORGET TO SET POSE DURATION (1/FRAMERATE)
+
+						a3spatialPoseSetTranslation(spatialPose, +translationxyz[0], +translationxyz[1], +translationxyz[2]);
+
+						if (!degrees) {
+							rotationxyz[0] = rotationxyz[0] * (a3f32)180 / (a3f32)3.14159;
+							rotationxyz[1] = rotationxyz[1] * (a3f32)180 / (a3f32)3.14159;
+							rotationxyz[2] = rotationxyz[2] * (a3f32)180 / (a3f32)3.14159;
+						}
+						a3spatialPoseSetRotation(spatialPose, +rotationxyz[0], +rotationxyz[1], +rotationxyz[2]);
+
+						if (boneLengthAxis == 'X') {
+							a3spatialPoseSetScale(spatialPose, boneLength, 1, 1);
+						}
+						else if (boneLengthAxis == 'Y') {
+							a3spatialPoseSetScale(spatialPose, 1, boneLength, 1);
+						}
+						else if (boneLengthAxis == 'Z') {
+							a3spatialPoseSetScale(spatialPose, 1, 1, boneLength);
+						}
 					}
 				}
 			}
 		}
-		//tok = strtok(line, s);
-		//tok = strtok(0, s);
-		//strcpy(fileData[lineCount][0], tok);
-		//tok = strtok(0, s);
-		//strcpy(fileData[lineCount][1], tok);
-		//tok = strtok(0, s);
-		//strcpy(fileData[lineCount][2], tok);
 	}
+	fclose(fptr);
 	return -1;
 }
 
