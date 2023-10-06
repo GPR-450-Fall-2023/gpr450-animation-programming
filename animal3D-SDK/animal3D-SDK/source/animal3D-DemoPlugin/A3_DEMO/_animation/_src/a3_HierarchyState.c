@@ -195,9 +195,111 @@ a3i32 a3hierarchyStateRelease(a3_HierarchyState *state)
 // load HTR file, read and store complete pose group and hierarchy
 a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hierarchy* hierarchy_out, const a3byte* resourceFilePath)
 {
-	if (poseGroup_out && !poseGroup_out->hPoseCount && hierarchy_out && !hierarchy_out->numNodes && resourceFilePath && *resourceFilePath)
-	{
+	if (poseGroup_out == NULL) {
+		printf("Error with poseGroup_out\n");
+	}
+	if (hierarchy_out == NULL) {
+		printf("Error with hierarchy_out\n");
+	}
+	FILE* fptr;
+	fptr = fopen(resourceFilePath, "r");
+	if (fptr == NULL) {
+		printf("Error with resourceFilePath");
+	}
 
+	//if (poseGroup_out && !poseGroup_out->hPoseCount && hierarchy_out && !hierarchy_out->numNodes && resourceFilePath && *resourceFilePath)
+	{
+		a3byte line[200];
+		const a3byte tab[2]	=	"	";
+		const a3byte space[2] = " ";
+		a3byte* tok;
+
+		a3byte header[50];
+
+		a3i32 numSegments;
+
+		while (fgets(line, 200, fptr)) {
+			if (line[0] != '#') {
+				if (line[0] == '[') {
+					if (line[1] == 'H') {							//[Header]
+						strcpy(header, "Header");
+					}
+					else if (line[1] == 'S' && line[2] == 'e') {	//[SegmentNames&Hierarchy]
+						strcpy(header, "SegmentNames&Hierarchy");
+					}
+					else if (line[1] == 'B') {						//[BasePosition]
+						strcpy(header, "BasePosition");
+					}
+					else if (line[1] == 'E') {						//[EndOfFile]
+						fclose(fptr);
+						return 1;
+					}
+					else {											//[Bone Name]
+						tok = strtok(line, "[");
+						tok = strtok(tok, "]");
+						strcpy(header, tok);
+					}
+				}
+				else {
+					if (header[0] == 'H') {								//Header
+						tok = strtok(line, space);
+						if (tok[0] == 'F' && tok[4] == 'T') {				//FileType
+							
+						}
+						else if (tok[0] == 'D' && tok[4] == 'T') {			//DataType
+							
+						}
+						else if (tok[0] == 'F' && tok[4] == 'V') {			//FileVersion
+							
+						}
+						else if (tok[0] == 'N' && tok[3] == 'S') {			//NumSegments
+							numSegments = atoi(strtok(0, "\n"));
+						}
+						else if (tok[0] == 'N' && tok[3] == 'F') {			//NumFrames
+							
+						}
+						else if (tok[0] == 'D' && tok[4] == 'F') {			//DataFrameRate
+							
+						}
+						else if (tok[0] == 'E') {							//EulerRotationOrder
+							
+						}
+						else if (tok[0] == 'C') {							//CalibrationUnits
+							
+						}
+						else if (tok[0] == 'R') {							//RotationUnits
+							
+						}
+						else if (tok[0] == 'G') {							//GlobalAxisofGravity
+							
+						}
+						else if (tok[0] == 'B') {							//BoneLengthAxis
+							
+						}
+						else if (tok[0] == 'S') {							//ScaleFactor
+							
+						}
+
+					}
+					else if (header[0] == 'S' && header[1] == 'e') {	//SegmentNames&Hierarchy
+						
+					}
+					else if (header[0] == 'B') {						//BasePosition
+						
+					}
+					else {												//Bone Name
+						
+					}
+				}
+			}
+		}
+		//tok = strtok(line, s);
+		//tok = strtok(0, s);
+		//strcpy(fileData[lineCount][0], tok);
+		//tok = strtok(0, s);
+		//strcpy(fileData[lineCount][1], tok);
+		//tok = strtok(0, s);
+		//strcpy(fileData[lineCount][2], tok);
 	}
 	return -1;
 }

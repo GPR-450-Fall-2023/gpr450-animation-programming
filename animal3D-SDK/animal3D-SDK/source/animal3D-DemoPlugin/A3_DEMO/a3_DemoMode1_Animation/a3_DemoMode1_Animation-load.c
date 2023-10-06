@@ -348,8 +348,8 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 
 
 	// load from file
-	//a3hierarchyPoseGroupLoadHTR(demoMode->hierarchyPoseGroup_skel, demoMode->hierarchy_skel,
-		//"../../../../resource/animdata/egnaro/egnaro_skel_anim.htr");
+	a3hierarchyPoseGroupLoadHTR(demoMode->hierarchyPoseGroup_skel, demoMode->hierarchy_skel,
+		"../../../../resource/animdata/egnaro/egnaro_skel_anim.htr");
 	
 	// finally set up hierarchy states
 
