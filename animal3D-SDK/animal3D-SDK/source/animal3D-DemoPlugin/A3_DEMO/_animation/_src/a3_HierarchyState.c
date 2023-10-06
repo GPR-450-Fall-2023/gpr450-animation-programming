@@ -210,13 +210,53 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 	//if (poseGroup_out && !poseGroup_out->hPoseCount && hierarchy_out && !hierarchy_out->numNodes && resourceFilePath && *resourceFilePath)
 	{
 		a3byte line[200];
-		const a3byte tab[2]	=	"	";
-		const a3byte space[2] = " ";
+		const a3byte tab[2]	=		"	";
+		const a3byte space[2] =		" ";
+		const a3byte newline[2] =	"\n";
 		a3byte* tok;
 
-		a3byte header[50];
+		a3byte header[50];// = "Header";
 
 		a3i32 numSegments;
+		a3i32 numFrames;
+
+		//while (header[0] == 'H') {								//[Header]
+		//	if (line[0] != '#') {
+		//		fgets(line, 200, fptr);
+		//		tok = strtok(line, space);
+		//		if (tok[0] == 'F' && tok[4] == 'T') {				//FileType
+		//		}
+		//		else if (tok[0] == 'D' && tok[4] == 'T') {			//DataType
+		//		}
+		//		else if (tok[0] == 'F' && tok[4] == 'V') {			//FileVersion
+		//		}
+		//		else if (tok[0] == 'N' && tok[3] == 'S') {			//NumSegments
+		//			numSegments = atoi(strtok(0, newline));
+		//		}
+		//		else if (tok[0] == 'N' && tok[3] == 'F') {			//NumFrames
+		//			numFrames = atoi(strtok(0, newline));
+		//		}
+		//		else if (tok[0] == 'D' && tok[4] == 'F') {			//DataFrameRate
+		//		}
+		//		else if (tok[0] == 'E') {							//EulerRotationOrder
+		//		}
+		//		else if (tok[0] == 'C') {							//CalibrationUnits
+		//		}
+		//		else if (tok[0] == 'R') {							//RotationUnits
+		//		}
+		//		else if (tok[0] == 'G') {							//GlobalAxisofGravity
+		//		}
+		//		else if (tok[0] == 'B') {							//BoneLengthAxis
+		//		}
+		//		else if (tok[0] == 'S') {							//ScaleFactor
+		//		}
+		//	}
+		//}
+		//a3byte fileData[numSegments][numFrames][8][50];
+
+		//a3byte parentData[100][2][50];
+		//a3byte fileData[100][100][8][50];
+		a3i32 segmentCount = 0;
 
 		while (fgets(line, 200, fptr)) {
 			if (line[0] != '#') {
@@ -226,9 +266,11 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 					}
 					else if (line[1] == 'S' && line[2] == 'e') {	//[SegmentNames&Hierarchy]
 						strcpy(header, "SegmentNames&Hierarchy");
+						segmentCount = 0;
 					}
 					else if (line[1] == 'B') {						//[BasePosition]
 						strcpy(header, "BasePosition");
+						segmentCount = 0;
 					}
 					else if (line[1] == 'E') {						//[EndOfFile]
 						fclose(fptr);
@@ -244,48 +286,67 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 					if (header[0] == 'H') {								//Header
 						tok = strtok(line, space);
 						if (tok[0] == 'F' && tok[4] == 'T') {				//FileType
-							
+
 						}
 						else if (tok[0] == 'D' && tok[4] == 'T') {			//DataType
-							
+
 						}
 						else if (tok[0] == 'F' && tok[4] == 'V') {			//FileVersion
-							
+
 						}
 						else if (tok[0] == 'N' && tok[3] == 'S') {			//NumSegments
-							numSegments = atoi(strtok(0, "\n"));
+							numSegments = atoi(strtok(0, newline));
 						}
 						else if (tok[0] == 'N' && tok[3] == 'F') {			//NumFrames
-							
+							numFrames = atoi(strtok(0, newline));
 						}
 						else if (tok[0] == 'D' && tok[4] == 'F') {			//DataFrameRate
-							
+
 						}
 						else if (tok[0] == 'E') {							//EulerRotationOrder
-							
+
 						}
 						else if (tok[0] == 'C') {							//CalibrationUnits
-							
+
 						}
 						else if (tok[0] == 'R') {							//RotationUnits
-							
+
 						}
 						else if (tok[0] == 'G') {							//GlobalAxisofGravity
-							
+
 						}
 						else if (tok[0] == 'B') {							//BoneLengthAxis
-							
+
 						}
 						else if (tok[0] == 'S') {							//ScaleFactor
-							
-						}
 
+						}
 					}
 					else if (header[0] == 'S' && header[1] == 'e') {	//SegmentNames&Hierarchy
-						
+						tok = strtok(line, tab);							//Object Name
+						//strcpy(parentData[segmentCount][0], tok);
+						tok = strtok(0, newline);							//Parent Object Name
+						//strcpy(parentData[segmentCount][1], tok);
+						segmentCount++;
 					}
 					else if (header[0] == 'B') {						//BasePosition
-						
+						tok = strtok(line, tab);							//Object Name
+						//strcpy(fileData[segmentCount][0][0], tok);
+						tok = strtok(0, tab);								//X Translation
+						//strcpy(fileData[segmentCount][0][1], tok);
+						tok = strtok(0, tab);								//Y Translation
+						//strcpy(fileData[segmentCount][0][2], tok);
+						tok = strtok(0, tab);								//Z Translation
+						//strcpy(fileData[segmentCount][0][3], tok);
+						tok = strtok(0, tab);								//X Rotation
+						//strcpy(fileData[segmentCount][0][4], tok);
+						tok = strtok(0, tab);								//Y Rotation
+						//strcpy(fileData[segmentCount][0][5], tok);
+						tok = strtok(0, tab);								//Z Rotation
+						//strcpy(fileData[segmentCount][0][6], tok);
+						tok = strtok(0, newline);							//Bone Length
+						//strcpy(fileData[segmentCount][0][7], tok);
+						segmentCount++;
 					}
 					else {												//Bone Name
 						
