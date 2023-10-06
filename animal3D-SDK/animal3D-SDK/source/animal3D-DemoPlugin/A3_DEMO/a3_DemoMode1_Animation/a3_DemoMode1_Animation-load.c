@@ -608,48 +608,48 @@ a3ui32 a3readClipPoolFromFile(a3_ClipPool* clipPool, a3_KeyframePool* keyframePo
 
 		//These are the default values used if prevIndex and nextIndex are -1
 		//backIndex is used for transitions going backwards and vice versa for forwardIndex
-		a3ui32 backIndex = (i - 1 + lineCount) % lineCount; //Ensure we start positive but don't mess up mod
-		a3ui32 forwardIndex = (i + 1) % lineCount; // Gets next index (loops around to beginning)
+		//a3ui32 backIndex = (i - 1 + lineCount) % lineCount; //Ensure we start positive but don't mess up mod
+		//a3ui32 forwardIndex = (i + 1) % lineCount; // Gets next index (loops around to beginning)
 
-		////Default to previous adjacent clip
-		//if (prevIndex < 0)
-		//{
-		//	prevIndex = (i - 1 + lineCount) % lineCount; //Ensure we start positive but don't mess up mod
-		//}
+		////Default to current clip
+		if (prevIndex < 0)
+		{
+			prevIndex = i;
+		}
 
-		////Default to next adjacent clip
-		//if (nextIndex < 0)
-		//{
-		//	nextIndex = (i + 1) % lineCount; // Gets next index (loops around to beginning)
-		//}
+		////Default to current clip
+		if (nextIndex < 0)
+		{
+			nextIndex = i;
+		}
 
 		//setting backward/previous transition
 		if (prevOp[0] == '|' && prevOp[1] == '\0') {
 			a3clipTransitionInit(&clipPool->clip[i].backwardTransition, prevIndex, clipPool, a3terminusPause, a3getNextKeyframeLoop);
 		}
 		else if (prevOp[0] == '>' && prevOp[1] == '\0') {
-			a3clipTransitionInit(&clipPool->clip[i].backwardTransition, (prevIndex < 0 ? forwardIndex : prevIndex), clipPool, a3terminusForwardPlayback, a3getNextKeyframeFromNextClip);
+			a3clipTransitionInit(&clipPool->clip[i].backwardTransition, prevIndex, clipPool, a3terminusForwardPlayback, a3getNextKeyframeFromNextClip);
 		}
 		else if (prevOp[0] == '>' && prevOp[1] == '|' && prevOp[2] == '\0') {
-			a3clipTransitionInit(&clipPool->clip[i].backwardTransition, (prevIndex < 0 ? forwardIndex : prevIndex), clipPool, a3terminusForwardPause, a3getNextKeyframeFromNextClip);
+			a3clipTransitionInit(&clipPool->clip[i].backwardTransition, prevIndex, clipPool, a3terminusForwardPause, a3getNextKeyframeFromNextClip);
 		}
 		else if (prevOp[0] == '<' && prevOp[1] == '\0') {
-			a3clipTransitionInit(&clipPool->clip[i].backwardTransition, (prevIndex < 0 ? backIndex : prevIndex), clipPool, a3terminusReversePlayback, a3getNextKeyframeFromNextClip);
+			a3clipTransitionInit(&clipPool->clip[i].backwardTransition, prevIndex, clipPool, a3terminusReversePlayback, a3getNextKeyframeFromNextClip);
 		}
 		else if (prevOp[0] == '<' && prevOp[1] == '|' && prevOp[2] == '\0') {
-			a3clipTransitionInit(&clipPool->clip[i].backwardTransition, (prevIndex < 0 ? backIndex : prevIndex), clipPool, a3terminusReversePause, a3getNextKeyframeFromNextClip);
+			a3clipTransitionInit(&clipPool->clip[i].backwardTransition, prevIndex, clipPool, a3terminusReversePause, a3getNextKeyframeFromNextClip);
 		}
 		else if (prevOp[0] == '>' && prevOp[1] == '>' && prevOp[2] == '\0') {
-			a3clipTransitionInit(&clipPool->clip[i].backwardTransition, (prevIndex < 0 ? forwardIndex : prevIndex), clipPool, a3terminusForwardSkipPlayback, a3getNextKeyframeSkipFromNextClip);
+			a3clipTransitionInit(&clipPool->clip[i].backwardTransition, prevIndex, clipPool, a3terminusForwardSkipPlayback, a3getNextKeyframeSkipFromNextClip);
 		}
 		else if (prevOp[0] == '>' && prevOp[1] == '>' && prevOp[2] == '|' && prevOp[3] == '\0') {
-			a3clipTransitionInit(&clipPool->clip[i].backwardTransition, (prevIndex < 0 ? forwardIndex : prevIndex), clipPool, a3terminusForwardSkipPause, a3getNextKeyframeSkipFromNextClip);
+			a3clipTransitionInit(&clipPool->clip[i].backwardTransition, prevIndex, clipPool, a3terminusForwardSkipPause, a3getNextKeyframeSkipFromNextClip);
 		}
 		else if (prevOp[0] == '<' && prevOp[1] == '<' && prevOp[2] == '\0') {
-			a3clipTransitionInit(&clipPool->clip[i].backwardTransition, (prevIndex < 0 ? backIndex : prevIndex), clipPool, a3terminusReverseSkipPlayback, a3getNextKeyframeSkipFromNextClip);
+			a3clipTransitionInit(&clipPool->clip[i].backwardTransition, prevIndex, clipPool, a3terminusReverseSkipPlayback, a3getNextKeyframeSkipFromNextClip);
 		}
 		else if (prevOp[0] == '<' && prevOp[1] == '<' && prevOp[2] == '|' && prevOp[3] == '\0') {
-			a3clipTransitionInit(&clipPool->clip[i].backwardTransition, (prevIndex < 0 ? backIndex : prevIndex), clipPool, a3terminusReverseSkipPause, a3getNextKeyframeSkipFromNextClip);
+			a3clipTransitionInit(&clipPool->clip[i].backwardTransition, prevIndex, clipPool, a3terminusReverseSkipPause, a3getNextKeyframeSkipFromNextClip);
 		}
 
 		//setting forward transition
@@ -657,28 +657,28 @@ a3ui32 a3readClipPoolFromFile(a3_ClipPool* clipPool, a3_KeyframePool* keyframePo
 			a3clipTransitionInit(&clipPool->clip[i].forwardTransition, nextIndex, clipPool, a3terminusPause, a3getNextKeyframeLoop);
 		}
 		else if (nextOp[0] == '>' && nextOp[1] == '\0') {
-			a3clipTransitionInit(&clipPool->clip[i].forwardTransition, (nextIndex < 0 ? forwardIndex : nextIndex), clipPool, a3terminusForwardPlayback, a3getNextKeyframeFromNextClip);
+			a3clipTransitionInit(&clipPool->clip[i].forwardTransition, nextIndex, clipPool, a3terminusForwardPlayback, a3getNextKeyframeFromNextClip);
 		}
 		else if (nextOp[0] == '>' && nextOp[1] == '|' && nextOp[2] == '\0') {
-			a3clipTransitionInit(&clipPool->clip[i].forwardTransition, (nextIndex < 0 ? forwardIndex : nextIndex), clipPool, a3terminusForwardPause, a3getNextKeyframeFromNextClip);
+			a3clipTransitionInit(&clipPool->clip[i].forwardTransition, nextIndex, clipPool, a3terminusForwardPause, a3getNextKeyframeFromNextClip);
 		}
 		else if (nextOp[0] == '<' && nextOp[1] == '\0') {
-			a3clipTransitionInit(&clipPool->clip[i].forwardTransition, (nextIndex < 0 ? backIndex : nextIndex), clipPool, a3terminusReversePlayback, a3getNextKeyframeFromNextClip);
+			a3clipTransitionInit(&clipPool->clip[i].forwardTransition, nextIndex, clipPool, a3terminusReversePlayback, a3getNextKeyframeFromNextClip);
 		}
 		else if (nextOp[0] == '<' && nextOp[1] == '|' && nextOp[2] == '\0') {
-			a3clipTransitionInit(&clipPool->clip[i].forwardTransition, (nextIndex < 0 ? backIndex : nextIndex), clipPool, a3terminusReversePause, a3getNextKeyframeFromNextClip);
+			a3clipTransitionInit(&clipPool->clip[i].forwardTransition, nextIndex, clipPool, a3terminusReversePause, a3getNextKeyframeFromNextClip);
 		}
 		else if (nextOp[0] == '>' && nextOp[1] == '>' && nextOp[2] == '\0') {
-			a3clipTransitionInit(&clipPool->clip[i].forwardTransition, (nextIndex < 0 ? forwardIndex : nextIndex), clipPool, a3terminusForwardSkipPlayback, a3getNextKeyframeSkipFromNextClip);
+			a3clipTransitionInit(&clipPool->clip[i].forwardTransition, nextIndex, clipPool, a3terminusForwardSkipPlayback, a3getNextKeyframeSkipFromNextClip);
 		}
 		else if (nextOp[0] == '>' && nextOp[1] == '>' && nextOp[2] == '|' && nextOp[3] == '\0') {
-			a3clipTransitionInit(&clipPool->clip[i].forwardTransition, (nextIndex < 0 ? forwardIndex : nextIndex), clipPool, a3terminusForwardSkipPause, a3getNextKeyframeSkipFromNextClip);
+			a3clipTransitionInit(&clipPool->clip[i].forwardTransition, nextIndex, clipPool, a3terminusForwardSkipPause, a3getNextKeyframeSkipFromNextClip);
 		}
 		else if (nextOp[0] == '<' && nextOp[1] == '<' && nextOp[2] == '\0') {
-			a3clipTransitionInit(&clipPool->clip[i].forwardTransition, (nextIndex < 0 ? backIndex : nextIndex), clipPool, a3terminusReverseSkipPlayback, a3getNextKeyframeSkipFromNextClip);
+			a3clipTransitionInit(&clipPool->clip[i].forwardTransition, nextIndex, clipPool, a3terminusReverseSkipPlayback, a3getNextKeyframeSkipFromNextClip);
 		}
 		else if (nextOp[0] == '<' && nextOp[1] == '<' && nextOp[2] == '|' && nextOp[3] == '\0') {
-			a3clipTransitionInit(&clipPool->clip[i].forwardTransition, (nextIndex < 0 ? backIndex : nextIndex), clipPool, a3terminusReverseSkipPause, a3getNextKeyframeSkipFromNextClip);
+			a3clipTransitionInit(&clipPool->clip[i].forwardTransition, nextIndex, clipPool, a3terminusReverseSkipPause, a3getNextKeyframeSkipFromNextClip);
 		}
 	}
 
