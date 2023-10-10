@@ -105,6 +105,8 @@ inline a3i32 a3hierarchyPoseCopy(const a3_HierarchyPose* pose_out, const a3_Hier
 			//Copying values not addresses
 			*(pose_out->sPoses + i) = *(pose_in->sPoses + i);
 		}
+
+		return 1;
 	}
 	return -1;
 }

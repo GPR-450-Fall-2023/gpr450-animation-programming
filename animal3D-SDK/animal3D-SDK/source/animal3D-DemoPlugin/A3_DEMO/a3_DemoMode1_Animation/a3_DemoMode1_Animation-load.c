@@ -381,7 +381,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 
 	// real-time state
 
-	for (a3ui32 i = 1; i < 4; i++)
+	for (a3ui32 i = 1; i < 2; i++)
 	{
 		hierarchyState = demoMode->hierarchyState_skel + i;
 		hierarchyState->hierarchy = 0;

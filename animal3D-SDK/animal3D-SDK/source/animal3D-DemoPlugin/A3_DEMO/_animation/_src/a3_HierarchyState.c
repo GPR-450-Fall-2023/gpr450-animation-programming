@@ -434,7 +434,7 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 						boneLength = (a3real)atof(tok);
 
 						jointIndex = a3hierarchyGetNodeIndex(hierarchy_out, jointName);
-						spatialPose = poseGroup_out->hPoses[poseIndex+1].sPoses + jointIndex;
+						spatialPose = &poseGroup_out->hPoses[poseIndex + 1].sPoses[jointIndex];// +jointIndex;
 						//DONT FORGET TO SET POSE DURATION (1/FRAMERATE)
 
 						a3spatialPoseSetTranslation(spatialPose, +translationxyz[0], +translationxyz[1], +translationxyz[2]);
