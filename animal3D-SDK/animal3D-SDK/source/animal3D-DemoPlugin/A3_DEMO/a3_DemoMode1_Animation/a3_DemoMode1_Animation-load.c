@@ -395,7 +395,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	//////// Many values here are hardcoded for now /////////////
 	
 	// Creating Pool of Keyframes
-	demoMode->numOfKeyframes = 81; //Just keyframes, don't make a keyframe for base pose (i.e. 81 keyframes, 82 h poses)
+	demoMode->numOfKeyframes = demoMode->hierarchyPoseGroup_skel->hPoseCount - 1; //Just keyframes, don't make a keyframe for base pose (i.e. 81 keyframes, 82 h poses)
 	a3keyframePoolCreate(&demoMode->keyPool, demoMode->numOfKeyframes, 0);
 
 	// Creating Pool of Clips
