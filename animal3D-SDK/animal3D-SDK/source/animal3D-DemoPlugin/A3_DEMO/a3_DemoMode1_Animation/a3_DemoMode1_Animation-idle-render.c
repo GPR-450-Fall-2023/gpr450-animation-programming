@@ -430,7 +430,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 			a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMV_nrm, 1, modelViewMat.mm);
 			a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, rgba4[i].v);
 			a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uIndex, 1, &j);
-			//a3vertexDrawableActivateAndRender(currentDrawable);
+			a3vertexDrawableActivateAndRender(currentDrawable);
 		}
 
 	}	break;
