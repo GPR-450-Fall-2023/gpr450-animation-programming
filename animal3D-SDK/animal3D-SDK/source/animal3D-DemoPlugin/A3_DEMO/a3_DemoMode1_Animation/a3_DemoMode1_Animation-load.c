@@ -359,11 +359,11 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	//COMMENT ENDING HERE
 
 	// load from file
-	a3hierarchyPoseGroupLoadHTR(demoMode->hierarchyPoseGroup_skel, demoMode->hierarchy_skel,
+	a3hierarchyPoseGroupLoadHTR(hierarchyPoseGroup, hierarchy,
 		"../../../../resource/animdata/egnaro/egnaro_skel_anim.htr");
 	
 	//COMMENT STARTING HERE
-	/*
+	
 
 	// finally set up hierarchy states
 
@@ -376,7 +376,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	a3kinematicsSolveForward(hierarchyState);
 	a3hierarchyStateUpdateObjectInverse(hierarchyState);
 
-	*/
+	
 	//COMMENT ENDING HERE
 
 	// real-time state
@@ -403,22 +403,22 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	demoMode->currentClip = 0;
 	a3clipPoolCreate(&demoMode->clipPool, &demoMode->keyPool, demoMode->numOfClips);
 
-	/*
+	
 	// Initializing Keyframes
 	for (a3ui32 i = 0; i < demoMode->numOfKeyframes; i++) {
 		a3keyframeInit(&demoMode->keyPool.keyframe[i], (a3real)(1.0 / 2.0), (hierarchyPoseGroup->hPoses + i + 1));
 		
 		/////////// TEST DATA /////////////
-		if (i == 0) continue;//Dont mess with base pose
-		j = a3hierarchyGetNodeIndex(hierarchy, "skel:root");
-		a3real t = (a3real)(10.0 / demoMode->numOfKeyframes) * i; //Evenly distrubute a translation from 0, 0, 0 to 10, 10, 10 across keyframes
-		a3real r = (a3real)(360 / demoMode->numOfKeyframes) * i; //Evenly distrubute a rotation from 0 to 360 across keyframes
-		a3real s = (a3real)(((3.0 / demoMode->numOfKeyframes) * i) + 1); //Evenly distrubute a scale from 1 to 4 across keyframes
-		a3spatialPoseSetTranslation(&demoMode->keyPool.keyframe[i].data->sPoses[j], t, t, t);
-		a3spatialPoseSetRotation(&demoMode->keyPool.keyframe[i].data->sPoses[j], r, r, r);
-		a3spatialPoseSetScale(&demoMode->keyPool.keyframe[i].data->sPoses[j], s, s, s);
+		//if (i == 0) continue;//Dont mess with base pose
+		//j = a3hierarchyGetNodeIndex(hierarchy, "skel:root");
+		//a3real t = (a3real)(10.0 / demoMode->numOfKeyframes) * i; //Evenly distrubute a translation from 0, 0, 0 to 10, 10, 10 across keyframes
+		//a3real r = (a3real)(360 / demoMode->numOfKeyframes) * i; //Evenly distrubute a rotation from 0 to 360 across keyframes
+		//a3real s = (a3real)(((3.0 / demoMode->numOfKeyframes) * i) + 1); //Evenly distrubute a scale from 1 to 4 across keyframes
+		//a3spatialPoseSetTranslation(&demoMode->keyPool.keyframe[i].data->sPoses[j], t, t, t);
+		//a3spatialPoseSetRotation(&demoMode->keyPool.keyframe[i].data->sPoses[j], r, r, r);
+		//a3spatialPoseSetScale(&demoMode->keyPool.keyframe[i].data->sPoses[j], s, s, s);
 	}
-	*/
+	
 
 	a3readClipPoolFromFile(&demoMode->clipPool, &demoMode->keyPool, filePath);
 

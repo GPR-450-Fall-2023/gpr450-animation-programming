@@ -217,8 +217,8 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 
 		a3byte header[50] = "Header";
 
-		a3i32 numSegments;
-		a3i32 numFrames;
+		a3i32 numSegments = 0;
+		a3i32 numFrames  = 0;
 		a3f32 frameRate = 1;
 		a3f32 scaleFactor = 1;
 
@@ -231,6 +231,7 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 
 		a3f32 translationxyz[3] = { 0,0,0 };
 		a3boolean degrees = true;
+		a3real radToDeg = (a3f32)180 / (a3f32)3.14159;
 		a3f32 rotationxyz[3] = { 0,0,0 };
 		a3f32 boneLength = 1;
 		a3byte boneLengthAxis = 'X';
@@ -340,7 +341,7 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 		//a3byte fileData[100][100][8][50];
 
 		while (fgets(line, 200, fptr)) {
-			printf(line);
+			//printf(line);
 			if (line[0] != '#') {
 				if (line[0] == '[') {
 					if (line[1] == 'H') {							//[Header]
@@ -439,9 +440,9 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 						a3spatialPoseSetTranslation(spatialPose, +translationxyz[0], +translationxyz[1], +translationxyz[2]);
 
 						if (!degrees) {
-							rotationxyz[0] = rotationxyz[0] * (a3f32)180 / (a3f32)3.14159;
-							rotationxyz[1] = rotationxyz[1] * (a3f32)180 / (a3f32)3.14159;
-							rotationxyz[2] = rotationxyz[2] * (a3f32)180 / (a3f32)3.14159;
+							rotationxyz[0] = rotationxyz[0] * radToDeg;
+							rotationxyz[1] = rotationxyz[1] * radToDeg;
+							rotationxyz[2] = rotationxyz[2] * radToDeg;
 						}
 						a3spatialPoseSetRotation(spatialPose, +rotationxyz[0], +rotationxyz[1], +rotationxyz[2]);
 
