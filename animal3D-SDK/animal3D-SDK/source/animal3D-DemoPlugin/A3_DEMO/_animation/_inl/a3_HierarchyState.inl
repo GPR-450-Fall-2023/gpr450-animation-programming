@@ -90,6 +90,8 @@ inline a3i32 a3hierarchyPoseConvert(const a3_HierarchyPose* pose_inout, const a3
 			a3spatialPoseConvert(&(pose_inout->sPoses + i)->transform, (pose_inout->sPoses + i),
 				channel[i], order);
 		}
+
+		return 1;
 	}
 	return -1;
 }

@@ -101,7 +101,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 
 	a3ui32 actualIndex = demoMode->hierarchyStateIndex + 1;
 
-	//Current hierarchy state that we are displaying and modifying
+	//Current hierarchy state that we are displaying and modifying				base state with the bind pose
 	a3_HierarchyState* activeHS = demoMode->hierarchyState_skel + actualIndex, *baseHS = demoMode->hierarchyState_skel;
 
 	// active camera

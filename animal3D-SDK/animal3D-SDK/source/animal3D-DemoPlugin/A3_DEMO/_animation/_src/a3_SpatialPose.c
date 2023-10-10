@@ -42,15 +42,18 @@ a3i32 a3spatialPoseInit(a3_SpatialPose* spatialPose, a3real3p translation, a3rea
 		//Set translation, default if null
 		if (translation)
 		{
-			spatialPose->translation[0] = translation[0];
+			/*spatialPose->translation[0] = translation[0];
 			spatialPose->translation[1] = translation[1];
-			spatialPose->translation[2] = translation[2];
+			spatialPose->translation[2] = translation[2];*/
+			a3spatialPoseSetTranslation(spatialPose, translation[0], translation[1], translation[2]);
 		}
 		else
 		{
-			spatialPose->translation[0] = 0;
+			/*spatialPose->translation[0] = 0;
 			spatialPose->translation[1] = 0;
-			spatialPose->translation[2] = 0;
+			spatialPose->translation[2] = 0;*/
+
+			a3spatialPoseSetTranslation(spatialPose, 0, 0, 0);
 		}
 
 		//Set rotation, default if null

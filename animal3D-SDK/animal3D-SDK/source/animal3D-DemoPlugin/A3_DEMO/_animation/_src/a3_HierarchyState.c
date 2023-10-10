@@ -291,10 +291,10 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 					}
 					else if (tok[0] == 'Z') {
 						if (tok[1] == 'X') {
-							eulerRotationOrder = 2;						//ZXY
+							eulerRotationOrder = a3poseEulerOrder_zxy;						//ZXY
 						}
 						else if (tok[1] == 'Y') {
-							eulerRotationOrder = 5;						//ZYX
+							eulerRotationOrder = a3poseEulerOrder_zyx;						//ZYX
 						}
 						else {
 							printf("Error under Euler Rotation Order\n");
@@ -413,6 +413,8 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 						}
 
 						poseGroup_out->channel[jointIndex] = a3poseChannel_orient_xyz | a3poseChannel_scale_xyz | a3poseChannel_translate_xyz;
+
+						//a3spatialPoseConvert(&spatialPose->transform, spatialPose, poseGroup_out->channel[jointIndex], poseGroup_out->order);
 					}
 					else {												//Bone Specific Pose Data
 						strcpy(jointName, header);							//Object Name
@@ -455,6 +457,8 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 						else if (boneLengthAxis == 'Z') {
 							a3spatialPoseSetScale(spatialPose, 1, 1, boneLength);
 						}
+
+						//a3spatialPoseConvert(&spatialPose->transform, spatialPose, poseGroup_out->channel[jointIndex], poseGroup_out->order);
 					}
 				}
 			}
