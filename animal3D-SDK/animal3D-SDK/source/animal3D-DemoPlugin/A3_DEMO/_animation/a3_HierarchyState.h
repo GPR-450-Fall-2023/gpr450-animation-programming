@@ -180,7 +180,7 @@ a3i32 a3hierarchyStateUpdateObjectBindToCurrent(a3_HierarchyState* activeHS, con
 //-----------------------------------------------------------------------------
 
 // load HTR file, read and store complete pose group and hierarchy
-a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hierarchy* hierarchy_out, const a3byte* resourceFilePath);
+a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hierarchy* hierarchy_out, const a3byte* resourceFilePath, a3real* framerate);
 
 // load BVH file, read and store complete pose group and hierarchy
 a3i32 a3hierarchyPoseGroupLoadBVH(a3_HierarchyPoseGroup* poseGroup_out, a3_Hierarchy* hierarchy_out, const a3byte* resourceFilePath);

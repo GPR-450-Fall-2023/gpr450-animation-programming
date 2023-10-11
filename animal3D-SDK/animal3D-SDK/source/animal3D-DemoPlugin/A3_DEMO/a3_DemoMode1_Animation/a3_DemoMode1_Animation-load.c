@@ -359,8 +359,9 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	//COMMENT ENDING HERE
 
 	// load from file
+	a3real framerate;
 	a3hierarchyPoseGroupLoadHTR(hierarchyPoseGroup, hierarchy,
-		"../../../../resource/animdata/egnaro/egnaro_skel_anim.htr");
+		"../../../../resource/animdata/egnaro/egnaro_skel_anim.htr", &framerate);
 	
 	//COMMENT STARTING HERE
 	
@@ -407,7 +408,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	// Initializing Keyframes
 	for (a3ui32 i = 0; i < demoMode->numOfKeyframes; i++) {
 		///////// TODO - Set keyframe duration based on framerate ////////
-		a3keyframeInit(&demoMode->keyPool.keyframe[i], (a3real)(1.0 / 2.0), (hierarchyPoseGroup->hPoses + i + 1));
+		a3keyframeInit(&demoMode->keyPool.keyframe[i], (a3real)(1.0 / framerate), (hierarchyPoseGroup->hPoses + i + 1));
 		
 		/////////// TEST DATA /////////////
 		//if (i == 0) continue;//Dont mess with base pose

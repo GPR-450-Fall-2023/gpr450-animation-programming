@@ -193,7 +193,7 @@ a3i32 a3hierarchyStateRelease(a3_HierarchyState *state)
 //-----------------------------------------------------------------------------
 
 // load HTR file, read and store complete pose group and hierarchy
-a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hierarchy* hierarchy_out, const a3byte* resourceFilePath)
+a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hierarchy* hierarchy_out, const a3byte* resourceFilePath, a3real* framerate)
 {
 	if (poseGroup_out == NULL) {
 		printf("Error with poseGroup_out\n");
@@ -219,7 +219,7 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 
 		a3i32 numSegments = 0;
 		a3i32 numFrames  = 0;
-		a3f32 frameRate = 1;
+		//a3f32 frameRate = 1;
 		a3f32 scaleFactor = 1;
 
 		a3i32 poseIndex = 0;
@@ -263,16 +263,16 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 				}
 				else if (tok[0] == 'D' && tok[4] == 'F') {			//DataFrameRate
 					tok = strtok(0, newline);
-					frameRate = (a3f32)atof(tok);
+					*framerate = (a3real)atof(tok);
 				}
 				else if (tok[0] == 'E') {							//EulerRotationOrder
 					tok = strtok(0, newline);
 					if (tok[0] == 'X') {
 						if (tok[1] == 'Y') {
-							eulerRotationOrder = 0;						//XYZ
+							eulerRotationOrder = a3poseEulerOrder_xyz;						//XYZ
 						}
 						else if (tok[1] == 'Z') {
-							eulerRotationOrder = 4;						//XZY
+							eulerRotationOrder = a3poseEulerOrder_xzy;						//XZY
 						}
 						else {
 							printf("Error under Euler Rotation Order\n");
@@ -280,10 +280,10 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 					}
 					else if (tok[0] == 'Y') {
 						if (tok[1] == 'X') {
-							eulerRotationOrder = 3;						//YXZ
+							eulerRotationOrder = a3poseEulerOrder_yxz;						//YXZ
 						}
 						else if (tok[1] == 'Z') {
-							eulerRotationOrder = 1;						//YZX
+							eulerRotationOrder = a3poseEulerOrder_yzx;						//YZX
 						}
 						else {
 							printf("Error under Euler Rotation Order\n");
@@ -402,6 +402,7 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 						}
 						a3spatialPoseSetRotation(spatialPose, rotationxyz[0], rotationxyz[1], rotationxyz[2]);
 
+						boneLength *= scaleFactor;
 						if (boneLengthAxis == 'X') {
 							a3spatialPoseSetScale(spatialPose, boneLength, 1, 1);
 						}
@@ -436,7 +437,7 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 						boneLength = (a3real)atof(tok);
 
 						jointIndex = a3hierarchyGetNodeIndex(hierarchy_out, jointName);
-						spatialPose = &poseGroup_out->hPoses[poseIndex + 1].sPoses[jointIndex];// +jointIndex;
+						spatialPose = &poseGroup_out->hPoses[poseIndex + 1].sPoses[jointIndex];	//+jointIndex;
 						//DONT FORGET TO SET POSE DURATION (1/FRAMERATE)
 
 						a3spatialPoseSetTranslation(spatialPose, +translationxyz[0], +translationxyz[1], +translationxyz[2]);
@@ -448,6 +449,7 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 						}
 						a3spatialPoseSetRotation(spatialPose, +rotationxyz[0], +rotationxyz[1], +rotationxyz[2]);
 
+						boneLength *= scaleFactor;
 						if (boneLengthAxis == 'X') {
 							a3spatialPoseSetScale(spatialPose, boneLength, 1, 1);
 						}
