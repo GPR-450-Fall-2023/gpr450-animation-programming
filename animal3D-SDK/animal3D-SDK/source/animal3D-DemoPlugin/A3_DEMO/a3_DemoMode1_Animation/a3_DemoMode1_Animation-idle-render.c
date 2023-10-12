@@ -179,7 +179,7 @@ void a3animation_render_controls(a3_DemoState const* demoState, a3_DemoMode1_Ani
 		"    Play/pause controller playback (p)");
 
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"    Change Clip (a/s): %s", demoMode->clipPool.clip[demoMode->clipCtrlPool.clipControllers[demoMode->currentController].clip].name);
+		"    Change Clip (7/8): %s", demoMode->clipPool.clip[demoMode->clipCtrlPool.clipControllers[demoMode->currentController].clip].name);
 
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"    Flip playback direction (b)");

@@ -80,7 +80,7 @@ void a3animation_input_keyCharPress(a3_DemoState const* demoState, a3_DemoMode1_
 		a3demoCtrlCaseToggle(demoMode->togglePause, 'p');
 
 		//Loop through clips
-		a3demoCtrlCasesLoop(demoMode->currentClip, demoMode->numOfClips, 's', 'a');
+		a3demoCtrlCasesLoop(demoMode->currentClip, demoMode->numOfClips, '8', '7');
 
 		// toggle backwards
 		a3demoCtrlCaseToggle(demoMode->shouldRewind, 'b');

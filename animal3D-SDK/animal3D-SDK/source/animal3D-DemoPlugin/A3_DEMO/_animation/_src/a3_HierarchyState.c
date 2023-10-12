@@ -309,7 +309,7 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 				else if (tok[0] == 'C') {							//CalibrationUnits
 					tok = strtok(0, newline);
 
-					if (tok[0] == 'm' && tok[0] == 'm')
+					if (tok[0] == 'm' && tok[1] == 'm')
 					{
 						calibrationUnitsFactor = (a3real).1;
 					}
@@ -404,13 +404,13 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 						a3spatialPoseSetTranslation(spatialPose, translationxyz[0], translationxyz[1], translationxyz[2]);
 						
 						if (!degrees) {
-							rotationxyz[0] = rotationxyz[0] * (a3f32)180 / (a3f32)3.14159;
-							rotationxyz[1] = rotationxyz[1] * (a3f32)180 / (a3f32)3.14159;
-							rotationxyz[2] = rotationxyz[2] * (a3f32)180 / (a3f32)3.14159;
+							rotationxyz[0] = rotationxyz[0] * radToDeg;
+							rotationxyz[1] = rotationxyz[1] * radToDeg;
+							rotationxyz[2] = rotationxyz[2] * radToDeg;
 						}
 						a3spatialPoseSetRotation(spatialPose, rotationxyz[0], rotationxyz[1], rotationxyz[2]);
 
-						boneLength *= scaleFactor;
+						//boneLength *= scaleFactor;
 						a3real s = scaleFactor;
 						if (boneLengthAxis == 'X') {
 							//a3spatialPoseSetScale(spatialPose, boneLength, 1, 1);
@@ -456,7 +456,7 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 							rotationxyz[1] = rotationxyz[1] * radToDeg;
 							rotationxyz[2] = rotationxyz[2] * radToDeg;
 						}
-						a3spatialPoseSetRotation(spatialPose, +rotationxyz[0], +rotationxyz[1], +rotationxyz[2]);
+						a3spatialPoseSetRotation(spatialPose, rotationxyz[0], rotationxyz[1], rotationxyz[2]);
 
 						boneLength *= scaleFactor;
 						a3real s = scaleFactor;
