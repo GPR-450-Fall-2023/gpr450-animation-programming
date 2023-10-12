@@ -105,6 +105,9 @@ struct a3_HierarchyState
 	//Pose representing object space transformations relative to root
 	a3_HierarchyPose* objectSpace;
 
+	//Precomputed inverse of object space matrix
+	a3_HierarchyPose* inverseObjectSpace;
+
 	// Time progressed in this state
 	a3real time;
 };

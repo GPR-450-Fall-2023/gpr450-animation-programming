@@ -136,7 +136,7 @@ a3i32 a3hierarchyStateCreate(a3_HierarchyState *state_out, const a3_Hierarchy *h
 	if (state_out && hierarchy && !state_out->hierarchy && hierarchy->nodes)
 	{
 		// determine memory requirements
-		const a3ui32 NUM_POSES = 3; // number of poses we are creating
+		const a3ui32 NUM_POSES = 4; // number of poses we are creating
 		const a3ui32 hSize = sizeof(a3_HierarchyPose);
 		const a3ui32 sSize = sizeof(a3_SpatialPose) * hierarchy->numNodes;
 		const a3ui32 dataSize = (hSize + sSize);
@@ -159,11 +159,14 @@ a3i32 a3hierarchyStateCreate(a3_HierarchyState *state_out, const a3_Hierarchy *h
 		state_out->localSpace->sPoses = (a3_SpatialPose*)((a3byte*)state_out->localSpace + hSize); //Skip over spatial pose array
 		state_out->objectSpace = (a3_HierarchyPose*)((a3byte*)state_out->localSpace->sPoses + sSize); //Two hposes past objectSpaceBindToCurrent
 		state_out->objectSpace->sPoses = (a3_SpatialPose*)((a3byte*)state_out->objectSpace + hSize); //Two hposes past objectSpaceBindToCurrent
+		state_out->inverseObjectSpace = (a3_HierarchyPose*)((a3byte*)state_out->objectSpace->sPoses + sSize); //Two hposes past objectSpace
+		state_out->inverseObjectSpace->sPoses = (a3_SpatialPose*)((a3byte*)state_out->inverseObjectSpace + hSize); //Two hposes past objectSpace
 
 		// reset all data
 		a3hierarchyPoseInitialize(state_out->objectSpaceBindToCurrent, 0);
 		a3hierarchyPoseInitialize(state_out->localSpace, 0);
 		a3hierarchyPoseInitialize(state_out->objectSpace, 0);
+		a3hierarchyPoseInitialize(state_out->inverseObjectSpace, 0);
 
 		// done
 		return 1;

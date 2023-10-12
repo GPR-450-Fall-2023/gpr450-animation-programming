@@ -336,11 +336,16 @@ inline a3i32 a3hierarchyPosePrint(a3_HierarchyPose* pose, const a3ui32 numNodes)
 // update inverse object-space matrices
 inline a3i32 a3hierarchyStateUpdateObjectInverse(const a3_HierarchyState *state)
 {
-	if (state)
+	if (state && state->inverseObjectSpace && state->objectSpace)
 	{
-		///////////////////////////////////////////////
-		// TODO - IMPLEMENT
-		///////////////////////////////////////////////
+		//Loop through all spatial poses and get inverse
+		for (a3ui32 i = 0; i < state->hierarchy->numNodes; i++)
+		{
+			a3real4x4GetInverse(
+				state->inverseObjectSpace->sPoses[i].transform.m, 
+				state->objectSpace->sPoses[i].transform.m
+			);
+		}
 
 		return 1;
 	}
@@ -352,11 +357,15 @@ inline a3i32 a3hierarchyStateUpdateObjectBindToCurrent(a3_HierarchyState* active
 {
 	if (activeHS && baseHS)
 	{
-		///////////////////////////////////////////////
-		// TODO - IMPLEMENT
-		///////////////////////////////////////////////
-
-		activeHS = (a3_HierarchyState*)baseHS;
+		//Loop through all spatial poses and get inverse
+		for (a3ui32 i = 0; i < activeHS->hierarchy->numNodes; i++)
+		{
+			a3real4x4Product(
+				activeHS->objectSpaceBindToCurrent->sPoses[i].transform.m, 
+				activeHS->objectSpace->sPoses[i].transform.m,
+				baseHS->inverseObjectSpace->sPoses[i].transform.m
+				);
+		}
 
 		return 1;
 	}

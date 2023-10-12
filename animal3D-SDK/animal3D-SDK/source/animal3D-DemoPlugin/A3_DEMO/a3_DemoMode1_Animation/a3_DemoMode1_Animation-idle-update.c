@@ -247,8 +247,8 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	a3kinematicsSolveForward(activeHS);
 
 	//Next Week
-	//a3hierarchyStateUpdateObjectInverse(activeHS);
-	//a3hierarchyStateUpdateObjectBindToCurrent(activeHS, baseHS);
+	a3hierarchyStateUpdateObjectInverse(activeHS);
+	a3hierarchyStateUpdateObjectBindToCurrent(activeHS, baseHS);
 
 
 	// prepare and upload graphics data

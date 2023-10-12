@@ -30,9 +30,6 @@ layout (location = 8) in vec4 aTexcoord;
 layout (location = 10) in vec4 aTangent;
 layout (location = 11) in vec4 aBitangent;
 
-layout (location = 7) in ivec4 aBlendIndex; //4 influences
-layout (location = 1) in vec4 aBlendWeight; //4 weights
-
 uniform mat4 uP;
 uniform mat4 uMV, uMV_nrm;
 uniform mat4 uAtlas;
@@ -45,42 +42,10 @@ out vbVertexData {
 flat out int vVertexID;
 flat out int vInstanceID;
 
-#define MAX_SKINMATS 128
-
-uniform ubTransformBlend
-{
-	mat4 skinMat[MAX_SKINMATS ];
-};
-
-
-vec4 skin(in vec4 v)
-{
-	vec4 v_out = vec4(0.0);
-
-	int j, i;
-	float w;
-	
-	//Actual equation
-	for(int i = 0; i < 4; i++)
-	{
-		j = aBlendIndex[i];
-		w = aBlendWeight[i];
-		v_out += skinMat[j] * (w * v);
-	}
-
-	return v_out;
-}
-
-
 void main()
 {
 	// DUMMY OUTPUT: directly assign input position to output position
 //	gl_Position = aPosition;
-
-	vec4 tangent = normalize(skin(vec4(aTangent.xyz, 0.0)));
-	vec4 bitangent = normalize(skin(vec4(aBitangent.xyz, 0.0)));
-	vec4 normal = normalize(skin(vec4(aNormal.xyz, 0.0)));
-	vec4 position = skin(aPosition);
 
 	vTangentBasis_view = uMV_nrm * mat4(aTangent, aBitangent, aNormal, vec4(0.0));
 	vTangentBasis_view[3] = uMV * aPosition;
@@ -90,5 +55,4 @@ void main()
 
 	vVertexID = gl_VertexID;
 	vInstanceID = gl_InstanceID;
-
 }
