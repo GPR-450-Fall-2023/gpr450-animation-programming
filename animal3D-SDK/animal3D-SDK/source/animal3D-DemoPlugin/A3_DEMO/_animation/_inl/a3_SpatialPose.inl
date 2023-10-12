@@ -167,7 +167,9 @@ inline a3i32 a3spatialPoseConvert(a3mat4* mat_out, const a3_SpatialPose* spatial
 			a3real4x4SetRotateXYZ(rotation, spatialPose_in->rotation[2], spatialPose_in->rotation[0], spatialPose_in->rotation[1]);
 			break;
 		case a3poseEulerOrder_zyx:
-			a3real4x4SetRotateXYZ(rotation, spatialPose_in->rotation[2], spatialPose_in->rotation[1], spatialPose_in->rotation[0]);
+			//a3real4x4SetRotateXYZ(rotation, spatialPose_in->rotation[2], spatialPose_in->rotation[1], spatialPose_in->rotation[0]);
+			a3real4x4SetRotateZYX(rotation, spatialPose_in->rotation[0], spatialPose_in->rotation[1], spatialPose_in->rotation[2]);
+			
 			break;
 		case a3poseEulerOrder_xyz: //Default
 		default:
