@@ -357,7 +357,7 @@ inline a3i32 a3hierarchyStateUpdateObjectBindToCurrent(a3_HierarchyState* active
 {
 	if (activeHS && baseHS)
 	{
-		//Loop through all spatial poses and get inverse
+		//Loop through all spatial poses and get delta spatial pose transform * inverse base pose transform
 		for (a3ui32 i = 0; i < activeHS->hierarchy->numNodes; i++)
 		{
 			a3real4x4Product(

@@ -49,7 +49,7 @@ flat out int vInstanceID;
 
 uniform ubTransformBlend
 {
-	mat4 skinMat[MAX_SKINMATS ];
+	mat4 skinMat[MAX_SKINMATS];
 };
 
 
