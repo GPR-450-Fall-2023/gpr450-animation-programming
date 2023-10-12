@@ -159,7 +159,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	}
 
 	//Clear terminal
-	system("cls");
+	//system("cls");
 
 	//Update all controllers
 	for (a3ui32 index = 0; index < demoMode->clipCtrlPool.count; index++)
@@ -246,7 +246,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 
 	a3kinematicsSolveForward(activeHS);
 
-	//Next Week
+	//Skinning data
 	a3hierarchyStateUpdateObjectInverse(activeHS);
 	a3hierarchyStateUpdateObjectBindToCurrent(activeHS, baseHS);
 

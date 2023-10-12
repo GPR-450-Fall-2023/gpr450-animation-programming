@@ -65,7 +65,7 @@ vec4 skin(in vec4 v)
 	{
 		j = aBlendIndex[i];
 		w = aBlendWeight[i];
-		v_out += skinMat[j] * (w * v);
+		v_out += (skinMat[j] * v) * w;
 	}
 
 	return v_out;
@@ -82,8 +82,8 @@ void main()
 	vec4 normal = normalize(skin(vec4(aNormal.xyz, 0.0)));
 	vec4 position = skin(aPosition);
 
-	vTangentBasis_view = uMV_nrm * mat4(aTangent, aBitangent, aNormal, vec4(0.0));
-	vTangentBasis_view[3] = uMV * aPosition;
+	vTangentBasis_view = uMV_nrm * mat4(tangent, bitangent, normal, vec4(0.0));
+	vTangentBasis_view[3] = uMV * position;
 	gl_Position = uP * vTangentBasis_view[3];
 	
 	vTexcoord_atlas = uAtlas * aTexcoord;

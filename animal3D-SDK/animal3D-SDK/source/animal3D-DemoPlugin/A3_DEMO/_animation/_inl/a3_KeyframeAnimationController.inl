@@ -82,7 +82,7 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 		{
 			//Do nothing
 			resolved = true;
-			printf("Playhead Paused - ");
+			//printf("Playhead Paused - ");
 		}
 		else if (clipCtrl->playbackDirection > 0 //Have to be moving forward
 			&& clipCtrl->keyframeTime >= keyframe.duration) //Playhead is past keyframe end - Forward Case 3 and 4
@@ -113,7 +113,7 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 				clipCtrl->keyframe++;
 				clipCtrl->keyframeTime = keyframeDiff;
 
-				printf("Playhead Forward Skip - ");
+				//printf("Playhead Forward Skip - ");
 			}
 		}
 		else if (clipCtrl->keyframeTime < 0) //playhead passed keyframe end - Backward - Case 6 and 7
@@ -144,7 +144,7 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 				clipCtrl->keyframeTime = clipCtrl->keyframeTime + nextFrame.duration;
 
 				//For debugging/testing only
-				printf("Playhead Backward Skip - ");
+				//printf("Playhead Backward Skip - ");
 			}
 		}
 		else //Case 2 and 5 - forward and backward move (do nothing else)
@@ -155,11 +155,11 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 			//For debugging/testing only
 			if (clipCtrl->playbackDirection > 0)
 			{
-				printf("Playhead moved forward - ");
+				//printf("Playhead moved forward - ");
 			}
 			else
 			{
-				printf("Playhead moved backward - ");
+				//printf("Playhead moved backward - ");
 			}
 		}
 
@@ -183,8 +183,8 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 	a3lerpKeyframeData(clipCtrl, lerpData);
 
 	//For debugging/testing only, prints out clipCtrl info
-	printf("\nClip Name: %s\nClip Time: %f\nClip Duration: %f\nClip Normalized: %f\n\nKeyframe Index: %i\nKeyframeTime: %f\nKeyframe Duration: %f\nKeyframe Normalized: %f\n", clip.name, clipCtrl->clipTime, clip.duration, clipCtrl->clipParameter, clipCtrl->keyframe, clipCtrl->keyframeTime, keyframe.duration, clipCtrl->keyframeParameter);
-	printf("\n------ Update Finished------\n\n");
+	//printf("\nClip Name: %s\nClip Time: %f\nClip Duration: %f\nClip Normalized: %f\n\nKeyframe Index: %i\nKeyframeTime: %f\nKeyframe Duration: %f\nKeyframe Normalized: %f\n", clip.name, clipCtrl->clipTime, clip.duration, clipCtrl->clipParameter, clipCtrl->keyframe, clipCtrl->keyframeTime, keyframe.duration, clipCtrl->keyframeParameter);
+	//printf("\n------ Update Finished------\n\n");
 
 	return 0;
 }
