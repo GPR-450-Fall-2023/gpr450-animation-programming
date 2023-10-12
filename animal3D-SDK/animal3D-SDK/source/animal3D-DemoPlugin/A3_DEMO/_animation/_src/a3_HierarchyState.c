@@ -236,6 +236,8 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 		a3f32 boneLength = 1;
 		a3byte boneLengthAxis = 'X';
 
+		a3real calibrationUnitsFactor = 1;
+
 		a3_SpatialPoseEulerOrder eulerRotationOrder = 0;
 		a3_SpatialPose* spatialPose;
 
@@ -305,6 +307,12 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 					}
 				}
 				else if (tok[0] == 'C') {							//CalibrationUnits
+					tok = strtok(0, newline);
+
+					if (tok[0] == 'm' && tok[0] == 'm')
+					{
+						calibrationUnitsFactor = (a3real).1;
+					}
 				}
 				else if (tok[0] == 'R') {							//RotationUnits
 					tok = strtok(0, newline);
@@ -376,11 +384,11 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 						tok = strtok(line, tab);							//Object Name
 						strcpy(jointName, tok);
 						tok = strtok(0, tab);								//X Translation
-						translationxyz[0] = (a3real)atof(tok);
+						translationxyz[0] = (a3real)atof(tok) * calibrationUnitsFactor;
 						tok = strtok(0, tab);								//Y Translation
-						translationxyz[1] = (a3real)atof(tok);
+						translationxyz[1] = (a3real)atof(tok) * calibrationUnitsFactor;
 						tok = strtok(0, tab);								//Z Translation
-						translationxyz[2] = (a3real)atof(tok);
+						translationxyz[2] = (a3real)atof(tok) * calibrationUnitsFactor;
 						tok = strtok(0, tab);								//X Rotation
 						rotationxyz[0] = (a3real)atof(tok);
 						tok = strtok(0, tab);								//Y Rotation
@@ -403,15 +411,17 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 						a3spatialPoseSetRotation(spatialPose, rotationxyz[0], rotationxyz[1], rotationxyz[2]);
 
 						boneLength *= scaleFactor;
+						a3real s = scaleFactor;
 						if (boneLengthAxis == 'X') {
-							a3spatialPoseSetScale(spatialPose, boneLength, 1, 1);
+							//a3spatialPoseSetScale(spatialPose, boneLength, 1, 1);
 						}
 						else if (boneLengthAxis == 'Y') {
-							a3spatialPoseSetScale(spatialPose, 1, boneLength, 1);
+							//a3spatialPoseSetScale(spatialPose, 1, boneLength, 1);
 						}
 						else if (boneLengthAxis == 'Z') {
-							a3spatialPoseSetScale(spatialPose, 1, 1, boneLength);
+							//a3spatialPoseSetScale(spatialPose, 1, 1, boneLength);
 						}
+						a3spatialPoseSetScale(spatialPose, s, s, s);
 
 						poseGroup_out->channel[jointIndex] = a3poseChannel_orient_xyz | a3poseChannel_scale_xyz | a3poseChannel_translate_xyz;
 
@@ -422,11 +432,11 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 						tok = strtok(line, tab);							//Pose Index
 						poseIndex = atoi(tok);
 						tok = strtok(0, tab);								//X Translation
-						translationxyz[0] = (a3real)atof(tok);
+						translationxyz[0] = (a3real)atof(tok) * calibrationUnitsFactor;
 						tok = strtok(0, tab);								//Y Translation
-						translationxyz[1] = (a3real)atof(tok);
+						translationxyz[1] = (a3real)atof(tok) * calibrationUnitsFactor;
 						tok = strtok(0, tab);								//Z Translation
-						translationxyz[2] = (a3real)atof(tok);
+						translationxyz[2] = (a3real)atof(tok) * calibrationUnitsFactor;
 						tok = strtok(0, tab);								//X Rotation
 						rotationxyz[0] = (a3real)atof(tok);
 						tok = strtok(0, tab);								//Y Rotation
@@ -449,15 +459,18 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 						a3spatialPoseSetRotation(spatialPose, +rotationxyz[0], +rotationxyz[1], +rotationxyz[2]);
 
 						boneLength *= scaleFactor;
+						a3real s = scaleFactor;
 						if (boneLengthAxis == 'X') {
-							a3spatialPoseSetScale(spatialPose, boneLength, 1, 1);
+							//a3spatialPoseSetScale(spatialPose, boneLength, 1, 1);
 						}
 						else if (boneLengthAxis == 'Y') {
-							a3spatialPoseSetScale(spatialPose, 1, boneLength, 1);
+							//a3spatialPoseSetScale(spatialPose, 1, boneLength, 1);
 						}
 						else if (boneLengthAxis == 'Z') {
-							a3spatialPoseSetScale(spatialPose, 1, 1, boneLength);
+							//a3spatialPoseSetScale(spatialPose, 1, 1, boneLength);
 						}
+
+						a3spatialPoseSetScale(spatialPose, s, s, s);
 
 						//a3spatialPoseConvert(&spatialPose->transform, spatialPose, poseGroup_out->channel[jointIndex], poseGroup_out->order);
 					}
