@@ -1,0 +1,11 @@
+#----------------------------------------
+# animal3D by D. Buckstein
+# Animation Clip Set File Format
+#----------------------------------------
+
+# Animations for Maya skeleton
+
+# animations
+# @ clip_name	duration_s	first_frame	last_frame	reverse_transition	forward_transition	comments (ignored)                                   
+@ 	basepose	0.0	0		0		|			|
+@ 	playAnim	4.0	0		48		<<			>
