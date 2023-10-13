@@ -74,7 +74,7 @@ vec4 skin(in vec4 v)
 	{
 		j = aBlendIndex[i];
 		w = aBlendWeight[i];
-		v_out += (skinMat[j] * v) * w;
+		v_out += skinMat[j] * (v * w);
 	}
 
 	return v_out;
