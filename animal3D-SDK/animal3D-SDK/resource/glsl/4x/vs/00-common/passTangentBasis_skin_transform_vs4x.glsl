@@ -22,16 +22,23 @@
 	Calculate and pass tangent basis with skinning.
 */
 
+/*
+	animal3D SDK: Keyframe and Clip Controller Framework
+	By Dillon Drummond, Neo Kattan, Joseph Lyons
+
+	passTangentBasis_skin_transform_vs4x.glsl
+	Skinning for egnaro
+*/
+
 #version 450
 
 layout (location = 0) in vec4 aPosition;
+layout (location = 1) in vec4 aBlendWeight; //4 weights
 layout (location = 2) in vec4 aNormal;
+layout (location = 7) in ivec4 aBlendIndex; //4 influences
 layout (location = 8) in vec4 aTexcoord;
 layout (location = 10) in vec4 aTangent;
 layout (location = 11) in vec4 aBitangent;
-
-layout (location = 7) in ivec4 aBlendIndex; //4 influences
-layout (location = 1) in vec4 aBlendWeight; //4 weights
 
 uniform mat4 uP;
 uniform mat4 uMV, uMV_nrm;
@@ -61,7 +68,7 @@ vec4 skin(in vec4 v)
 	float w;
 	
 	//Actual equation
-	for(int i = 0; i < 4; i++)
+	for(i = 0; i < 4; i++)
 	{
 		j = aBlendIndex[i];
 		w = aBlendWeight[i];
