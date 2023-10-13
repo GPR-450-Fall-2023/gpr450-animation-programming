@@ -194,12 +194,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		}
 	}
 
-	//Step instead of lerp for now
-	/*a3hierarchyPoseCopy(activeHS->objectSpace,
-		demoMode->hierarchyPoseGroup_skel->hPoses + demoMode->hierarchyKeyPose_display[0] + 1,
-		demoMode->hierarchy_skel->numNodes);*/
-
-	//Next Week
+	//Interpolation
 	switch (demoMode->interpFunc)
 	{
 	case interp_smoothstep:
@@ -234,16 +229,19 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		break;
 	}
 
+	//Combine matrices
 	a3hierarchyPoseConcat(activeHS->localSpace,	// goal to calculate
 		baseHS->localSpace, // holds base pose
 		activeHS->objectSpace, // temp storage
 		demoMode->hierarchy_skel->numNodes);
 
+	//Create transform matrices
 	a3hierarchyPoseConvert(activeHS->localSpace,
 		demoMode->hierarchy_skel->numNodes,
 		demoMode->hierarchyPoseGroup_skel->channel,
 		demoMode->hierarchyPoseGroup_skel->order);
 
+	//Solve for kinematics
 	a3kinematicsSolveForward(activeHS);
 
 	//Skinning data

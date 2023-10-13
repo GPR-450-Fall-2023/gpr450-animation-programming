@@ -54,12 +54,14 @@ flat out int vInstanceID;
 
 #define MAX_SKINMATS 128
 
+//Skinning matrices for each spatial pose calculated on CPU
 uniform ubTransformBlend
 {
 	mat4 skinMat[MAX_SKINMATS];
 };
 
 
+//Calculates the new position for a given vector based on the skinMat, blendIndices, and blendWeights
 vec4 skin(in vec4 v)
 {
 	vec4 v_out = vec4(0.0);
@@ -84,6 +86,7 @@ void main()
 	// DUMMY OUTPUT: directly assign input position to output position
 //	gl_Position = aPosition;
 
+	//Calculate values relative to nodes so skin adheres to skeleton
 	vec4 tangent = normalize(skin(vec4(aTangent.xyz, 0.0)));
 	vec4 bitangent = normalize(skin(vec4(aBitangent.xyz, 0.0)));
 	vec4 normal = normalize(skin(vec4(aNormal.xyz, 0.0)));

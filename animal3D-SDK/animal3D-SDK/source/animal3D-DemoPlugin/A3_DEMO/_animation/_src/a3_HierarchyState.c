@@ -312,7 +312,7 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 				else if (tok[0] == 'C') {							//CalibrationUnits
 					tok = strtok(0, newline);
 
-					if (tok[0] == 'm' && tok[1] == 'm')
+					if (tok[0] == 'm' && tok[1] == 'm') // Milimeters
 					{
 						calibrationUnitsFactor = (a3real).1;
 					}
