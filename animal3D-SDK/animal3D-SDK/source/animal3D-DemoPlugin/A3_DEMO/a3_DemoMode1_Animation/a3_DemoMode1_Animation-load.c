@@ -46,8 +46,8 @@
 
 //-----------------------------------------------------------------------------
 
-const a3byte filePath[1024] = "../../../../resource/animdata/egnaro/egnaro_anim.txt";
-//const a3byte filePath[1024] = "../../../../resource/animdata/maya/maya_anim.txt";
+//const a3byte filePath[1024] = "../../../../resource/animdata/egnaro/egnaro_anim.txt";
+const a3byte filePath[1024] = "../../../../resource/animdata/maya/maya_anim.txt";
 
 a3ui32 a3countClips(const a3byte filePath[1024]);
 a3ui32 a3readClipPoolFromFile(a3_ClipPool* clipPool, a3_KeyframePool* keyframePool, const a3byte filePath[1024]);
@@ -363,8 +363,8 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	// load from file
 	a3real framerate;
 	a3hierarchyPoseGroupLoadHTR(hierarchyPoseGroup, hierarchy,
-		"../../../../resource/animdata/egnaro/egnaro_skel_anim.htr", &framerate);
-		//"../../../../resource/animdata/maya/maya_export.htr", &framerate);
+		//"../../../../resource/animdata/egnaro/egnaro_skel_anim.htr", &framerate);
+		"../../../../resource/animdata/maya/maya_export.htr", &framerate);
 	
 	//COMMENT STARTING HERE
 	
