@@ -1,7 +1,13 @@
 ::Utility script to launch SDK in latest version of Visual Studio.
 ::By Dan Buckstein
 
-if exist "%VS160COMNTOOLS%" (
+if exist "%VS170COMNTOOLS%" (
+rem VISUAL STUDIO 2022 IF PATH EXISTS
+	set a3vstoolsdir="%VS170COMNTOOLS%"
+	set a3vslaunchpath="%VS170COMNTOOLS%..\IDE\devenv"
+	set a3platformtoolset=v142
+	set a3sdkversion=10.0
+) else if exist "%VS160COMNTOOLS%" (
 rem VISUAL STUDIO 2019 IF PATH EXISTS
 	set a3vstoolsdir="%VS160COMNTOOLS%"
 	set a3vslaunchpath="%VS160COMNTOOLS%..\IDE\devenv"
