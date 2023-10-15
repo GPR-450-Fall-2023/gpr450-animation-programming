@@ -97,6 +97,24 @@ void a3animation_render_controls(a3_DemoState const* demoState, a3_DemoMode1_Ani
 		targetText_composite,
 	};
 
+	// pass names
+	a3byte const* blendModeName[blend_max] = {
+		"Identity",
+		"Construct",
+		"Copy",
+		"Negate",
+		"Concatenate",
+		"Nearest",
+		"Lerp",
+		"Cubic",
+		"Deconcatenate",
+		"Scale",
+		"Triangular",
+		"Bi-Nearest",
+		"Bi-Linear",
+		"Bi-Cubic",
+	};
+
 	// pipeline and target
 	a3_DemoMode1_Animation_RenderProgramName const render = demoMode->render;
 	a3_DemoMode1_Animation_DisplayProgramName const display = demoMode->display;
@@ -121,6 +139,26 @@ void a3animation_render_controls(a3_DemoState const* demoState, a3_DemoMode1_Ani
 		"    Display mode (%u / %u) ('J' | 'K'): %s", display + 1, animation_display_max, displayProgramName[display]);
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"    Active camera (%u / %u) ('c' prev | next 'v'): %s", activeCamera + 1, animation_camera_max, cameraText[activeCamera]);
+
+	/*a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"    Play/pause controller playback (p)");*/
+
+	//a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+	//	"    Flip playback direction (b)");
+
+	/*a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"    State Index (%u / %u) ('5' | '6'): %s", demoMode->hierarchyStateIndex + 1, state_max, blendModeName[demoMode->blendMode]);
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"    Pose Index (%u / %u) ('7' | '8'): %s", demoMode->hierarchyPoseIndex + 1, pose_max, blendModeName[demoMode->blendMode]);*/
+
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"    Blend Function (%u / %u) ('9' | '0'): %s", demoMode->blendMode + 1, 14, blendModeName[demoMode->blendMode]);
+
+	//Render specific information about current blend function
+	switch (demoMode->blendMode)
+	{
+
+	}
 }
 
 

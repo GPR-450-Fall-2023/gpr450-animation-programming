@@ -50,6 +50,7 @@ typedef enum a3_DemoMode1_Animation_ActiveCameraName		a3_DemoMode1_Animation_Act
 typedef enum a3_DemoMode1_Animation_PipelineName			a3_DemoMode1_Animation_PipelineName;
 typedef enum a3_DemoMode1_Animation_PassName				a3_DemoMode1_Animation_PassName;
 typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetName;
+typedef enum a3_DemoMode1_Animation_BlendMode				a3_DemoMode1_Animation_BlendMode;
 #endif	// __cplusplus
 
 
@@ -116,6 +117,48 @@ typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetN
 		animation_target_scene_max,
 	};
 
+	//// render target names
+	//enum a3_DemoMode1_Animation_StateIndex
+	//{
+	//	state_one = 0,
+	//	state_two,
+	//	state_three,
+
+	//	state_max
+	//};
+
+	//// hierarchy poses
+	//enum a3_DemoMode1_Animation_PoseIndex
+	//{
+	//	pose_one = 0,
+	//	pose_two,
+	//	pose_three,
+	//	pose_four,
+
+	//	pose_max
+	//};
+
+	//interpolation functions
+	enum a3_DemoMode1_Animation_BlendMode
+	{
+		blend_identity = 0,
+		blend_construct,
+		blend_copy,
+		blend_negate,
+		blend_concatenate,
+		blend_nearest,
+		blend_lerp,
+		blend_cubic,
+		blend_deconcatenate,
+		blend_scale,
+		blend_triangular,
+		blend_binearest,
+		blend_bilinear,
+		blend_bicubic,
+
+		blend_max
+	};
+
 
 //-----------------------------------------------------------------------------
 
@@ -132,12 +175,24 @@ typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetN
 
 		// skeletal animation
 		a3_Hierarchy hierarchy_skel[1];
-		a3_HierarchyState hierarchyState_skel[2];
+		a3_HierarchyState hierarchyState_skel[4];
 		a3_HierarchyPoseGroup hierarchyPoseGroup_skel[1];
 		a3mat4 mvp_joint[128], mvp_bone[128], t_skin[128];
 		a3dualquat dq_skin[128];
 		a3ui32 hierarchyKeyPose_display[2];
 		a3real hierarchyKeyPose_param;
+
+		//Blend function
+		a3_DemoMode1_Animation_BlendMode blendMode;
+
+		//Testing values
+		//a3ui32 hierarchyStateIndex;
+		//a3ui32 hierarchyPoseIndex;
+
+		//a3boolean togglePause;
+		//a3boolean shouldRewind;
+
+		a3ui32 stateCount;
 
 		// objects
 		union {

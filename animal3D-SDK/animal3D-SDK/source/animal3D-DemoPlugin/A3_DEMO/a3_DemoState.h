@@ -142,6 +142,8 @@ struct a3_DemoState
 	a3real frameWidthInv, frameHeightInv, frameAspect;
 	a3i32 frameBorder;
 
+	a3i32 playbackDirection;
+
 
 	//-------------------------------------------------------------------------
 	// objects that have known or fixed instance count in the whole demo

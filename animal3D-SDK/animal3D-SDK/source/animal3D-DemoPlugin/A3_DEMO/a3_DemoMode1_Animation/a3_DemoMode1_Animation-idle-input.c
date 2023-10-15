@@ -61,6 +61,20 @@ void a3animation_input_keyCharPress(a3_DemoState const* demoState, a3_DemoMode1_
 
 		// toggle pass to display
 		a3demoCtrlCasesLoop(demoMode->pass, animation_pass_max, ')', '(');
+
+
+		// toggle state to display
+		//a3demoCtrlCasesLoop(demoMode->hierarchyStateIndex, state_max, '6', '5');
+		// toggle pose to display
+		//a3demoCtrlCasesLoop(demoMode->hierarchyPoseIndex, pose_max, '8', '7');
+
+		//// toggle pause
+		//a3demoCtrlCaseToggle(demoMode->togglePause, 'p');
+		////toggle direction
+		//a3demoCtrlCaseToggle(demoMode->playbackDirection, 'b');
+
+		// toggle blend fucntion
+		a3demoCtrlCasesLoop(demoMode->blendMode, blend_max, '0', '9');
 	}
 }
 
