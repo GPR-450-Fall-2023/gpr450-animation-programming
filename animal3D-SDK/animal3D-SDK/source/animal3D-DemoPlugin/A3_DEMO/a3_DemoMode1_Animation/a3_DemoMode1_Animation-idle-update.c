@@ -118,12 +118,15 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	//}
 
 
-	// skeletal
+	// skeletal idle animation
 	if (demoState->updateAnimation)
 	{
 		i = (a3ui32)(demoState->timer_display->totalTime);
-		demoMode->hierarchyKeyPose_display[0] = (i + 0) % (demoMode->hierarchyPoseGroup_skel->hposeCount - 1);
-		demoMode->hierarchyKeyPose_display[1] = (i + 1) % (demoMode->hierarchyPoseGroup_skel->hposeCount - 1);
+		a3ui32 start = 28;//Hardcoded to idle keyframes for now
+		a3ui32 end = 52;
+		a3ui32 length = end - start; 
+		demoMode->hierarchyKeyPose_display[0] = ((i + 0) % (length)) + start;
+		demoMode->hierarchyKeyPose_display[1] = ((i + 1) % (length)) + start;
 		demoMode->hierarchyKeyPose_param = (a3real)(demoState->timer_display->totalTime - (a3f64)i);
 	}
 
@@ -144,6 +147,18 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	a3kinematicsSolveForward(pose0HS);
 	a3hierarchyStateUpdateObjectInverse(pose0HS);
 	a3hierarchyStateUpdateObjectBindToCurrent(pose0HS, baseHS);
+
+	// skeletal dance animation
+	if (demoState->updateAnimation)
+	{
+		i = (a3ui32)(demoState->timer_display->totalTime);
+		a3ui32 start = 54; //Hardcoded to dance keyframes for now
+		a3ui32 end = 78;
+		a3ui32 length = end - start; //Hardcoded to idle keyframes for now
+		demoMode->hierarchyKeyPose_display[0] = ((i + 0) % (length)) + start;
+		demoMode->hierarchyKeyPose_display[1] = ((i + 1) % (length)) + start;
+		demoMode->hierarchyKeyPose_param = (a3real)(demoState->timer_display->totalTime - (a3f64)i);
+	}
 
 	//Pose 1
 	a3hierarchyPoseLerp(pose1HS->objectSpace,	// use as temp storage
