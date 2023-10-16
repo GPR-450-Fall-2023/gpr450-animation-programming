@@ -35,6 +35,8 @@
 
 #include "../_a3_demo_utilities/a3_DemoMacros.h"
 
+#include <stdio.h>
+
 
 //-----------------------------------------------------------------------------
 // UTILS
@@ -182,19 +184,60 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	//////// TODO - Blend new pose from inputs based on current blend function
 	switch (demoMode->blendMode)
 	{
-
+	case blend_identity:
+		a3hierarchyPoseOpIdentity(activeHS->localSpace);
+		break;
+	case blend_construct:
+		//a3hierarchyPoseOpConstruct(activeHS->localSpace, 0, 0, 0);
+		break;
+	case blend_copy:
+		a3hierarchyPoseOpCopy(activeHS->localSpace, pose0HS->localSpace);
+		break;
+	case blend_negate:
+		a3hierarchyPoseOpNegate(activeHS->localSpace, pose0HS->localSpace);
+		break;
+	case blend_concatenate:
+		a3hierarchyPoseOpConcatenate(activeHS->localSpace, pose0HS->localSpace, pose1HS->localSpace);
+		break;
+	case blend_nearest:
+		a3hierarchyPoseOpNearest(activeHS->localSpace, pose0HS->localSpace, pose1HS->localSpace, .5f);
+		break;
+	case blend_lerp:
+		a3hierarchyPoseOpLERP(activeHS->localSpace, pose0HS->localSpace, pose1HS->localSpace, .5f);
+		break;
+	case blend_cubic:
+		//a3hierarchyPoseOpCubic(activeHS->localSpace, pose0HS->localSpace, pose1HS->localSpace, )
+		break;
+	case blend_deconcatenate:
+		a3hierarchyPoseOpDeconcatenate(activeHS->localSpace, pose0HS->localSpace, pose1HS->localSpace);
+		break;
+	case blend_scale:
+		a3hierarchyPoseOpScale(activeHS->localSpace, pose0HS->localSpace, .5f);
+		break;
+	case blend_triangular:
+			
+		break;
+	case blend_binearest:
+		break;
+	case blend_bilinear:
+		break;
+	case blend_bicubic:
+		break;
+	default:
+		printf("Invalid blend function");
+		break;
 	}
 
 	//Output pose
-	a3hierarchyPoseLerp(activeHS->objectSpace,	// use as temp storage
-		demoMode->hierarchyPoseGroup_skel->hpose + demoMode->hierarchyKeyPose_display[0] + 1,
-		demoMode->hierarchyPoseGroup_skel->hpose + demoMode->hierarchyKeyPose_display[1] + 1,
-		demoMode->hierarchyKeyPose_param,
-		demoMode->hierarchy_skel->numNodes);
-	a3hierarchyPoseConcat(activeHS->localSpace,	// goal to calculate
-		baseHS->localSpace, // holds base pose
-		activeHS->objectSpace, // temp storage
-		demoMode->hierarchy_skel->numNodes);
+	//a3hierarchyPoseLerp(activeHS->objectSpace,	// use as temp storage
+	//	demoMode->hierarchyPoseGroup_skel->hpose + demoMode->hierarchyKeyPose_display[0] + 1,
+	//	demoMode->hierarchyPoseGroup_skel->hpose + demoMode->hierarchyKeyPose_display[1] + 1,
+	//	demoMode->hierarchyKeyPose_param,
+	//	demoMode->hierarchy_skel->numNodes);
+	//a3hierarchyPoseConcat(activeHS->localSpace,	// goal to calculate
+	//	baseHS->localSpace, // holds base pose
+	//	activeHS->objectSpace, // temp storage
+	//	demoMode->hierarchy_skel->numNodes);
 	a3hierarchyPoseConvert(activeHS->localSpace,
 		demoMode->hierarchy_skel->numNodes,
 		demoMode->hierarchyPoseGroup_skel->channel,

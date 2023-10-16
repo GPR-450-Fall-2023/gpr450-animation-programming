@@ -317,7 +317,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpIdentity(a3_HierarchyPose* pose_out)
 }
 
 // pointer-based construct operation for single hierarchy pose
-inline a3_HierarchyPose* a3hierarchyPoseDOpConstruct(a3_HierarchyPose* pose_out, a3real3p const translation, a3real3p const rotation, a3real3p const scale)
+inline a3_HierarchyPose* a3hierarchyPoseOpConstruct(a3_HierarchyPose* pose_out, a3real3p const translation, a3real3p const rotation, a3real3p const scale)
 {
 
 	// done
@@ -325,7 +325,7 @@ inline a3_HierarchyPose* a3hierarchyPoseDOpConstruct(a3_HierarchyPose* pose_out,
 }
 
 // pointer-based copy operation for single hierarchy pose
-inline a3_HierarchyPose* a3hierarchyPoseDOpCopy(a3_HierarchyPose* pose_out, a3_HierarchyPose* const pose_in)
+inline a3_HierarchyPose* a3hierarchyPoseOpCopy(a3_HierarchyPose* pose_out, a3_HierarchyPose* const pose_in)
 {
 
 	// done
@@ -333,7 +333,7 @@ inline a3_HierarchyPose* a3hierarchyPoseDOpCopy(a3_HierarchyPose* pose_out, a3_H
 }
 
 // pointer-based negate operation for single hierarchy pose
-inline a3_HierarchyPose* a3hierarchyPoseDOpNegate(a3_HierarchyPose* pose_out, a3_HierarchyPose* const pose_in)
+inline a3_HierarchyPose* a3hierarchyPoseOpNegate(a3_HierarchyPose* pose_out, a3_HierarchyPose* const pose_in)
 {
 
 	// done
@@ -341,7 +341,7 @@ inline a3_HierarchyPose* a3hierarchyPoseDOpNegate(a3_HierarchyPose* pose_out, a3
 }
 
 // pointer-based concatenate operation for single hierarchy pose
-inline a3_HierarchyPose* a3hierarchyPoseDOpConcatenate(a3_HierarchyPose* pose_out, a3_HierarchyPose* const pose_left, a3_HierarchyPose* const pose_right)
+inline a3_HierarchyPose* a3hierarchyPoseOpConcatenate(a3_HierarchyPose* pose_out, a3_HierarchyPose* const pose_left, a3_HierarchyPose* const pose_right)
 {
 
 	// done
@@ -349,7 +349,7 @@ inline a3_HierarchyPose* a3hierarchyPoseDOpConcatenate(a3_HierarchyPose* pose_ou
 }
 
 // pointer-based nearest operation for single hierarchy pose
-inline a3_HierarchyPose* a3hierarchyPoseDOpNearest(a3_HierarchyPose* pose_out, a3_HierarchyPose* const pose0, a3_HierarchyPose* const pose1, a3real const u)
+inline a3_HierarchyPose* a3hierarchyPoseOpNearest(a3_HierarchyPose* pose_out, a3_HierarchyPose* const pose0, a3_HierarchyPose* const pose1, a3real const u)
 {
 
 	// done
@@ -365,7 +365,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpLERP(a3_HierarchyPose* pose_out, a3_Hi
 }
 
 // pointer-based cubic operation for single hierarchy pose
-inline a3_HierarchyPose* a3hierarchyPoseDOpCubic(a3_HierarchyPose* pose_out, a3_HierarchyPose* const pose0, a3_HierarchyPose* const pose1,
+inline a3_HierarchyPose* a3hierarchyPoseOpCubic(a3_HierarchyPose* pose_out, a3_HierarchyPose* const pose0, a3_HierarchyPose* const pose1,
 	a3_HierarchyPose* const* pose2, a3_HierarchyPose* const* pose3, const a3real u)
 {
 
@@ -374,7 +374,7 @@ inline a3_HierarchyPose* a3hierarchyPoseDOpCubic(a3_HierarchyPose* pose_out, a3_
 }
 
 // pointer-based deconcatenate operation for single hierarchy pose
-inline a3_HierarchyPose* a3hierarchyPoseDOpDeconcatenate(a3_HierarchyPose* pose_out, a3_HierarchyPose* const pose_left, a3_HierarchyPose* const pose_right)
+inline a3_HierarchyPose* a3hierarchyPoseOpDeconcatenate(a3_HierarchyPose* pose_out, a3_HierarchyPose* const pose_left, a3_HierarchyPose* const pose_right)
 {
 
 	// done
@@ -382,7 +382,7 @@ inline a3_HierarchyPose* a3hierarchyPoseDOpDeconcatenate(a3_HierarchyPose* pose_
 }
 
 // pointer-based scale operation for single hierarchy pose
-inline a3_HierarchyPose* a3hierarchyPoseDOpScale(a3_HierarchyPose* pose_out, a3_HierarchyPose* const pose_in, a3real const u)
+inline a3_HierarchyPose* a3hierarchyPoseOpScale(a3_HierarchyPose* pose_out, a3_HierarchyPose* const pose_in, a3real const u)
 {
 
 	// done
@@ -390,7 +390,7 @@ inline a3_HierarchyPose* a3hierarchyPoseDOpScale(a3_HierarchyPose* pose_out, a3_
 }
 
 // pointer-based triangular operation for single hierarchy pose
-inline a3_HierarchyPose* a3hierarchyPoseDOpTriangular(a3_HierarchyPose* pose_out, a3_HierarchyPose* const pose0, a3_HierarchyPose* const pose1,
+inline a3_HierarchyPose* a3hierarchyPoseOpTriangular(a3_HierarchyPose* pose_out, a3_HierarchyPose* const pose0, a3_HierarchyPose* const pose1,
 	a3_HierarchyPose* const pose2, a3real const u0, a3real const u1)
 {
 
@@ -399,7 +399,7 @@ inline a3_HierarchyPose* a3hierarchyPoseDOpTriangular(a3_HierarchyPose* pose_out
 }
 
 // pointer-based bi-nearest operation for single hierarchy pose
-inline a3_HierarchyPose* a3hierarchyPoseDOpBiNearest(a3_HierarchyPose* pose_out,
+inline a3_HierarchyPose* a3hierarchyPoseOpBiNearest(a3_HierarchyPose* pose_out,
 	a3_HierarchyPose* const pose0_initial, a3_HierarchyPose* const pose0_terminal,
 	a3_HierarchyPose* const pose1_initial, a3_HierarchyPose* const pose1_terminal,
 	a3real const u0, a3real const u1, a3real const u01)
@@ -410,7 +410,7 @@ inline a3_HierarchyPose* a3hierarchyPoseDOpBiNearest(a3_HierarchyPose* pose_out,
 }
 
 // pointer-based bi-linear operation for single hierarchy pose
-inline a3_HierarchyPose* a3hierarchyPoseDOpBiLinear(a3_HierarchyPose* pose_out,
+inline a3_HierarchyPose* a3hierarchyPoseOpBiLinear(a3_HierarchyPose* pose_out,
 	a3_HierarchyPose* const pose0_initial, a3_HierarchyPose* const pose0_terminal,
 	a3_HierarchyPose* const pose1_initial, a3_HierarchyPose* const pose1_terminal,
 	a3real const u0, a3real const u1, a3real const u01)
@@ -422,7 +422,7 @@ inline a3_HierarchyPose* a3hierarchyPoseDOpBiLinear(a3_HierarchyPose* pose_out,
 
 //NOTE - Organize this however you want, I just need it here for drafting the testing interface - Dillon
 // pointer-based bi-cubic operation for single hierarchy pose
-inline a3_HierarchyPose* a3hierarchyPoseDOpBiCubic(a3_HierarchyPose* pose_out,
+inline a3_HierarchyPose* a3hierarchyPoseOpBiCubic(a3_HierarchyPose* pose_out,
 	a3_HierarchyPose* const* poseSet0, //Array of 4 poses
 	a3_HierarchyPose* const* poseSet1, //Array of 4 poses
 	a3_HierarchyPose* const* poseSet2, //Array of 4 poses

@@ -157,7 +157,47 @@ void a3animation_render_controls(a3_DemoState const* demoState, a3_DemoMode1_Ani
 	//Render specific information about current blend function
 	switch (demoMode->blendMode)
 	{
+	case blend_identity:
+		
+		break;
+	case blend_construct:
+		
+	case blend_copy:
+		
+		break;
+	case blend_negate:
+		
+		break;
+	case blend_concatenate:
+		
+		break;
+	case blend_nearest:
+		
+		break;
+	case blend_lerp:
+		
+		break;
+	case blend_cubic:
+		
+		break;
+	case blend_deconcatenate:
+		
+		break;
+	case blend_scale:
+		
+		break;
+	case blend_triangular:
 
+		break;
+	case blend_binearest:
+
+		break;
+	case blend_bilinear:
+
+		break;
+	case blend_bicubic:
+
+		break;
 	}
 }
 
