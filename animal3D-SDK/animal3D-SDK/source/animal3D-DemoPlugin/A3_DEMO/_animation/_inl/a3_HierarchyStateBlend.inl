@@ -43,7 +43,9 @@ inline a3_SpatialPose* a3spatialPoseOpIdentity(a3_SpatialPose* pose_out)
 // pointer-based construct operation for single spatial pose
 inline a3_SpatialPose* a3spatialPoseOpConstruct(a3_SpatialPose* pose_out, a3real3p const translation, a3real3p const rotation, a3real3p const scale)
 {
-
+	a3spatialPoseSetTranslation(pose_out, translation[0], translation[1], translation[2]);
+	a3spatialPoseSetRotation(pose_out, rotation[0], rotation[1], rotation[2]);
+	a3spatialPoseSetScale(pose_out, scale[0], scale[1], scale[2]);
 	// done
 	return pose_out;
 }
@@ -51,14 +53,35 @@ inline a3_SpatialPose* a3spatialPoseOpConstruct(a3_SpatialPose* pose_out, a3real
 // pointer-based copy operation for single spatial pose
 inline a3_SpatialPose* a3spatialPoseOpCopy(a3_SpatialPose* pose_out, a3_SpatialPose const* pose_in)
 {
-
+	a3real *trans, *rot, *scale;
+	trans[0] = pose_in->translation.x;
+	trans[1] = pose_in->translation.y;
+	trans[2] = pose_in->translation.z;
+	rot[0] = pose_in->angles.x;
+	rot[1] = pose_in->angles.y;
+	rot[2] = pose_in->angles.z;
+	scale[0] = pose_in->scale.x;
+	scale[1] = pose_in->scale.y;
+	scale[2] = pose_in->scale.z;
+	a3spatialPoseOpConstruct(pose_out, trans, rot, scale);
+	// if there's a better way to turn a3vec3 to a3real3p then please tell me - Neo
 	// done
 	return pose_out;
 }
 // pointer-based negate operation for single spatial pose
 inline a3_SpatialPose* a3spatialPoseOpNegate(a3_SpatialPose* pose_out, a3_SpatialPose const* pose_in)
 {
-
+	a3real* trans, * rot, * scale;
+	trans[0] = pose_in->translation.x * (a3real)-1.0;
+	trans[1] = pose_in->translation.y * (a3real)-1.0;
+	trans[2] = pose_in->translation.z * (a3real)-1.0;
+	rot[0] = pose_in->angles.x * (a3real)-1.0;
+	rot[1] = pose_in->angles.y * (a3real)-1.0;
+	rot[2] = pose_in->angles.z * (a3real)-1.0;
+	scale[0] = (a3real)1.0 / pose_in->scale.x;
+	scale[1] = (a3real)1.0 / pose_in->scale.y;
+	scale[2] = (a3real)1.0 / pose_in->scale.z;
+	a3spatialPoseOpConstruct(pose_out, trans, rot, scale);
 	// done
 	return pose_out;
 }
@@ -66,7 +89,17 @@ inline a3_SpatialPose* a3spatialPoseOpNegate(a3_SpatialPose* pose_out, a3_Spatia
 // pointer-based concatenate operation for single spatial pose
 inline a3_SpatialPose* a3spatialPoseOpConcatenate(a3_SpatialPose* pose_out, a3_SpatialPose const* pose_left, a3_SpatialPose const* pose_right)
 {
-
+	a3real* trans, * rot, * scale;
+	trans[0] = pose_left->translation.x + pose_right->translation.x;
+	trans[1] = pose_left->translation.y + pose_right->translation.y;
+	trans[2] = pose_left->translation.z + pose_right->translation.z;
+	rot[0] = pose_left->angles.x + pose_right->angles.x;
+	rot[1] = pose_left->angles.y + pose_right->angles.y;
+	rot[2] = pose_left->angles.z + pose_right->angles.z;
+	scale[0] = pose_left->scale.x * pose_right->scale.x;
+	scale[1] = pose_left->scale.y * pose_right->scale.y;
+	scale[2] = pose_left->scale.z * pose_right->scale.z;
+	a3spatialPoseOpConstruct(pose_out, trans, rot, scale);
 	// done
 	return pose_out;
 }
@@ -74,7 +107,12 @@ inline a3_SpatialPose* a3spatialPoseOpConcatenate(a3_SpatialPose* pose_out, a3_S
 // pointer-based nearest operation for single spatial pose
 inline a3_SpatialPose* a3spatialPoseOpNearest(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, const a3real u)
 {
-
+	if (u < (a3real)0.5) {
+		a3spatialPoseOpCopy(pose_out, pose0);
+	}
+	else {
+		a3spatialPoseOpCopy(pose_out, pose1);
+	}
 	// done
 	return pose_out;
 }
@@ -82,7 +120,17 @@ inline a3_SpatialPose* a3spatialPoseOpNearest(a3_SpatialPose* pose_out, a3_Spati
 // pointer-based LERP operation for single spatial pose
 inline a3_SpatialPose* a3spatialPoseOpLERP(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, a3real const u)
 {
-
+	a3real* trans, * rot, * scale;
+	trans[0] = (pose0->translation.x * u) + (pose1->translation.x * ((a3real)1.0 - u));
+	trans[1] = (pose0->translation.y * u) + (pose1->translation.y * ((a3real)1.0 - u));
+	trans[2] = (pose0->translation.z * u) + (pose1->translation.z * ((a3real)1.0 - u));
+	rot[0] = (pose0->angles.x * u) + (pose1->angles.x * ((a3real)1.0 - u));
+	rot[1] = (pose0->angles.y * u) + (pose1->angles.y * ((a3real)1.0 - u));
+	rot[2] = (pose0->angles.z * u) + (pose1->angles.z * ((a3real)1.0 - u));
+	scale[0] = (pose0->scale.x * u) * (pose1->scale.x * ((a3real)1.0 - u));
+	scale[1] = (pose0->scale.y * u) * (pose1->scale.y * ((a3real)1.0 - u));
+	scale[2] = (pose0->scale.z * u) * (pose1->scale.z * ((a3real)1.0 - u));
+	a3spatialPoseOpConstruct(pose_out, trans, rot, scale);
 	// done
 	return pose_out;
 }
