@@ -23,6 +23,9 @@
 */
 
 
+#include <stddef.h>
+
+
 #ifdef __ANIMAL3D_HIERARCHYSTATEBLEND_H
 #ifndef __ANIMAL3D_HIERARCHYSTATEBLEND_INL
 #define __ANIMAL3D_HIERARCHYSTATEBLEND_INL
@@ -147,6 +150,23 @@ inline a3_SpatialPose* a3spatialPoseOpCubic(a3_SpatialPose* pose_out, a3_Spatial
 // pointer-based deconcatenate operation for single spatial pose
 inline a3_SpatialPose* a3spatialPoseOpDeconcatenate(a3_SpatialPose* pose_out, a3_SpatialPose const* pose_left, a3_SpatialPose const* pose_right)
 {
+	a3real3 translation;
+	a3real3 rotation;
+	a3real3 scale;
+
+	translation[0] = pose_left->translation.x - pose_right->translation.x;
+	translation[1] = pose_left->translation.y - pose_right->translation.y;
+	translation[2] = pose_left->translation.z - pose_right->translation.z;
+
+	rotation[0] = pose_left->angles.x - pose_right->angles.x;
+	rotation[1] = pose_left->angles.y - pose_right->angles.y;
+	rotation[2] = pose_left->angles.z - pose_right->angles.z;
+
+	scale[0] = pose_left->scale.x - pose_right->scale.x;
+	scale[1] = pose_left->scale.y - pose_right->scale.y;
+	scale[2] = pose_left->scale.z - pose_right->scale.z;
+
+	a3spatialPoseOpConstruct(pose_out, translation, rotation, scale);
 
 	// done
 	return pose_out;
@@ -155,7 +175,7 @@ inline a3_SpatialPose* a3spatialPoseOpDeconcatenate(a3_SpatialPose* pose_out, a3
 // pointer-based scale operation for single spatial pose
 inline a3_SpatialPose* a3spatialPoseOpScale(a3_SpatialPose* pose_out, a3_SpatialPose const* pose_in, const a3real u)
 {
-
+	
 	// done
 	return pose_out;
 }
