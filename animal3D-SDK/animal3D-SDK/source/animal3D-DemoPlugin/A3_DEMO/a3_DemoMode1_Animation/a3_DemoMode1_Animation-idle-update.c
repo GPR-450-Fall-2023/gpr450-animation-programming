@@ -185,34 +185,34 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	switch (demoMode->blendMode)
 	{
 	case blend_identity:
-		a3hierarchyPoseOpIdentity(activeHS->localSpace);
+		a3hierarchyPoseOpIdentity(activeHS->localSpace, activeHS->hierarchy->numNodes);
 		break;
 	case blend_construct:
-		//a3hierarchyPoseOpConstruct(activeHS->localSpace, 0, 0, 0);
+		//a3hierarchyPoseOpConstruct(activeHS->localSpace, activeHS->hierarchy->numNodes, 0, 0, 0);
 		break;
 	case blend_copy:
-		a3hierarchyPoseOpCopy(activeHS->localSpace, pose0HS->localSpace);
+		a3hierarchyPoseOpCopy(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace);
 		break;
 	case blend_negate:
-		a3hierarchyPoseOpNegate(activeHS->localSpace, pose0HS->localSpace);
+		a3hierarchyPoseOpNegate(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace);
 		break;
 	case blend_concatenate:
-		a3hierarchyPoseOpConcatenate(activeHS->localSpace, pose0HS->localSpace, pose1HS->localSpace);
+		a3hierarchyPoseOpConcatenate(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose1HS->localSpace);
 		break;
 	case blend_nearest:
-		a3hierarchyPoseOpNearest(activeHS->localSpace, pose0HS->localSpace, pose1HS->localSpace, .5f);
+		a3hierarchyPoseOpNearest(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose1HS->localSpace, .5f);
 		break;
 	case blend_lerp:
-		a3hierarchyPoseOpLERP(activeHS->localSpace, pose0HS->localSpace, pose1HS->localSpace, .5f);
+		a3hierarchyPoseOpLERP(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose1HS->localSpace, .5f);
 		break;
 	case blend_cubic:
-		//a3hierarchyPoseOpCubic(activeHS->localSpace, pose0HS->localSpace, pose1HS->localSpace, )
+		//a3hierarchyPoseOpCubic(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose1HS->localSpace, )
 		break;
 	case blend_deconcatenate:
-		a3hierarchyPoseOpDeconcatenate(activeHS->localSpace, pose0HS->localSpace, pose1HS->localSpace);
+		a3hierarchyPoseOpDeconcatenate(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose1HS->localSpace);
 		break;
 	case blend_scale:
-		a3hierarchyPoseOpScale(activeHS->localSpace, pose0HS->localSpace, .5f);
+		a3hierarchyPoseOpScale(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, .5f);
 		break;
 	case blend_triangular:
 			
