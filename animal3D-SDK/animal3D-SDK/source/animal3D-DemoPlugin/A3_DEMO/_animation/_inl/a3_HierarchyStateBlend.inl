@@ -129,9 +129,9 @@ inline a3_SpatialPose* a3spatialPoseOpLERP(a3_SpatialPose* pose_out, a3_SpatialP
 	rot[0] = (pose1->angles.x * u) + (pose0->angles.x * ((a3real)1.0 - u));
 	rot[1] = (pose1->angles.y * u) + (pose0->angles.y * ((a3real)1.0 - u));
 	rot[2] = (pose1->angles.z * u) + (pose0->angles.z * ((a3real)1.0 - u));
-	scale[0] = (pose1->scale.x * u) * (pose0->scale.x * ((a3real)1.0 - u));
-	scale[1] = (pose1->scale.y * u) * (pose0->scale.y * ((a3real)1.0 - u));
-	scale[2] = (pose1->scale.z * u) * (pose0->scale.z * ((a3real)1.0 - u));
+	scale[0] = (pose1->scale.x * u) + (pose0->scale.x * ((a3real)1.0 - u));
+	scale[1] = (pose1->scale.y * u) + (pose0->scale.y * ((a3real)1.0 - u));
+	scale[2] = (pose1->scale.z * u) + (pose0->scale.z * ((a3real)1.0 - u));
 	a3spatialPoseOpConstruct(pose_out, trans, rot, scale);
 	// done
 	return pose_out;

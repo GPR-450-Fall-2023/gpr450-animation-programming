@@ -80,6 +80,10 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 
 	// temp scale mat
 	a3mat4 scaleMat = a3mat4_identity;
+	
+	const a3real BLEND_SPEED = 1.0;
+
+	demoMode->aplicationTime += (a3real)dt;
 
 	a3demo_update_objects(demoState, dt,
 		demoMode->object_scene, animationMaxCount_sceneObject, 0, 0);
@@ -210,10 +214,10 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		a3hierarchyPoseOpConcatenate(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose1HS->localSpace);
 		break;
 	case blend_nearest:
-		a3hierarchyPoseOpNearest(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose1HS->localSpace, .1f);
+		a3hierarchyPoseOpNearest(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose1HS->localSpace, (a3real)fmod(demoMode->aplicationTime, BLEND_SPEED));
 		break;
 	case blend_lerp:
-		a3hierarchyPoseOpLERP(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose1HS->localSpace, .1f);
+		a3hierarchyPoseOpLERP(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose1HS->localSpace, (a3real)fmod(demoMode->aplicationTime, BLEND_SPEED));
 		break;
 	case blend_cubic:
 		//a3hierarchyPoseOpCubic(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose1HS->localSpace, )

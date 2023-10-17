@@ -112,6 +112,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	//demoMode->hierarchyStateIndex = state_one;
 	//demoMode->hierarchyPoseIndex = pose_one;
 	demoMode->blendMode = blend_identity;
+	demoMode->aplicationTime = 0;
 }
 
 

@@ -194,6 +194,8 @@ typedef enum a3_DemoMode1_Animation_BlendMode				a3_DemoMode1_Animation_BlendMod
 
 		a3ui32 stateCount;
 
+		a3real aplicationTime;
+
 		// objects
 		union {
 			a3_DemoSceneObject object_scene[animationMaxCount_sceneObject];
