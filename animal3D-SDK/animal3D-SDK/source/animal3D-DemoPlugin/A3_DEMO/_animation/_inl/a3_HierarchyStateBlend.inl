@@ -240,8 +240,7 @@ inline a3_SpatialPose a3spatialPoseDOpIdentity()
 inline a3_SpatialPose a3spatialPoseDOpConstruct(a3real3p const translation, a3real3p const rotation, a3real3p const scale)
 {
 	a3_SpatialPose result = { 0 };
-	// ...
-
+	a3spatialPoseOpConstruct(&result, translation, rotation, scale);
 	// done
 	return result;
 }
@@ -250,8 +249,7 @@ inline a3_SpatialPose a3spatialPoseDOpConstruct(a3real3p const translation, a3re
 inline a3_SpatialPose a3spatialPoseDOpCopy(a3_SpatialPose const pose_in)
 {
 	a3_SpatialPose result = { 0 };
-	// ...
-
+	a3spatialPoseOpCopy(&result, &pose_in);
 	// done
 	return result;
 }
@@ -260,8 +258,7 @@ inline a3_SpatialPose a3spatialPoseDOpCopy(a3_SpatialPose const pose_in)
 inline a3_SpatialPose a3spatialPoseDOpNegate(a3_SpatialPose const pose_in)
 {
 	a3_SpatialPose result = { 0 };
-	// ...
-
+	a3spatialPoseOpNegate(&result, &pose_in);
 	// done
 	return result;
 }
@@ -270,8 +267,7 @@ inline a3_SpatialPose a3spatialPoseDOpNegate(a3_SpatialPose const pose_in)
 inline a3_SpatialPose a3spatialPoseDOpConcatenate(a3_SpatialPose const pose_left, a3_SpatialPose const pose_right)
 {
 	a3_SpatialPose result = { 0 };
-	// ...
-
+	a3spatialPoseOpConcatenate(&result, &pose_left, &pose_right);
 	// done
 	return result;
 }
@@ -280,8 +276,7 @@ inline a3_SpatialPose a3spatialPoseDOpConcatenate(a3_SpatialPose const pose_left
 inline a3_SpatialPose a3spatialPoseDOpNearest(a3_SpatialPose const pose0, a3_SpatialPose const pose1, a3real const u)
 {
 	a3_SpatialPose result = { 0 };
-	// ...
-
+	a3spatialPoseOpNearest(&result, &pose0, &pose1, u);
 	// done
 	return result;
 }
@@ -290,8 +285,7 @@ inline a3_SpatialPose a3spatialPoseDOpNearest(a3_SpatialPose const pose0, a3_Spa
 inline a3_SpatialPose a3spatialPoseDOpLERP(a3_SpatialPose const pose0, a3_SpatialPose const pose1, a3real const u)
 {
 	a3_SpatialPose result = { 0 };
-	// ...
-
+	a3spatialPoseOpLERP(&result, &pose0, &pose1, u);
 	// done
 	return result;
 }
@@ -301,8 +295,7 @@ inline a3_SpatialPose a3spatialPoseDOpCubic(a3_SpatialPose const pose0, a3_Spati
 	a3_SpatialPose const* pose2, a3_SpatialPose const* pose3, const a3real u)
 {
 	a3_SpatialPose result = { 0 };
-	// ...
-
+	a3spatialPoseOpCubic(&result, &pose0, &pose1, pose2, pose3, u);
 	// done
 	return result;
 }
@@ -379,7 +372,10 @@ inline a3_SpatialPose a3spatialPoseDOpBiCubic(
 // pointer-based reset/identity operation for hierarchical pose
 inline a3_HierarchyPose* a3hierarchyPoseOpIdentity(a3_HierarchyPose* pose_out)
 {
-
+	for (a3ui32 i = 0; i < 1; i++) {
+		a3spatialPoseOpIdentity(pose_out->pose);
+	}
+	return pose_out;
 	// done
 	return pose_out;
 }
