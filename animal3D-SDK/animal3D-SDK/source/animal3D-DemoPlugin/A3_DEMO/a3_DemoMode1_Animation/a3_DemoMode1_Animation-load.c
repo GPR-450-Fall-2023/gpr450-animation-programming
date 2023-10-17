@@ -32,6 +32,8 @@
 
 #include "../a3_DemoState.h"
 
+#include <stdio.h>
+
 
 //-----------------------------------------------------------------------------
 
@@ -104,6 +106,8 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		hierarchyState->hierarchy = 0;
 		a3hierarchyStateCreate(hierarchyState, hierarchy);
 	}
+
+	
 
 	//demoMode->hierarchyStateIndex = state_one;
 	//demoMode->hierarchyPoseIndex = pose_one;

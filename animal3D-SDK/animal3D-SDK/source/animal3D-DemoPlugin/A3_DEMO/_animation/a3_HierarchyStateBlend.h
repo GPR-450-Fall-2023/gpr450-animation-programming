@@ -30,8 +30,6 @@
 
 #include "a3_Kinematics.h"
 
-#include <math.h>
-
 
 #ifdef __cplusplus
 extern "C"
@@ -39,6 +37,10 @@ extern "C"
 #else	// !__cplusplus
 
 #endif	// __cplusplus
+
+typedef struct Circumcircle Circumcircle;
+typedef struct Edge Edge;
+typedef struct Triangle Triangle;
 	
 
 //-----------------------------------------------------------------------------
@@ -233,8 +235,37 @@ a3_HierarchyPose* a3hierarchyPoseDOpBiCubic(a3_HierarchyPose* pose_out, a3ui32 n
 
 //-----------------------------------------------------------------------------
 
-// cubic base function
-a3real a3cubic(a3real p0, a3real p1, a3real m0, a3real m1, a3real t);
+// Delaunay Triangulation
+
+struct Circumcircle
+{
+	a3real2 center;
+	a3real radius;
+};
+
+struct Edge
+{
+	a3real2 pointA;
+	a3real2 pointB;
+};
+
+struct Triangle
+{
+	//Points that define triangle
+	a3real2 pointA;
+	a3real2 pointB;
+	a3real2 pointC;
+};
+
+//Find circumcenter of a triangle
+a3i32 a3_findCircumcenter(Circumcircle* circum_out, Triangle* tri);
+
+//Given a set of points, calculate the triangulation of said points and return the triangles in that triangulation
+a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, const a3vec2* triSet, const a3real* triCount);
+
+
+a3_SpatialPose* a3spatialPoseOPDelaunay(a3_SpatialPose* pose_out, a3real2p point);
+
 
 
 #ifdef __cplusplus

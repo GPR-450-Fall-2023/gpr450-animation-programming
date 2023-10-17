@@ -507,6 +507,107 @@ inline a3_HierarchyPose* a3hierarchyPoseOpBiCubic(a3_HierarchyPose* pose_out, a3
 	return pose_out;
 }
 
+// The equation for finding the circumcenter of a triangle was derived from this website
+//https://gamedev.stackexchange.com/questions/60630/how-do-i-find-the-circumcenter-of-a-triangle-in-3d
+inline a3i32 a3_findCircumcenter(Circumcircle* circum_out, Triangle* tri)
+{
+	if (circum_out)
+	{
+		//a3real3 aToC;
+		//aToC[0] = tri->pointC[0] - tri->pointA[0];
+		//aToC[1] = tri->pointC[1] - tri->pointA[1];
+		//aToC[2] = tri->pointC[2] - tri->pointA[2];
+
+		//a3real acMag = a3real3LengthSquared(aToC);
+
+		//a3real3 aTob;
+		//aTob[0] = tri->pointB[0] - tri->pointA[0];
+		//aTob[1] = tri->pointB[1] - tri->pointA[1];
+		//aTob[2] = tri->pointB[2] - tri->pointA[2];
+		//
+		//a3real abMag = a3real3LengthSquared(aTob);
+
+		//a3real3 crossed;
+		//a3real3Cross(crossed, aToC, aTob);
+
+		//a3real crossedMag = a3real3LengthSquared(crossed);
+
+
+		//a3real3 crossedAB;
+		//a3real3Cross(crossedAB, crossed, aTob);
+		//a3real3MulS(crossedAB, acMag);
+		//a3real3 acCrossed;
+		//a3real3Cross(acCrossed, aToC, crossed);
+		//a3real3MulS(acCrossed, abMag);
+
+		//a3real3 crossedSums;
+		//a3real3Sum(crossedSums, crossedAB, acCrossed);
+		//
+		//a3real3 aToCenter;
+		//a3real2DivS(crossedSums, (crossedMag * 2.0));
+		//
+		////Set Center
+		//a3real3Sum(circum_out->center, tri->pointA, aToCenter);
+
+		////Set radius
+		//circum_out->radius = a3real3Length(aToCenter);
+
+		a3real2 abMid;
+		a3real2Set(abMid, (tri->pointA[0] + tri->pointB[0]) / (a3real)2.0, (tri->pointA[1] + tri->pointB[1]) / (a3real)2.0);
+
+		a3real2 bcMid;
+		a3real2Set(bcMid, (tri->pointC[0] + tri->pointB[0]) / (a3real)2.0, (tri->pointC[1] + tri->pointB[1]) / (a3real)2.0);
+
+		a3real abSlope = (tri->pointB[0] - tri->pointA[0]) / (tri->pointB[1] - tri->pointA[1]);
+		a3real bcSlope = (tri->pointC[0] - tri->pointB[0]) / (tri->pointC[1] - tri->pointB[1]);
+
+		//Expanded formula for solving for x using point-slope equation
+		circum_out->center[0] = ((abSlope * abMid[0]) - abMid[1] - (bcSlope * bcMid[0]) + bcMid[1]) / (abSlope - bcSlope);
+		circum_out->center[1] = (abSlope * (circum_out->center[0] - abMid[0])) + abMid[1];
+
+		a3real2 diff;
+		diff[0] = circum_out->center[0] - tri->pointA[0];
+		diff[1] = circum_out->center[1] - tri->pointA[1];
+
+		circum_out->radius = a3real2Length(diff);
+
+		return 1;
+	}
+
+	return -1;
+}
+
+//Given a set of points, calculate the triangulation of said points and return the triangles in that triangulation
+inline a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, const a3vec2* triSet, const a3real* triCount)
+{
+	//Declare empty list/array of triangles
+	//Find super triangle
+	//Add it to list of triangles called "triangles"
+	//for every point "p"
+		//Initialize a list that will have triangles containing this point (in their circumcircle)
+		//Initialize a hash map of <Edge, int> that will have number of occurrences of each edge
+		// 
+		//for every triangle (new ones added at each iteration of the above loop)
+			//if circumsphere contains the point
+				//add the triangle to list of triangles containing this point
+				//update hashmap of occurences to add 1 to the occurence of each edge in the triangle
+		// 
+		//Create a list of edges "polygon"
+		//for every containing triangle
+			//get the edges within that triangle
+			//for each edge in triangle
+				//if edge only occurs once in "occurences"
+					//add edge to list of edges "polygon"
+		//
+		//for every triangle in containing
+			//remove that triangle from "triangles"
+		//
+		//for every edge in "polygon"
+			//add a new triangle using the current point "p" as the third point
+
+
+}
+
 
 //-----------------------------------------------------------------------------
 
