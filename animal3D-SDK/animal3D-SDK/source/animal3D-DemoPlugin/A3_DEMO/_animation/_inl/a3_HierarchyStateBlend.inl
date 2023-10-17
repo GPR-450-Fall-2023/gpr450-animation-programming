@@ -53,7 +53,7 @@ inline a3_SpatialPose* a3spatialPoseOpConstruct(a3_SpatialPose* pose_out, a3real
 // pointer-based copy operation for single spatial pose
 inline a3_SpatialPose* a3spatialPoseOpCopy(a3_SpatialPose* pose_out, a3_SpatialPose const* pose_in)
 {
-	a3real *trans, *rot, *scale;
+	a3real3 trans, rot, scale;
 	trans[0] = pose_in->translation.x;
 	trans[1] = pose_in->translation.y;
 	trans[2] = pose_in->translation.z;
@@ -71,7 +71,7 @@ inline a3_SpatialPose* a3spatialPoseOpCopy(a3_SpatialPose* pose_out, a3_SpatialP
 // pointer-based negate operation for single spatial pose
 inline a3_SpatialPose* a3spatialPoseOpNegate(a3_SpatialPose* pose_out, a3_SpatialPose const* pose_in)
 {
-	a3real* trans, * rot, * scale;
+	a3real3 trans, rot, scale;
 	trans[0] = pose_in->translation.x * (a3real)-1.0;
 	trans[1] = pose_in->translation.y * (a3real)-1.0;
 	trans[2] = pose_in->translation.z * (a3real)-1.0;
@@ -89,7 +89,7 @@ inline a3_SpatialPose* a3spatialPoseOpNegate(a3_SpatialPose* pose_out, a3_Spatia
 // pointer-based concatenate operation for single spatial pose
 inline a3_SpatialPose* a3spatialPoseOpConcatenate(a3_SpatialPose* pose_out, a3_SpatialPose const* pose_left, a3_SpatialPose const* pose_right)
 {
-	a3real* trans, * rot, * scale;
+	a3real3 trans, rot, scale;
 	trans[0] = pose_left->translation.x + pose_right->translation.x;
 	trans[1] = pose_left->translation.y + pose_right->translation.y;
 	trans[2] = pose_left->translation.z + pose_right->translation.z;
@@ -120,7 +120,7 @@ inline a3_SpatialPose* a3spatialPoseOpNearest(a3_SpatialPose* pose_out, a3_Spati
 // pointer-based LERP operation for single spatial pose
 inline a3_SpatialPose* a3spatialPoseOpLERP(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, a3real const u)
 {
-	a3real* trans, * rot, * scale;
+	a3real3 trans, rot, scale;
 	trans[0] = (pose0->translation.x * u) + (pose1->translation.x * ((a3real)1.0 - u));
 	trans[1] = (pose0->translation.y * u) + (pose1->translation.y * ((a3real)1.0 - u));
 	trans[2] = (pose0->translation.z * u) + (pose1->translation.z * ((a3real)1.0 - u));
