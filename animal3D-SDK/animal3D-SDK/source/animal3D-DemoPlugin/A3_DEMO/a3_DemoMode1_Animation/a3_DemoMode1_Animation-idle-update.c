@@ -188,7 +188,17 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		a3hierarchyPoseOpIdentity(activeHS->localSpace, activeHS->hierarchy->numNodes);
 		break;
 	case blend_construct:
-		//a3hierarchyPoseOpConstruct(activeHS->localSpace, activeHS->hierarchy->numNodes, 0, 0, 0);
+		a3real3 translation, rotation, scale;
+		translation[0] = 0;
+		translation[1] = 0;
+		translation[2] = 0;
+		rotation[0] = 0;
+		rotation[1] = 0;
+		rotation[2] = 0;
+		scale[0] = 1;
+		scale[1] = 1;
+		scale[2] = 1;
+		a3hierarchyPoseOpConstruct(activeHS->localSpace, activeHS->hierarchy->numNodes, translation, rotation, scale);
 		break;
 	case blend_copy:
 		a3hierarchyPoseOpCopy(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace);
@@ -200,10 +210,10 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		a3hierarchyPoseOpConcatenate(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose1HS->localSpace);
 		break;
 	case blend_nearest:
-		a3hierarchyPoseOpNearest(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose1HS->localSpace, .5f);
+		a3hierarchyPoseOpNearest(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose1HS->localSpace, .1f);
 		break;
 	case blend_lerp:
-		a3hierarchyPoseOpLERP(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose1HS->localSpace, .5f);
+		a3hierarchyPoseOpLERP(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose1HS->localSpace, .1f);
 		break;
 	case blend_cubic:
 		//a3hierarchyPoseOpCubic(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose1HS->localSpace, )

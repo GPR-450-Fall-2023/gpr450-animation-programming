@@ -30,6 +30,8 @@
 
 #include "a3_Kinematics.h"
 
+#include <math.h>
+
 
 #ifdef __cplusplus
 extern "C"
@@ -230,6 +232,9 @@ a3_HierarchyPose* a3hierarchyPoseDOpBiCubic(a3_HierarchyPose* pose_out, a3ui32 n
 	a3real3 const* uArray); //Array of 5 a3real3's
 
 //-----------------------------------------------------------------------------
+
+// cubic base function
+a3real a3cubic(a3real p0, a3real p1, a3real m0, a3real m1, a3real t);
 
 
 #ifdef __cplusplus

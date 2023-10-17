@@ -121,15 +121,15 @@ inline a3_SpatialPose* a3spatialPoseOpNearest(a3_SpatialPose* pose_out, a3_Spati
 inline a3_SpatialPose* a3spatialPoseOpLERP(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, a3real const u)
 {
 	a3real3 trans, rot, scale;
-	trans[0] = (pose0->translation.x * u) + (pose1->translation.x * ((a3real)1.0 - u));
-	trans[1] = (pose0->translation.y * u) + (pose1->translation.y * ((a3real)1.0 - u));
-	trans[2] = (pose0->translation.z * u) + (pose1->translation.z * ((a3real)1.0 - u));
-	rot[0] = (pose0->angles.x * u) + (pose1->angles.x * ((a3real)1.0 - u));
-	rot[1] = (pose0->angles.y * u) + (pose1->angles.y * ((a3real)1.0 - u));
-	rot[2] = (pose0->angles.z * u) + (pose1->angles.z * ((a3real)1.0 - u));
-	scale[0] = (pose0->scale.x * u) * (pose1->scale.x * ((a3real)1.0 - u));
-	scale[1] = (pose0->scale.y * u) * (pose1->scale.y * ((a3real)1.0 - u));
-	scale[2] = (pose0->scale.z * u) * (pose1->scale.z * ((a3real)1.0 - u));
+	trans[0] = (pose1->translation.x * u) + (pose0->translation.x * ((a3real)1.0 - u));
+	trans[1] = (pose1->translation.y * u) + (pose0->translation.y * ((a3real)1.0 - u));
+	trans[2] = (pose1->translation.z * u) + (pose0->translation.z * ((a3real)1.0 - u));
+	rot[0] = (pose1->angles.x * u) + (pose0->angles.x * ((a3real)1.0 - u));
+	rot[1] = (pose1->angles.y * u) + (pose0->angles.y * ((a3real)1.0 - u));
+	rot[2] = (pose1->angles.z * u) + (pose0->angles.z * ((a3real)1.0 - u));
+	scale[0] = (pose1->scale.x * u) * (pose0->scale.x * ((a3real)1.0 - u));
+	scale[1] = (pose1->scale.y * u) * (pose0->scale.y * ((a3real)1.0 - u));
+	scale[2] = (pose1->scale.z * u) * (pose0->scale.z * ((a3real)1.0 - u));
 	a3spatialPoseOpConstruct(pose_out, trans, rot, scale);
 	// done
 	return pose_out;
@@ -139,7 +139,17 @@ inline a3_SpatialPose* a3spatialPoseOpLERP(a3_SpatialPose* pose_out, a3_SpatialP
 inline a3_SpatialPose* a3spatialPoseOpCubic(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1,
 	a3_SpatialPose const* pose2, a3_SpatialPose const* pose3, const a3real u)
 {
-
+	a3real3 trans , rot, scale;
+	trans[0] = a3cubic(pose0->translation.x, pose1->translation.x, pose2->translation.x, pose3->translation.x, u);
+	trans[1] = a3cubic(pose0->translation.y, pose1->translation.y, pose2->translation.y, pose3->translation.y, u);
+	trans[2] = a3cubic(pose0->translation.z, pose1->translation.z, pose2->translation.z, pose3->translation.z, u);
+	rot[0] = a3cubic(pose0->angles.x, pose1->angles.x, pose2->angles.x, pose3->angles.x, u);
+	rot[1] = a3cubic(pose0->angles.y, pose1->angles.y, pose2->angles.y, pose3->angles.y, u);
+	rot[2] = a3cubic(pose0->angles.z, pose1->angles.z, pose2->angles.z, pose3->angles.z, u);
+	scale[0] = a3cubic(pose0->scale.x, pose1->scale.x, pose2->scale.x, pose3->scale.x, u);
+	scale[1] = a3cubic(pose0->scale.y, pose1->scale.y, pose2->scale.y, pose3->scale.y, u);
+	scale[2] = a3cubic(pose0->scale.z, pose1->scale.z, pose2->scale.z, pose3->scale.z, u);
+	a3spatialPoseOpConstruct(pose_out, trans, rot, scale);
 	// done
 	return pose_out;
 }
@@ -281,7 +291,13 @@ inline a3_SpatialPose a3spatialPoseDOpCubic(a3_SpatialPose const pose0, a3_Spati
 }
 
 // data-based deconcatenate operation for single spatial pose
-inline a3_SpatialPose a3spatialPoseDOpDeconcatenate(a3_SpatialPose const pose_left, a3_SpatialPose const pose_right);
+inline a3_SpatialPose a3spatialPoseDOpDeconcatenate(a3_SpatialPose const pose_left, a3_SpatialPose const pose_right) {
+	a3_SpatialPose result = { 0 };
+	// ...
+
+	// done
+	return result;
+}
 
 // data-based scale operation for single spatial pose
 inline a3_SpatialPose a3spatialPoseDOpScale(a3_SpatialPose const pose_in, a3real const u)
@@ -494,6 +510,13 @@ inline a3_HierarchyPose* a3hierarchyPoseOpBiCubic(a3_HierarchyPose* pose_out, a3
 
 //-----------------------------------------------------------------------------
 
+// cubic function
+inline a3real a3cubic(p0, p1, m0, m1, t) {
+	return (((a3real)2.0 * (a3real)pow(t, (a3real)3.0) - (a3real)3.0 * (a3real)pow(t, (a3real)2.0) + (a3real)1.0) * p0)
+		+ (((a3real)pow(t, (a3real)3.0) - (a3real)2.0 * (a3real)pow(t, (a3real)2.0) + t) * m0)
+		+ (((a3real)-2.0 * (a3real)pow(t, (a3real)3.0) + (a3real)3.0 * (a3real)pow(t, (a3real)2.0)) * p1)
+		+ (((a3real)pow(t, (a3real)3.0) - (a3real)pow(t, (a3real)2.0)) * m1);
+}
 
 #endif	// !__ANIMAL3D_HIERARCHYSTATEBLEND_INL
 #endif	// __ANIMAL3D_HIERARCHYSTATEBLEND_H
