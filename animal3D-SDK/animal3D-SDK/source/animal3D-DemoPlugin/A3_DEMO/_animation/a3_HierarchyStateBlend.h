@@ -235,6 +235,13 @@ a3_HierarchyPose* a3hierarchyPoseDOpBiCubic(a3_HierarchyPose* pose_out, a3ui32 n
 
 //-----------------------------------------------------------------------------
 
+// Helper Functions
+
+a3real a3cubic(p0, p1, m0, m1, t);
+
+
+//-----------------------------------------------------------------------------
+
 // Delaunay Triangulation
 
 struct Circumcircle

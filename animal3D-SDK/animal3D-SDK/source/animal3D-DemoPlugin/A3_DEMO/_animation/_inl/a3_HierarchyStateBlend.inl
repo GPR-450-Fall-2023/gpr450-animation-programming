@@ -27,6 +27,8 @@
 #ifndef __ANIMAL3D_HIERARCHYSTATEBLEND_INL
 #define __ANIMAL3D_HIERARCHYSTATEBLEND_INL
 
+#include <math.h>
+
 
 //-----------------------------------------------------------------------------
 
@@ -139,7 +141,7 @@ inline a3_SpatialPose* a3spatialPoseOpLERP(a3_SpatialPose* pose_out, a3_SpatialP
 inline a3_SpatialPose* a3spatialPoseOpCubic(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1,
 	a3_SpatialPose const* pose2, a3_SpatialPose const* pose3, const a3real u)
 {
-	a3real3 trans , rot, scale;
+	a3real3 trans, rot, scale;
 	trans[0] = a3cubic(pose0->translation.x, pose1->translation.x, pose2->translation.x, pose3->translation.x, u);
 	trans[1] = a3cubic(pose0->translation.y, pose1->translation.y, pose2->translation.y, pose3->translation.y, u);
 	trans[2] = a3cubic(pose0->translation.z, pose1->translation.z, pose2->translation.z, pose3->translation.z, u);
