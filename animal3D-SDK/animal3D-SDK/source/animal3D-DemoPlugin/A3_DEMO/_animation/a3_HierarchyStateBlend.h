@@ -175,26 +175,26 @@ a3_SpatialPose a3spatialPoseDOpBiCubic(
 a3_HierarchyPose* a3hierarchyPoseOpIdentity(a3_HierarchyPose* pose_out, a3ui32 numNodes);
 
 // pointer-based construct operation for single hierarchy pose
-a3_HierarchyPose* a3hierarchyPoseDOpConstruct(a3_HierarchyPose* pose_out, a3ui32 numNodes, a3real3p const translation, a3real3p const rotation, a3real3p const scale);
+a3_HierarchyPose* a3hierarchyPoseOpConstruct(a3_HierarchyPose* pose_out, a3ui32 numNodes, a3real3p const translation, a3real3p const rotation, a3real3p const scale);
 
 // pointer-based copy operation for single hierarchy pose
-a3_HierarchyPose* a3hierarchyPoseDOpCopy(a3_HierarchyPose* pose_out, a3ui32 numNodes, a3_HierarchyPose* const pose_in);
+a3_HierarchyPose* a3hierarchyPoseOpCopy(a3_HierarchyPose* pose_out, a3ui32 numNodes, a3_HierarchyPose* const pose_in);
 
 // pointer-based negate operation for single hierarchy pose
-a3_HierarchyPose* a3hierarchyPoseDOpNegate(a3_HierarchyPose* pose_out, a3ui32 numNodes, a3_HierarchyPose* const pose_in);
+a3_HierarchyPose* a3hierarchyPoseOpNegate(a3_HierarchyPose* pose_out, a3ui32 numNodes, a3_HierarchyPose* const pose_in);
 
 // pointer-based concatenate operation for single hierarchy pose
-a3_HierarchyPose* a3hierarchyPoseDOpConcatenate(a3_HierarchyPose* pose_out, a3ui32 numNodes, a3_HierarchyPose* const pose_left, a3_HierarchyPose* const pose_right);
+a3_HierarchyPose* a3hierarchyPoseOpConcatenate(a3_HierarchyPose* pose_out, a3ui32 numNodes, a3_HierarchyPose* const pose_left, a3_HierarchyPose* const pose_right);
 
 // pointer-based nearest operation for single hierarchy pose
-a3_HierarchyPose* a3hierarchyPoseDOpNearest(a3_HierarchyPose* pose_out, a3ui32 numNodes, a3_HierarchyPose* const pose0, a3_HierarchyPose* const pose1, a3real const u);
+a3_HierarchyPose* a3hierarchyPoseOpNearest(a3_HierarchyPose* pose_out, a3ui32 numNodes, a3_HierarchyPose* const pose0, a3_HierarchyPose* const pose1, a3real const u);
 
 // pointer-based LERP operation for hierarchical pose
-a3_HierarchyPose* a3hierarchyPoseOpLERP(a3_HierarchyPose* pose_out, a3ui32 numNodes, a3_HierarchyPose const* pose0, a3_HierarchyPose const* pose1, a3real const u);
+a3_HierarchyPose* a3hierarchyPoseOpLERP(a3_HierarchyPose* pose_out, a3ui32 numNodes, a3_HierarchyPose* const pose0, a3_HierarchyPose* const pose1, a3real const u);
 
 // pointer-based cubic operation for single hierarchy pose
-a3_HierarchyPose* a3hierarchyPoseDOpCubic(a3_HierarchyPose* pose_out, a3ui32 numNodes, a3_HierarchyPose* const pose0, a3_HierarchyPose* const pose1,
-	a3_HierarchyPose* const* pose2, a3_HierarchyPose* const* pose3, const a3real u);
+a3_HierarchyPose* a3hierarchyPoseOpCubic(a3_HierarchyPose* pose_out, a3ui32 numNodes, a3_HierarchyPose* const pose0, a3_HierarchyPose* const pose1,
+	a3_HierarchyPose* const pose2, a3_HierarchyPose* const pose3, const a3real u);
 
 ////////////////// Derivative Operations /////////////////////////
 

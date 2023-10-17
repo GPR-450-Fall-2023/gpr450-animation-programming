@@ -352,10 +352,9 @@ inline a3_SpatialPose a3spatialPoseDOpBiCubic(
 // pointer-based reset/identity operation for hierarchical pose
 inline a3_HierarchyPose* a3hierarchyPoseOpIdentity(a3_HierarchyPose* pose_out, a3ui32 numNodes)
 {
-	for (a3ui32 i = 0; i < 1; i++) {
-		a3spatialPoseOpIdentity(pose_out->pose);
+	for (a3ui32 i = 0; i < numNodes; i++) {
+		a3spatialPoseOpIdentity(&pose_out->pose[i]);
 	}
-	return pose_out;
 	// done
 	return pose_out;
 }
@@ -363,7 +362,9 @@ inline a3_HierarchyPose* a3hierarchyPoseOpIdentity(a3_HierarchyPose* pose_out, a
 // pointer-based construct operation for single hierarchy pose
 inline a3_HierarchyPose* a3hierarchyPoseOpConstruct(a3_HierarchyPose* pose_out, a3ui32 numNodes, a3real3p const translation, a3real3p const rotation, a3real3p const scale)
 {
-
+	for (a3ui32 i = 0; i < numNodes; i++) {
+		a3spatialPoseOpConstruct(&pose_out->pose[i], translation, rotation, scale);
+	}
 	// done
 	return pose_out;
 }
@@ -371,7 +372,9 @@ inline a3_HierarchyPose* a3hierarchyPoseOpConstruct(a3_HierarchyPose* pose_out, 
 // pointer-based copy operation for single hierarchy pose
 inline a3_HierarchyPose* a3hierarchyPoseOpCopy(a3_HierarchyPose* pose_out, a3ui32 numNodes, a3_HierarchyPose* const pose_in)
 {
-
+	for (a3ui32 i = 0; i < numNodes; i++) {
+		a3spatialPoseOpCopy(&pose_out->pose[i], &pose_in->pose[i]);
+	}
 	// done
 	return pose_out;
 }
@@ -379,7 +382,9 @@ inline a3_HierarchyPose* a3hierarchyPoseOpCopy(a3_HierarchyPose* pose_out, a3ui3
 // pointer-based negate operation for single hierarchy pose
 inline a3_HierarchyPose* a3hierarchyPoseOpNegate(a3_HierarchyPose* pose_out, a3ui32 numNodes, a3_HierarchyPose* const pose_in)
 {
-
+	for (a3ui32 i = 0; i < numNodes; i++) {
+		a3spatialPoseOpNegate(&pose_out->pose[i], &pose_in->pose[i]);
+	}
 	// done
 	return pose_out;
 }
@@ -387,7 +392,9 @@ inline a3_HierarchyPose* a3hierarchyPoseOpNegate(a3_HierarchyPose* pose_out, a3u
 // pointer-based concatenate operation for single hierarchy pose
 inline a3_HierarchyPose* a3hierarchyPoseOpConcatenate(a3_HierarchyPose* pose_out, a3ui32 numNodes, a3_HierarchyPose* const pose_left, a3_HierarchyPose* const pose_right)
 {
-
+	for (a3ui32 i = 0; i < numNodes; i++) {
+		a3spatialPoseOpConcatenate(&pose_out->pose[i], &pose_left->pose[i], &pose_right->pose[i]);
+	}
 	// done
 	return pose_out;
 }
@@ -395,24 +402,30 @@ inline a3_HierarchyPose* a3hierarchyPoseOpConcatenate(a3_HierarchyPose* pose_out
 // pointer-based nearest operation for single hierarchy pose
 inline a3_HierarchyPose* a3hierarchyPoseOpNearest(a3_HierarchyPose* pose_out, a3ui32 numNodes, a3_HierarchyPose* const pose0, a3_HierarchyPose* const pose1, a3real const u)
 {
-
+	for (a3ui32 i = 0; i < numNodes; i++) {
+		a3spatialPoseOpNearest(&pose_out->pose[i], &pose0->pose[i], &pose1->pose[i], u);
+	}
 	// done
 	return pose_out;
 }
 
 // pointer-based LERP operation for hierarchical pose
-inline a3_HierarchyPose* a3hierarchyPoseOpLERP(a3_HierarchyPose* pose_out, a3ui32 numNodes, a3_HierarchyPose const* pose0, a3_HierarchyPose const* pose1, a3real const u)
+inline a3_HierarchyPose* a3hierarchyPoseOpLERP(a3_HierarchyPose* pose_out, a3ui32 numNodes, a3_HierarchyPose* const pose0, a3_HierarchyPose* const pose1, a3real const u)
 {
-
+	for (a3ui32 i = 0; i < numNodes; i++) {
+		a3spatialPoseOpLERP(&pose_out->pose[i], &pose0->pose[i], &pose1->pose[i], u);
+	}
 	// done
 	return pose_out;
 }
 
 // pointer-based cubic operation for single hierarchy pose
 inline a3_HierarchyPose* a3hierarchyPoseOpCubic(a3_HierarchyPose* pose_out, a3ui32 numNodes, a3_HierarchyPose* const pose0, a3_HierarchyPose* const pose1,
-	a3_HierarchyPose* const* pose2, a3_HierarchyPose* const* pose3, const a3real u)
+	a3_HierarchyPose* const pose2, a3_HierarchyPose* const pose3, const a3real u)
 {
-
+	for (a3ui32 i = 0; i < numNodes; i++) {
+		a3spatialPoseOpCubic(&pose_out->pose[i], &pose0->pose[i], &pose1->pose[i], &pose2->pose[i], &pose3->pose[i], u);
+	}
 	// done
 	return pose_out;
 }
