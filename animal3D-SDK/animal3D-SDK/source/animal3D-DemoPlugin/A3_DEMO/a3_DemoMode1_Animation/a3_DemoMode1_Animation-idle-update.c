@@ -83,7 +83,10 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	
 	const a3real BLEND_SPEED = 1.0;
 
-	demoMode->aplicationTime += (a3real)dt;
+	if (!demoMode->paused)
+	{
+		demoMode->aplicationTime += (a3real)dt;
+	}
 
 	a3demo_update_objects(demoState, dt,
 		demoMode->object_scene, animationMaxCount_sceneObject, 0, 0);
@@ -127,13 +130,13 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	// skeletal idle animation
 	if (demoState->updateAnimation)
 	{
-		i = (a3ui32)(demoState->timer_display->totalTime);
+		i = (a3ui32)(demoMode->aplicationTime);
 		a3ui32 start = 28;//Hardcoded to idle keyframes for now
 		a3ui32 end = 52;
 		a3ui32 length = end - start; 
 		demoMode->hierarchyKeyPose_display[0] = ((i + 0) % (length)) + start;
 		demoMode->hierarchyKeyPose_display[1] = ((i + 1) % (length)) + start;
-		demoMode->hierarchyKeyPose_param = (a3real)(demoState->timer_display->totalTime - (a3f64)i);
+		demoMode->hierarchyKeyPose_param = (a3real)(demoMode->aplicationTime - (a3f64)i);
 	}
 
 	//Pose 0
@@ -157,13 +160,13 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	// skeletal dance animation
 	if (demoState->updateAnimation)
 	{
-		i = (a3ui32)(demoState->timer_display->totalTime);
+		i = (a3ui32)(demoMode->aplicationTime);
 		a3ui32 start = 54; //Hardcoded to dance keyframes for now
 		a3ui32 end = 78;
 		a3ui32 length = end - start; //Hardcoded to idle keyframes for now
 		demoMode->hierarchyKeyPose_display[0] = ((i + 0) % (length)) + start;
 		demoMode->hierarchyKeyPose_display[1] = ((i + 1) % (length)) + start;
-		demoMode->hierarchyKeyPose_param = (a3real)(demoState->timer_display->totalTime - (a3f64)i);
+		demoMode->hierarchyKeyPose_param = (a3real)(demoMode->aplicationTime - (a3f64)i);
 	}
 
 	//Pose 1

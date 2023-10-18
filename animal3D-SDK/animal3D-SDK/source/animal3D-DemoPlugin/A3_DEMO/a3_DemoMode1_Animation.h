@@ -189,7 +189,7 @@ typedef enum a3_DemoMode1_Animation_BlendMode				a3_DemoMode1_Animation_BlendMod
 		//a3ui32 hierarchyStateIndex;
 		//a3ui32 hierarchyPoseIndex;
 
-		//a3boolean togglePause;
+		a3boolean paused;
 		//a3boolean shouldRewind;
 
 		a3ui32 stateCount;

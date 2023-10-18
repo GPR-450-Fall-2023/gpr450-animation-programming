@@ -140,8 +140,8 @@ void a3animation_render_controls(a3_DemoState const* demoState, a3_DemoMode1_Ani
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"    Active camera (%u / %u) ('c' prev | next 'v'): %s", activeCamera + 1, animation_camera_max, cameraText[activeCamera]);
 
-	/*a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"    Play/pause controller playback (p)");*/
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"    Play/pause controller playback (p)");
 
 	//a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 	//	"    Flip playback direction (b)");
@@ -682,6 +682,41 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 				currentDrawable = demoState->draw_axes;
 				a3vertexDrawableActivateAndRenderInstanced(currentDrawable, currentHierarchy->numNodes);
 			}
+
+			//for (a3ui32 i = 0; i < demoMode->stateCount; i++)
+			//{
+			//	const a3_HierarchyState* currentHierarchyState;
+			//	const a3_Hierarchy* currentHierarchy;
+
+			//	// set up to draw skeleton
+			//	currentDemoProgram = demoState->prog_drawColorUnif_instanced;
+			//	a3shaderProgramActivate(currentDemoProgram->program);
+			//	currentHierarchyState = demoMode->hierarchyState_skel + i;
+			//	currentHierarchy = currentHierarchyState->hierarchy;
+
+			//	// draw skeletal joints
+			//	a3shaderUniformBufferActivate(demoState->ubo_transformMVP, 0);
+			//	a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, rose);
+			//	currentDrawable = demoState->draw_node;
+			//	a3vertexDrawableActivateAndRenderInstanced(currentDrawable, currentHierarchy->numNodes);
+
+			//	// draw bones
+			//	a3shaderProgramActivate(currentDemoProgram->program);
+			//	a3shaderUniformBufferActivate(demoState->ubo_transformMVPB, 0);
+			//	a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, sky);
+			//	currentDrawable = demoState->draw_link;
+			//	a3vertexDrawableActivateAndRenderInstanced(currentDrawable, currentHierarchy->numNodes);
+
+			//	// draw skeletal joint orientations
+			//	if (demoState->displayTangentBases)
+			//	{
+			//		currentDemoProgram = demoState->prog_drawColorAttrib_instanced;
+			//		a3shaderProgramActivate(currentDemoProgram->program);
+			//		a3shaderUniformBufferActivate(demoState->ubo_transformMVP, 0);
+			//		currentDrawable = demoState->draw_axes;
+			//		a3vertexDrawableActivateAndRenderInstanced(currentDrawable, currentHierarchy->numNodes);
+			//	}
+			//}
 		}
 
 
