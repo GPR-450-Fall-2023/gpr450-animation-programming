@@ -336,8 +336,11 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	a3hierarchyStateUpdateObjectInverse(activeHS);
 	a3hierarchyStateUpdateObjectBindToCurrent(activeHS, baseHS);
 
+
 	// prepare and upload graphics data
 	{
+		a3_HierarchyState* displayPose = demoMode->hierarchyState_skel + demoMode->displayPose;
+
 		a3addressdiff const skeletonIndex = demoMode->obj_skeleton - demoMode->object_scene;
 		a3ui32 const mvp_size = demoMode->hierarchy_skel->numNodes * sizeof(a3mat4);
 		a3ui32 const t_skin_size = sizeof(demoMode->t_skin);
@@ -358,7 +361,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 
 			// joint transform
 			a3real4x4SetScale(scaleMat.m, a3real_quarter);
-			a3real4x4Concat(activeHS->objectSpace->pose[i].transform.m, scaleMat.m);
+			a3real4x4Concat(displayPose->objectSpace->pose[i].transform.m, scaleMat.m);
 			a3real4x4Product(mvp_joint->m, mvp_obj.m, scaleMat.m);
 
 			// bone transform
@@ -366,11 +369,11 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 			if (p >= 0)
 			{
 				// position is parent joint's position
-				scaleMat.v3 = activeHS->objectSpace->pose[p].transform.v3;
+				scaleMat.v3 = displayPose->objectSpace->pose[p].transform.v3;
 
 				// direction basis is from parent to current
 				a3real3Diff(scaleMat.v2.v,
-					activeHS->objectSpace->pose[i].transform.v3.v, scaleMat.v3.v);
+					displayPose->objectSpace->pose[i].transform.v3.v, scaleMat.v3.v);
 
 				// right basis is cross of some upward vector and direction
 				// select 'z' for up if either of the other dimensions is set
@@ -390,7 +393,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 			a3real4x4Product(mvp_bone->m, mvp_obj.m, scaleMat.m);
 
 			// get base to current object-space
-			*t_skin = activeHS->objectSpaceBindToCurrent->pose[i].transform;
+			*t_skin = displayPose->objectSpaceBindToCurrent->pose[i].transform;
 
 			// calculate DQ
 			{

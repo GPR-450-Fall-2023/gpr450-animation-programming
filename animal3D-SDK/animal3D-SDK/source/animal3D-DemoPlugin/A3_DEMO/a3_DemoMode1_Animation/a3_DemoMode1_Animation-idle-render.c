@@ -115,6 +115,27 @@ void a3animation_render_controls(a3_DemoState const* demoState, a3_DemoMode1_Ani
 		"Bi-Cubic",
 	};
 
+	a3byte const* displayPoseName[display_max] = {
+		"Bind",
+		"Output",
+		"Input 1",
+		"Input 2",
+		"Input 3",
+		"Input 4",
+		"Input 5",
+		"Input 6",
+		"Input 7",
+		"Input 8",
+		"Input 9",
+		"Input 10",
+		"Input 11",
+		"Input 12",
+		"Input 13",
+		"Input 14",
+		"Input 15",
+		"Input 16"
+	};
+
 	// pipeline and target
 	a3_DemoMode1_Animation_RenderProgramName const render = demoMode->render;
 	a3_DemoMode1_Animation_DisplayProgramName const display = demoMode->display;
@@ -152,53 +173,57 @@ void a3animation_render_controls(a3_DemoState const* demoState, a3_DemoMode1_Ani
 		"    Pose Index (%u / %u) ('7' | '8'): %s", demoMode->hierarchyPoseIndex + 1, pose_max, blendModeName[demoMode->blendMode]);*/
 
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"    Blend Function (%u / %u) ('9' | '0'): %s", demoMode->blendMode + 1, 14, blendModeName[demoMode->blendMode]);
+		"    Blend Function (%u / %u) ('9' | '0'): %s", demoMode->blendMode + 1, blend_max, blendModeName[demoMode->blendMode]);
 
-	//Render specific information about current blend function
-	switch (demoMode->blendMode)
-	{
-	case blend_identity:
-		
-		break;
-	case blend_construct:
-		
-	case blend_copy:
-		
-		break;
-	case blend_negate:
-		
-		break;
-	case blend_concatenate:
-		
-		break;
-	case blend_nearest:
-		
-		break;
-	case blend_lerp:
-		
-		break;
-	case blend_cubic:
-		
-		break;
-	case blend_deconcatenate:
-		
-		break;
-	case blend_scale:
-		
-		break;
-	case blend_triangular:
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"    Displayed Pose (%u / %u) ('7' | '8'): %s", demoMode->displayPose + 1, display_max, displayPoseName[demoMode->displayPose]);
 
-		break;
-	case blend_binearest:
+	////////////////// This is handled in the console instead ////////////////////
+	////Render specific information about current blend function
+	//switch (demoMode->blendMode)
+	//{
+	//case blend_identity:
+	//	
+	//	break;
+	//case blend_construct:
+	//	
+	//case blend_copy:
+	//	
+	//	break;
+	//case blend_negate:
+	//	
+	//	break;
+	//case blend_concatenate:
+	//	
+	//	break;
+	//case blend_nearest:
+	//	
+	//	break;
+	//case blend_lerp:
+	//	
+	//	break;
+	//case blend_cubic:
+	//	
+	//	break;
+	//case blend_deconcatenate:
+	//	
+	//	break;
+	//case blend_scale:
+	//	
+	//	break;
+	//case blend_triangular:
 
-		break;
-	case blend_bilinear:
+	//	break;
+	//case blend_binearest:
 
-		break;
-	case blend_bicubic:
+	//	break;
+	//case blend_bilinear:
 
-		break;
-	}
+	//	break;
+	//case blend_bicubic:
+
+	//	break;
+	//}
 }
 
 

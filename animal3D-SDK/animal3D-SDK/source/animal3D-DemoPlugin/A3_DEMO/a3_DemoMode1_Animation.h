@@ -51,6 +51,7 @@ typedef enum a3_DemoMode1_Animation_PipelineName			a3_DemoMode1_Animation_Pipeli
 typedef enum a3_DemoMode1_Animation_PassName				a3_DemoMode1_Animation_PassName;
 typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetName;
 typedef enum a3_DemoMode1_Animation_BlendMode				a3_DemoMode1_Animation_BlendMode;
+typedef enum a3_DemoMode1_Animation_DisplayPose				a3_DemoMode1_Animation_DisplayPose;
 #endif	// __cplusplus
 
 
@@ -159,6 +160,30 @@ typedef enum a3_DemoMode1_Animation_BlendMode				a3_DemoMode1_Animation_BlendMod
 		blend_max
 	};
 
+	enum a3_DemoMode1_Animation_DisplayPose
+	{
+		display_bind = 0,
+		display_output,
+		display_input1,
+		display_input2,
+		display_input3,
+		display_input4,
+		display_input5,
+		display_input6,
+		display_input7,
+		display_input8,
+		display_input9,
+		display_input10,
+		display_input11,
+		display_input12,
+		display_input13,
+		display_input14,
+		display_input15,
+		display_input16,
+
+		display_max
+	};
+
 
 //-----------------------------------------------------------------------------
 
@@ -184,6 +209,9 @@ typedef enum a3_DemoMode1_Animation_BlendMode				a3_DemoMode1_Animation_BlendMod
 
 		//Blend function
 		a3_DemoMode1_Animation_BlendMode blendMode;
+
+		//Current displayed pose
+		a3_DemoMode1_Animation_DisplayPose displayPose;
 
 		//Testing values
 		//a3ui32 hierarchyStateIndex;

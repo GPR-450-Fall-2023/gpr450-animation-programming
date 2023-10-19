@@ -144,6 +144,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	demoMode->blendMode = blend_identity;
 	demoMode->aplicationTime = 0;
 	demoMode->playDirection = 1;
+	demoMode->displayPose = display_output;
 }
 
 

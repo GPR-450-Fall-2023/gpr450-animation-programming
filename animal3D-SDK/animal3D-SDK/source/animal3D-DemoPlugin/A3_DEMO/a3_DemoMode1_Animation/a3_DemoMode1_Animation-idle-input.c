@@ -75,6 +75,7 @@ void a3animation_input_keyCharPress(a3_DemoState const* demoState, a3_DemoMode1_
 
 		// toggle blend fucntion
 		a3demoCtrlCasesLoop(demoMode->blendMode, blend_max, '0', '9');
+		a3demoCtrlCasesLoop(demoMode->displayPose, display_max, '8', '7');
 	}
 }
 
