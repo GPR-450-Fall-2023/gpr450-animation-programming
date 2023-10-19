@@ -99,11 +99,8 @@ a3_SpatialPose* a3spatialPoseOpBiLinear(a3_SpatialPose* pose_out,
 //NOTE - Organize this however you want, I just need it here for drafting the testing interface - Dillon
 // pointer-based bi-cubic operation for single spatial pose
 a3_SpatialPose* a3spatialPoseOpBiCubic(a3_SpatialPose* pose_out,
-	const a3_SpatialPose* poseSet0, //Array of 4 poses
-	const a3_SpatialPose* poseSet1, //Array of 4 poses
-	const a3_SpatialPose* poseSet2, //Array of 4 poses
-	const a3_SpatialPose* poseSet3, //Array of 4 poses
-	const a3real3* uArray); //Array of 5 a3real3's
+	a3_SpatialPose* poseSet, //Array of 16 poses
+	a3real* uArray); //Array of 5 a3real3's
 
 
 //-----------------------------------------------------------------------------
@@ -162,12 +159,9 @@ a3_SpatialPose a3spatialPoseDOpBiLinear(
 
 //NOTE - Organize this however you want, I just need it here for drafting the testing interface - Dillon
 // data-based bi-cubic operation for single spatial pose
-a3_SpatialPose a3spatialPoseDOpBiCubic(
-	a3_SpatialPose const* poseSet0, //Array of 4 poses
-	a3_SpatialPose const* poseSet1, //Array of 4 poses
-	a3_SpatialPose const* poseSet2, //Array of 4 poses
-	a3_SpatialPose const* poseSet3, //Array of 4 poses
-	a3real3 const* uArray); //Array of 5 a3real3's
+a3_SpatialPose a3spatialPoseDOpBiCubic(a3_SpatialPose* pose_out,
+	a3_SpatialPose* poseSet, //Array of 16 poses
+	a3real* uArray); //Array of 5 a3real3's
 
 
 //-----------------------------------------------------------------------------
@@ -227,11 +221,8 @@ a3_HierarchyPose* a3hierarchyPoseDOpBiLinear(a3_HierarchyPose* pose_out, a3ui32 
 //NOTE - Organize this however you want, I just need it here for drafting the testing interface - Dillon
 // pointer-based bi-cubic operation for single hierarchy pose
 a3_HierarchyPose* a3hierarchyPoseDOpBiCubic(a3_HierarchyPose* pose_out, a3ui32 numNodes,
-	a3_HierarchyPose* const* poseSet0, //Array of 4 poses
-	a3_HierarchyPose* const* poseSet1, //Array of 4 poses
-	a3_HierarchyPose* const* poseSet2, //Array of 4 poses
-	a3_HierarchyPose* const* poseSet3, //Array of 4 poses
-	a3real3 const* uArray); //Array of 5 a3real3's
+	a3_HierarchyPose* poseSet, //Array of 16 poses
+	a3real* uArray); //Array of 5 a3real3's
 
 //-----------------------------------------------------------------------------
 

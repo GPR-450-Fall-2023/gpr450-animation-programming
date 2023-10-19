@@ -238,7 +238,8 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		a3hierarchyPoseOpLERP(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose8HS->localSpace, (a3real)fmod(demoMode->aplicationTime, BLEND_SPEED));
 		break;
 	case blend_cubic:
-		a3hierarchyPoseOpCubic(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose8HS->localSpace, pose0HS->localSpace, pose8HS->localSpace, (a3real)fmod(demoMode->aplicationTime, BLEND_SPEED));
+		a3hierarchyPoseOpCubic(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose4HS->localSpace, 
+			pose8HS->localSpace, pose12HS->localSpace, (a3real)fmod(demoMode->aplicationTime, BLEND_SPEED));
 		break;
 	case blend_deconcatenate:
 		a3hierarchyPoseOpDeconcatenate(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose8HS->localSpace);
@@ -247,14 +248,28 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		a3hierarchyPoseOpScale(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, .5f);
 		break;
 	case blend_triangular:
+		/*a3hierarchyPoseOpTriangular(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose8HS->localSpace,
+			pose12HS->localSpace, (a3real)sin(demoMode->aplicationTime) * BLEND_SPEED, (a3real)cos(demoMode->aplicationTime) * BLEND_SPEED);*/
 		a3hierarchyPoseOpTriangular(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose8HS->localSpace,
-			pose12HS->localSpace, (a3real)sin(demoMode->aplicationTime) * BLEND_SPEED, (a3real)cos(demoMode->aplicationTime) * BLEND_SPEED);
+			pose12HS->localSpace, (a3real)fmod(demoMode->aplicationTime, BLEND_SPEED), (a3real)fmod(demoMode->aplicationTime, BLEND_SPEED));
 		break;
 	case blend_binearest:
+		a3hierarchyPoseOpBiNearest(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose4HS->localSpace, 
+			pose8HS->localSpace, pose12HS->localSpace, .5f, .5f, (a3real)fmod(demoMode->aplicationTime, BLEND_SPEED));
 		break;
 	case blend_bilinear:
+		a3hierarchyPoseOpBiLinear(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose4HS->localSpace,
+			pose8HS->localSpace, pose12HS->localSpace, .5f, .5f, (a3real)fmod(demoMode->aplicationTime, BLEND_SPEED));
 		break;
 	case blend_bicubic:
+		a3real blends[5] = { .5, .5, .5, .5, (a3real)fmod(demoMode->aplicationTime, BLEND_SPEED) };
+		a3_HierarchyPose hposes[16];
+		for (a3ui32 j = 0; j < 16; j++)
+		{
+			hposes[j] = *(pose0HS + j)->localSpace;
+		}
+
+		a3hierarchyPoseOpBiCubic(activeHS->localSpace, activeHS->hierarchy->numNodes, hposes, blends); //Start at pose0HS to get all poses
 		break;
 	default:
 		printf("Invalid blend function");
