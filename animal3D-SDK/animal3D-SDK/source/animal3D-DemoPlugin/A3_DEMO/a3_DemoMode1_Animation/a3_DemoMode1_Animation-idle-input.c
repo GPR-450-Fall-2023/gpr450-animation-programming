@@ -68,8 +68,8 @@ void a3animation_input_keyCharPress(a3_DemoState const* demoState, a3_DemoMode1_
 		// toggle pose to display
 		//a3demoCtrlCasesLoop(demoMode->hierarchyPoseIndex, pose_max, '8', '7');
 
-		//// toggle pause
-		//a3demoCtrlCaseToggle(demoMode->togglePause, 'p');
+		// toggle pause
+		a3demoCtrlCaseToggle(demoMode->paused, 'p');
 		////toggle direction
 		//a3demoCtrlCaseToggle(demoMode->playbackDirection, 'b');
 
