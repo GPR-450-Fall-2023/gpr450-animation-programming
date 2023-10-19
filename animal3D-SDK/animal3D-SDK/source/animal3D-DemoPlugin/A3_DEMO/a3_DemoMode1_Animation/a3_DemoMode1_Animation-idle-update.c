@@ -99,9 +99,15 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	
 	const a3real BLEND_SPEED = 1.0;
 
+	if (demoMode->directionToggle)
+	{
+		demoMode->directionToggle = false;
+		demoMode->playDirection *= -1;
+	}
+
 	if (!demoMode->paused)
 	{
-		demoMode->aplicationTime += (a3real)dt;
+		demoMode->aplicationTime += (a3real)dt * demoMode->playDirection;
 	}
 
 	a3demo_update_objects(demoState, dt,

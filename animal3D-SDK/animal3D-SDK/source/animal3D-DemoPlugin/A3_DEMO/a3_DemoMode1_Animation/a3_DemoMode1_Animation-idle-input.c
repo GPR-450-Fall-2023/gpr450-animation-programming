@@ -71,7 +71,7 @@ void a3animation_input_keyCharPress(a3_DemoState const* demoState, a3_DemoMode1_
 		// toggle pause
 		a3demoCtrlCaseToggle(demoMode->paused, 'p');
 		////toggle direction
-		//a3demoCtrlCaseToggle(demoMode->playbackDirection, 'b');
+		a3demoCtrlCaseToggle(demoMode->directionToggle, 'b');
 
 		// toggle blend fucntion
 		a3demoCtrlCasesLoop(demoMode->blendMode, blend_max, '0', '9');

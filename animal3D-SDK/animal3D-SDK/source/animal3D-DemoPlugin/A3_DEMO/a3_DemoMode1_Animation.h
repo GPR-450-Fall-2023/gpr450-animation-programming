@@ -196,6 +196,9 @@ typedef enum a3_DemoMode1_Animation_BlendMode				a3_DemoMode1_Animation_BlendMod
 
 		a3real aplicationTime;
 
+		a3boolean directionToggle;
+		a3real playDirection;
+
 		// objects
 		union {
 			a3_DemoSceneObject object_scene[animationMaxCount_sceneObject];
