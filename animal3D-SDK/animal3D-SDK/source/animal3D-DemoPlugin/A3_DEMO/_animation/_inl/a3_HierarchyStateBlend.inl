@@ -557,45 +557,6 @@ inline a3i32 a3_findCircumcenter(Circumcircle* circum_out, Triangle* tri)
 {
 	if (circum_out)
 	{
-		//a3real3 aToC;
-		//aToC[0] = tri->pointC[0] - tri->pointA[0];
-		//aToC[1] = tri->pointC[1] - tri->pointA[1];
-		//aToC[2] = tri->pointC[2] - tri->pointA[2];
-
-		//a3real acMag = a3real3LengthSquared(aToC);
-
-		//a3real3 aTob;
-		//aTob[0] = tri->pointB[0] - tri->pointA[0];
-		//aTob[1] = tri->pointB[1] - tri->pointA[1];
-		//aTob[2] = tri->pointB[2] - tri->pointA[2];
-		//
-		//a3real abMag = a3real3LengthSquared(aTob);
-
-		//a3real3 crossed;
-		//a3real3Cross(crossed, aToC, aTob);
-
-		//a3real crossedMag = a3real3LengthSquared(crossed);
-
-
-		//a3real3 crossedAB;
-		//a3real3Cross(crossedAB, crossed, aTob);
-		//a3real3MulS(crossedAB, acMag);
-		//a3real3 acCrossed;
-		//a3real3Cross(acCrossed, aToC, crossed);
-		//a3real3MulS(acCrossed, abMag);
-
-		//a3real3 crossedSums;
-		//a3real3Sum(crossedSums, crossedAB, acCrossed);
-		//
-		//a3real3 aToCenter;
-		//a3real2DivS(crossedSums, (crossedMag * 2.0));
-		//
-		////Set Center
-		//a3real3Sum(circum_out->center, tri->pointA, aToCenter);
-
-		////Set radius
-		//circum_out->radius = a3real3Length(aToCenter);
-
 		a3real2 abMid;
 		a3real2Set(abMid, (tri->pointA[0] + tri->pointB[0]) / (a3real)2.0, (tri->pointA[1] + tri->pointB[1]) / (a3real)2.0);
 
