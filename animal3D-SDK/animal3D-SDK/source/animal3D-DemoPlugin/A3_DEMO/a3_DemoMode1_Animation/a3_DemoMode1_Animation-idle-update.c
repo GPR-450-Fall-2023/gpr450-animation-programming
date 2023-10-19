@@ -36,6 +36,7 @@
 #include "../_a3_demo_utilities/a3_DemoMacros.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 
 
 //-----------------------------------------------------------------------------
@@ -202,7 +203,12 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	//a3hierarchyStateUpdateObjectInverse(pose1HS);
 	//a3hierarchyStateUpdateObjectBindToCurrent(pose1HS, baseHS);
 
-	
+	system("cls"); //Clear console
+
+	a3real param1;
+	a3real param2;
+	a3real param3;
+
 	//Blend new pose from inputs based on current blend function
 	switch (demoMode->blendMode)
 	{
@@ -221,6 +227,8 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		scale[1] = 1;
 		scale[2] = 1;
 		a3hierarchyPoseOpConstruct(activeHS->localSpace, activeHS->hierarchy->numNodes, translation, rotation, scale);
+		printf("Translation: %f, %f, %f\nRotation: %f, %f, %f\nScale: %f, %f, %f\n\n", translation[0], translation[1], translation[2],
+			rotation[0], rotation[1], rotation[2], scale[0], scale[1], scale[2]);
 		break;
 	case blend_copy:
 		a3hierarchyPoseOpCopy(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace);
@@ -232,34 +240,59 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		a3hierarchyPoseOpConcatenate(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose8HS->localSpace);
 		break;
 	case blend_nearest:
-		a3hierarchyPoseOpNearest(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose8HS->localSpace, (a3real)fmod(demoMode->aplicationTime, BLEND_SPEED));
+		param1 = (a3real)fmod(demoMode->aplicationTime, BLEND_SPEED);
+		a3hierarchyPoseOpNearest(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose8HS->localSpace, param1);
+		printf("Blend Parameter: %f\n\n", param1);
 		break;
 	case blend_lerp:
-		a3hierarchyPoseOpLERP(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose8HS->localSpace, (a3real)fmod(demoMode->aplicationTime, BLEND_SPEED));
+		param1 = (a3real)fmod(demoMode->aplicationTime, BLEND_SPEED);
+		a3hierarchyPoseOpLERP(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose8HS->localSpace, param1);
+		printf("Blend Parameter: %f\n\n", param1);
 		break;
 	case blend_cubic:
+		param1 = (a3real)fmod(demoMode->aplicationTime, BLEND_SPEED);
 		a3hierarchyPoseOpCubic(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose4HS->localSpace, 
-			pose8HS->localSpace, pose12HS->localSpace, (a3real)fmod(demoMode->aplicationTime, BLEND_SPEED));
+			pose8HS->localSpace, pose12HS->localSpace, param1);
+		printf("Blend Parameter: %f\n\n", param1);
 		break;
 	case blend_deconcatenate:
 		a3hierarchyPoseOpDeconcatenate(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose8HS->localSpace);
 		break;
 	case blend_scale:
-		a3hierarchyPoseOpScale(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, .5f);
+		//a3real param = (a3real)fmod(demoMode->aplicationTime, BLEND_SPEED);
+		param1 = .5f;
+		a3hierarchyPoseOpScale(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, param1);
+		printf("Scale Parameter: %f\n\n", param1);
 		break;
 	case blend_triangular:
 		/*a3hierarchyPoseOpTriangular(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose8HS->localSpace,
 			pose12HS->localSpace, (a3real)sin(demoMode->aplicationTime) * BLEND_SPEED, (a3real)cos(demoMode->aplicationTime) * BLEND_SPEED);*/
+		param1 = (a3real)fmod(demoMode->aplicationTime, BLEND_SPEED);
+		param2 = (a3real)fmod(demoMode->aplicationTime, BLEND_SPEED);
 		a3hierarchyPoseOpTriangular(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose8HS->localSpace,
-			pose12HS->localSpace, (a3real)fmod(demoMode->aplicationTime, BLEND_SPEED), (a3real)fmod(demoMode->aplicationTime, BLEND_SPEED));
+			pose12HS->localSpace, param1, param2);
+		printf("Blend Parameter 1: %f\nBlend Parameter 2: %f\n\n", param1, param2);
 		break;
 	case blend_binearest:
+		param1 = .5f;
+		param2 = .5f;
+		param3 = (a3real)fmod(demoMode->aplicationTime, BLEND_SPEED);
+
 		a3hierarchyPoseOpBiNearest(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose4HS->localSpace, 
-			pose8HS->localSpace, pose12HS->localSpace, .5f, .5f, (a3real)fmod(demoMode->aplicationTime, BLEND_SPEED));
+			pose8HS->localSpace, pose12HS->localSpace, param1, param2, param3);
+
+		printf("Blend Parameter 1: %f\nBlend Parameter 2: %f\nBlend Parameter 3: %f\n\n", param1, param2, param3);
 		break;
 	case blend_bilinear:
+		param1 = .5f;
+		param2 = .5f;
+		param3 = (a3real)fmod(demoMode->aplicationTime, BLEND_SPEED);
+
 		a3hierarchyPoseOpBiLinear(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose4HS->localSpace,
-			pose8HS->localSpace, pose12HS->localSpace, .5f, .5f, (a3real)fmod(demoMode->aplicationTime, BLEND_SPEED));
+			pose8HS->localSpace, pose12HS->localSpace, param1, param2, param3);
+
+
+		printf("Blend Parameter 1: %f\nBlend Parameter 2: %f\nBlend Parameter 3: %f\n\n", param1, param2, param3);
 		break;
 	case blend_bicubic:
 		a3real blends[5] = { .5, .5, .5, .5, (a3real)fmod(demoMode->aplicationTime, BLEND_SPEED) };
@@ -270,13 +303,16 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		}
 
 		a3hierarchyPoseOpBiCubic(activeHS->localSpace, activeHS->hierarchy->numNodes, hposes, blends); //Start at pose0HS to get all poses
+		
+		printf("Blend Parameter 1: %f\nBlend Parameter 2: %f\nBlend Parameter 3: %f\nBlend Parameter 4: %f\nBlend Parameter 5: %f\n\n", 
+			blends[0], blends[1], blends[2], blends[3], blends[4]);
 		break;
 	default:
 		printf("Invalid blend function");
 		break;
 	}
 
-	//Output pose
+	////Output pose
 	//a3hierarchyPoseLerp(activeHS->objectSpace,	// use as temp storage
 	//	demoMode->hierarchyPoseGroup_skel->hpose + demoMode->hierarchyKeyPose_display[0] + 1,
 	//	demoMode->hierarchyPoseGroup_skel->hpose + demoMode->hierarchyKeyPose_display[1] + 1,
@@ -378,7 +414,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	//	a3index i, j;
 	//	a3i32 p;
 
-	//	for (j = 0; j < demoMode->stateCount; j++)
+	//	for (j = 0; j < 3; j++)
 	//	{
 	//		a3_HierarchyState* uploadState = demoMode->hierarchyState_skel + j + 1; //Offset from base pose
 
@@ -442,7 +478,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	//	a3bufferRefill(demoState->ubo_transformBlend, 0, t_skin_size, demoMode->t_skin);
 	//	a3bufferRefillOffset(demoState->ubo_transformBlend, 0, t_skin_size, dq_skin_size, demoMode->dq_skin);
 	//}
-	//
+	
 }
 
 
