@@ -162,24 +162,6 @@ inline a3_SpatialPose* a3spatialPoseOpCubic(a3_SpatialPose* pose_out, a3_Spatial
 // pointer-based deconcatenate operation for single spatial pose
 inline a3_SpatialPose* a3spatialPoseOpDeconcatenate(a3_SpatialPose* pose_out, a3_SpatialPose const* pose_left, a3_SpatialPose const* pose_right)
 {
-	//a3real3 translation;
-	//a3real3 rotation;
-	//a3real3 scale;
-
-	//translation[0] = pose_left->translation.x - pose_right->translation.x;
-	//translation[1] = pose_left->translation.y - pose_right->translation.y;
-	//translation[2] = pose_left->translation.z - pose_right->translation.z;
-
-	//rotation[0] = pose_left->angles.x - pose_right->angles.x;
-	//rotation[1] = pose_left->angles.y - pose_right->angles.y;
-	//rotation[2] = pose_left->angles.z - pose_right->angles.z;
-
-	//scale[0] = pose_left->scale.x - pose_right->scale.x;
-	//scale[1] = pose_left->scale.y - pose_right->scale.y;
-	//scale[2] = pose_left->scale.z - pose_right->scale.z;
-
-	//a3spatialPoseOpConstruct(pose_out, translation, rotation, scale);
-
 	a3_SpatialPose rightArg = a3spatialPoseDOpNegate(*pose_right);
 	a3spatialPoseOpConcatenate(pose_out, pose_left, &rightArg);
 
@@ -216,8 +198,16 @@ inline a3_SpatialPose* a3spatialPoseOpScale(a3_SpatialPose* pose_out, a3_Spatial
 inline a3_SpatialPose* a3spatialPoseOpTriangular(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1,
 	a3_SpatialPose const* pose2, const a3real u0, const a3real u1)
 {
-	a3_SpatialPose firstLerp = a3spatialPoseDOpLERP(*pose0, *pose1, u0);
-	a3spatialPoseOpLERP(pose_out, &firstLerp, pose2, u1);
+	a3_SpatialPose scaled0 = a3spatialPoseDOpScale(*pose0, u0);
+	a3_SpatialPose scaled1 = a3spatialPoseDOpScale(*pose1, u1);
+
+	float gamma = 1 - u0 - u1;
+
+	a3_SpatialPose scaled2 = a3spatialPoseDOpScale(*pose2, gamma);
+
+	a3_SpatialPose added01 = a3spatialPoseDOpConcatenate(scaled0, scaled1);
+
+	a3spatialPoseOpConcatenate(pose_out, &added01, &scaled2);
 
 	// done
 	return pose_out;
@@ -229,6 +219,10 @@ inline a3_SpatialPose* a3spatialPoseOpBiNearest(a3_SpatialPose* pose_out,
 	a3_SpatialPose const* pose1_initial, a3_SpatialPose const* pose1_terminal,
 	const a3real u0, const a3real u1, const a3real u01)
 {
+	a3_SpatialPose nearest0 = a3spatialPoseDOpNearest(*pose0_initial, *pose0_terminal, u0);
+	a3_SpatialPose nearest1 = a3spatialPoseDOpNearest(*pose1_initial, *pose1_terminal, u1);
+
+	a3spatialPoseOpNearest(pose_out, &nearest0, &nearest1, u01);
 
 	// done
 	return pose_out;
@@ -240,6 +234,10 @@ inline a3_SpatialPose* a3spatialPoseOpBiLinear(a3_SpatialPose* pose_out,
 	a3_SpatialPose const* pose1_initial, a3_SpatialPose const* pose1_terminal,
 	const a3real u0, const a3real u1, const a3real u01)
 {
+	a3_SpatialPose firstLerp = a3spatialPoseDOpLERP(*pose0_initial, *pose0_terminal, u0);
+	a3_SpatialPose secondLerp = a3spatialPoseDOpLERP(*pose1_initial, *pose1_terminal, u1);
+
+	a3spatialPoseOpLERP(pose_out, &firstLerp, &secondLerp, u01);
 
 	// done
 	return pose_out;
@@ -254,6 +252,8 @@ inline a3_SpatialPose* a3spatialPoseOpBiCubic(a3_SpatialPose* pose_out,
 	const a3_SpatialPose* poseSet3, //Array of 4 poses
 	const a3real3* uArray) //Array of 5 a3real3's
 {
+
+	// Don't think I can do for now, seems like something's wrong with cubic
 
 	// done
 	return pose_out;
@@ -329,7 +329,7 @@ inline a3_SpatialPose a3spatialPoseDOpCubic(a3_SpatialPose const pose0, a3_Spati
 	a3_SpatialPose const* pose2, a3_SpatialPose const* pose3, const a3real u)
 {
 	a3_SpatialPose result = { 0 };
-	a3spatialPoseOpCubic(&result, &pose0, &pose1, u);
+
 	// done
 	return result;
 }
@@ -337,7 +337,8 @@ inline a3_SpatialPose a3spatialPoseDOpCubic(a3_SpatialPose const pose0, a3_Spati
 // data-based deconcatenate operation for single spatial pose
 inline a3_SpatialPose a3spatialPoseDOpDeconcatenate(a3_SpatialPose const pose_left, a3_SpatialPose const pose_right) {
 	a3_SpatialPose result = { 0 };
-	// ...
+	
+	a3spatialPoseOpDeconcatenate(&result, &pose_left, &pose_right);
 
 	// done
 	return result;
@@ -347,7 +348,8 @@ inline a3_SpatialPose a3spatialPoseDOpDeconcatenate(a3_SpatialPose const pose_le
 inline a3_SpatialPose a3spatialPoseDOpScale(a3_SpatialPose const pose_in, a3real const u)
 {
 	a3_SpatialPose result = { 0 };
-	// ...
+	
+	a3spatialPoseOpScale(&result, &pose_in, u);
 
 	// done
 	return result;
@@ -358,7 +360,8 @@ inline a3_SpatialPose a3spatialPoseDOpTriangular(a3_SpatialPose const pose0, a3_
 	a3_SpatialPose const pose2, a3real const u0, a3real const u1)
 {
 	a3_SpatialPose result = { 0 };
-	// ...
+	
+	a3spatialPoseOpTriangular(&result, &pose0, &pose1, &pose2, u0, u1);
 
 	// done
 	return result;
@@ -371,7 +374,8 @@ inline a3_SpatialPose a3spatialPoseDOpBiNearest(
 	a3real const u0, a3real const u1, a3real const u01)
 {
 	a3_SpatialPose result = { 0 };
-	// ...
+	
+	a3spatialPoseOpBiNearest(&result, &pose0_initial, &pose0_terminal, &pose1_initial, &pose1_terminal, u0, u1, u01);
 
 	// done
 	return result;
@@ -384,7 +388,8 @@ inline a3_SpatialPose a3spatialPoseDOpBiLinear(
 	a3real const u0, a3real const u1, a3real const u01)
 {
 	a3_SpatialPose result = { 0 };
-	// ...
+	
+	a3spatialPoseOpBiLinear(&result, &pose0_initial, &pose0_terminal, &pose1_initial, &pose1_terminal, u0, u1, u01);
 
 	// done
 	return result;
@@ -400,8 +405,7 @@ inline a3_SpatialPose a3spatialPoseDOpBiCubic(
 	a3real3 const* uArray) //Array of 5 a3real3's
 {
 	a3_SpatialPose result = { 0 };
-	// ...
-
+	
 	// done
 	return result;
 }
@@ -493,7 +497,9 @@ inline a3_HierarchyPose* a3hierarchyPoseOpCubic(a3_HierarchyPose* pose_out, a3ui
 // pointer-based deconcatenate operation for single hierarchy pose
 inline a3_HierarchyPose* a3hierarchyPoseOpDeconcatenate(a3_HierarchyPose* pose_out, a3ui32 numNodes, a3_HierarchyPose* const pose_left, a3_HierarchyPose* const pose_right)
 {
-
+	for (a3ui32 i = 0; i < numNodes; i++) {
+		a3spatialPoseOpDeconcatenate(&pose_out->pose[i], &pose_left->pose[i], &pose_right->pose[i]);
+	}
 	// done
 	return pose_out;
 }
@@ -501,7 +507,9 @@ inline a3_HierarchyPose* a3hierarchyPoseOpDeconcatenate(a3_HierarchyPose* pose_o
 // pointer-based scale operation for single hierarchy pose
 inline a3_HierarchyPose* a3hierarchyPoseOpScale(a3_HierarchyPose* pose_out, a3ui32 numNodes, a3_HierarchyPose* const pose_in, a3real const u)
 {
-
+	for (a3ui32 i = 0; i < numNodes; i++) {
+		a3spatialPoseOpScale(&pose_out->pose[i], &pose_in->pose[i], u);
+	}
 	// done
 	return pose_out;
 }
@@ -510,7 +518,9 @@ inline a3_HierarchyPose* a3hierarchyPoseOpScale(a3_HierarchyPose* pose_out, a3ui
 inline a3_HierarchyPose* a3hierarchyPoseOpTriangular(a3_HierarchyPose* pose_out, a3ui32 numNodes, a3_HierarchyPose* const pose0, a3_HierarchyPose* const pose1,
 	a3_HierarchyPose* const pose2, a3real const u0, a3real const u1)
 {
-
+	for (a3ui32 i = 0; i < numNodes; i++) {
+		a3spatialPoseOpTriangular(&pose_out->pose[i], &pose0->pose[i], &pose1->pose[i], &pose2->pose[i], u0, u1);
+	}
 	// done
 	return pose_out;
 }
@@ -521,7 +531,9 @@ inline a3_HierarchyPose* a3hierarchyPoseOpBiNearest(a3_HierarchyPose* pose_out, 
 	a3_HierarchyPose* const pose1_initial, a3_HierarchyPose* const pose1_terminal,
 	a3real const u0, a3real const u1, a3real const u01)
 {
-
+	for (a3ui32 i = 0; i < numNodes; i++) {
+		a3spatialPoseOpBiNearest(&pose_out->pose[i], &pose0_initial->pose[i], &pose0_terminal->pose[i], &pose1_initial->pose[i], &pose1_terminal->pose[i], u0, u1, u01);
+	}
 	// done
 	return pose_out;
 }
@@ -532,7 +544,9 @@ inline a3_HierarchyPose* a3hierarchyPoseOpBiLinear(a3_HierarchyPose* pose_out, a
 	a3_HierarchyPose* const pose1_initial, a3_HierarchyPose* const pose1_terminal,
 	a3real const u0, a3real const u1, a3real const u01)
 {
-
+	for (a3ui32 i = 0; i < numNodes; i++) {
+		a3spatialPoseOpBiLinear(&pose_out->pose[i], &pose0_initial->pose[i], &pose0_terminal->pose[i], &pose1_initial->pose[i], &pose1_terminal->pose[i], u0, u1, u01);
+	}
 	// done
 	return pose_out;
 }
