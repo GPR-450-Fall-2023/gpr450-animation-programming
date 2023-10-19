@@ -139,18 +139,18 @@ inline a3_SpatialPose* a3spatialPoseOpLERP(a3_SpatialPose* pose_out, a3_SpatialP
 
 // pointer-based cubic operation for single spatial pose
 inline a3_SpatialPose* a3spatialPoseOpCubic(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1,
-	a3_SpatialPose const* pose2, a3_SpatialPose const* pose3, const a3real u)
+	/*a3_SpatialPose const* pose2, a3_SpatialPose const* pose3, */ const a3real u)
 {
 	a3real3 trans, rot, scale;
-	trans[0] = a3cubic(pose0->translation.x, pose1->translation.x, pose2->translation.x, pose3->translation.x, u);
-	trans[1] = a3cubic(pose0->translation.y, pose1->translation.y, pose2->translation.y, pose3->translation.y, u);
-	trans[2] = a3cubic(pose0->translation.z, pose1->translation.z, pose2->translation.z, pose3->translation.z, u);
-	rot[0] = a3cubic(pose0->angles.x, pose1->angles.x, pose2->angles.x, pose3->angles.x, u);
-	rot[1] = a3cubic(pose0->angles.y, pose1->angles.y, pose2->angles.y, pose3->angles.y, u);
-	rot[2] = a3cubic(pose0->angles.z, pose1->angles.z, pose2->angles.z, pose3->angles.z, u);
-	scale[0] = a3cubic(pose0->scale.x, pose1->scale.x, pose2->scale.x, pose3->scale.x, u);
-	scale[1] = a3cubic(pose0->scale.y, pose1->scale.y, pose2->scale.y, pose3->scale.y, u);
-	scale[2] = a3cubic(pose0->scale.z, pose1->scale.z, pose2->scale.z, pose3->scale.z, u);
+	trans[0] = a3cubic(pose0->translation.x, pose1->translation.x, 0, 0, u);
+	trans[1] = a3cubic(pose0->translation.y, pose1->translation.y, 0, 0, u);
+	trans[2] = a3cubic(pose0->translation.z, pose1->translation.z, 0, 0, u);
+	rot[0] = a3cubic(pose0->angles.x, pose1->angles.x, 0, 0, u);
+	rot[1] = a3cubic(pose0->angles.y, pose1->angles.y, 0, 0, u);
+	rot[2] = a3cubic(pose0->angles.z, pose1->angles.z, 0, 0, u);
+	scale[0] = a3cubic(pose0->scale.x, pose1->scale.x, 0, 0, u);
+	scale[1] = a3cubic(pose0->scale.y, pose1->scale.y, 0, 0, u);
+	scale[2] = a3cubic(pose0->scale.z, pose1->scale.z, 0, 0, u);
 	a3spatialPoseOpConstruct(pose_out, trans, rot, scale);
 	// done
 	return pose_out;
@@ -287,7 +287,7 @@ inline a3_SpatialPose a3spatialPoseDOpCubic(a3_SpatialPose const pose0, a3_Spati
 	a3_SpatialPose const* pose2, a3_SpatialPose const* pose3, const a3real u)
 {
 	a3_SpatialPose result = { 0 };
-	a3spatialPoseOpCubic(&result, &pose0, &pose1, pose2, pose3, u);
+	a3spatialPoseOpCubic(&result, &pose0, &pose1, u);
 	// done
 	return result;
 }
@@ -439,10 +439,10 @@ inline a3_HierarchyPose* a3hierarchyPoseOpLERP(a3_HierarchyPose* pose_out, a3ui3
 
 // pointer-based cubic operation for single hierarchy pose
 inline a3_HierarchyPose* a3hierarchyPoseOpCubic(a3_HierarchyPose* pose_out, a3ui32 numNodes, a3_HierarchyPose* const pose0, a3_HierarchyPose* const pose1,
-	a3_HierarchyPose* const pose2, a3_HierarchyPose* const pose3, const a3real u)
+	/*a3_HierarchyPose* const pose2, a3_HierarchyPose* const pose3, */ const a3real u)
 {
 	for (a3ui32 i = 0; i < numNodes; i++) {
-		a3spatialPoseOpCubic(&pose_out->pose[i], &pose0->pose[i], &pose1->pose[i], &pose2->pose[i], &pose3->pose[i], u);
+		a3spatialPoseOpCubic(&pose_out->pose[i], &pose0->pose[i], &pose1->pose[i], u);
 	}
 	// done
 	return pose_out;
@@ -614,11 +614,26 @@ inline a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, const a3v
 //-----------------------------------------------------------------------------
 
 // cubic function
-inline a3real a3cubic(p0, p1, m0, m1, t) {
-	return (((a3real)2.0 * (a3real)pow(t, (a3real)3.0) - (a3real)3.0 * (a3real)pow(t, (a3real)2.0) + (a3real)1.0) * p0)
+inline a3real a3cubic(a3real p0, a3real p1, a3real m0, a3real m1, a3real t) {
+	/*return (a3real)(((a3real)2.0 * (a3real)pow(t, (a3real)3.0) - (a3real)3.0 * (a3real)pow(t, (a3real)2.0) + (a3real)1.0) * p0)
 		+ (((a3real)pow(t, (a3real)3.0) - (a3real)2.0 * (a3real)pow(t, (a3real)2.0) + t) * m0)
 		+ (((a3real)-2.0 * (a3real)pow(t, (a3real)3.0) + (a3real)3.0 * (a3real)pow(t, (a3real)2.0)) * p1)
-		+ (((a3real)pow(t, (a3real)3.0) - (a3real)pow(t, (a3real)2.0)) * m1);
+		+ (((a3real)pow(t, (a3real)3.0) - (a3real)pow(t, (a3real)2.0)) * m1);*/
+	return (a3real)
+		(
+			(
+				2.0 * pow(t, 3.0) - 3.0 * pow(t, 2.0) + 1.0
+				) * p0
+			+ (
+				pow(t, 3.0) - 2.0 * pow(t, 2.0) + t
+				) * m0
+			+ (
+				-2.0 * pow(t, 3.0) + 3.0 * pow(t, 2.0)
+				) * p1
+			+ (
+				pow(t, 3.0) - pow(t, 2.0)
+			) * m1
+		);
 }
 
 #endif	// !__ANIMAL3D_HIERARCHYSTATEBLEND_INL
