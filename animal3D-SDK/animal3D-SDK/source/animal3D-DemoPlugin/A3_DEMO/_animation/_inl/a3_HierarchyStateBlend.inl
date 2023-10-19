@@ -142,18 +142,18 @@ inline a3_SpatialPose* a3spatialPoseOpLERP(a3_SpatialPose* pose_out, a3_SpatialP
 
 // pointer-based cubic operation for single spatial pose
 inline a3_SpatialPose* a3spatialPoseOpCubic(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1,
-	/*a3_SpatialPose const* pose2, a3_SpatialPose const* pose3, */ const a3real u)
+	a3_SpatialPose const* pose2, a3_SpatialPose const* pose3, const a3real u)
 {
 	a3real3 trans, rot, scale;
-	trans[0] = a3cubic(pose0->translation.x, pose1->translation.x, 0, 0, u);
-	trans[1] = a3cubic(pose0->translation.y, pose1->translation.y, 0, 0, u);
-	trans[2] = a3cubic(pose0->translation.z, pose1->translation.z, 0, 0, u);
-	rot[0] = a3cubic(pose0->angles.x, pose1->angles.x, 0, 0, u);
-	rot[1] = a3cubic(pose0->angles.y, pose1->angles.y, 0, 0, u);
-	rot[2] = a3cubic(pose0->angles.z, pose1->angles.z, 0, 0, u);
-	scale[0] = a3cubic(pose0->scale.x, pose1->scale.x, 0, 0, u);
-	scale[1] = a3cubic(pose0->scale.y, pose1->scale.y, 0, 0, u);
-	scale[2] = a3cubic(pose0->scale.z, pose1->scale.z, 0, 0, u);
+	trans[0] = a3cubic(pose0->translation.x, pose1->translation.x, pose2->translation.x, pose3->translation.x, u);
+	trans[1] = a3cubic(pose0->translation.y, pose1->translation.y, pose2->translation.y, pose3->translation.y, u);
+	trans[2] = a3cubic(pose0->translation.z, pose1->translation.z, pose2->translation.z, pose3->translation.z, u);
+	rot[0] = a3cubic(pose0->angles.x, pose1->angles.x, pose2->angles.x, pose3->angles.x, u);
+	rot[1] = a3cubic(pose0->angles.y, pose1->angles.y, pose2->angles.y, pose3->angles.y, u);
+	rot[2] = a3cubic(pose0->angles.z, pose1->angles.z, pose2->angles.z, pose3->angles.z, u);
+	scale[0] = a3cubic(pose0->scale.x, pose1->scale.x, pose2->scale.x, pose3->scale.x, u);
+	scale[1] = a3cubic(pose0->scale.y, pose1->scale.y, pose2->scale.y, pose3->scale.y, u);
+	scale[2] = a3cubic(pose0->scale.z, pose1->scale.z, pose2->scale.z, pose3->scale.z, u);
 	a3spatialPoseOpConstruct(pose_out, trans, rot, scale);
 	// done
 	return pose_out;
@@ -246,12 +246,16 @@ inline a3_SpatialPose* a3spatialPoseOpBiLinear(a3_SpatialPose* pose_out,
 //NOTE - Organize this however you want, I just need it here for drafting the testing interface - Dillon
 // pointer-based bi-cubic operation for single spatial pose
 inline a3_SpatialPose* a3spatialPoseOpBiCubic(a3_SpatialPose* pose_out,
-	const a3_SpatialPose* poseSet0, //Array of 4 poses
-	const a3_SpatialPose* poseSet1, //Array of 4 poses
-	const a3_SpatialPose* poseSet2, //Array of 4 poses
-	const a3_SpatialPose* poseSet3, //Array of 4 poses
-	const a3real3* uArray) //Array of 5 a3real3's
+	a3_SpatialPose* poseSet, //Array of 16 poses
+	a3real* uArray) //Array of 5 a3real3's
 {
+	a3_SpatialPose pose1, pose2, pose3, pose4;
+	a3spatialPoseOpCubic(&pose1, poseSet, poseSet + 1, poseSet + 2, poseSet + 3, *uArray);
+	a3spatialPoseOpCubic(&pose2, poseSet + 4, poseSet + 5, poseSet + 6, poseSet + 7, *(uArray + 1));
+	a3spatialPoseOpCubic(&pose3, poseSet + 8, poseSet + 9, poseSet + 10, poseSet + 11, *(uArray + 2));
+	a3spatialPoseOpCubic(&pose4, poseSet + 12, poseSet + 13, poseSet + 14, poseSet + 15, *(uArray + 3));
+
+	a3spatialPoseOpCubic(pose_out, &pose1, &pose2, &pose3, &pose4, *(uArray + 4));
 
 	// Don't think I can do for now, seems like something's wrong with cubic
 
@@ -329,6 +333,7 @@ inline a3_SpatialPose a3spatialPoseDOpCubic(a3_SpatialPose const pose0, a3_Spati
 	a3_SpatialPose const* pose2, a3_SpatialPose const* pose3, const a3real u)
 {
 	a3_SpatialPose result = { 0 };
+	a3spatialPoseOpCubic(&result, &pose0, &pose1, pose2, pose3, u);
 
 	// done
 	return result;
@@ -397,12 +402,9 @@ inline a3_SpatialPose a3spatialPoseDOpBiLinear(
 
 //NOTE - Organize this however you want, I just need it here for drafting the testing interface - Dillon
 // data-based bi-cubic operation for single spatial pose
-inline a3_SpatialPose a3spatialPoseDOpBiCubic(
-	a3_SpatialPose const* poseSet0, //Array of 4 poses
-	a3_SpatialPose const* poseSet1, //Array of 4 poses
-	a3_SpatialPose const* poseSet2, //Array of 4 poses
-	a3_SpatialPose const* poseSet3, //Array of 4 poses
-	a3real3 const* uArray) //Array of 5 a3real3's
+inline a3_SpatialPose a3spatialPoseDOpBiCubic(a3_SpatialPose* pose_out,
+	a3_SpatialPose* poseSet, //Array of 16 poses
+	a3real* uArray) //Array of 5 a3real3's
 {
 	a3_SpatialPose result = { 0 };
 	
@@ -485,10 +487,10 @@ inline a3_HierarchyPose* a3hierarchyPoseOpLERP(a3_HierarchyPose* pose_out, a3ui3
 
 // pointer-based cubic operation for single hierarchy pose
 inline a3_HierarchyPose* a3hierarchyPoseOpCubic(a3_HierarchyPose* pose_out, a3ui32 numNodes, a3_HierarchyPose* const pose0, a3_HierarchyPose* const pose1,
-	/*a3_HierarchyPose* const pose2, a3_HierarchyPose* const pose3, */ const a3real u)
+	a3_HierarchyPose* const pose2, a3_HierarchyPose* const pose3, const a3real u)
 {
 	for (a3ui32 i = 0; i < numNodes; i++) {
-		a3spatialPoseOpCubic(&pose_out->pose[i], &pose0->pose[i], &pose1->pose[i], u);
+		a3spatialPoseOpCubic(&pose_out->pose[i], &pose0->pose[i], &pose1->pose[i], &pose2->pose[i], &pose3->pose[i], u);
 	}
 	// done
 	return pose_out;
@@ -500,6 +502,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpDeconcatenate(a3_HierarchyPose* pose_o
 	for (a3ui32 i = 0; i < numNodes; i++) {
 		a3spatialPoseOpDeconcatenate(&pose_out->pose[i], &pose_left->pose[i], &pose_right->pose[i]);
 	}
+
 	// done
 	return pose_out;
 }
@@ -510,6 +513,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpScale(a3_HierarchyPose* pose_out, a3ui
 	for (a3ui32 i = 0; i < numNodes; i++) {
 		a3spatialPoseOpScale(&pose_out->pose[i], &pose_in->pose[i], u);
 	}
+
 	// done
 	return pose_out;
 }
@@ -521,6 +525,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpTriangular(a3_HierarchyPose* pose_out,
 	for (a3ui32 i = 0; i < numNodes; i++) {
 		a3spatialPoseOpTriangular(&pose_out->pose[i], &pose0->pose[i], &pose1->pose[i], &pose2->pose[i], u0, u1);
 	}
+
 	// done
 	return pose_out;
 }
@@ -534,6 +539,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpBiNearest(a3_HierarchyPose* pose_out, 
 	for (a3ui32 i = 0; i < numNodes; i++) {
 		a3spatialPoseOpBiNearest(&pose_out->pose[i], &pose0_initial->pose[i], &pose0_terminal->pose[i], &pose1_initial->pose[i], &pose1_terminal->pose[i], u0, u1, u01);
 	}
+
 	// done
 	return pose_out;
 }
@@ -547,19 +553,28 @@ inline a3_HierarchyPose* a3hierarchyPoseOpBiLinear(a3_HierarchyPose* pose_out, a
 	for (a3ui32 i = 0; i < numNodes; i++) {
 		a3spatialPoseOpBiLinear(&pose_out->pose[i], &pose0_initial->pose[i], &pose0_terminal->pose[i], &pose1_initial->pose[i], &pose1_terminal->pose[i], u0, u1, u01);
 	}
+
 	// done
 	return pose_out;
 }
 
 //NOTE - Organize this however you want, I just need it here for drafting the testing interface - Dillon
 // pointer-based bi-cubic operation for single hierarchy pose
-inline a3_HierarchyPose* a3hierarchyPoseOpBiCubic(a3_HierarchyPose* pose_out, a3ui32 numNodes,
-	a3_HierarchyPose* const* poseSet0, //Array of 4 poses
-	a3_HierarchyPose* const* poseSet1, //Array of 4 poses
-	a3_HierarchyPose* const* poseSet2, //Array of 4 poses
-	a3_HierarchyPose* const* poseSet3, //Array of 4 poses
-	a3real3 const* uArray) //Array of 5 a3real3's
+inline a3_HierarchyPose* a3hierarchyPoseOpBiCubic(a3_HierarchyPose* pose_out, a3ui32 numNodes, 
+	a3_HierarchyPose* poseSet, //Array of 16 poses
+	a3real* uArray) //Array of 5 a3real3's
 {
+	for (a3ui32 i = 0; i < numNodes; i++) {
+		//Collect all spatial poses from hierarchy poses
+		a3_SpatialPose sposes[16];
+		for (a3ui32 j = 0; j < 16; j++)
+		{
+			sposes[j] = (poseSet + j)->pose[i];
+		}
+
+		a3spatialPoseOpBiCubic(&pose_out->pose[i], 
+			sposes, uArray);
+	}
 
 	// done
 	return pose_out;
@@ -571,45 +586,6 @@ inline a3i32 a3_findCircumcenter(Circumcircle* circum_out, Triangle* tri)
 {
 	if (circum_out)
 	{
-		//a3real3 aToC;
-		//aToC[0] = tri->pointC[0] - tri->pointA[0];
-		//aToC[1] = tri->pointC[1] - tri->pointA[1];
-		//aToC[2] = tri->pointC[2] - tri->pointA[2];
-
-		//a3real acMag = a3real3LengthSquared(aToC);
-
-		//a3real3 aTob;
-		//aTob[0] = tri->pointB[0] - tri->pointA[0];
-		//aTob[1] = tri->pointB[1] - tri->pointA[1];
-		//aTob[2] = tri->pointB[2] - tri->pointA[2];
-		//
-		//a3real abMag = a3real3LengthSquared(aTob);
-
-		//a3real3 crossed;
-		//a3real3Cross(crossed, aToC, aTob);
-
-		//a3real crossedMag = a3real3LengthSquared(crossed);
-
-
-		//a3real3 crossedAB;
-		//a3real3Cross(crossedAB, crossed, aTob);
-		//a3real3MulS(crossedAB, acMag);
-		//a3real3 acCrossed;
-		//a3real3Cross(acCrossed, aToC, crossed);
-		//a3real3MulS(acCrossed, abMag);
-
-		//a3real3 crossedSums;
-		//a3real3Sum(crossedSums, crossedAB, acCrossed);
-		//
-		//a3real3 aToCenter;
-		//a3real2DivS(crossedSums, (crossedMag * 2.0));
-		//
-		////Set Center
-		//a3real3Sum(circum_out->center, tri->pointA, aToCenter);
-
-		////Set radius
-		//circum_out->radius = a3real3Length(aToCenter);
-
 		a3real2 abMid;
 		a3real2Set(abMid, (tri->pointA[0] + tri->pointB[0]) / (a3real)2.0, (tri->pointA[1] + tri->pointB[1]) / (a3real)2.0);
 
@@ -675,7 +651,7 @@ inline a3real a3cubic(a3real p0, a3real p1, a3real m0, a3real m1, a3real t) {
 		+ (((a3real)pow(t, (a3real)3.0) - (a3real)2.0 * (a3real)pow(t, (a3real)2.0) + t) * m0)
 		+ (((a3real)-2.0 * (a3real)pow(t, (a3real)3.0) + (a3real)3.0 * (a3real)pow(t, (a3real)2.0)) * p1)
 		+ (((a3real)pow(t, (a3real)3.0) - (a3real)pow(t, (a3real)2.0)) * m1);*/
-	return (a3real)
+	/*return (a3real)
 		(
 			(
 				2.0 * pow(t, 3.0) - 3.0 * pow(t, 2.0) + 1.0
@@ -689,6 +665,13 @@ inline a3real a3cubic(a3real p0, a3real p1, a3real m0, a3real m1, a3real t) {
 			+ (
 				pow(t, 3.0) - pow(t, 2.0)
 			) * m1
+		);*/
+
+	return (a3real)(
+		((-.5 * p0 + 1.5 * p1 - 1.5 * m0 + .5 * m1) * (t * t * t)) +
+		((p0 - 2.5 * p1 + 2 * m0 - .5 * m1) * (t * t)) +
+		((-.5 * p0 + .5 * m0) * t) +
+		p1
 		);
 }
 

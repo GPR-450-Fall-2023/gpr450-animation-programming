@@ -36,6 +36,7 @@
 #include "../_a3_demo_utilities/a3_DemoMacros.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 
 
 //-----------------------------------------------------------------------------
@@ -72,7 +73,22 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	a3_HierarchyState* baseHS = demoMode->hierarchyState_skel,
 		* activeHS = demoMode->hierarchyState_skel + 1,
 		* pose0HS = demoMode->hierarchyState_skel + 2,
-		* pose1HS = demoMode->hierarchyState_skel + 3;
+		* pose1HS = demoMode->hierarchyState_skel + 3,
+		* pose2HS = demoMode->hierarchyState_skel + 4,
+		* pose3HS = demoMode->hierarchyState_skel + 5,
+		* pose4HS = demoMode->hierarchyState_skel + 6,
+		* pose5HS = demoMode->hierarchyState_skel + 7,
+		* pose6HS = demoMode->hierarchyState_skel + 8,
+		* pose7HS = demoMode->hierarchyState_skel + 9,
+		* pose8HS = demoMode->hierarchyState_skel + 10,
+		* pose9HS = demoMode->hierarchyState_skel + 11,
+		* pose10HS = demoMode->hierarchyState_skel + 12,
+		* pose11HS = demoMode->hierarchyState_skel + 13,
+		* pose12HS = demoMode->hierarchyState_skel + 14,
+		* pose13HS = demoMode->hierarchyState_skel + 15,
+		* pose14HS = demoMode->hierarchyState_skel + 16,
+		* pose15HS = demoMode->hierarchyState_skel + 17,
+		* pose16HS = demoMode->hierarchyState_skel + 18;
 
 	// active camera
 	a3_DemoProjector const* activeCamera = demoMode->projector + demoMode->activeCamera;
@@ -83,9 +99,15 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	
 	const a3real BLEND_SPEED = 1.0;
 
+	if (demoMode->directionToggle)
+	{
+		demoMode->directionToggle = false;
+		demoMode->playDirection *= -1;
+	}
+
 	if (!demoMode->paused)
 	{
-		demoMode->aplicationTime += (a3real)dt;
+		demoMode->aplicationTime += (a3real)dt * demoMode->playDirection;
 	}
 
 	a3demo_update_objects(demoState, dt,
@@ -127,67 +149,72 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	//}
 
 
-	// skeletal idle animation
-	if (demoState->updateAnimation)
-	{
-		i = (a3ui32)(demoMode->aplicationTime);
-		a3ui32 start = 28;//Hardcoded to idle keyframes for now
-		a3ui32 end = 52;
-		a3ui32 length = end - start; 
-		demoMode->hierarchyKeyPose_display[0] = ((i + 0) % (length)) + start;
-		demoMode->hierarchyKeyPose_display[1] = ((i + 1) % (length)) + start;
-		demoMode->hierarchyKeyPose_param = (a3real)(demoMode->aplicationTime - (a3f64)i);
-	}
+	//// skeletal idle animation
+	//if (demoState->updateAnimation)
+	//{
+	//	i = (a3ui32)(demoMode->aplicationTime);
+	//	a3ui32 start = 28;//Hardcoded to idle keyframes for now
+	//	a3ui32 end = 52;
+	//	a3ui32 length = end - start; 
+	//	demoMode->hierarchyKeyPose_display[0] = ((i + 0) % (length)) + start;
+	//	demoMode->hierarchyKeyPose_display[1] = ((i + 1) % (length)) + start;
+	//	demoMode->hierarchyKeyPose_param = (a3real)(demoMode->aplicationTime - (a3f64)i);
+	//}
 
-	//Pose 0
-	a3hierarchyPoseLerp(pose0HS->objectSpace,	// use as temp storage
-		demoMode->hierarchyPoseGroup_skel->hpose + demoMode->hierarchyKeyPose_display[0] + 1,
-		demoMode->hierarchyPoseGroup_skel->hpose + demoMode->hierarchyKeyPose_display[1] + 1,
-		demoMode->hierarchyKeyPose_param,
-		demoMode->hierarchy_skel->numNodes);
-	a3hierarchyPoseConcat(pose0HS->localSpace,	// goal to calculate
-		baseHS->localSpace, // holds base pose
-		pose0HS->objectSpace, // temp storage
-		demoMode->hierarchy_skel->numNodes);
-	a3hierarchyPoseConvert(pose0HS->localSpace,
-		demoMode->hierarchy_skel->numNodes,
-		demoMode->hierarchyPoseGroup_skel->channel,
-		demoMode->hierarchyPoseGroup_skel->order);
-	a3kinematicsSolveForward(pose0HS);
-	a3hierarchyStateUpdateObjectInverse(pose0HS);
-	a3hierarchyStateUpdateObjectBindToCurrent(pose0HS, baseHS);
+	////Pose 0
+	//a3hierarchyPoseLerp(pose0HS->objectSpace,	// use as temp storage
+	//	demoMode->hierarchyPoseGroup_skel->hpose + demoMode->hierarchyKeyPose_display[0] + 1,
+	//	demoMode->hierarchyPoseGroup_skel->hpose + demoMode->hierarchyKeyPose_display[1] + 1,
+	//	demoMode->hierarchyKeyPose_param,
+	//	demoMode->hierarchy_skel->numNodes);
+	//a3hierarchyPoseConcat(pose0HS->localSpace,	// goal to calculate
+	//	baseHS->localSpace, // holds base pose
+	//	pose0HS->objectSpace, // temp storage
+	//	demoMode->hierarchy_skel->numNodes);
+	//a3hierarchyPoseConvert(pose0HS->localSpace,
+	//	demoMode->hierarchy_skel->numNodes,
+	//	demoMode->hierarchyPoseGroup_skel->channel,
+	//	demoMode->hierarchyPoseGroup_skel->order);
+	//a3kinematicsSolveForward(pose0HS);
+	//a3hierarchyStateUpdateObjectInverse(pose0HS);
+	//a3hierarchyStateUpdateObjectBindToCurrent(pose0HS, baseHS);
 
-	// skeletal dance animation
-	if (demoState->updateAnimation)
-	{
-		i = (a3ui32)(demoMode->aplicationTime);
-		a3ui32 start = 54; //Hardcoded to dance keyframes for now
-		a3ui32 end = 78;
-		a3ui32 length = end - start; //Hardcoded to idle keyframes for now
-		demoMode->hierarchyKeyPose_display[0] = ((i + 0) % (length)) + start;
-		demoMode->hierarchyKeyPose_display[1] = ((i + 1) % (length)) + start;
-		demoMode->hierarchyKeyPose_param = (a3real)(demoMode->aplicationTime - (a3f64)i);
-	}
+	//// skeletal dance animation
+	//if (demoState->updateAnimation)
+	//{
+	//	i = (a3ui32)(demoMode->aplicationTime);
+	//	a3ui32 start = 54; //Hardcoded to dance keyframes for now
+	//	a3ui32 end = 78;
+	//	a3ui32 length = end - start; //Hardcoded to idle keyframes for now
+	//	demoMode->hierarchyKeyPose_display[0] = ((i + 0) % (length)) + start;
+	//	demoMode->hierarchyKeyPose_display[1] = ((i + 1) % (length)) + start;
+	//	demoMode->hierarchyKeyPose_param = (a3real)(demoMode->aplicationTime - (a3f64)i);
+	//}
 
-	//Pose 1
-	a3hierarchyPoseLerp(pose1HS->objectSpace,	// use as temp storage
-		demoMode->hierarchyPoseGroup_skel->hpose + demoMode->hierarchyKeyPose_display[0] + 1,
-		demoMode->hierarchyPoseGroup_skel->hpose + demoMode->hierarchyKeyPose_display[1] + 1,
-		demoMode->hierarchyKeyPose_param,
-		demoMode->hierarchy_skel->numNodes);
-	a3hierarchyPoseConcat(pose1HS->localSpace,	// goal to calculate
-		baseHS->localSpace, // holds base pose
-		pose1HS->objectSpace, // temp storage
-		demoMode->hierarchy_skel->numNodes);
-	a3hierarchyPoseConvert(pose1HS->localSpace,
-		demoMode->hierarchy_skel->numNodes,
-		demoMode->hierarchyPoseGroup_skel->channel,
-		demoMode->hierarchyPoseGroup_skel->order);
-	a3kinematicsSolveForward(pose1HS);
-	a3hierarchyStateUpdateObjectInverse(pose1HS);
-	a3hierarchyStateUpdateObjectBindToCurrent(pose1HS, baseHS);
+	////Pose 1
+	//a3hierarchyPoseLerp(pose1HS->objectSpace,	// use as temp storage
+	//	demoMode->hierarchyPoseGroup_skel->hpose + demoMode->hierarchyKeyPose_display[0] + 1,
+	//	demoMode->hierarchyPoseGroup_skel->hpose + demoMode->hierarchyKeyPose_display[1] + 1,
+	//	demoMode->hierarchyKeyPose_param,
+	//	demoMode->hierarchy_skel->numNodes);
+	//a3hierarchyPoseConcat(pose1HS->localSpace,	// goal to calculate
+	//	baseHS->localSpace, // holds base pose
+	//	pose1HS->objectSpace, // temp storage
+	//	demoMode->hierarchy_skel->numNodes);
+	//a3hierarchyPoseConvert(pose1HS->localSpace,
+	//	demoMode->hierarchy_skel->numNodes,
+	//	demoMode->hierarchyPoseGroup_skel->channel,
+	//	demoMode->hierarchyPoseGroup_skel->order);
+	//a3kinematicsSolveForward(pose1HS);
+	//a3hierarchyStateUpdateObjectInverse(pose1HS);
+	//a3hierarchyStateUpdateObjectBindToCurrent(pose1HS, baseHS);
 
-	
+	system("cls"); //Clear console
+
+	a3real param1;
+	a3real param2;
+	a3real param3;
+
 	//Blend new pose from inputs based on current blend function
 	switch (demoMode->blendMode)
 	{
@@ -206,6 +233,8 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		scale[1] = 1;
 		scale[2] = 1;
 		a3hierarchyPoseOpConstruct(activeHS->localSpace, activeHS->hierarchy->numNodes, translation, rotation, scale);
+		printf("Translation: %f, %f, %f\nRotation: %f, %f, %f\nScale: %f, %f, %f\n\n", translation[0], translation[1], translation[2],
+			rotation[0], rotation[1], rotation[2], scale[0], scale[1], scale[2]);
 		break;
 	case blend_copy:
 		a3hierarchyPoseOpCopy(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace);
@@ -214,38 +243,82 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		a3hierarchyPoseOpNegate(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace);
 		break;
 	case blend_concatenate:
-		a3hierarchyPoseOpConcatenate(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose1HS->localSpace);
+		a3hierarchyPoseOpConcatenate(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose8HS->localSpace);
 		break;
 	case blend_nearest:
-		a3hierarchyPoseOpNearest(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose1HS->localSpace, (a3real)fmod(demoMode->aplicationTime, BLEND_SPEED));
+		param1 = (a3real)fmod(demoMode->aplicationTime, BLEND_SPEED);
+		a3hierarchyPoseOpNearest(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose8HS->localSpace, param1);
+		printf("Blend Parameter: %f\n\n", param1);
 		break;
 	case blend_lerp:
-		a3hierarchyPoseOpLERP(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose1HS->localSpace, (a3real)fmod(demoMode->aplicationTime, BLEND_SPEED));
+		param1 = (a3real)fmod(demoMode->aplicationTime, BLEND_SPEED);
+		a3hierarchyPoseOpLERP(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose8HS->localSpace, param1);
+		printf("Blend Parameter: %f\n\n", param1);
 		break;
 	case blend_cubic:
-		a3hierarchyPoseOpCubic(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose1HS->localSpace, (a3real)fmod(demoMode->aplicationTime, BLEND_SPEED));
+		param1 = (a3real)fmod(demoMode->aplicationTime, BLEND_SPEED);
+		a3hierarchyPoseOpCubic(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose4HS->localSpace, 
+			pose8HS->localSpace, pose12HS->localSpace, param1);
+		printf("Blend Parameter: %f\n\n", param1);
 		break;
 	case blend_deconcatenate:
-		a3hierarchyPoseOpDeconcatenate(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose1HS->localSpace);
+		a3hierarchyPoseOpDeconcatenate(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose8HS->localSpace);
 		break;
 	case blend_scale:
-		a3hierarchyPoseOpScale(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, .5f);
+		//a3real param = (a3real)fmod(demoMode->aplicationTime, BLEND_SPEED);
+		param1 = .5f;
+		a3hierarchyPoseOpScale(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, param1);
+		printf("Scale Parameter: %f\n\n", param1);
 		break;
 	case blend_triangular:
-			
+		/*a3hierarchyPoseOpTriangular(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose8HS->localSpace,
+			pose12HS->localSpace, (a3real)sin(demoMode->aplicationTime) * BLEND_SPEED, (a3real)cos(demoMode->aplicationTime) * BLEND_SPEED);*/
+		param1 = (a3real)fmod(demoMode->aplicationTime, BLEND_SPEED);
+		param2 = (a3real)fmod(demoMode->aplicationTime, BLEND_SPEED);
+		a3hierarchyPoseOpTriangular(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose8HS->localSpace,
+			pose12HS->localSpace, param1, param2);
+		printf("Blend Parameter 1: %f\nBlend Parameter 2: %f\n\n", param1, param2);
 		break;
 	case blend_binearest:
+		param1 = .5f;
+		param2 = .5f;
+		param3 = (a3real)fmod(demoMode->aplicationTime, BLEND_SPEED);
+
+		a3hierarchyPoseOpBiNearest(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose4HS->localSpace, 
+			pose8HS->localSpace, pose12HS->localSpace, param1, param2, param3);
+
+		printf("Blend Parameter 1: %f\nBlend Parameter 2: %f\nBlend Parameter 3: %f\n\n", param1, param2, param3);
 		break;
 	case blend_bilinear:
+		param1 = .5f;
+		param2 = .5f;
+		param3 = (a3real)fmod(demoMode->aplicationTime, BLEND_SPEED);
+
+		a3hierarchyPoseOpBiLinear(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose4HS->localSpace,
+			pose8HS->localSpace, pose12HS->localSpace, param1, param2, param3);
+
+
+		printf("Blend Parameter 1: %f\nBlend Parameter 2: %f\nBlend Parameter 3: %f\n\n", param1, param2, param3);
 		break;
 	case blend_bicubic:
+		a3real blends[5] = { .5, .5, .5, .5, (a3real)fmod(demoMode->aplicationTime, BLEND_SPEED) };
+		a3_HierarchyPose hposes[16];
+		for (a3ui32 j = 0; j < 16; j++)
+		{
+			hposes[j] = *(pose0HS + j)->localSpace;
+		}
+
+		a3hierarchyPoseOpBiCubic(activeHS->localSpace, activeHS->hierarchy->numNodes, hposes, blends); //Start at pose0HS to get all poses
+		
+		printf("Blend Parameter 1: %f\nBlend Parameter 2: %f\nBlend Parameter 3: %f\nBlend Parameter 4: %f\nBlend Parameter 5: %f\n\n", 
+			blends[0], blends[1], blends[2], blends[3], blends[4]);
 		break;
 	default:
 		printf("Invalid blend function");
 		break;
 	}
 
-	//Output pose
+	////Output pose
 	//a3hierarchyPoseLerp(activeHS->objectSpace,	// use as temp storage
 	//	demoMode->hierarchyPoseGroup_skel->hpose + demoMode->hierarchyKeyPose_display[0] + 1,
 	//	demoMode->hierarchyPoseGroup_skel->hpose + demoMode->hierarchyKeyPose_display[1] + 1,
@@ -347,7 +420,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	//	a3index i, j;
 	//	a3i32 p;
 
-	//	for (j = 0; j < demoMode->stateCount; j++)
+	//	for (j = 0; j < 3; j++)
 	//	{
 	//		a3_HierarchyState* uploadState = demoMode->hierarchyState_skel + j + 1; //Offset from base pose
 
@@ -411,7 +484,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	//	a3bufferRefill(demoState->ubo_transformBlend, 0, t_skin_size, demoMode->t_skin);
 	//	a3bufferRefillOffset(demoState->ubo_transformBlend, 0, t_skin_size, dq_skin_size, demoMode->dq_skin);
 	//}
-	//
+	
 }
 
 

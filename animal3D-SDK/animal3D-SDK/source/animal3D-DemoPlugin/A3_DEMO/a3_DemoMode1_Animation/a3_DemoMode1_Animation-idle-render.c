@@ -143,8 +143,8 @@ void a3animation_render_controls(a3_DemoState const* demoState, a3_DemoMode1_Ani
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"    Play/pause controller playback (p)");
 
-	//a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-	//	"    Flip playback direction (b)");
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"    Flip playback direction (b)");
 
 	/*a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"    State Index (%u / %u) ('5' | '6'): %s", demoMode->hierarchyStateIndex + 1, state_max, blendModeName[demoMode->blendMode]);

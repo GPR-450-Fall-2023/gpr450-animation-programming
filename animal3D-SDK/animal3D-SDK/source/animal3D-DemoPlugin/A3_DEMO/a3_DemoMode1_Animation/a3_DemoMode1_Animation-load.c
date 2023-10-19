@@ -44,7 +44,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	//a3ui32 j, p;
 
 	//Base pose not included
-	demoMode->stateCount = 3;
+	demoMode->stateCount = 17;
 
 	// object pointers
 	a3_Hierarchy* hierarchy = 0;
@@ -99,12 +99,42 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	a3kinematicsSolveForward(hierarchyState);
 	a3hierarchyStateUpdateObjectInverse(hierarchyState);
 
+	//Output Pose
+	hierarchyState = demoMode->hierarchyState_skel + 1;
+	hierarchyState->hierarchy = 0;
+	a3hierarchyStateCreate(hierarchyState, hierarchy);
+
+	a3ui32 idleStart = 28;//Hardcoded to idle keyframes for now
+	a3ui32 idleEnd = 52;
+	a3ui32 danceStart = 54; //Hardcoded to dance keyframes for now
+	a3ui32 danceEnd = 78;
+
+	a3ui32 halfInputCount = (demoMode->stateCount - 1) / 2; //The number of input poses (minus output) divided by 2
+
+	a3ui32 hposeIndex = 0; //Current index we're copying from
+	a3ui32 tempI = 0;
+	a3_HierarchyState* baseHS = demoMode->hierarchyState_skel;
+
 	//real-time states
-	for (a3ui32 i = 1; i < demoMode->stateCount + 1; i++)
+	for (a3ui32 i = 2; i < demoMode->stateCount + 1; i++) //Skip bind pose (not included in state count) and output pose (included in state count)
 	{
+		tempI = i - 2;
 		hierarchyState = demoMode->hierarchyState_skel + i;
 		hierarchyState->hierarchy = 0;
 		a3hierarchyStateCreate(hierarchyState, hierarchy);
+		if (tempI < halfInputCount) //Idle
+		{
+			hposeIndex = idleStart + tempI * ((idleEnd - idleStart) / halfInputCount);
+		}
+		else //Dance
+		{
+			hposeIndex = danceStart + (tempI - halfInputCount) * ((danceEnd - danceStart) / halfInputCount);
+		}
+		a3hierarchyPoseCopy(hierarchyState->objectSpace, hierarchyPoseGroup->hpose + hposeIndex + 1, hierarchy->numNodes);
+		a3hierarchyPoseConcat(hierarchyState->localSpace, baseHS->localSpace, hierarchyState->objectSpace, hierarchy->numNodes);
+		a3hierarchyPoseConvert(hierarchyState->localSpace, hierarchy->numNodes, hierarchyPoseGroup->channel, hierarchyPoseGroup->order);
+		a3kinematicsSolveForward(hierarchyState);
+		a3hierarchyStateUpdateObjectInverse(hierarchyState);
 	}
 
 	
@@ -113,6 +143,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	//demoMode->hierarchyPoseIndex = pose_one;
 	demoMode->blendMode = blend_identity;
 	demoMode->aplicationTime = 0;
+	demoMode->playDirection = 1;
 }
 
 
