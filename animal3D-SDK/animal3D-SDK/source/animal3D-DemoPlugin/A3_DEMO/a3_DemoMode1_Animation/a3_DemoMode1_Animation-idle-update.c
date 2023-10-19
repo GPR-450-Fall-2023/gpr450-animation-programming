@@ -223,7 +223,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		a3hierarchyPoseOpLERP(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose1HS->localSpace, (a3real)fmod(demoMode->aplicationTime, BLEND_SPEED));
 		break;
 	case blend_cubic:
-		a3hierarchyPoseOpCubic(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose1HS->localSpace, (a3real)fmod(demoMode->aplicationTime, BLEND_SPEED));
+		a3hierarchyPoseOpCubic(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose1HS->localSpace, pose0HS->localSpace, pose1HS->localSpace, (a3real)fmod(demoMode->aplicationTime, BLEND_SPEED));
 		break;
 	case blend_deconcatenate:
 		a3hierarchyPoseOpDeconcatenate(activeHS->localSpace, activeHS->hierarchy->numNodes, pose0HS->localSpace, pose1HS->localSpace);
