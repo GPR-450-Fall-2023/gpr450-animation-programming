@@ -163,10 +163,14 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 			(a3f32)clipCtrl->keyframeParam, demoMode->hierarchy_skel->numNodes);
 
 		// FK pipeline
-		a3hierarchyPoseConcat(activeHS->localSpace,	// goal to calculate
-			baseHS->localSpace, // holds base pose
-			activeHS->animPose, // holds current sample pose
-			demoMode->hierarchy_skel->numNodes);
+		//a3hierarchyPoseConcat(activeHS->localSpace,	// goal to calculate
+		//	baseHS->localSpace, // holds base pose
+		//	activeHS->animPose, // holds current sample pose
+		//	demoMode->hierarchy_skel->numNodes);
+		a3hierarchyPoseOpConcatenate(activeHS->localSpace,
+			demoMode->hierarchy_skel->numNodes,
+			baseHS->localSpace, 
+			activeHS->animPose);
 		a3hierarchyPoseConvert(activeHS->localSpace,
 			demoMode->hierarchy_skel->numNodes,
 			demoMode->hierarchyPoseGroup_skel->channel,
