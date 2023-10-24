@@ -597,10 +597,11 @@ inline a3i32 TrianglesEquivalent(a3boolean* equal_out, const Triangle* lhs, cons
 {
 	if (lhs && rhs && equal_out)
 	{
-		*equal_out =
-			(((lhs->pointA.v == rhs->pointA.v) || (lhs->pointA.v == rhs->pointB.v) || (lhs->pointA.v == rhs->pointC.v)) &&
-			((lhs->pointB.v == rhs->pointA.v) || (lhs->pointB.v == rhs->pointB.v) || (lhs->pointB.v == rhs->pointC.v)) &&
-			((lhs->pointC.v == rhs->pointA.v) || (lhs->pointC.v == rhs->pointB.v) || (lhs->pointC.v == rhs->pointC.v)));
+		*equal_out =(
+			((*lhs->pointA.v == *rhs->pointA.v) || (*lhs->pointA.v == *rhs->pointB.v) || (*lhs->pointA.v == *rhs->pointC.v)) &&
+			((*lhs->pointB.v == *rhs->pointA.v) || (*lhs->pointB.v == *rhs->pointB.v) || (*lhs->pointB.v == *rhs->pointC.v)) &&
+			((*lhs->pointC.v == *rhs->pointA.v) || (*lhs->pointC.v == *rhs->pointB.v) || (*lhs->pointC.v == *rhs->pointC.v))
+			);
 
 		return 1;
 	}
@@ -683,17 +684,21 @@ inline a3i32 RemoveIndexFromArray(Triangle* triArray_out, a3ui32* triCount, cons
 	return -1;
 }
 
-a3i32 GetIndexOfTriangle(a3i32* index_out, const Triangle* triArray, const a3ui32* triCount, const Triangle* triSearch)
+inline a3i32 GetIndexOfTriangle(a3i32* index_out, const Triangle* triArray, const a3ui32* triCount, const Triangle* triSearch)
 {
 	if (triArray && triSearch)
 	{
-		for (a3ui32 i = 0; i < triCount; i++)
+		for (a3ui32 i = 0; i < *triCount; i++)
 		{
 			a3boolean equal;
-			TrianglesEquivalent(&equal, &triArray[i], &triSearch);
+			TrianglesEquivalent(&equal, &triArray[i], triSearch);
+
+			//If triangle is found, store index and break early
 			if (equal)
 			{
 				*index_out = (a3i32)i;
+
+				return 1;
 			}
 		}
 
@@ -827,6 +832,14 @@ inline a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, a3ui32* t
 			//newTri->pointC = pointSet[pointIndex];
 
 			//*triCount_out += 1;
+
+			//a3i32 getIndex = 0;
+			//Triangle tSearch;
+			//tSearch.pointA = triArray_out[0].pointB;
+			//tSearch.pointB = triArray_out[0].pointC;
+			//tSearch.pointC = pointSet[pointIndex];
+
+			//GetIndexOfTriangle(&getIndex, triArray_out, triCount_out, &tSearch);
 
 			//a3ui32 removeIndex = *triCount_out - 2;
 			//RemoveIndexFromArray(triArray_out, triCount_out, &removeIndex);
