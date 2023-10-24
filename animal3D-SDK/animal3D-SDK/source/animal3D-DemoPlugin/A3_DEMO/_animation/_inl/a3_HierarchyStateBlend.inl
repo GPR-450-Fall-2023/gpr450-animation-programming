@@ -29,6 +29,7 @@
 
 #include <math.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 
 //-----------------------------------------------------------------------------
@@ -692,10 +693,23 @@ inline a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, a3ui32* t
 			Edge* edgeOccurrences = (Edge*)(containing + (sizeof(Triangle) * (*pointCount)));
 			a3ui32* edgeOccurrencesCount = (a3ui32*)(edgeOccurrences + (sizeof(Edge) * *pointCount));
 
-			//Find triangles whose circumsphere
-			for (a3ui32 triIndex = 0; triIndex < 0; triIndex++)
+			a3ui32 containingCount = 0;
+
+			//Find triangles whose circumsphere contains the current point
+			//triCount_out changes every iteration so we iterate over all new triangles
+			for (a3ui32 triIndex = 0; triIndex < *triCount_out; triIndex++)
 			{
-				
+				Circumcircle circle;
+				a3_findCircumcenter(&circle, &triArray_out[triIndex]);
+
+				//Distance from point to circle center
+				a3real dist;
+				dist = a3real2Distance(pointSet[pointIndex].v, circle.center.v);
+
+				if(circle.radius > dist)
+				{
+					printf("Circumcircle contains point\n");
+				}
 			}
 
 
