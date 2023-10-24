@@ -171,6 +171,7 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 
 		//Delaunay Blend Graph
 		Triangle delaunayTriangles[128];
+		a3ui32 triCount;
 
 		// control modes
 		a3_DemoMode1_Animation_ControlTarget ctrl_target;

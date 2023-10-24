@@ -473,6 +473,9 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_skintest");
 		a3clipControllerInit(demoMode->clipCtrlB, "xbot_ctrlB", demoMode->clipPool, j, rate, fps);
 	}
+
+	//Run Delaunay Triangulation
+	a3_calculateDelaunayTriangulation(demoMode->delaunayTriangles, &demoMode->triCount, 0, 0);
 }
 
 

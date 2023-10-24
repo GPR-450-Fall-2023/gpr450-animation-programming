@@ -582,12 +582,12 @@ inline void ConstructTriangle(Triangle* tri_out,
 	const a3real pointBX, const a3real pointBY,
 	const a3real pointCX, const a3real pointCY)
 {
-	tri_out->pointA[0] = pointAX;
-	tri_out->pointA[1] = pointAY;
-	tri_out->pointB[0] = pointBX;
-	tri_out->pointB[1] = pointBY;
-	tri_out->pointC[0] = pointCX;
-	tri_out->pointC[1] = pointCY;
+	tri_out->pointA.x = pointAX;
+	tri_out->pointA.y = pointAY;
+	tri_out->pointB.x = pointBX;
+	tri_out->pointB.y = pointBY;
+	tri_out->pointC.x = pointCX;
+	tri_out->pointC.y = pointCY;
 }
 
 // The equation for finding the circumcenter of a triangle was derived from this website
@@ -596,24 +596,24 @@ inline a3i32 a3_findCircumcenter(Circumcircle* circum_out, Triangle* tri)
 {
 	if (circum_out)
 	{
-		a3real2 abMid;
-		a3real2Set(abMid, (tri->pointA[0] + tri->pointB[0]) / (a3real)2.0, (tri->pointA[1] + tri->pointB[1]) / (a3real)2.0);
+		a3vec2 abMid;
+		a3real2Set(abMid.v, (tri->pointA.x + tri->pointB.x) / (a3real)2.0, (tri->pointA.y + tri->pointB.y) / (a3real)2.0);
 
-		a3real2 bcMid;
-		a3real2Set(bcMid, (tri->pointC[0] + tri->pointB[0]) / (a3real)2.0, (tri->pointC[1] + tri->pointB[1]) / (a3real)2.0);
+		a3vec2 bcMid;
+		a3real2Set(bcMid.v, (tri->pointC.x + tri->pointB.x) / (a3real)2.0, (tri->pointC.y + tri->pointB.y) / (a3real)2.0);
 
-		a3real abSlope = (tri->pointB[0] - tri->pointA[0]) / (tri->pointB[1] - tri->pointA[1]);
-		a3real bcSlope = (tri->pointC[0] - tri->pointB[0]) / (tri->pointC[1] - tri->pointB[1]);
+		a3real abSlope = (tri->pointB.x - tri->pointA.x) / (tri->pointB.y - tri->pointA.y);
+		a3real bcSlope = (tri->pointC.x - tri->pointB.x) / (tri->pointC.y - tri->pointB.y);
 
 		//Expanded formula for solving for x using point-slope equation
-		circum_out->center[0] = ((abSlope * abMid[0]) - abMid[1] - (bcSlope * bcMid[0]) + bcMid[1]) / (abSlope - bcSlope);
-		circum_out->center[1] = (abSlope * (circum_out->center[0] - abMid[0])) + abMid[1];
+		circum_out->center.x = ((abSlope * abMid.x) - abMid.y - (bcSlope * bcMid.x) + bcMid.y) / (abSlope - bcSlope);
+		circum_out->center.y = (abSlope * (circum_out->center.x - abMid.x)) + abMid.y;
 
-		a3real2 diff;
-		diff[0] = circum_out->center[0] - tri->pointA[0];
-		diff[1] = circum_out->center[1] - tri->pointA[1];
+		a3vec2 diff;
+		diff.x = circum_out->center.x - tri->pointA.x;
+		diff.y = circum_out->center.y - tri->pointA.y;
 
-		circum_out->radius = a3real2Length(diff);
+		circum_out->radius = a3real2Length(diff.v);
 
 		return 1;
 	}
@@ -622,7 +622,7 @@ inline a3i32 a3_findCircumcenter(Circumcircle* circum_out, Triangle* tri)
 }
 
 //Given a set of points, calculate the triangulation of said points and return the triangles in that triangulation
-inline a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, const a3vec2* triSet, const a3real* triCount)
+inline a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, a3ui32* triCount_out, const a3vec2* pointSet, const a3ui32* pointCount)
 {
 	//Declare empty list/array of triangles
 	//Find super triangle
@@ -658,6 +658,9 @@ inline a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, const a3v
 		(a3real)0, (a3real)2.1);
 
 	triArray_out[0] = superTriangle;
+	*triCount_out = 1;
+
+	return 1;
 }
 
 

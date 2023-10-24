@@ -46,6 +46,10 @@
 #include <OpenGL/gl3.h>
 #endif	// _WIN32
 
+//-----------------------------------------------------------------------------
+
+void draw_line(const a3_DemoStateShaderProgram* program, a3vec2 start, a3vec2 end, const a3f32* color);
+a3real remap(a3real value, a3real low1, a3real high1, a3real low2, a3real high2);
 
 //-----------------------------------------------------------------------------
 
@@ -667,10 +671,6 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 
 				#define MAX_POINTS 1024 // Max number of points we can display
 
-				//This places the graph in the lower left corner of the screen
-				#define START_X_PROGRESS -.9f // Where to start graph view from
-				#define GRAPH_VIEW_HEIGHT .4f // How big on the y axis the graph view should be
-
 				const a3ui32 sectionDataCount = 1; // How many points we're passing in
 
 				// DRAW SPLINE (Dan Buckstein)
@@ -678,49 +678,19 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 				a3shaderProgramActivate(currentDemoProgram->program);
 				a3vertexDrawableDeactivate();
 
-				a3vec2 pointsToDraw[MAX_POINTS]; // Array of points we will draw
-				pointsToDraw[0].x = (a3real)0;
-				pointsToDraw[0].y = (a3real)0;
+				//a3vec2 pointsToDraw[MAX_POINTS]; // Array of points we will draw
 
-				pointsToDraw[1].x = (a3real).5;
-				pointsToDraw[1].y = (a3real)0;
+				//TODO - Optimize by pulling out a set of edges to avoid repeats
 
-				pointsToDraw[2].x = (a3real)0;
-				pointsToDraw[2].y = (a3real).5;
-
-				pointsToDraw[3].x = (a3real).5;
-				pointsToDraw[3].y = (a3real).5;
-
-				//Every iteration of this loop draws an edge to the screen
-				for (a3ui32 index = 0; index < 3; index++)
+				//Iterate through triangles
+				for (a3ui32 index = 0; index < demoMode->triCount; index++)
 				{
+					const Triangle* tri = &demoMode->delaunayTriangles[index];
 
-					// Load points of edge into array
-					a3vec2 sectionData[] =
-					{
-						pointsToDraw[index],
-						pointsToDraw[index + 1]
-					};
-
-					if (a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, blue) < 0)
-					{
-						printf("Problem with uColor\n");
-					}
-
-					// Pass in sectionData using uAxis
-					if(a3shaderUniformSendFloat(a3unif_vec2, currentDemoProgram->uAxis, 2, (a3f32*)sectionData) < 0)
-					{
-						printf("Problem with uAxis\n");
-					}
-
-					//// Pass in sectionDataCount using uCount
-					//if(a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uCount, 1, &sectionDataCount) < 0)
-					//{
-					//	printf("Problem with uCount\n");
-					//}
-
-					// Draw keyframe
-					glDrawArrays(GL_POINTS, 0, 1);
+					//Draw each individual edge
+					draw_line(currentDemoProgram, tri->pointA, tri->pointB, blue);
+					draw_line(currentDemoProgram, tri->pointB, tri->pointC, blue);
+					draw_line(currentDemoProgram, tri->pointC, tri->pointA, blue);
 				}
 			}
 		}
@@ -756,6 +726,48 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 		//	}
 		}
 	}
+}
+
+void draw_line(const a3_DemoStateShaderProgram* program, a3vec2 start, a3vec2 end, const a3f32* color)
+{
+	//This places the graph in the lower left corner of the screen
+	#define START_X -.9f // Where to start graph view from
+	#define START_Y -.9f // Where to start graph view from
+	#define GRAPH_VIEW_WIDTH .4f // How big on the x axis the graph view should be
+	#define GRAPH_VIEW_HEIGHT .4f // How big on the y axis the graph view should be
+
+	a3vec2 sectionData[] =
+	{
+		{remap(start.x, 0, 1, START_X, START_X + GRAPH_VIEW_WIDTH), remap(start.y, 0, 1, START_Y, START_Y + GRAPH_VIEW_HEIGHT)},
+		{remap(end.x, 0, 1, START_X, START_X + GRAPH_VIEW_WIDTH), remap(end.y, 0, 1, START_Y, START_Y + GRAPH_VIEW_HEIGHT)}
+	};
+
+	//Submit color to shader
+	if (a3shaderUniformSendFloat(a3unif_vec4, program->uColor, 1, color) < 0)
+	{
+		printf("Problem with uColor\n");
+	}
+
+	// Pass in sectionData (point data) using uAxis
+	if (a3shaderUniformSendFloat(a3unif_vec2, program->uAxis, 2, (a3f32*)sectionData) < 0)
+	{
+		printf("Problem with uAxis\n");
+	}
+
+	//// Pass in sectionDataCount using uCount
+	//if(a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uCount, 1, &sectionDataCount) < 0)
+	//{
+	//	printf("Problem with uCount\n");
+	//}
+
+	// Execute shader and draw line
+	glDrawArrays(GL_POINTS, 0, 1);
+}
+
+
+a3real remap(a3real value, a3real low1, a3real high1, a3real low2, a3real high2)
+{
+	return low2 + (value - low1) * (high2 - low2) / (high1 - low1);
 }
 
 
