@@ -28,6 +28,7 @@
 #define __ANIMAL3D_HIERARCHYSTATEBLEND_INL
 
 #include <math.h>
+#include <stdlib.h>
 
 
 //-----------------------------------------------------------------------------
@@ -649,19 +650,40 @@ inline a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, a3ui32* t
 		//for every edge in "polygon"
 			//add a new triangle using the current point "p" as the third point
 
-	//Positions are normalized between 0 and 1
-	//This super triangle is guaranteed to contain the entire square with the corners of 0,0 and 1,1
-	Triangle superTriangle;
-	ConstructTriangle(&superTriangle, 
-		(a3real)-.1, (a3real)-.1,
-		(a3real)2.1, (a3real)0,
-		(a3real)0, (a3real)2.1);
+	//null check
+	if (pointSet && pointCount)
+	{
+		//Positions are normalized between 0 and 1
+		//This super triangle is guaranteed to contain the entire square with the corners of 0,0 and 1,1
+		Triangle superTriangle;
+		ConstructTriangle(&superTriangle,
+			(a3real)-.1, (a3real)-.1,
+			(a3real)2.1, (a3real)0,
+			(a3real)0, (a3real)2.1);
 
-	//Add superTriangle as initial
-	triArray_out[0] = superTriangle;
-	*triCount_out = 1;
+		//Add superTriangle as initial
+		triArray_out[0] = superTriangle;
+		*triCount_out = 1;
 
-	return 1;
+		//Loop through all points
+		for (a3ui32 pointIndex = 0; pointIndex < *pointCount; pointIndex++)
+		{
+			Triangle* containing = (Triangle*)malloc(sizeof(Triangle) * (*pointCount) +
+				sizeof(Edge) * (*pointCount) +
+				sizeof(a3ui32) * (*pointCount));
+
+			Edge* edgeOccurrences = (Edge*)(containing + (sizeof(Triangle) * *pointCount));
+			a3ui32* edgeOccurrencesCount = (a3ui32*)(edgeOccurrences + sizeof(Edge) * *pointCount);
+
+
+
+
+			free(containing);
+		}
+
+		return 1;
+	}
+	return -1;
 }
 
 
