@@ -683,6 +683,29 @@ inline a3i32 RemoveIndexFromArray(Triangle* triArray_out, a3ui32* triCount, cons
 	return -1;
 }
 
+a3i32 GetIndexOfTriangle(a3i32* index_out, const Triangle* triArray, const a3ui32* triCount, const Triangle* triSearch)
+{
+	if (triArray && triSearch)
+	{
+		for (a3ui32 i = 0; i < triCount; i++)
+		{
+			a3boolean equal;
+			TrianglesEquivalent(&equal, &triArray[i], &triSearch);
+			if (equal)
+			{
+				*index_out = (a3i32)i;
+			}
+		}
+
+		//Return -1 if not found
+		*index_out = -1;
+
+		return 1;
+	}
+
+	return -1;
+}
+
 //Given a set of points, calculate the triangulation of said points and return the triangles in that triangulation
 inline a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, a3ui32* triCount_out, const a3vec2* pointSet, const a3ui32* pointCount)
 {
@@ -726,12 +749,14 @@ inline a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, a3ui32* t
 		triArray_out[0] = superTriangle;
 		*triCount_out = 1;
 
+		a3ui32 maxTriangles = *pointCount * 2;
+
 		//Loop through all points
-		for (a3ui32 pointIndex = 0; pointIndex < *pointCount; pointIndex++)
+		for (a3ui32 pointIndex = 0; pointIndex < maxTriangles; pointIndex++)
 		{
-			a3size memreq = sizeof(Triangle) * (*pointCount) +
-				sizeof(Edge) * (*pointCount) +
-				sizeof(a3ui32) * (*pointCount);
+			a3size memreq = sizeof(Triangle) * maxTriangles +
+				sizeof(Edge) * maxTriangles +
+				sizeof(a3ui32) * maxTriangles;
 
 			//Allocate necessary memory
 			Triangle* containing = (Triangle*)malloc(memreq);
@@ -739,8 +764,8 @@ inline a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, a3ui32* t
 			memset(containing, 0, memreq);
 
 			//Logs how many times an edge has occurred
-			Edge* edgeOccurrences = (Edge*)(containing + (sizeof(Triangle) * (*pointCount)));
-			a3ui32* edgeOccurrencesCount = (a3ui32*)(edgeOccurrences + (sizeof(Edge) * *pointCount));
+			Edge* edgeOccurrences = (Edge*)(containing + (sizeof(Triangle) * maxTriangles));
+			a3ui32* edgeOccurrencesCount = (a3ui32*)(edgeOccurrences + (sizeof(Edge) * maxTriangles));
 
 			a3ui32 containingCount = 0;
 
@@ -765,8 +790,18 @@ inline a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, a3ui32* t
 					containing[containingCount] = triArray_out[triIndex];
 					containingCount++;
 
-					//Store colliding edges
+					//Store colliding edges by counting instances of said edges in the array
+
 					
+					
+					/*if (occurrences.TryGetValue(edges[0], out int numA))
+					{
+						occurrences[edges[0]]++;
+					}
+					else
+					{
+						occurrences.Add(edges[0], 1);
+					}*/
 				}
 			}
 
