@@ -517,7 +517,8 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 				drawTangentBasis_gs[1];
 			// custom
 			a3_DemoStateShader
-				drawSpline_gs[1];
+				drawSpline_gs[1],
+				drawDot_gs[1];
 
 			// fragment shaders
 			// base
@@ -564,6 +565,7 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 
 			// custom
 			{ { { 0 },	"shdr-gs:draw-spline",				a3shader_geometry,	1,{ A3_DEMO_GS"custom/drawSpline_gs4x.glsl",} } },
+			{ { { 0 },	"shdr-gs:draw-dot",				a3shader_geometry,	1,{ A3_DEMO_GS"custom/drawDot_gs4x.glsl",} } },
 
 			// fs
 			// base
@@ -728,6 +730,13 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-spline");
 	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passIDs_vs->shader);
 	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawSpline_gs->shader);
+	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawColorUnif_fs->shader);
+
+	// draw dot
+	currentDemoProg = demoState->prog_drawDot;
+	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-dot");
+	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passIDs_vs->shader);
+	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawDot_gs->shader);
 	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawColorUnif_fs->shader);
 
 

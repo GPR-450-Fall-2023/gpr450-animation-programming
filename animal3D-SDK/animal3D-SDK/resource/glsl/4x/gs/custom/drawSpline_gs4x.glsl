@@ -39,10 +39,10 @@ layout (points) in;
 layout (line_strip, max_vertices = MAX_VERTICES) out;
 
 
-// uniforms: modelviewproj, actual triangle values, etc.
+// uniforms: modelviewproj, actual line values, etc.
 #define MAX_DATA 128
-uniform vec2 uAxis[MAX_DATA]; // Holds triangle points
-uniform int uCount; // Represents number of triangle points in uAxis
+uniform vec2 uAxis[MAX_DATA]; // Holds line points
+uniform int uCount; // Represents number of line points in uAxis
 //uniform float uFlag; // Normalized time for playhead drawing
 
 

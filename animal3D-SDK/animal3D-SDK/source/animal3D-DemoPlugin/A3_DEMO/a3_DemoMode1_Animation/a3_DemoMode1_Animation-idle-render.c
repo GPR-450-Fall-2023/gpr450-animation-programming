@@ -37,6 +37,7 @@
 #include "../_a3_demo_utilities/a3_DemoMacros.h"
 
 #include <stdio.h>
+#include <math.h>
 
 
 // OpenGL
@@ -50,9 +51,9 @@
 
 //This places the graph in the lower left corner of the screen
 #define START_X -.9f // Where to start graph view from
-#define START_Y -.9f // Where to start graph view from
-#define GRAPH_VIEW_WIDTH .4f // How big on the x axis the graph view should be
-#define GRAPH_VIEW_HEIGHT .4f // How big on the y axis the graph view should be
+#define START_Y -.5f // Where to start graph view from
+#define GRAPH_VIEW_WIDTH .5f // How big on the x axis the graph view should be
+#define GRAPH_VIEW_HEIGHT .5f // How big on the y axis the graph view should be
 
 //-----------------------------------------------------------------------------
 
@@ -667,10 +668,11 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 				}
 			}
 
+			//Get position of mouse clamped within delaunay graph
 			a3vec2 actualTriPos = { (a3real)a3clamp(START_X, START_X + GRAPH_VIEW_WIDTH, demoMode->triangulationPosition.x),
 				(a3real)a3clamp(START_Y, START_Y + GRAPH_VIEW_HEIGHT, demoMode->triangulationPosition.y) };
 
-			printf("%f, %f\n", actualTriPos.x, actualTriPos.y);
+			//printf("%f, %f\n", actualTriPos.x, actualTriPos.y);
 
 			/*
 			*
@@ -682,8 +684,6 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 				// framework for drawing a graph view for the keyframe controller
 
 				#define MAX_POINTS 1024 // Max number of points we can display
-
-
 
 				const a3ui32 sectionDataCount = 1; // How many points we're passing in
 
@@ -716,7 +716,40 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 			*
 			*/
 			{
+				// Draw dot
+				currentDemoProgram = demoState->prog_drawDot;
+				a3shaderProgramActivate(currentDemoProgram->program);
+				a3vertexDrawableDeactivate();
 
+				#define DOT_RADIUS .01
+				#define CIRCLE_SEGMENTS 31
+
+				a3vec2 pointsToDraw[MAX_POINTS]; // Array of points we will draw
+
+				pointsToDraw[0] = actualTriPos;
+
+				a3real segmentAngle = 360 / CIRCLE_SEGMENTS;
+
+				for (a3ui32 i = 1; i < CIRCLE_SEGMENTS + 1; i++)
+				{
+					pointsToDraw[i].x = (a3real)(DOT_RADIUS * a3cosd((a3real)(segmentAngle * i))) + actualTriPos.x;
+					pointsToDraw[i].y = (a3real)(DOT_RADIUS * a3sind((a3real)(segmentAngle * i))) + actualTriPos.y;
+				}
+
+				//Submit color to shader
+				if (a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, red) < 0)
+				{
+					printf("Problem with uColor\n");
+				}
+
+				// Pass in sectionData (point data) using uAxis
+				if (a3shaderUniformSendFloat(a3unif_vec2, currentDemoProgram->uAxis, CIRCLE_SEGMENTS + 1, (a3f32*)pointsToDraw) < 0)
+				{
+					printf("Problem with uAxis\n");
+				}
+
+				// Execute shader and draw line
+				glDrawArrays(GL_POINTS, 0, 1);
 			}
 		}
 

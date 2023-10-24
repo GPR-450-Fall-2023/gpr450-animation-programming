@@ -282,7 +282,8 @@ struct a3_DemoState
 				prog_drawTangentBasis_morph5[1],			// draw vertex/face tangent bases and wireframe for 5-target morphing model
 				prog_drawTangentBasis[1];					// draw vertex/face tangent bases and wireframe
 			a3_DemoStateShaderProgram
-				prog_drawSpline[1];							// CUSTOM spline interpolation
+				prog_drawSpline[1],							// CUSTOM spline interpolation
+				prog_drawDot[1];							// CUSTOM dot
 		};
 	};
 
