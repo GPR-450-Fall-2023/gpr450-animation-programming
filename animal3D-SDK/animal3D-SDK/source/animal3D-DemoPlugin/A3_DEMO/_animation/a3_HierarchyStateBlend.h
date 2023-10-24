@@ -255,6 +255,11 @@ struct Triangle
 	a3real2 pointC;
 };
 
+void ConstructTriangle(Triangle* tri_out,
+	const a3real pointAX, const a3real pointAY,
+	const a3real pointBX, const a3real pointBY,
+	const a3real pointCX, const a3real pointCY);
+
 //Find circumcenter of a triangle
 a3i32 a3_findCircumcenter(Circumcircle* circum_out, Triangle* tri);
 

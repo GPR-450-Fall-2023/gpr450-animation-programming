@@ -577,6 +577,19 @@ inline a3_HierarchyPose* a3hierarchyPoseOpBiCubic(a3_HierarchyPose* pose_out, a3
 	return pose_out;
 }
 
+inline void ConstructTriangle(Triangle* tri_out, 
+	const a3real pointAX, const a3real pointAY,
+	const a3real pointBX, const a3real pointBY,
+	const a3real pointCX, const a3real pointCY)
+{
+	tri_out->pointA[0] = pointAX;
+	tri_out->pointA[1] = pointAY;
+	tri_out->pointB[0] = pointBX;
+	tri_out->pointB[1] = pointBY;
+	tri_out->pointC[0] = pointCX;
+	tri_out->pointC[1] = pointCY;
+}
+
 // The equation for finding the circumcenter of a triangle was derived from this website
 //https://gamedev.stackexchange.com/questions/60630/how-do-i-find-the-circumcenter-of-a-triangle-in-3d
 inline a3i32 a3_findCircumcenter(Circumcircle* circum_out, Triangle* tri)
@@ -636,7 +649,15 @@ inline a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, const a3v
 		//for every edge in "polygon"
 			//add a new triangle using the current point "p" as the third point
 
+	//Positions are normalized between 0 and 1
+	//This super triangle is guaranteed to contain the entire square with the corners of 0,0 and 1,1
+	Triangle superTriangle;
+	ConstructTriangle(&superTriangle, 
+		-.1, -.1,
+		2.1, 0,
+		0, 2.1);
 
+	triArray_out[0] = superTriangle;
 }
 
 
