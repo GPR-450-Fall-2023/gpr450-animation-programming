@@ -653,9 +653,9 @@ inline a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, const a3v
 	//This super triangle is guaranteed to contain the entire square with the corners of 0,0 and 1,1
 	Triangle superTriangle;
 	ConstructTriangle(&superTriangle, 
-		-.1, -.1,
-		2.1, 0,
-		0, 2.1);
+		(a3real)-.1, (a3real)-.1,
+		(a3real)2.1, (a3real)0,
+		(a3real)0, (a3real)2.1);
 
 	triArray_out[0] = superTriangle;
 }

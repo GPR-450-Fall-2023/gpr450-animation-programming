@@ -34,6 +34,8 @@
 
 #include "../_a3_demo_utilities/a3_DemoRenderUtils.h"
 
+#include <stdio.h>
+
 
 // OpenGL
 #ifdef _WIN32
@@ -614,36 +616,112 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 		// hidden volumes
 		if (demoState->displayHiddenVolumes)
 		{
-			const a3_HierarchyState* currentHierarchyState;
-			const a3_Hierarchy* currentHierarchy;
-
-			// set up to draw skeleton
-			currentDemoProgram = demoState->prog_drawColorUnif_instanced;
-			a3shaderProgramActivate(currentDemoProgram->program);
-			currentHierarchyState = demoMode->hierarchyState_skel;
-			currentHierarchy = currentHierarchyState->hierarchy;
-
-			// draw skeletal joints
-			a3shaderUniformBufferActivate(demoState->ubo_transformMVP, 0);
-			a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, rose);
-			currentDrawable = demoState->draw_node;
-			a3vertexDrawableActivateAndRenderInstanced(currentDrawable, currentHierarchy->numNodes);
-
-			// draw bones
-			a3shaderProgramActivate(currentDemoProgram->program);
-			a3shaderUniformBufferActivate(demoState->ubo_transformMVPB, 0);
-			a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, sky);
-			currentDrawable = demoState->draw_link;
-			a3vertexDrawableActivateAndRenderInstanced(currentDrawable, currentHierarchy->numNodes);
-
-			// draw skeletal joint orientations
-			if (demoState->displayTangentBases)
+			/*
+			*
+			*	Draw Skeleton
+			* 
+			*/
 			{
-				currentDemoProgram = demoState->prog_drawColorAttrib_instanced;
+				const a3_HierarchyState* currentHierarchyState;
+				const a3_Hierarchy* currentHierarchy;
+
+				// set up to draw skeleton
+				currentDemoProgram = demoState->prog_drawColorUnif_instanced;
 				a3shaderProgramActivate(currentDemoProgram->program);
+				currentHierarchyState = demoMode->hierarchyState_skel;
+				currentHierarchy = currentHierarchyState->hierarchy;
+
+				// draw skeletal joints
 				a3shaderUniformBufferActivate(demoState->ubo_transformMVP, 0);
-				currentDrawable = demoState->draw_axes;
+				a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, rose);
+				currentDrawable = demoState->draw_node;
 				a3vertexDrawableActivateAndRenderInstanced(currentDrawable, currentHierarchy->numNodes);
+
+				// draw bones
+				a3shaderProgramActivate(currentDemoProgram->program);
+				a3shaderUniformBufferActivate(demoState->ubo_transformMVPB, 0);
+				a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, sky);
+				currentDrawable = demoState->draw_link;
+				a3vertexDrawableActivateAndRenderInstanced(currentDrawable, currentHierarchy->numNodes);
+
+				// draw skeletal joint orientations
+				if (demoState->displayTangentBases)
+				{
+					currentDemoProgram = demoState->prog_drawColorAttrib_instanced;
+					a3shaderProgramActivate(currentDemoProgram->program);
+					a3shaderUniformBufferActivate(demoState->ubo_transformMVP, 0);
+					currentDrawable = demoState->draw_axes;
+					a3vertexDrawableActivateAndRenderInstanced(currentDrawable, currentHierarchy->numNodes);
+				}
+			}
+
+
+			/*
+			*
+			*	Draw Delaunay Blend Graph
+			*
+			*/
+			{
+				//Code below written by Dillon Drummond based on Joseph Lyons and Dan Buckstein's 
+				// framework for drawing a graph view for the keyframe controller
+
+				#define MAX_POINTS 1024 // Max number of points we can display
+
+				//This places the graph in the lower left corner of the screen
+				#define START_X_PROGRESS -.9f // Where to start graph view from
+				#define GRAPH_VIEW_HEIGHT .4f // How big on the y axis the graph view should be
+
+				const a3ui32 sectionDataCount = 1; // How many points we're passing in
+
+				// DRAW SPLINE (Dan Buckstein)
+				currentDemoProgram = demoState->prog_drawSpline;
+				a3shaderProgramActivate(currentDemoProgram->program);
+				a3vertexDrawableDeactivate();
+
+				a3vec2 pointsToDraw[MAX_POINTS]; // Array of points we will draw
+				pointsToDraw[0].x = (a3real)0;
+				pointsToDraw[0].y = (a3real)0;
+
+				pointsToDraw[1].x = (a3real).5;
+				pointsToDraw[1].y = (a3real)0;
+
+				pointsToDraw[2].x = (a3real)0;
+				pointsToDraw[2].y = (a3real).5;
+
+				pointsToDraw[3].x = (a3real).5;
+				pointsToDraw[3].y = (a3real).5;
+
+				//Every iteration of this loop draws an edge to the screen
+				for (a3ui32 index = 0; index < 3; index++)
+				{
+
+					// Load points of edge into array
+					a3vec2 sectionData[] =
+					{
+						pointsToDraw[index],
+						pointsToDraw[index + 1]
+					};
+
+					if (a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, blue) < 0)
+					{
+						printf("Problem with uColor\n");
+					}
+
+					// Pass in sectionData using uAxis
+					if(a3shaderUniformSendFloat(a3unif_vec2, currentDemoProgram->uAxis, 2, (a3f32*)sectionData) < 0)
+					{
+						printf("Problem with uAxis\n");
+					}
+
+					//// Pass in sectionDataCount using uCount
+					//if(a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uCount, 1, &sectionDataCount) < 0)
+					//{
+					//	printf("Problem with uCount\n");
+					//}
+
+					// Draw keyframe
+					glDrawArrays(GL_POINTS, 0, 1);
+				}
 			}
 		}
 

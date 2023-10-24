@@ -169,6 +169,9 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 		a3mat4 mvp_joint[128], mvp_bone[128], t_skin[128];
 		a3dualquat dq_skin[128];
 
+		//Delaunay Blend Graph
+		Triangle delaunayTriangles[128];
+
 		// control modes
 		a3_DemoMode1_Animation_ControlTarget ctrl_target;
 		a3_DemoMode1_Animation_InputMode ctrl_position, ctrl_rotation;
