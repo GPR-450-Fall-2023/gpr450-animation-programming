@@ -255,10 +255,14 @@ struct Triangle
 	a3vec2 pointC;
 };
 
+//Fill values in triangle
 void ConstructTriangle(Triangle* tri_out,
 	const a3real pointAX, const a3real pointAY,
 	const a3real pointBX, const a3real pointBY,
 	const a3real pointCX, const a3real pointCY);
+
+//Check if two triangles are equivalent
+a3i32 TrianglesEquivalent(a3boolean* equal_out, const Triangle* lhs, const Triangle* rhs);
 
 //Find circumcenter of a triangle
 a3i32 a3_findCircumcenter(Circumcircle* circum_out, Triangle* tri);

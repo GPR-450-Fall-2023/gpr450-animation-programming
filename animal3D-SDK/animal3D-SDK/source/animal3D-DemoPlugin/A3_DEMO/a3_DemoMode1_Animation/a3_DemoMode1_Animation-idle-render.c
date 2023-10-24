@@ -722,19 +722,26 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 				a3vertexDrawableDeactivate();
 
 				#define DOT_RADIUS .01
-				#define CIRCLE_SEGMENTS 31
+				#define CIRCLE_SEGMENTS 16
 
 				a3vec2 pointsToDraw[MAX_POINTS]; // Array of points we will draw
 
+				//Initial position is same as mouse
 				pointsToDraw[0] = actualTriPos;
 
-				a3real segmentAngle = 360 / CIRCLE_SEGMENTS;
+				//Increment angle
+				a3real segmentAngle = (a3real)360.0 / CIRCLE_SEGMENTS;
 
-				for (a3ui32 i = 1; i < CIRCLE_SEGMENTS + 1; i++)
+				//Get points around center
+				for (a3ui32 i = 0; i < CIRCLE_SEGMENTS + 1; i++)
 				{
-					pointsToDraw[i].x = (a3real)(DOT_RADIUS * a3cosd((a3real)(segmentAngle * i))) + actualTriPos.x;
-					pointsToDraw[i].y = (a3real)(DOT_RADIUS * a3sind((a3real)(segmentAngle * i))) + actualTriPos.y;
+					pointsToDraw[i + 1].x = (a3real)(DOT_RADIUS * a3cosd((a3real)(segmentAngle * i))) + actualTriPos.x;
+					pointsToDraw[i + 1].y = (a3real)(DOT_RADIUS * a3sind((a3real)(segmentAngle * i))) + actualTriPos.y;
 				}
+
+				//Set last index to same values as first point after center
+				pointsToDraw[CIRCLE_SEGMENTS + 1].x = pointsToDraw[1].x;
+				pointsToDraw[CIRCLE_SEGMENTS + 1].y = pointsToDraw[1].y;
 
 				//Submit color to shader
 				if (a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, red) < 0)
@@ -743,7 +750,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 				}
 
 				// Pass in sectionData (point data) using uAxis
-				if (a3shaderUniformSendFloat(a3unif_vec2, currentDemoProgram->uAxis, CIRCLE_SEGMENTS + 1, (a3f32*)pointsToDraw) < 0)
+				if (a3shaderUniformSendFloat(a3unif_vec2, currentDemoProgram->uAxis, CIRCLE_SEGMENTS + 2, (a3f32*)pointsToDraw) < 0)
 				{
 					printf("Problem with uAxis\n");
 				}

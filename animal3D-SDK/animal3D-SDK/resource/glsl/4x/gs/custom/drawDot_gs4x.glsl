@@ -32,11 +32,11 @@
 
 #version 450
 
-#define MAX_SEGMENTS 32
+#define MAX_SEGMENTS 16
 
 layout (points) in;
 
-layout (triangle_strip, max_vertices = MAX_SEGMENTS) out;
+layout (triangle_strip, max_vertices = MAX_SEGMENTS * 3) out; //3 vertices per segment
 
 
 // uniforms: modelviewproj, actual triangle values, etc.
@@ -62,9 +62,9 @@ void main()
 	//	you must set gl_Position by the end of GS
 	//	(if no GS then by the end of TS, if no TS then by the end of VS)
 
-	for(int i = 1; i < MAX_SEGMENTS; i++)
+	//Loop through and draw a triangle for each vertex
+	for(int i = 1; i < MAX_SEGMENTS + 1; i++)
 	{
-		//No need to complicate things, Delaunay works with straight lines.
 		gl_Position = vec4(uAxis[0], 0.0f, 1.0f); //Center of circle
 		EmitVertex();
 

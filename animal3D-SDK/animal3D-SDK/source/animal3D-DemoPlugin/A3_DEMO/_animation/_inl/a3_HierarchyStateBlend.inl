@@ -591,6 +591,21 @@ inline void ConstructTriangle(Triangle* tri_out,
 	tri_out->pointC.y = pointCY;
 }
 
+inline a3i32 TrianglesEquivalent(a3boolean* equal_out, const Triangle* lhs, const Triangle* rhs)
+{
+	if (lhs && rhs && equal_out)
+	{
+		*equal_out =
+			(((lhs->pointA.v == rhs->pointA.v) || (lhs->pointA.v == rhs->pointB.v) || (lhs->pointA.v == rhs->pointC.v)) &&
+			((lhs->pointB.v == rhs->pointA.v) || (lhs->pointB.v == rhs->pointB.v) || (lhs->pointB.v == rhs->pointC.v)) &&
+			((lhs->pointC.v == rhs->pointA.v) || (lhs->pointC.v == rhs->pointB.v) || (lhs->pointC.v == rhs->pointC.v)));
+
+		return 1;
+	}
+
+	return -1;
+}
+
 // The equation for finding the circumcenter of a triangle was derived from this website
 //https://gamedev.stackexchange.com/questions/60630/how-do-i-find-the-circumcenter-of-a-triangle-in-3d
 inline a3i32 a3_findCircumcenter(Circumcircle* circum_out, Triangle* tri)
@@ -668,14 +683,20 @@ inline a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, a3ui32* t
 		//Loop through all points
 		for (a3ui32 pointIndex = 0; pointIndex < *pointCount; pointIndex++)
 		{
+			//Allocate necessary memory
 			Triangle* containing = (Triangle*)malloc(sizeof(Triangle) * (*pointCount) +
 				sizeof(Edge) * (*pointCount) +
 				sizeof(a3ui32) * (*pointCount));
 
-			Edge* edgeOccurrences = (Edge*)(containing + (sizeof(Triangle) * *pointCount));
-			a3ui32* edgeOccurrencesCount = (a3ui32*)(edgeOccurrences + sizeof(Edge) * *pointCount);
+			//Logs how many times an edge has occurred
+			Edge* edgeOccurrences = (Edge*)(containing + (sizeof(Triangle) * (*pointCount)));
+			a3ui32* edgeOccurrencesCount = (a3ui32*)(edgeOccurrences + (sizeof(Edge) * *pointCount));
 
-
+			//Find triangles whose circumsphere
+			for (a3ui32 triIndex = 0; triIndex < 0; triIndex++)
+			{
+				
+			}
 
 
 			free(containing);
