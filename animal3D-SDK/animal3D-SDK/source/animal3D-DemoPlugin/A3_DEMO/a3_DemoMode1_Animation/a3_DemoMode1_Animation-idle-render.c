@@ -712,6 +712,25 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 
 			/*
 			*
+			*	Graph Borders
+			*
+			*/
+			{
+				//Still using spline shader
+
+				a3vec2 bottomLeft = { 0, 0 };
+				a3vec2 topLeft = { 0, 1 };
+				a3vec2 bottomRight = { 1, 0 };
+				a3vec2 topRight = { 1, 1 };
+
+				draw_line(currentDemoProgram, bottomLeft, topLeft, green);
+				draw_line(currentDemoProgram, topLeft, topRight, green);
+				draw_line(currentDemoProgram, topRight, bottomRight, green);
+				draw_line(currentDemoProgram, bottomRight, bottomLeft, green);
+			}
+
+			/*
+			*
 			*	Draw Mouse Dot
 			*
 			*/
