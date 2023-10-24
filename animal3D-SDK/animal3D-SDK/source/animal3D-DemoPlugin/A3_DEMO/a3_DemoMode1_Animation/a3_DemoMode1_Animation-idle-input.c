@@ -112,6 +112,20 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 		// transform to world space
 		a3real4Real4x4Mul(projector->sceneObject->modelMat.m, coord.v);
 	}
+
+	if (a3mouseGetState(demoState->mouse, a3mouse_right) == a3input_down)
+	{
+		// get window coordinates
+		a3i32 const x = a3mouseGetX(demoState->mouse) + demoState->frameBorder;
+		a3i32 const y = a3mouseGetY(demoState->mouse) + demoState->frameBorder;
+
+		// transform to NDC
+		a3vec2 coord = a3vec2_one;
+		coord.x = +((a3real)x * demoState->frameWidthInv * a3real_two - a3real_one);
+		coord.y = -((a3real)y * demoState->frameHeightInv * a3real_two - a3real_one);
+
+		demoMode->triangulationPosition = coord;
+	}
 	
 	// choose control target
 	switch (demoMode->ctrl_target)

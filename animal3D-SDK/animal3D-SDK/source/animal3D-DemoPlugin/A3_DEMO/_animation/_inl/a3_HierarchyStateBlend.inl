@@ -657,6 +657,7 @@ inline a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, a3ui32* t
 		(a3real)2.1, (a3real)0,
 		(a3real)0, (a3real)2.1);
 
+	//Add superTriangle as initial
 	triArray_out[0] = superTriangle;
 	*triCount_out = 1;
 

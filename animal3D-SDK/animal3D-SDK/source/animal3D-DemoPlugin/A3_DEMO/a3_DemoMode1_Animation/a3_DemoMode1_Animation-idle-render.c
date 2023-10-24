@@ -682,6 +682,9 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 
 				//TODO - Optimize by pulling out a set of edges to avoid repeats
 
+
+				printf("%f, %f\n", demoMode->triangulationPosition.x, demoMode->triangulationPosition.y);
+
 				//Iterate through triangles
 				for (a3ui32 index = 0; index < demoMode->triCount; index++)
 				{

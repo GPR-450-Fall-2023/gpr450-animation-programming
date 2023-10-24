@@ -474,6 +474,8 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		a3clipControllerInit(demoMode->clipCtrlB, "xbot_ctrlB", demoMode->clipPool, j, rate, fps);
 	}
 
+	demoMode->triangulationPosition = a3vec2_one;
+
 	//Run Delaunay Triangulation
 	a3_calculateDelaunayTriangulation(demoMode->delaunayTriangles, &demoMode->triCount, 0, 0);
 }

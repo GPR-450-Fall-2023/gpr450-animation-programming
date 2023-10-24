@@ -173,6 +173,9 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 		Triangle delaunayTriangles[128];
 		a3ui32 triCount;
 
+		//Set in demo state when mouse right click held
+		a3vec2 triangulationPosition;
+
 		// control modes
 		a3_DemoMode1_Animation_ControlTarget ctrl_target;
 		a3_DemoMode1_Animation_InputMode ctrl_position, ctrl_rotation;
