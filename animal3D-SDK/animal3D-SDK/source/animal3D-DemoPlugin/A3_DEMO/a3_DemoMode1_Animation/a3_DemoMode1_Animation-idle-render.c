@@ -34,6 +34,8 @@
 
 #include "../_a3_demo_utilities/a3_DemoRenderUtils.h"
 
+#include "../_a3_demo_utilities/a3_DemoMacros.h"
+
 #include <stdio.h>
 
 
@@ -45,6 +47,12 @@
 #else	// !_WIN32
 #include <OpenGL/gl3.h>
 #endif	// _WIN32
+
+//This places the graph in the lower left corner of the screen
+#define START_X -.9f // Where to start graph view from
+#define START_Y -.9f // Where to start graph view from
+#define GRAPH_VIEW_WIDTH .4f // How big on the x axis the graph view should be
+#define GRAPH_VIEW_HEIGHT .4f // How big on the y axis the graph view should be
 
 //-----------------------------------------------------------------------------
 
@@ -659,6 +667,10 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 				}
 			}
 
+			a3vec2 actualTriPos = { (a3real)a3clamp(START_X, START_X + GRAPH_VIEW_WIDTH, demoMode->triangulationPosition.x),
+				(a3real)a3clamp(START_Y, START_Y + GRAPH_VIEW_HEIGHT, demoMode->triangulationPosition.y) };
+
+			printf("%f, %f\n", actualTriPos.x, actualTriPos.y);
 
 			/*
 			*
@@ -671,6 +683,8 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 
 				#define MAX_POINTS 1024 // Max number of points we can display
 
+
+
 				const a3ui32 sectionDataCount = 1; // How many points we're passing in
 
 				// DRAW SPLINE (Dan Buckstein)
@@ -682,8 +696,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 
 				//TODO - Optimize by pulling out a set of edges to avoid repeats
 
-
-				printf("%f, %f\n", demoMode->triangulationPosition.x, demoMode->triangulationPosition.y);
+				
 
 				//Iterate through triangles
 				for (a3ui32 index = 0; index < demoMode->triCount; index++)
@@ -695,6 +708,15 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 					draw_line(currentDemoProgram, tri->pointB, tri->pointC, blue);
 					draw_line(currentDemoProgram, tri->pointC, tri->pointA, blue);
 				}
+			}
+
+			/*
+			*
+			*	Draw Mouse Dot
+			*
+			*/
+			{
+
 			}
 		}
 
@@ -733,11 +755,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 
 void draw_line(const a3_DemoStateShaderProgram* program, a3vec2 start, a3vec2 end, const a3f32* color)
 {
-	//This places the graph in the lower left corner of the screen
-	#define START_X -.9f // Where to start graph view from
-	#define START_Y -.9f // Where to start graph view from
-	#define GRAPH_VIEW_WIDTH .4f // How big on the x axis the graph view should be
-	#define GRAPH_VIEW_HEIGHT .4f // How big on the y axis the graph view should be
+	
 
 	a3vec2 sectionData[] =
 	{
