@@ -608,6 +608,14 @@ inline a3i32 TrianglesEquivalent(a3boolean* equal_out, const Triangle* lhs, cons
 	return -1;
 }
 
+inline void PrintTriangle(Triangle* tri)
+{
+	printf("Point A: (%f, %f)   Point B: (%f, %f)   Point C: (%f, %f)\n",
+		tri->pointA.x, tri->pointA.y, 
+		tri->pointB.x, tri->pointB.y, 
+		tri->pointC.x, tri->pointC.y);
+}
+
 inline a3i32 EdgesEquivalent(a3boolean* equal_out, const Edge* lhs, const Edge* rhs)
 {
 	if (lhs && rhs && equal_out)
@@ -657,14 +665,14 @@ inline a3i32 RemoveIndexFromArray(Triangle* triArray_out, a3ui32* triCount, cons
 {
 	if (triArray_out && triCount)
 	{
-		for (a3ui32 i = (a3ui32)(*index); i < *triCount - 1; i++)
+		for (a3ui32 i = (a3ui32)(*index); i < *triCount; i++)
 		{
 			triArray_out[i] = triArray_out[i + 1];
 		}
 
 		if (triCount > 0)
 		{
-			memset(&triArray_out[*triCount], 0, sizeof(Triangle));
+			memset(&triArray_out[*triCount - 1], 0, sizeof(Triangle));
 		}
 
 		triCount -= 1;
@@ -721,10 +729,14 @@ inline a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, a3ui32* t
 		//Loop through all points
 		for (a3ui32 pointIndex = 0; pointIndex < *pointCount; pointIndex++)
 		{
-			//Allocate necessary memory
-			Triangle* containing = (Triangle*)malloc(sizeof(Triangle) * (*pointCount) +
+			a3size memreq = sizeof(Triangle) * (*pointCount) +
 				sizeof(Edge) * (*pointCount) +
-				sizeof(a3ui32) * (*pointCount));
+				sizeof(a3ui32) * (*pointCount);
+
+			//Allocate necessary memory
+			Triangle* containing = (Triangle*)malloc(memreq);
+
+			memset(containing, 0, memreq);
 
 			//Logs how many times an edge has occurred
 			Edge* edgeOccurrences = (Edge*)(containing + (sizeof(Triangle) * (*pointCount)));
@@ -751,36 +763,37 @@ inline a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, a3ui32* t
 
 					//Store the containing triangle for later
 					containing[containingCount] = triArray_out[triIndex];
+					containingCount++;
 
 					//Store colliding edges
 					
 				}
 			}
 
-			//Just a test, draws 3 tiangles each taking two points from the super triangle and one point as the current point
-			//Visually just draws lines from super triangle vertices to current point.
-			Triangle* newTri = &triArray_out[*triCount_out];
-			newTri->pointA = triArray_out[0].pointA;
-			newTri->pointB = triArray_out[0].pointB;
-			newTri->pointC = pointSet[pointIndex];
+			////Just a test, draws 3 tiangles each taking two points from the super triangle and one point as the current point
+			////Visually just draws lines from super triangle vertices to current point.
+			//Triangle* newTri = &triArray_out[*triCount_out];
+			//newTri->pointA = triArray_out[0].pointA;
+			//newTri->pointB = triArray_out[0].pointB;
+			//newTri->pointC = pointSet[pointIndex];
 
-			triCount_out += 1;
+			//*triCount_out += 1;
 
-			newTri = &triArray_out[*triCount_out];
-			newTri->pointA = triArray_out[0].pointB;
-			newTri->pointB = triArray_out[0].pointC;
-			newTri->pointC = pointSet[pointIndex];
+			//newTri = &triArray_out[*triCount_out];
+			//newTri->pointA = triArray_out[0].pointB;
+			//newTri->pointB = triArray_out[0].pointC;
+			//newTri->pointC = pointSet[pointIndex];
 
-			*triCount_out += 1;
+			//*triCount_out += 1;
 
-			newTri = &triArray_out[*triCount_out];
-			newTri->pointA = triArray_out[0].pointC;
-			newTri->pointB = triArray_out[0].pointA;
-			newTri->pointC = pointSet[pointIndex];
+			//newTri = &triArray_out[*triCount_out];
+			//newTri->pointA = triArray_out[0].pointC;
+			//newTri->pointB = triArray_out[0].pointA;
+			//newTri->pointC = pointSet[pointIndex];
 
-			*triCount_out += 1;
+			//*triCount_out += 1;
 
-			a3ui32 removeIndex = *triCount_out - 2;
+			//a3ui32 removeIndex = *triCount_out - 2;
 			//RemoveIndexFromArray(triArray_out, triCount_out, &removeIndex);
 
 			free(containing);

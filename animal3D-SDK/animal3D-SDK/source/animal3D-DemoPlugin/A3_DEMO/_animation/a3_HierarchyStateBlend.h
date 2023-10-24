@@ -264,6 +264,8 @@ void ConstructTriangle(Triangle* tri_out,
 //Check if two triangles are equivalent
 a3i32 TrianglesEquivalent(a3boolean* equal_out, const Triangle* lhs, const Triangle* rhs);
 
+void PrintTriangle(Triangle* tri);
+
 //Chcek if two edges are equivalent
 a3i32 EdgesEquivalent(a3boolean* equal_out, const Edge* lhs, const Edge* rhs);
 
