@@ -30,6 +30,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 
 //-----------------------------------------------------------------------------
@@ -607,6 +608,20 @@ inline a3i32 TrianglesEquivalent(a3boolean* equal_out, const Triangle* lhs, cons
 	return -1;
 }
 
+inline a3i32 EdgesEquivalent(a3boolean* equal_out, const Edge* lhs, const Edge* rhs)
+{
+	if (lhs && rhs && equal_out)
+	{
+		*equal_out =
+			((lhs->pointA.v == rhs->pointA.v) || (lhs->pointA.v == rhs->pointB.v)) &&
+			((lhs->pointB.v == rhs->pointA.v) || (lhs->pointB.v == rhs->pointB.v));
+
+		return 1;
+	}
+
+	return -1;
+}
+
 // The equation for finding the circumcenter of a triangle was derived from this website
 //https://gamedev.stackexchange.com/questions/60630/how-do-i-find-the-circumcenter-of-a-triangle-in-3d
 inline a3i32 a3_findCircumcenter(Circumcircle* circum_out, Triangle* tri)
@@ -631,6 +646,28 @@ inline a3i32 a3_findCircumcenter(Circumcircle* circum_out, Triangle* tri)
 		diff.y = circum_out->center.y - tri->pointA.y;
 
 		circum_out->radius = a3real2Length(diff.v);
+
+		return 1;
+	}
+
+	return -1;
+}
+
+inline a3i32 RemoveIndexFromArray(Triangle* triArray_out, a3ui32* triCount, const a3ui32* index)
+{
+	if (triArray_out && triCount)
+	{
+		for (a3ui32 i = (a3ui32)(*index); i < *triCount - 1; i++)
+		{
+			triArray_out[i] = triArray_out[i + 1];
+		}
+
+		if (triCount > 0)
+		{
+			memset(&triArray_out[*triCount], 0, sizeof(Triangle));
+		}
+
+		triCount -= 1;
 
 		return 1;
 	}
@@ -695,9 +732,11 @@ inline a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, a3ui32* t
 
 			a3ui32 containingCount = 0;
 
+			a3ui32 iterationTriCount = *triCount_out;
+
 			//Find triangles whose circumsphere contains the current point
 			//triCount_out changes every iteration so we iterate over all new triangles
-			for (a3ui32 triIndex = 0; triIndex < *triCount_out; triIndex++)
+			for (a3ui32 triIndex = 0; triIndex < iterationTriCount; triIndex++)
 			{
 				Circumcircle circle;
 				a3_findCircumcenter(&circle, &triArray_out[triIndex]);
@@ -709,9 +748,40 @@ inline a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, a3ui32* t
 				if(circle.radius > dist)
 				{
 					printf("Circumcircle contains point\n");
+
+					//Store the containing triangle for later
+					containing[containingCount] = triArray_out[triIndex];
+
+					//Store colliding edges
+					
 				}
 			}
 
+			//Just a test, draws 3 tiangles each taking two points from the super triangle and one point as the current point
+			//Visually just draws lines from super triangle vertices to current point.
+			Triangle* newTri = &triArray_out[*triCount_out];
+			newTri->pointA = triArray_out[0].pointA;
+			newTri->pointB = triArray_out[0].pointB;
+			newTri->pointC = pointSet[pointIndex];
+
+			triCount_out += 1;
+
+			newTri = &triArray_out[*triCount_out];
+			newTri->pointA = triArray_out[0].pointB;
+			newTri->pointB = triArray_out[0].pointC;
+			newTri->pointC = pointSet[pointIndex];
+
+			*triCount_out += 1;
+
+			newTri = &triArray_out[*triCount_out];
+			newTri->pointA = triArray_out[0].pointC;
+			newTri->pointB = triArray_out[0].pointA;
+			newTri->pointC = pointSet[pointIndex];
+
+			*triCount_out += 1;
+
+			a3ui32 removeIndex = *triCount_out - 2;
+			//RemoveIndexFromArray(triArray_out, triCount_out, &removeIndex);
 
 			free(containing);
 		}
