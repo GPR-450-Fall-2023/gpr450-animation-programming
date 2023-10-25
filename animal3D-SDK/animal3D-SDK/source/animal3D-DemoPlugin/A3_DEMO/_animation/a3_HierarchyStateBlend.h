@@ -268,6 +268,8 @@ a3i32 TrianglesEquivalent(a3boolean* equal_out, const Triangle* lhs, const Trian
 //Print out the points in the triangle
 void PrintTriangle(Triangle* tri);
 
+
+
 //Construct edges from triangle
 a3i32 ConstructEdgesFromTriangle(Edge* edges_out, const Triangle* tri_in);
 
@@ -275,14 +277,28 @@ a3i32 ConstructEdgesFromTriangle(Edge* edges_out, const Triangle* tri_in);
 //Checks values not addresses
 a3i32 EdgesEquivalent(a3boolean* equal_out, const Edge* lhs, const Edge* rhs);
 
+
+
 //Find circumcenter of a triangle
 a3i32 a3_findCircumcenter(Circumcircle* circum_out, Triangle* tri);
+
+
 
 //Removes an entry from an array and shifts everything in front of it backwards, updates the count value to match
 a3i32 RemoveTriangleFromArray(Triangle* triArray_out, a3ui32* triCount, const a3ui32* index);
 
 //Same as RemoveTriangleFromArray but for edges
 a3i32 RemoveEdgeFromArray(Edge* edgeArray_out, a3ui32* edgeCount, const a3ui32* index);
+
+
+
+//Compares floats to see if they are reasonably close enough to be considered equal
+a3boolean CompareFloats(a3real lhs, a3real rhs);
+
+//Compares vec2s to see if they are reasonably close enough to be considered equal
+a3boolean CompareVec2(a3vec2 lhs, a3vec2 rhs);
+
+
 
 //Returns the index of a triangle if it exists in the array
 //Returns -1 if not found

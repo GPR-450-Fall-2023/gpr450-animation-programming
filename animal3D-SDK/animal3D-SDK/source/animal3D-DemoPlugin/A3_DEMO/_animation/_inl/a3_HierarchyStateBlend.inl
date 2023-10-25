@@ -597,10 +597,15 @@ inline a3i32 TrianglesEquivalent(a3boolean* equal_out, const Triangle* lhs, cons
 {
 	if (lhs && rhs && equal_out)
 	{
-		*equal_out =(
+		/**equal_out =(
 			((*lhs->pointA.v == *rhs->pointA.v) || (*lhs->pointA.v == *rhs->pointB.v) || (*lhs->pointA.v == *rhs->pointC.v)) &&
 			((*lhs->pointB.v == *rhs->pointA.v) || (*lhs->pointB.v == *rhs->pointB.v) || (*lhs->pointB.v == *rhs->pointC.v)) &&
 			((*lhs->pointC.v == *rhs->pointA.v) || (*lhs->pointC.v == *rhs->pointB.v) || (*lhs->pointC.v == *rhs->pointC.v))
+			);*/
+		*equal_out = (
+			(CompareVec2(lhs->pointA, rhs->pointA) || CompareVec2(lhs->pointA, rhs->pointB) || CompareVec2(lhs->pointA, rhs->pointC)) &&
+			(CompareVec2(lhs->pointB, rhs->pointA) || CompareVec2(lhs->pointB, rhs->pointB) || CompareVec2(lhs->pointB, rhs->pointC)) &&
+			(CompareVec2(lhs->pointC, rhs->pointA) || CompareVec2(lhs->pointC, rhs->pointB) || CompareVec2(lhs->pointC, rhs->pointC))
 			);
 
 		return 1;
@@ -640,9 +645,12 @@ inline a3i32 EdgesEquivalent(a3boolean* equal_out, const Edge* lhs, const Edge* 
 {
 	if (lhs && rhs && equal_out)
 	{
-		*equal_out =
+		/**equal_out =
 			((*lhs->pointA.v == *rhs->pointA.v) || (*lhs->pointA.v == *rhs->pointB.v)) &&
-			((*lhs->pointB.v == *rhs->pointA.v) || (*lhs->pointB.v == *rhs->pointB.v));
+			((*lhs->pointB.v == *rhs->pointA.v) || (*lhs->pointB.v == *rhs->pointB.v));*/
+		*equal_out =
+			(CompareVec2(lhs->pointA, rhs->pointA) || CompareVec2(lhs->pointA, rhs->pointB)) &&
+			(CompareVec2(lhs->pointB, rhs->pointA) || CompareVec2(lhs->pointB, rhs->pointB));
 
 		return 1;
 	}
@@ -725,6 +733,18 @@ inline a3i32 RemoveEdgeFromArray(Edge* edgeArray_out, a3ui32* edgeCount, const a
 	return -1;
 }
 
+//Compares floats to see if they are reasonably close enough to be considered equal
+inline a3boolean CompareFloats(a3real lhs, a3real rhs)
+{
+	return fabs(lhs - rhs) < .00001f;
+}
+
+//Compares vec2s to see if they are reasonably close enough to be considered equal
+inline a3boolean CompareVec2(a3vec2 lhs, a3vec2 rhs)
+{
+	return CompareFloats(lhs.x, rhs.x) && CompareFloats(lhs.y, rhs.y);
+}
+
 inline a3i32 GetIndexOfTriangle(a3i32* index_out, const Triangle* triArray, const a3ui32* triCount, const Triangle* triSearch)
 {
 	if (triArray && triSearch)
@@ -776,288 +796,6 @@ inline a3i32 GetIndexOfEdge(a3i32* index_out, const Edge* edgeArray, const a3ui3
 		return 1;
 	}
 
-	return -1;
-}
-
-//Given a set of points, calculate the triangulation of said points and return the triangles in that triangulation
-inline a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, a3ui32* triCount_out, const a3vec2* pointSet, const a3ui32* pointCount)
-{
-	//Declare empty list/array of triangles
-	//Find super triangle
-	//Add it to list of triangles called "triangles"
-	//for every point "p"
-		//Initialize a list that will have triangles containing this point (in their circumcircle)
-		//Initialize a hash map of <Edge, int> that will have number of occurrences of each edge
-		// 
-		//for every triangle (new ones added at each iteration of the above loop)
-			//if circumsphere contains the point
-				//add the triangle to list of triangles containing this point
-				//update hashmap of occurences to add 1 to the occurence of each edge in the triangle
-		// 
-		//Create a list of edges "polygon"
-		//for every containing triangle
-			//get the edges within that triangle
-			//for each edge in triangle
-				//if edge only occurs once in "occurences"
-					//add edge to list of edges "polygon"
-		//
-		//for every triangle in containing
-			//remove that triangle from "triangles"
-		//
-		//for every edge in "polygon"
-			//add a new triangle using the current point "p" as the third point
-
-	//null check
-	if (pointSet && pointCount)
-	{
-		const a3ui32 EDGES_IN_TRIANGLE = 3; //3 edges in a triangle
-
-		//Positions are normalized between 0 and 1
-		//This super triangle is guaranteed to contain the entire square with the corners of 0,0 and 1,1
-		Triangle superTriangle;
-		ConstructTriangle(&superTriangle,
-			(a3real)-.1, (a3real)-.1,
-			(a3real)2.1, (a3real)0,
-			(a3real)0, (a3real)2.1);
-
-		//Add superTriangle as initial
-		triArray_out[0] = superTriangle;
-		*triCount_out = 1;
-
-		a3ui32 maxTriangles = *pointCount * 2;
-
-		//Loop through all points
-		for (a3ui32 pointIndex = 0; pointIndex < *pointCount; pointIndex++)
-		{
-			const a3ui32 memContainSize = sizeof(Triangle) * maxTriangles;
-			const a3ui32 memEdgeSize = sizeof(Edge) * maxTriangles * 3;
-			const a3ui32 memEdgeCountSize = sizeof(a3ui32) * maxTriangles * 3;
-			const a3ui32 memPolygonSize = sizeof(Edge) * maxTriangles * 3;
-			const a3ui32 memreq = memContainSize + memEdgeSize + memEdgeCountSize + memPolygonSize;
-
-			//Allocate necessary memory
-			Triangle* containing = (Triangle*)malloc(memreq);
-			Edge* edgesOccurring = (Edge*)(containing + (a3byte)memContainSize);
-			a3ui32* edgeOccurrencesCount = (a3ui32*)(edgesOccurring + (a3byte)memEdgeSize);
-			Edge* polygon = (Edge*)(edgeOccurrencesCount + (a3byte)memEdgeCountSize);
-
-			//Could set this all at once, but it acts as an early warning system if something wasn't malloced correctly
-			//That shouldn't happen anymore, but it was an issue at one point
-			memset(containing, 0, memContainSize);
-			memset(edgesOccurring, 0, memEdgeSize);
-			memset(edgeOccurrencesCount, 0, memEdgeCountSize);
-			memset(polygon, 0, memPolygonSize);
-
-			if (!containing)
-			{
-				printf("\n ------------------------------\nERROR - Failed to malloc 'containing'\n--------------------------\n\n");
-			}
-
-			if (!edgesOccurring)
-			{
-				printf("\n ------------------------------\nERROR - Failed to malloc 'containing'\n--------------------------\n\n");
-			}
-
-			if (!edgeOccurrencesCount)
-			{
-				printf("\n ------------------------------\nERROR - Failed to malloc 'containing'\n--------------------------\n\n");
-			}
-			if (!polygon)
-			{
-				printf("\n ------------------------------\nERROR - Failed to malloc 'polygon'\n--------------------------\n\n");
-			}
-
-			a3ui32 containingCount = 0;	//Number of triangles in "containing"
-			a3ui32 edgeCount = 0; //Number of edges in "edgesOccurring" and "edgeOccurrencesCount"
-			a3ui32 polygonEdgeCount = 0; //Number of edges in "polygon" used later in algorithm
-
-			a3ui32 iterationTriCount = *triCount_out;
-
-			//Find triangles whose circumsphere contains the current point
-			//triCount_out changes every iteration so we iterate over all new triangles
-			for (a3ui32 triIndex = 0; triIndex < iterationTriCount; triIndex++)
-			{
-				//Get circumcenter of triangle
-				Circumcircle circle;
-				a3_findCircumcenter(&circle, &triArray_out[triIndex]);
-
-				//Distance from point to circle center
-				a3real dist;
-				dist = a3real2Distance(pointSet[pointIndex].v, circle.center.v);
-
-				//If within circumcenter of triangle, store to perform triangulation later
-				if(circle.radius > dist)
-				{
-					printf("Circumcircle contains point\n");
-
-					//Store the containing triangle for later
-					containing[containingCount] = triArray_out[triIndex];
-					containingCount++;
-
-					//Get edges in triangle
-					Edge triEdges[3];
-					ConstructEdgesFromTriangle(triEdges, &containing[containingCount - 1]);
-
-					//Store colliding edges by counting instances of said edges in the array
-
-					//Get index of first edge
-					a3i32 edgeIndex = -1;
-					GetIndexOfEdge(&edgeIndex, edgesOccurring, &edgeCount, &triEdges[0]);
-
-					//If index found, increment count
-					if (edgeIndex >= 0)
-					{
-						edgeOccurrencesCount[edgeIndex] += (a3ui32)1;
-					}
-					else //If index not found, add to list of occurring edges
-					{
-						edgesOccurring[edgeCount] = triEdges[0];
-						edgeOccurrencesCount[edgeCount] = 1;
-						edgeCount++;
-					}
-
-					//Get index of second edge
-					edgeIndex = -1;
-					GetIndexOfEdge(&edgeIndex, edgesOccurring, &edgeCount, &triEdges[1]);
-					
-					//If index found, increment count
-					if (edgeIndex >= 0)
-					{
-						//Should be initialized to 0 with memset on allocation so we can just add
-						edgeOccurrencesCount[edgeIndex] += (a3ui32)1;
-					}
-					else //If index not found, add to list of occurring edges
-					{
-						edgesOccurring[edgeCount] = triEdges[1];
-						edgeOccurrencesCount[edgeCount] = 1;
-						edgeCount++;
-					}
-
-					//Get index of third edge
-					edgeIndex = -1;
-					GetIndexOfEdge(&edgeIndex, edgesOccurring, &edgeCount, &triEdges[2]);
-
-					//If index found, increment count
-					if (edgeIndex >= 0)
-					{
-						//Should be initialized to 0 with memset on allocation so we can just add
-						edgeOccurrencesCount[edgeIndex] += (a3ui32)1;
-					}
-					else //If index not found, add to list of occurring edges
-					{
-						edgesOccurring[edgeCount] = triEdges[2];
-						edgeOccurrencesCount[edgeCount] = 1;
-						edgeCount++;
-					}
-				}
-
-
-				//Get the polygon of all edges that are not duplicates
-				//For every triangle containing the current point in their circumcircle
-				for (a3ui32 containingIndex = 0; containingIndex < containingCount; containingIndex++)
-				{
-					//Get edges in triangle from "containing"
-					Edge triEdges[3];
-					ConstructEdgesFromTriangle(triEdges, &containing[containingIndex]);
-
-					//For each edge in this triangle
-					for (a3ui32 edgeIndex = 0; edgeIndex < EDGES_IN_TRIANGLE; edgeIndex++)
-					{
-						a3i32 index = -1;
-						GetIndexOfEdge(&index, edgesOccurring, &edgeCount, &triEdges[edgeIndex]);
-
-						//Sanity check, if index is less than 0, edge does not occur which should be impossible
-						if (index < 0)
-						{
-							printf("ERROR - Edge does not exist");
-							free(containing);
-							return -1;
-						}
-
-						//If edge does not occur more than once
-						if (edgeOccurrencesCount[index] == 1)
-						{
-							//Add edge to the polygon
-							polygon[polygonEdgeCount] = triEdges[edgeIndex];
-							polygonEdgeCount++;
-						}
-					}
-				}
-
-				//Remove triangles in "containing" from the array of all triangles "triArray_out"
-
-				for (a3ui32 containIndex = 0; containIndex < containingCount; containIndex++)
-				{
-					a3i32 index = -1;
-
-					//Get index of containing triangle in triArray_out
-					GetIndexOfTriangle(&index, triArray_out, triCount_out, &containing[containIndex]);
-
-					//Remove triangle at index
-					RemoveTriangleFromArray(triArray_out, triCount_out, &index);
-				}
-
-				//Create a new triangle using both points in each valid edge and the current point
-
-				for (a3ui32 polyIndex = 0; polyIndex < polygonEdgeCount; polyIndex++)
-				{
-					Triangle* newTri = &triArray_out[*triCount_out];
-					newTri->pointA.x = polygon[polyIndex].pointA.x;
-					newTri->pointA.y = polygon[polyIndex].pointA.y;
-					newTri->pointB.x = polygon[polyIndex].pointB.x;
-					newTri->pointB.y = polygon[polyIndex].pointB.y;
-					newTri->pointC.x = pointSet[pointIndex].x;
-					newTri->pointC.y = pointSet[pointIndex].y;
-
-					*triCount_out += 1;
-				}
-
-				printf("\n ---------------- Finished Delaunay Iteration -------------\n\n");
-			}
-
-			//Delete all triangles that contain points from the super triangle
-
-
-
-			////Just a test, draws 3 tiangles each taking two points from the super triangle and one point as the current point
-			////Visually just draws lines from super triangle vertices to current point.
-			/*Triangle* newTri = &triArray_out[*triCount_out];
-			newTri->pointA = triArray_out[0].pointA;
-			newTri->pointB = triArray_out[0].pointB;
-			newTri->pointC = pointSet[pointIndex];
-
-			*triCount_out += 1;*/
-
-			//newTri = &triArray_out[*triCount_out];
-			//newTri->pointA = triArray_out[0].pointB;
-			//newTri->pointB = triArray_out[0].pointC;
-			//newTri->pointC = pointSet[pointIndex];
-
-			//*triCount_out += 1;
-
-			//newTri = &triArray_out[*triCount_out];
-			//newTri->pointA = triArray_out[0].pointC;
-			//newTri->pointB = triArray_out[0].pointA;
-			//newTri->pointC = pointSet[pointIndex];
-
-			//*triCount_out += 1;
-
-			//a3i32 getIndex = 0;
-			//Triangle tSearch;
-			//tSearch.pointA = triArray_out[0].pointB;
-			//tSearch.pointB = triArray_out[0].pointC;
-			//tSearch.pointC = pointSet[pointIndex];
-
-			//GetIndexOfTriangle(&getIndex, triArray_out, triCount_out, &tSearch);
-
-			//a3ui32 removeIndex = *triCount_out - 2;
-			//RemoveTriangleFromArray(triArray_out, triCount_out, &removeIndex);
-
-			free(containing);
-		}
-
-		return 1;
-	}
 	return -1;
 }
 
