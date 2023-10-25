@@ -829,11 +829,11 @@ inline a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, a3ui32* t
 		//Loop through all points
 		for (a3ui32 pointIndex = 0; pointIndex < *pointCount; pointIndex++)
 		{
-			a3size memContainSize = sizeof(Triangle) * maxTriangles;
-			a3size memEdgeSize = sizeof(Edge) * maxTriangles * 3;
-			a3size memEdgeCountSize = sizeof(a3ui32) * maxTriangles * 3;
-			a3size memPolygonSize = sizeof(Edge) * maxTriangles * 3;
-			a3size memreq = memContainSize +
+			const a3ui32 memContainSize = sizeof(Triangle) * maxTriangles;
+			const a3ui32 memEdgeSize = sizeof(Edge) * maxTriangles * 3;
+			const a3ui32 memEdgeCountSize = sizeof(a3ui32) * maxTriangles * 3;
+			const a3ui32 memPolygonSize = sizeof(Edge) * maxTriangles * 3;
+			const a3ui32 memreq = memContainSize +
 				memEdgeSize +
 				memEdgeCountSize +
 				memPolygonSize;
@@ -841,7 +841,7 @@ inline a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, a3ui32* t
 			//Allocate necessary memory
 			Triangle* containing = (Triangle*)malloc(memreq);
 
-			memset(containing, 0, memreq);
+			//memset(containing, 0, memreq);
 
 			//Logs how many times an edge has occurred
 			Edge* edgesOccurring = (Edge*)(containing + memContainSize);
@@ -960,20 +960,40 @@ inline a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, a3ui32* t
 						{
 							//Add edge to the polygon
 							polygon[polygonEdgeCount] = triEdges[edgeIndex];
+							polygonEdgeCount++;
 						}
 					}
 				}
 
 				//Remove triangles in "containing" from the array of all triangles "triArray_out"
 
-				/*for (a3ui32 containIndex = 0; containIndex < containingCount; containIndex++)
+				for (a3ui32 containIndex = 0; containIndex < containingCount; containIndex++)
 				{
+					a3i32 index = -1;
 
-				}*/
+					//Get index of containing triangle in triArray_out
+					GetIndexOfTriangle(&index, triArray_out, triCount_out, &containing[containIndex]);
 
-				//Create a new triangle using each valid edge and the current point
+					//Remove triangle at index
+					RemoveTriangleFromArray(triArray_out, triCount_out, &index);
+				}
 
+				//Create a new triangle using both points in each valid edge and the current point
 
+				for (a3ui32 polyIndex = 0; polyIndex < polygonEdgeCount; polyIndex++)
+				{
+					Triangle* newTri = &triArray_out[*triCount_out];
+					newTri->pointA.x = polygon[polyIndex].pointA.x;
+					newTri->pointA.y = polygon[polyIndex].pointA.y;
+					newTri->pointB.x = polygon[polyIndex].pointB.x;
+					newTri->pointB.y = polygon[polyIndex].pointB.y;
+					newTri->pointC.x = pointSet[pointIndex].x;
+					newTri->pointC.y = pointSet[pointIndex].y;
+
+					*triCount_out += 1;
+				}
+
+				printf("\n ---------------- Finished Delaunay Iteration -------------\n\n");
 			}
 
 			//Delete all triangles that contain points from the super triangle
