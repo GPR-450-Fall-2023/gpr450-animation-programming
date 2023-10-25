@@ -71,8 +71,6 @@ inline a3real remap_update(a3real value, a3real low1, a3real high1, a3real low2,
 	return low2 + (value - low1) * (high2 - low2) / (high1 - low1);
 }
 
-//a3real gradient_band_interpolation(a3real* weights_out, const a3vec2* point, const a3vec2* points);
-
 //-----------------------------------------------------------------------------
 
 
