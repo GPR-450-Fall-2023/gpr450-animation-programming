@@ -49,16 +49,11 @@
 #include <OpenGL/gl3.h>
 #endif	// _WIN32
 
-//This places the graph in the lower left corner of the screen
-#define START_X -.9f // Where to start graph view from
-#define START_Y -.5f // Where to start graph view from
-#define GRAPH_VIEW_WIDTH .5f // How big on the x axis the graph view should be
-#define GRAPH_VIEW_HEIGHT .5f // How big on the y axis the graph view should be
-
 //-----------------------------------------------------------------------------
 
-void draw_line(const a3_DemoStateShaderProgram* program, a3vec2 start, a3vec2 end, const a3f32* color);
-a3real remap(a3real value, a3real low1, a3real high1, a3real low2, a3real high2);
+void draw_line(const a3_DemoStateShaderProgram* program, a3vec2 start, a3vec2 end, const a3f32* color,
+	a3real startX, a3real startY, a3real graphWidth, a3real graphHeight);
+a3real remap_render(a3real value, a3real low1, a3real high1, a3real low2, a3real high2);;
 
 //-----------------------------------------------------------------------------
 
@@ -669,10 +664,54 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 			}
 
 			//Get position of mouse clamped within delaunay graph
-			a3vec2 actualTriPos = { (a3real)a3clamp(START_X, START_X + GRAPH_VIEW_WIDTH, demoMode->triangulationPosition.x),
-				(a3real)a3clamp(START_Y, START_Y + GRAPH_VIEW_HEIGHT, demoMode->triangulationPosition.y) };
+			//a3vec2 actualTriPos = { (a3real)a3clamp(demoMode->graphStartX, demoMode->graphStartX + demoMode->graphViewWidth, demoMode->triangulationPosition.x),
+			//	(a3real)a3clamp(demoMode->graphStartY, demoMode->graphStartY + demoMode->graphViewHeight, demoMode->triangulationPosition.y) };
+			a3vec2 actualTriPos = demoMode->triangulationPosition;
+
 
 			//printf("%f, %f\n", actualTriPos.x, actualTriPos.y);
+
+			/*
+			*
+			*	Draw Currently Selected Triangle
+			*
+			*/
+			{
+				if (demoMode->currentTri)
+				{
+					// Draw Triangle (same logic as dot but with just one triangle
+					currentDemoProgram = demoState->prog_drawDot;
+					a3shaderProgramActivate(currentDemoProgram->program);
+					a3vertexDrawableDeactivate();
+
+					a3vec2 pointsToDraw[3]; // Array of points we will draw
+
+					//Initial position is same as mouse
+					pointsToDraw[0] = demoMode->currentTri->pointA;
+					pointsToDraw[1] = demoMode->currentTri->pointB;
+					pointsToDraw[2] = demoMode->currentTri->pointC;
+
+					//Submit color to shader
+					if (a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, cyan) < 0)
+					{
+						printf("Problem with uColor\n");
+					}
+
+					// Pass in sectionData (point data) using uAxis
+					if (a3shaderUniformSendFloat(a3unif_vec2, currentDemoProgram->uAxis, 3, (a3f32*)pointsToDraw) < 0)
+					{
+						printf("Problem with uAxis\n");
+					}
+
+					// Execute shader and draw line
+					glDrawArrays(GL_POINTS, 0, 1);
+				}
+				else
+				{
+					printf("RENDER ERROR - No delaunay triangle contains mouse point\n");
+				}
+			}
+
 
 			/*
 			*
@@ -704,9 +743,12 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 					const Triangle* tri = &demoMode->delaunayTriangles[index];
 
 					//Draw each individual edge
-					draw_line(currentDemoProgram, tri->pointA, tri->pointB, blue);
-					draw_line(currentDemoProgram, tri->pointB, tri->pointC, blue);
-					draw_line(currentDemoProgram, tri->pointC, tri->pointA, blue);
+					draw_line(currentDemoProgram, tri->pointA, tri->pointB, blue,
+						demoMode->graphStartX, demoMode->graphStartY, demoMode->graphViewWidth, demoMode->graphViewHeight);
+					draw_line(currentDemoProgram, tri->pointB, tri->pointC, blue,
+						demoMode->graphStartX, demoMode->graphStartY, demoMode->graphViewWidth, demoMode->graphViewHeight);
+					draw_line(currentDemoProgram, tri->pointC, tri->pointA, blue,
+						demoMode->graphStartX, demoMode->graphStartY, demoMode->graphViewWidth, demoMode->graphViewHeight);
 				}
 			}
 
@@ -723,10 +765,14 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 				a3vec2 bottomRight = { 1, 0 };
 				a3vec2 topRight = { 1, 1 };
 
-				draw_line(currentDemoProgram, bottomLeft, topLeft, green);
-				draw_line(currentDemoProgram, topLeft, topRight, green);
-				draw_line(currentDemoProgram, topRight, bottomRight, green);
-				draw_line(currentDemoProgram, bottomRight, bottomLeft, green);
+				draw_line(currentDemoProgram, bottomLeft, topLeft, green,
+					demoMode->graphStartX, demoMode->graphStartY, demoMode->graphViewWidth, demoMode->graphViewHeight);
+				draw_line(currentDemoProgram, topLeft, topRight, green,
+					demoMode->graphStartX, demoMode->graphStartY, demoMode->graphViewWidth, demoMode->graphViewHeight);
+				draw_line(currentDemoProgram, topRight, bottomRight, green,
+					demoMode->graphStartX, demoMode->graphStartY, demoMode->graphViewWidth, demoMode->graphViewHeight);
+				draw_line(currentDemoProgram, bottomRight, bottomLeft, green,
+					demoMode->graphStartX, demoMode->graphStartY, demoMode->graphViewWidth, demoMode->graphViewHeight);
 			}
 
 			/*
@@ -812,14 +858,15 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 	}
 }
 
-void draw_line(const a3_DemoStateShaderProgram* program, a3vec2 start, a3vec2 end, const a3f32* color)
+void draw_line(const a3_DemoStateShaderProgram* program, a3vec2 start, a3vec2 end, const a3f32* color,
+	a3real startX, a3real startY, a3real graphWidth, a3real graphHeight)
 {
 	
 
 	a3vec2 sectionData[] =
 	{
-		{remap(start.x, 0, 1, START_X, START_X + GRAPH_VIEW_WIDTH), remap(start.y, 0, 1, START_Y, START_Y + GRAPH_VIEW_HEIGHT)},
-		{remap(end.x, 0, 1, START_X, START_X + GRAPH_VIEW_WIDTH), remap(end.y, 0, 1, START_Y, START_Y + GRAPH_VIEW_HEIGHT)}
+		{remap_render(start.x, 0, 1, startX, startX + graphWidth), remap_render(start.y, 0, 1, startY, startY + graphHeight)},
+		{remap_render(end.x, 0, 1, startX, startX + graphWidth), remap_render(end.y, 0, 1, startY, startY + graphHeight)}
 	};
 
 	//Submit color to shader
@@ -845,7 +892,7 @@ void draw_line(const a3_DemoStateShaderProgram* program, a3vec2 start, a3vec2 en
 }
 
 
-a3real remap(a3real value, a3real low1, a3real high1, a3real low2, a3real high2)
+inline a3real remap_render(a3real value, a3real low1, a3real high1, a3real low2, a3real high2)
 {
 	return low2 + (value - low1) * (high2 - low2) / (high1 - low1);
 }

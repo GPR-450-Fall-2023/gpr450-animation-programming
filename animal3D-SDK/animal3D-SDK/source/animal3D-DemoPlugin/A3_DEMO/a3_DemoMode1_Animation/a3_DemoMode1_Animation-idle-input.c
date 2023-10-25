@@ -113,6 +113,7 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 		a3real4Real4x4Mul(projector->sceneObject->modelMat.m, coord.v);
 	}
 
+	//Get mouse position when right click held
 	if (a3mouseGetState(demoState->mouse, a3mouse_right) == a3input_down)
 	{
 		// get window coordinates
@@ -124,7 +125,8 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 		coord.x = +((a3real)x * demoState->frameWidthInv * a3real_two - a3real_one);
 		coord.y = -((a3real)y * demoState->frameHeightInv * a3real_two - a3real_one);
 
-		demoMode->triangulationPosition = coord;
+		demoMode->triangulationPosition.x = (a3real)a3clamp(demoMode->graphStartX, demoMode->graphStartX + demoMode->graphViewWidth, coord.x);
+		demoMode->triangulationPosition.y = (a3real)a3clamp(demoMode->graphStartY, demoMode->graphStartY + demoMode->graphViewHeight, coord.y);
 	}
 	
 	// choose control target

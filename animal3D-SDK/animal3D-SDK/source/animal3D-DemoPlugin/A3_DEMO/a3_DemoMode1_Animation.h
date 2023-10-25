@@ -170,11 +170,17 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 		a3dualquat dq_skin[128];
 
 		//Delaunay Blend Graph
-		Triangle delaunayTriangles[128];
-		a3ui32 triCount;
+		Triangle delaunayTriangles[128];	//Triangles contained in triangulation to be drawn, max 128
+		a3ui32 triCount;	//Number of triangles in triangulation
 
-		//Set in demo state when mouse right click held
-		a3vec2 triangulationPosition;
+		a3vec2 triangulationPosition; //Set in demo state when mouse right click held
+		Triangle* currentTri;	//Current triangle containing point
+
+		//This places the graph in the lower left corner of the screen
+		a3real graphStartX; // Where to start graph view from
+		a3real graphStartY; // Where to start graph view from
+		a3real graphViewWidth; // How big on the x axis the graph view should be
+		a3real graphViewHeight; // How big on the y axis the graph view should be
 
 		// control modes
 		a3_DemoMode1_Animation_ControlTarget ctrl_target;

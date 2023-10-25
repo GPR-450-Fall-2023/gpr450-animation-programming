@@ -115,6 +115,7 @@ a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, a3ui32* triCount
 			{
 				printf("\n ------------------------------\nERROR - Failed to malloc 'containing'\n--------------------------\n\n");
 			}
+
 			if (!polygon)
 			{
 				printf("\n ------------------------------\nERROR - Failed to malloc 'polygon'\n--------------------------\n\n");
