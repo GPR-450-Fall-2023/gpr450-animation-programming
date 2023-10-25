@@ -228,7 +228,7 @@ a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, a3ui32* triCount
 					}
 
 					//If edge does not occur more than once
-					if (edgeOccurrencesCount[index] == 1)
+					if (edgeOccurrencesCount[index] <= 1)
 					{
 						//Add edge to the polygon
 						polygon[polygonEdgeCount] = triEdges[edgeIndex];
@@ -277,10 +277,6 @@ a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, a3ui32* triCount
 
 			printf("\n ---------------- Finished Delaunay Iteration POINT -------------\n\n");
 
-			//Delete all triangles that contain points from the super triangle
-
-
-
 			////Just a test, draws 3 tiangles each taking two points from the super triangle and one point as the current point
 			////Visually just draws lines from super triangle vertices to current point.
 			/*Triangle* newTri = &triArray_out[*triCount_out];
@@ -324,6 +320,24 @@ a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, a3ui32* triCount
 				edgesOccurring = 0;
 				edgeOccurrencesCount = 0;
 				polygon = 0;
+			}
+		}
+
+		//Delete all triangles that contain points from the super triangle
+		for (a3i32 triIndex = *triCount_out - 1; triIndex >= 0; triIndex--)
+		{
+			if (CompareVec2(triArray_out[triIndex].pointA, superTriangle.pointA) ||
+				CompareVec2(triArray_out[triIndex].pointB, superTriangle.pointA) ||
+				CompareVec2(triArray_out[triIndex].pointC, superTriangle.pointA) ||
+				CompareVec2(triArray_out[triIndex].pointA, superTriangle.pointB) ||
+				CompareVec2(triArray_out[triIndex].pointB, superTriangle.pointB) ||
+				CompareVec2(triArray_out[triIndex].pointC, superTriangle.pointB) ||
+				CompareVec2(triArray_out[triIndex].pointA, superTriangle.pointC) ||
+				CompareVec2(triArray_out[triIndex].pointB, superTriangle.pointC) ||
+				CompareVec2(triArray_out[triIndex].pointC, superTriangle.pointC))
+			{
+				//Remove triangle at index
+				RemoveTriangleFromArray(triArray_out, triCount_out, &(a3ui32)triIndex);
 			}
 		}
 
