@@ -173,6 +173,14 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		if (CompareFloats(areaPAB + areaPBC + areaPAC, areaABC))
 		{
 			demoMode->currentTri = currentTri;
+			demoMode->triBlends[0] = areaPAB / areaABC;
+			demoMode->triBlends[1] = areaPBC / areaABC;
+			demoMode->triBlends[2] = areaPAC / areaABC;
+			printf("AB: %f, %f   BC: %f, %f   AC: %f, %f   Blends: %f, %f, %f\n", 
+				currentTri->pointA.x, currentTri->pointA.y,
+				currentTri->pointB.x, currentTri->pointB.y,
+				currentTri->pointC.x, currentTri->pointC.y,
+				demoMode->triBlends[0], demoMode->triBlends[1], demoMode->triBlends[2]);
 			break;
 		}
 	}

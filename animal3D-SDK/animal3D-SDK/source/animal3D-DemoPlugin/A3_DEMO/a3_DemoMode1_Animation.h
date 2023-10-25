@@ -175,6 +175,7 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 
 		a3vec2 triangulationPosition; //Set in demo state when mouse right click held
 		Triangle* currentTri;	//Current triangle containing point
+		a3real triBlends[3];	//Blend parameters corresponding to AB, BC, and AC edges respectively
 
 		//This places the graph in the lower left corner of the screen
 		a3real graphStartX; // Where to start graph view from
