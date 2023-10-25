@@ -664,25 +664,63 @@ inline a3i32 a3_findCircumcenter(Circumcircle* circum_out, Triangle* tri)
 {
 	if (circum_out)
 	{
-		a3vec2 abMid;
-		a3real2Set(abMid.v, (tri->pointA.x + tri->pointB.x) / (a3real)2.0, (tri->pointA.y + tri->pointB.y) / (a3real)2.0);
+		//a3vec2 abMid;
+		//a3real2Set(abMid.v, (tri->pointA.x + tri->pointB.x) / (a3real)2.0, (tri->pointA.y + tri->pointB.y) / (a3real)2.0);
 
-		a3vec2 bcMid;
-		a3real2Set(bcMid.v, (tri->pointC.x + tri->pointB.x) / (a3real)2.0, (tri->pointC.y + tri->pointB.y) / (a3real)2.0);
+		//a3vec2 bcMid;
+		//a3real2Set(bcMid.v, (tri->pointC.x + tri->pointB.x) / (a3real)2.0, (tri->pointC.y + tri->pointB.y) / (a3real)2.0);
 
-		a3real abSlope = (tri->pointB.x - tri->pointA.x) / (tri->pointB.y - tri->pointA.y);
-		a3real bcSlope = (tri->pointC.x - tri->pointB.x) / (tri->pointC.y - tri->pointB.y);
+		//a3real abSlope = (tri->pointB.x - tri->pointA.x) / (tri->pointB.y - tri->pointA.y);
+		//a3real bcSlope = (tri->pointC.x - tri->pointB.x) / (tri->pointC.y - tri->pointB.y);
 
-		//Expanded formula for solving for x using point-slope equation
-		circum_out->center.x = ((abSlope * abMid.x) - abMid.y - (bcSlope * bcMid.x) + bcMid.y) / (abSlope - bcSlope);
-		circum_out->center.y = (abSlope * (circum_out->center.x - abMid.x)) + abMid.y;
+		////Expanded formula for solving for x using point-slope equation
+		//circum_out->center.x = ((abSlope * abMid.x) - abMid.y - (bcSlope * bcMid.x) + bcMid.y) / (abSlope - bcSlope);
+		//circum_out->center.y = (abSlope * (circum_out->center.x - abMid.x)) + abMid.y;
 
-		a3vec2 diff;
-		diff.x = circum_out->center.x - tri->pointA.x;
-		diff.y = circum_out->center.y - tri->pointA.y;
+		//a3vec2 diff;
+		//diff.x = circum_out->center.x - tri->pointA.x;
+		//diff.y = circum_out->center.y - tri->pointA.y;
 
-		circum_out->radius = a3real2Length(diff.v);
+		//circum_out->radius = a3real2Length(diff.v);
 
+		a3vec3 ac = { tri->pointC.x - tri->pointA.x, tri->pointC.y - tri->pointA.y, 0 };
+		a3vec3 ab = { tri->pointB.x - tri->pointA.x, tri->pointB.y - tri->pointA.y, 0 };
+		a3vec3 abCrossAC;
+		a3real3Cross(abCrossAC.v, ab.v, ac.v);
+
+		a3vec3 abCrossACCrossAB;
+		a3real3Cross(abCrossACCrossAB.v, abCrossAC.v, ab.v);
+
+		a3vec3 mul1;
+		a3real3SetReal3(mul1.v, abCrossACCrossAB.v);
+		a3real3MulS(mul1.v, a3real3LengthSquared(ac.v));
+		
+		a3vec3 acCrossABCrossAC;
+		a3real3Cross(acCrossABCrossAC.v, ac.v, abCrossAC.v);
+
+		a3vec3 mul2;
+		a3real3SetReal3(mul2.v, acCrossABCrossAC.v);
+		a3real3MulS(mul2.v, a3real3LengthSquared(ab.v));
+
+		a3vec3 sum;
+		a3real3Sum(sum.v, mul1.v, mul2.v);
+
+		a3real denominator = (a3real)2.0 * a3real3LengthSquared(abCrossAC.v);
+
+		a3vec3 aToCenter;
+		a3real3SetReal3(aToCenter.v, sum.v);
+		a3real3DivS(aToCenter.v, denominator);
+
+		circum_out->radius = a3real3Length(aToCenter.v);
+		
+		if (circum_out->radius < 0) { circum_out->radius = circum_out->radius * -1; }
+
+		a3real3 newCenter;
+		a3real3Sum(newCenter, tri->pointA.v, aToCenter.v);
+
+		circum_out->center.x = newCenter[0];
+		circum_out->center.y = newCenter[1];
+		
 		return 1;
 	}
 

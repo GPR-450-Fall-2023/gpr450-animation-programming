@@ -134,6 +134,10 @@ a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, a3ui32* triCount
 				Circumcircle circle;
 				a3_findCircumcenter(&circle, &triArray_out[triIndex]);
 
+				printf("Index: %i    Center: (%f, %f)    Radius: %f     Point: (%f, %f)\n", 
+					triIndex, circle.center.x, circle.center.y, 
+					circle.radius, pointSet[pointIndex].x, pointSet[pointIndex].y);
+
 				//Distance from point to circle center
 				a3real dist;
 				dist = a3real2Distance(pointSet[pointIndex].v, circle.center.v);
@@ -341,7 +345,9 @@ a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, a3ui32* triCount
 			}
 		}
 
-		return 1;
+		printf("\n ---------------- Finished Delaunay Triangulation -------------\n\n");
+
+		//return 1;
 	}
 	return -1;
 }
