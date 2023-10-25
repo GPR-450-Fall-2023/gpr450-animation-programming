@@ -833,20 +833,39 @@ inline a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, a3ui32* t
 			const a3ui32 memEdgeSize = sizeof(Edge) * maxTriangles * 3;
 			const a3ui32 memEdgeCountSize = sizeof(a3ui32) * maxTriangles * 3;
 			const a3ui32 memPolygonSize = sizeof(Edge) * maxTriangles * 3;
-			const a3ui32 memreq = memContainSize +
-				memEdgeSize +
-				memEdgeCountSize +
-				memPolygonSize;
+			const a3ui32 memreq = memContainSize + memEdgeSize + memEdgeCountSize + memPolygonSize;
 
 			//Allocate necessary memory
 			Triangle* containing = (Triangle*)malloc(memreq);
+			Edge* edgesOccurring = (Edge*)(containing + (a3byte)memContainSize);
+			a3ui32* edgeOccurrencesCount = (a3ui32*)(edgesOccurring + (a3byte)memEdgeSize);
+			Edge* polygon = (Edge*)(edgeOccurrencesCount + (a3byte)memEdgeCountSize);
 
-			//memset(containing, 0, memreq);
+			//Could set this all at once, but it acts as an early warning system if something wasn't malloced correctly
+			//That shouldn't happen anymore, but it was an issue at one point
+			memset(containing, 0, memContainSize);
+			memset(edgesOccurring, 0, memEdgeSize);
+			memset(edgeOccurrencesCount, 0, memEdgeCountSize);
+			memset(polygon, 0, memPolygonSize);
 
-			//Logs how many times an edge has occurred
-			Edge* edgesOccurring = (Edge*)(containing + memContainSize);
-			a3ui32* edgeOccurrencesCount = (a3ui32*)(edgesOccurring + memEdgeSize);
-			Edge* polygon = (Edge*)(edgeOccurrencesCount + memEdgeCountSize);
+			if (!containing)
+			{
+				printf("\n ------------------------------\nERROR - Failed to malloc 'containing'\n--------------------------\n\n");
+			}
+
+			if (!edgesOccurring)
+			{
+				printf("\n ------------------------------\nERROR - Failed to malloc 'containing'\n--------------------------\n\n");
+			}
+
+			if (!edgeOccurrencesCount)
+			{
+				printf("\n ------------------------------\nERROR - Failed to malloc 'containing'\n--------------------------\n\n");
+			}
+			if (!polygon)
+			{
+				printf("\n ------------------------------\nERROR - Failed to malloc 'polygon'\n--------------------------\n\n");
+			}
 
 			a3ui32 containingCount = 0;	//Number of triangles in "containing"
 			a3ui32 edgeCount = 0; //Number of edges in "edgesOccurring" and "edgeOccurrencesCount"
