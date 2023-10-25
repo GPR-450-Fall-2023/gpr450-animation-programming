@@ -173,7 +173,6 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		if (CompareFloats(areaPAB + areaPBC + areaPAC, areaABC))
 		{
 			demoMode->currentTri = currentTri;
-			PrintTriangle(currentTri);
 			break;
 		}
 	}

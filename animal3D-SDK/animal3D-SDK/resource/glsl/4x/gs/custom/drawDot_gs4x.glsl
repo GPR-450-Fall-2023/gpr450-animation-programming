@@ -42,6 +42,7 @@ layout (triangle_strip, max_vertices = MAX_SEGMENTS * 3) out; //3 vertices per s
 // uniforms: modelviewproj, actual triangle values, etc.
 #define MAX_DATA 128
 uniform vec2 uAxis[MAX_DATA]; // Holds triangle points
+uniform int uCount; // Represents number of line points in uAxis
 
 
 void main()
@@ -63,7 +64,7 @@ void main()
 	//	(if no GS then by the end of TS, if no TS then by the end of VS)
 
 	//Loop through and draw a triangle for each vertex
-	for(int i = 1; i < MAX_SEGMENTS + 1; i++)
+	for(int i = 1; i < uCount; i++)
 	{
 		gl_Position = vec4(uAxis[0], 0.0f, 1.0f); //Center of circle
 		EmitVertex();

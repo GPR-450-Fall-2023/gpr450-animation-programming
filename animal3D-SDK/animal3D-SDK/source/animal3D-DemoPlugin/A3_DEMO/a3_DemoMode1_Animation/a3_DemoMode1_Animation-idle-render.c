@@ -687,9 +687,12 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 					a3vec2 pointsToDraw[3]; // Array of points we will draw
 
 					//Initial position is same as mouse
-					pointsToDraw[0] = demoMode->currentTri->pointA;
-					pointsToDraw[1] = demoMode->currentTri->pointB;
-					pointsToDraw[2] = demoMode->currentTri->pointC;
+					pointsToDraw[0].x = remap_render(demoMode->currentTri->pointA.x, 0, 1, demoMode->graphStartX, demoMode->graphStartX + demoMode->graphViewWidth);
+					pointsToDraw[0].y = remap_render(demoMode->currentTri->pointA.y, 0, 1, demoMode->graphStartY, demoMode->graphStartY + demoMode->graphViewHeight);
+					pointsToDraw[1].x = remap_render(demoMode->currentTri->pointB.x, 0, 1, demoMode->graphStartX, demoMode->graphStartX + demoMode->graphViewWidth);
+					pointsToDraw[1].y = remap_render(demoMode->currentTri->pointB.y, 0, 1, demoMode->graphStartY, demoMode->graphStartY + demoMode->graphViewHeight);
+					pointsToDraw[2].x = remap_render(demoMode->currentTri->pointC.x, 0, 1, demoMode->graphStartX, demoMode->graphStartX + demoMode->graphViewWidth);;
+					pointsToDraw[2].y = remap_render(demoMode->currentTri->pointC.y, 0, 1, demoMode->graphStartY, demoMode->graphStartY + demoMode->graphViewHeight);;
 
 					//Submit color to shader
 					if (a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, cyan) < 0)
@@ -701,6 +704,13 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 					if (a3shaderUniformSendFloat(a3unif_vec2, currentDemoProgram->uAxis, 3, (a3f32*)pointsToDraw) < 0)
 					{
 						printf("Problem with uAxis\n");
+					}
+
+					a3i32 segmentCount = 2;
+					// Pass in sectionDataCount using uCount
+					if (a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uCount, 1, &segmentCount) < 0)
+					{
+						printf("Problem with uCount\n");
 					}
 
 					// Execute shader and draw line
@@ -818,6 +828,13 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 				if (a3shaderUniformSendFloat(a3unif_vec2, currentDemoProgram->uAxis, CIRCLE_SEGMENTS + 2, (a3f32*)pointsToDraw) < 0)
 				{
 					printf("Problem with uAxis\n");
+				}
+
+				a3i32 segmentCount = CIRCLE_SEGMENTS + 1;
+				// Pass in sectionDataCount using uCount
+				if(a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uCount, 1, &segmentCount) < 0)
+				{
+					printf("Problem with uCount\n");
 				}
 
 				// Execute shader and draw line
