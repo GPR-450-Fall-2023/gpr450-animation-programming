@@ -71,6 +71,8 @@ inline a3real remap_update(a3real value, a3real low1, a3real high1, a3real low2,
 	return low2 + (value - low1) * (high2 - low2) / (high1 - low1);
 }
 
+//a3real gradient_band_interpolation(a3real* weights_out, const a3vec2* point, const a3vec2* points);
+
 //-----------------------------------------------------------------------------
 
 
@@ -176,6 +178,8 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 			demoMode->triBlends[0] = areaPAB / areaABC;
 			demoMode->triBlends[1] = areaPBC / areaABC;
 			demoMode->triBlends[2] = areaPAC / areaABC;
+
+
 			printf("AB: %f, %f   BC: %f, %f   AC: %f, %f   Blends: %f, %f, %f\n", 
 				currentTri->pointA.x, currentTri->pointA.y,
 				currentTri->pointB.x, currentTri->pointB.y,

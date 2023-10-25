@@ -785,6 +785,81 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 					demoMode->graphStartX, demoMode->graphStartY, demoMode->graphViewWidth, demoMode->graphViewHeight);
 			}
 
+			const a3real DOT_RADIUS = (a3real).01;
+			const a3real TRIANGLE_DOT_RADIUS = (a3real).03;
+			const a3ui32 CIRCLE_SEGMENTS = 16;
+
+			/*
+			*
+			*	Draw Triangle Point Dots
+			*
+			*/
+			{
+				if (demoMode->currentTri)
+				{
+					for (a3ui32 pointIndex = 0; pointIndex < 3; pointIndex++)
+					{
+						//Index of one of the three points in the current triangle
+						a3vec2 currentPoint = *((a3vec2*)demoMode->currentTri + pointIndex);
+
+						a3real radius = (*(demoMode->triBlends + pointIndex) * TRIANGLE_DOT_RADIUS) + (a3real).01;
+
+						// Draw dot
+						currentDemoProgram = demoState->prog_drawDot;
+						a3shaderProgramActivate(currentDemoProgram->program);
+						a3vertexDrawableDeactivate();
+
+						a3vec2 pointsToDraw[MAX_POINTS]; // Array of points we will draw
+
+						//Initial position is same as mouse
+						pointsToDraw[0].x = remap_render(currentPoint.x, 0, 1, demoMode->graphStartX, demoMode->graphStartX + demoMode->graphViewWidth);
+						pointsToDraw[0].y = remap_render(currentPoint.y, 0, 1, demoMode->graphStartY, demoMode->graphStartY + demoMode->graphViewHeight);
+
+						//Increment angle
+						a3real segmentAngle = (a3real)360.0 / CIRCLE_SEGMENTS;
+
+						//Get points around center
+						for (a3ui32 i = 0; i < CIRCLE_SEGMENTS + 1; i++)
+						{
+							pointsToDraw[i + 1].x = remap_render(
+								(a3real)(radius * a3cosd((a3real)(segmentAngle * i))) + currentPoint.x,
+								0, 1, demoMode->graphStartX, demoMode->graphStartX + demoMode->graphViewWidth);
+							pointsToDraw[i + 1].y = remap_render(
+								(a3real)(radius * a3sind((a3real)(segmentAngle * i))) + currentPoint.y,
+								0, 1, demoMode->graphStartY, demoMode->graphStartY + demoMode->graphViewHeight);
+						}
+
+						//Set last index to same values as first point after center
+						pointsToDraw[CIRCLE_SEGMENTS + 1].x = remap_render(pointsToDraw[1].x,
+							0, 1, demoMode->graphStartX, demoMode->graphStartX + demoMode->graphViewWidth);
+						pointsToDraw[CIRCLE_SEGMENTS + 1].y = remap_render(pointsToDraw[1].y,
+							0, 1, demoMode->graphStartY, demoMode->graphStartY + demoMode->graphViewHeight);
+
+						//Submit color to shader
+						if (a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, magenta) < 0)
+						{
+							printf("Problem with uColor\n");
+						}
+
+						// Pass in sectionData (point data) using uAxis
+						if (a3shaderUniformSendFloat(a3unif_vec2, currentDemoProgram->uAxis, CIRCLE_SEGMENTS + 2, (a3f32*)pointsToDraw) < 0)
+						{
+							printf("Problem with uAxis\n");
+						}
+
+						a3i32 segmentCount = CIRCLE_SEGMENTS + 1;
+						// Pass in sectionDataCount using uCount
+						if (a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uCount, 1, &segmentCount) < 0)
+						{
+							printf("Problem with uCount\n");
+						}
+
+						// Execute shader and draw line
+						glDrawArrays(GL_POINTS, 0, 1);
+					}
+				}
+			}
+
 			/*
 			*
 			*	Draw Mouse Dot
@@ -795,9 +870,6 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 				currentDemoProgram = demoState->prog_drawDot;
 				a3shaderProgramActivate(currentDemoProgram->program);
 				a3vertexDrawableDeactivate();
-
-				#define DOT_RADIUS .01
-				#define CIRCLE_SEGMENTS 16
 
 				a3vec2 pointsToDraw[MAX_POINTS]; // Array of points we will draw
 
