@@ -277,9 +277,7 @@ a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, a3ui32* triCount
 				*triCount_out += 1;
 			}
 
-
-
-			printf("\n ---------------- Finished Delaunay Iteration POINT -------------\n\n");
+			//printf("\n ---------------- Finished Delaunay Iteration POINT -------------\n\n");
 
 			////Just a test, draws 3 tiangles each taking two points from the super triangle and one point as the current point
 			////Visually just draws lines from super triangle vertices to current point.
@@ -345,7 +343,7 @@ a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, a3ui32* triCount
 			}
 		}
 
-		printf("\n ---------------- Finished Delaunay Triangulation -------------\n\n");
+		//printf("\n ---------------- Finished Delaunay Triangulation -------------\n\n");
 
 		//return 1;
 	}

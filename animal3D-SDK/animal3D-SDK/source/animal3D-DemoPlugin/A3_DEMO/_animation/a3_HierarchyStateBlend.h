@@ -234,6 +234,9 @@ a3real a3cubic(a3real p0, a3real p1, a3real m0, a3real m1, a3real t);
 //-----------------------------------------------------------------------------
 
 // Delaunay Triangulation
+// Referenced C#/Unity code on a previous project by Dillon Drummond: 
+// https://github.com/dillondrum70/daedalus-dungeon-generator/blob/8c4f452b369f37f34d6a853c8958b298a805f42e/Assets/Scripts/DelaunayTriangulation.cs
+// https://github.com/dillondrum70/daedalus-dungeon-generator/blob/8c4f452b369f37f34d6a853c8958b298a805f42e/Assets/Scripts/DungeonGenerator.cs#L246
 
 struct Circumcircle
 {

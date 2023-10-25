@@ -585,10 +585,15 @@ inline void ConstructTriangle(Triangle* tri_out,
 	const a3real pointBX, const a3real pointBY,
 	const a3real pointCX, const a3real pointCY)
 {
+	//Edge 1
 	tri_out->pointA.x = pointAX;
 	tri_out->pointA.y = pointAY;
+
+	//Edge 2
 	tri_out->pointB.x = pointBX;
 	tri_out->pointB.y = pointBY;
+
+	//Edge 3
 	tri_out->pointC.x = pointCX;
 	tri_out->pointC.y = pointCY;
 }
@@ -597,11 +602,7 @@ inline a3i32 TrianglesEquivalent(a3boolean* equal_out, const Triangle* lhs, cons
 {
 	if (lhs && rhs && equal_out)
 	{
-		/**equal_out =(
-			((*lhs->pointA.v == *rhs->pointA.v) || (*lhs->pointA.v == *rhs->pointB.v) || (*lhs->pointA.v == *rhs->pointC.v)) &&
-			((*lhs->pointB.v == *rhs->pointA.v) || (*lhs->pointB.v == *rhs->pointB.v) || (*lhs->pointB.v == *rhs->pointC.v)) &&
-			((*lhs->pointC.v == *rhs->pointA.v) || (*lhs->pointC.v == *rhs->pointB.v) || (*lhs->pointC.v == *rhs->pointC.v))
-			);*/
+		//Check each point against all 3 of the other triangle, order doesn't matter
 		*equal_out = (
 			(CompareVec2(lhs->pointA, rhs->pointA) || CompareVec2(lhs->pointA, rhs->pointB) || CompareVec2(lhs->pointA, rhs->pointC)) &&
 			(CompareVec2(lhs->pointB, rhs->pointA) || CompareVec2(lhs->pointB, rhs->pointB) || CompareVec2(lhs->pointB, rhs->pointC)) &&
@@ -616,6 +617,7 @@ inline a3i32 TrianglesEquivalent(a3boolean* equal_out, const Triangle* lhs, cons
 
 inline void PrintTriangle(Triangle* tri)
 {
+	//Print out 3 points of triangle
 	printf("Point A: (%f, %f)   Point B: (%f, %f)   Point C: (%f, %f)\n",
 		tri->pointA.x, tri->pointA.y, 
 		tri->pointB.x, tri->pointB.y, 
@@ -626,12 +628,15 @@ inline a3i32 ConstructEdgesFromTriangle(Edge* edges_out, const Triangle* tri_in)
 {
 	if (edges_out && tri_in)
 	{
+		//Edge 1
 		edges_out[0].pointA = tri_in[0].pointA;
 		edges_out[0].pointB = tri_in[0].pointB;
 
+		//Edge 2
 		edges_out[1].pointA = tri_in[0].pointB;
 		edges_out[1].pointB = tri_in[0].pointC;
 
+		//Edge 3
 		edges_out[2].pointA = tri_in[0].pointC;
 		edges_out[2].pointB = tri_in[0].pointA;
 
@@ -645,9 +650,7 @@ inline a3i32 EdgesEquivalent(a3boolean* equal_out, const Edge* lhs, const Edge* 
 {
 	if (lhs && rhs && equal_out)
 	{
-		/**equal_out =
-			((*lhs->pointA.v == *rhs->pointA.v) || (*lhs->pointA.v == *rhs->pointB.v)) &&
-			((*lhs->pointB.v == *rhs->pointA.v) || (*lhs->pointB.v == *rhs->pointB.v));*/
+		//Check each point against both of the others, values may be flipped
 		*equal_out =
 			(CompareVec2(lhs->pointA, rhs->pointA) || CompareVec2(lhs->pointA, rhs->pointB)) &&
 			(CompareVec2(lhs->pointB, rhs->pointA) || CompareVec2(lhs->pointB, rhs->pointB));
@@ -664,25 +667,6 @@ inline a3i32 a3_findCircumcenter(Circumcircle* circum_out, Triangle* tri)
 {
 	if (circum_out)
 	{
-		//a3vec2 abMid;
-		//a3real2Set(abMid.v, (tri->pointA.x + tri->pointB.x) / (a3real)2.0, (tri->pointA.y + tri->pointB.y) / (a3real)2.0);
-
-		//a3vec2 bcMid;
-		//a3real2Set(bcMid.v, (tri->pointC.x + tri->pointB.x) / (a3real)2.0, (tri->pointC.y + tri->pointB.y) / (a3real)2.0);
-
-		//a3real abSlope = (tri->pointB.x - tri->pointA.x) / (tri->pointB.y - tri->pointA.y);
-		//a3real bcSlope = (tri->pointC.x - tri->pointB.x) / (tri->pointC.y - tri->pointB.y);
-
-		////Expanded formula for solving for x using point-slope equation
-		//circum_out->center.x = ((abSlope * abMid.x) - abMid.y - (bcSlope * bcMid.x) + bcMid.y) / (abSlope - bcSlope);
-		//circum_out->center.y = (abSlope * (circum_out->center.x - abMid.x)) + abMid.y;
-
-		//a3vec2 diff;
-		//diff.x = circum_out->center.x - tri->pointA.x;
-		//diff.y = circum_out->center.y - tri->pointA.y;
-
-		//circum_out->radius = a3real2Length(diff.v);
-
 		a3vec3 ac = { tri->pointC.x - tri->pointA.x, tri->pointC.y - tri->pointA.y, 0 };
 		a3vec3 ab = { tri->pointB.x - tri->pointA.x, tri->pointB.y - tri->pointA.y, 0 };
 		a3vec3 abCrossAC;
@@ -731,16 +715,19 @@ inline a3i32 RemoveTriangleFromArray(Triangle* triArray_out, a3ui32* triCount, c
 {
 	if (triArray_out && triCount)
 	{
+		//Move all elements past the given index back one space to erase it
 		for (a3ui32 i = (a3ui32)(*index); i < *triCount; i++)
 		{
 			triArray_out[i] = triArray_out[i + 1];
 		}
 
+		//Erase the value at the end of the array if there is one
 		if (*triCount > 0)
 		{
 			memset(&triArray_out[*triCount - 1], 0, sizeof(Triangle));
 		}
 
+		//Update number of triangles
 		*triCount -= 1;
 
 		return 1;
@@ -753,16 +740,19 @@ inline a3i32 RemoveEdgeFromArray(Edge* edgeArray_out, a3ui32* edgeCount, const a
 {
 	if (edgeArray_out && edgeCount)
 	{
+		//Move all elements past the given index back one space to erase it
 		for (a3ui32 i = (a3ui32)(*index); i < *edgeCount; i++)
 		{
 			edgeArray_out[i] = edgeArray_out[i + 1];
 		}
 
+		//Erase the value at the end of the array if there is one
 		if (*edgeCount > 0)
 		{
 			memset(&edgeArray_out[*edgeCount - 1], 0, sizeof(Triangle));
 		}
 
+		//Update number of edges
 		*edgeCount -= 1;
 
 		return 1;
@@ -780,6 +770,7 @@ inline a3boolean CompareFloats(a3real lhs, a3real rhs)
 //Compares vec2s to see if they are reasonably close enough to be considered equal
 inline a3boolean CompareVec2(a3vec2 lhs, a3vec2 rhs)
 {
+	//Uses compare floats to check equality within certain bound
 	return CompareFloats(lhs.x, rhs.x) && CompareFloats(lhs.y, rhs.y);
 }
 
@@ -789,12 +780,14 @@ inline a3i32 GetIndexOfTriangle(a3i32* index_out, const Triangle* triArray, cons
 	{
 		for (a3ui32 i = 0; i < *triCount; i++)
 		{
+			//Determine if triangles are the same
 			a3boolean equal;
 			TrianglesEquivalent(&equal, &triArray[i], triSearch);
 
 			//If triangle is found, store index and break early
 			if (equal)
 			{
+				//Return the given index
 				*index_out = (a3i32)i;
 
 				return 1;
@@ -816,12 +809,14 @@ inline a3i32 GetIndexOfEdge(a3i32* index_out, const Edge* edgeArray, const a3ui3
 	{
 		for (a3ui32 i = 0; i < *edgeCount; i++)
 		{
+			//Determine if edges are the same
 			a3boolean equal;
 			EdgesEquivalent(&equal, &edgeArray[i], edgeSearch);
 
 			//If triangle is found, store index and break early
 			if (equal)
 			{
+				//Return the given index
 				*index_out = (a3i32)i;
 
 				return 1;
