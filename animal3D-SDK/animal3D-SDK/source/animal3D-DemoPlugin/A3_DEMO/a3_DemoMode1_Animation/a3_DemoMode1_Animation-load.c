@@ -498,9 +498,9 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	pointSet[9].x = (a3real).9;
 	pointSet[9].y = (a3real).7;
 	pointSet[10].x = (a3real).8;
-	pointSet[10].y = (a3real).7;
-	pointSet[11].x = (a3real).6;
-	pointSet[11].y = (a3real).7;
+	pointSet[10].y = (a3real).1;
+	pointSet[11].x = (a3real).2;
+	pointSet[11].y = (a3real).8;
 	pointSet[12].x = (a3real).4;
 	pointSet[12].y = (a3real).1;
 	pointSet[13].x = (a3real).4;
@@ -512,9 +512,26 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 
 	a3ui32 pointCount = 16;
 
+	/*Edge edge[5];
+	edge[0].pointA = pointSet[0];
+	edge[0].pointB = pointSet[1];
+	edge[1].pointA = pointSet[2];
+	edge[1].pointB = pointSet[3];
+	edge[2].pointA = pointSet[4];
+	edge[2].pointB = pointSet[5];
+	edge[3].pointA = pointSet[6];
+	edge[3].pointB = pointSet[7];
+	edge[4].pointA = pointSet[8];
+	edge[4].pointB = pointSet[9];
+
+	a3ui32 testEdgeCount = 5;
+	a3ui32 index = 2;
+	RemoveEdgeFromArray(edge, &testEdgeCount, &index);*/
+
 	//Run Delaunay Triangulation
 	a3_calculateDelaunayTriangulation(demoMode->delaunayTriangles, &demoMode->triCount, pointSet, &pointCount);
 }
+
 
 
 //-----------------------------------------------------------------------------

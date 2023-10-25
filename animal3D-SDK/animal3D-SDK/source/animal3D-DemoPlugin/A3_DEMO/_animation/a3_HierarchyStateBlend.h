@@ -267,6 +267,9 @@ a3i32 TrianglesEquivalent(a3boolean* equal_out, const Triangle* lhs, const Trian
 //Print out the points in the triangle
 void PrintTriangle(Triangle* tri);
 
+//Construct edges from triangle
+a3i32 ConstructEdgesFromTriangle(Edge* edges_out, const Triangle* tri_in);
+
 //Chcek if two edges are equivalent
 a3i32 EdgesEquivalent(a3boolean* equal_out, const Edge* lhs, const Edge* rhs);
 
@@ -274,11 +277,18 @@ a3i32 EdgesEquivalent(a3boolean* equal_out, const Edge* lhs, const Edge* rhs);
 a3i32 a3_findCircumcenter(Circumcircle* circum_out, Triangle* tri);
 
 //Removes an entry from an array and shifts everything in front of it backwards, updates the count value to match
-a3i32 RemoveIndexFromArray(Triangle* triArray_out, a3ui32* triCount, const a3ui32* index);
+a3i32 RemoveTriangleFromArray(Triangle* triArray_out, a3ui32* triCount, const a3ui32* index);
+
+//Same as RemoveTriangleFromArray but for edges
+a3i32 RemoveEdgeFromArray(Edge* edgeArray_out, a3ui32* edgeCount, const a3ui32* index);
 
 //Returns the index of a triangle if it exists in the array
 //Returns -1 if not found
 a3i32 GetIndexOfTriangle(a3i32* index_out, const Triangle* triArray, const a3ui32* triCount, const Triangle* triSearch);
+
+//Returns the index of a edge if it exists in the array
+//Returns -1 if not found
+a3i32 GetIndexOfEdge(a3i32* index_out, const Edge* edgeArray, const a3ui32* edgeCount, const Edge* edgeSearch);
 
 //Given a set of points, calculate the triangulation of said points and return the triangles in that triangulation
 a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, a3ui32* triCount_out, const a3vec2* pointSet, const a3ui32* pointCount);
