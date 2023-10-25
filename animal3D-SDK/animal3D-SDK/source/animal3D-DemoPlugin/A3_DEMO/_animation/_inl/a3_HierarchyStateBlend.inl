@@ -641,8 +641,8 @@ inline a3i32 EdgesEquivalent(a3boolean* equal_out, const Edge* lhs, const Edge* 
 	if (lhs && rhs && equal_out)
 	{
 		*equal_out =
-			((lhs->pointA.v == rhs->pointA.v) || (lhs->pointA.v == rhs->pointB.v)) &&
-			((lhs->pointB.v == rhs->pointA.v) || (lhs->pointB.v == rhs->pointB.v));
+			((*lhs->pointA.v == *rhs->pointA.v) || (*lhs->pointA.v == *rhs->pointB.v)) &&
+			((*lhs->pointB.v == *rhs->pointA.v) || (*lhs->pointB.v == *rhs->pointB.v));
 
 		return 1;
 	}
@@ -810,6 +810,8 @@ inline a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, a3ui32* t
 	//null check
 	if (pointSet && pointCount)
 	{
+		const a3ui32 EDGES_IN_TRIANGLE = 3; //3 edges in a triangle
+
 		//Positions are normalized between 0 and 1
 		//This super triangle is guaranteed to contain the entire square with the corners of 0,0 and 1,1
 		Triangle superTriangle;
@@ -827,9 +829,14 @@ inline a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, a3ui32* t
 		//Loop through all points
 		for (a3ui32 pointIndex = 0; pointIndex < *pointCount; pointIndex++)
 		{
-			a3size memreq = sizeof(Triangle) * maxTriangles +
-				sizeof(Edge) * maxTriangles * 3 +
-				sizeof(a3ui32) * maxTriangles * 3;
+			a3size memContainSize = sizeof(Triangle) * maxTriangles;
+			a3size memEdgeSize = sizeof(Edge) * maxTriangles * 3;
+			a3size memEdgeCountSize = sizeof(a3ui32) * maxTriangles * 3;
+			a3size memPolygonSize = sizeof(Edge) * maxTriangles * 3;
+			a3size memreq = memContainSize +
+				memEdgeSize +
+				memEdgeCountSize +
+				memPolygonSize;
 
 			//Allocate necessary memory
 			Triangle* containing = (Triangle*)malloc(memreq);
@@ -837,11 +844,13 @@ inline a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, a3ui32* t
 			memset(containing, 0, memreq);
 
 			//Logs how many times an edge has occurred
-			Edge* edgesOccurring = (Edge*)(containing + (sizeof(Triangle) * maxTriangles * 3));
-			a3ui32* edgeOccurrencesCount = (a3ui32*)(edgesOccurring + (sizeof(Edge) * maxTriangles * 3));
+			Edge* edgesOccurring = (Edge*)(containing + memContainSize);
+			a3ui32* edgeOccurrencesCount = (a3ui32*)(edgesOccurring + memEdgeSize);
+			Edge* polygon = (Edge*)(edgeOccurrencesCount + memEdgeCountSize);
 
 			a3ui32 containingCount = 0;	//Number of triangles in "containing"
 			a3ui32 edgeCount = 0; //Number of edges in "edgesOccurring" and "edgeOccurrencesCount"
+			a3ui32 polygonEdgeCount = 0; //Number of edges in "polygon" used later in algorithm
 
 			a3ui32 iterationTriCount = *triCount_out;
 
@@ -872,11 +881,9 @@ inline a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, a3ui32* t
 
 					//Store colliding edges by counting instances of said edges in the array
 
-					a3ui32 edgesInTriangle = 3; //3 edges in a triangle
-
 					//Get index of first edge
 					a3i32 edgeIndex = -1;
-					GetIndexOfEdge(&edgeIndex, edgesOccurring, &edgesInTriangle, &triEdges[0]);
+					GetIndexOfEdge(&edgeIndex, edgesOccurring, &edgeCount, &triEdges[0]);
 
 					//If index found, increment count
 					if (edgeIndex >= 0)
@@ -892,7 +899,7 @@ inline a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, a3ui32* t
 
 					//Get index of second edge
 					edgeIndex = -1;
-					GetIndexOfEdge(&edgeIndex, edgesOccurring, &edgesInTriangle, &triEdges[1]);
+					GetIndexOfEdge(&edgeIndex, edgesOccurring, &edgeCount, &triEdges[1]);
 					
 					//If index found, increment count
 					if (edgeIndex >= 0)
@@ -909,7 +916,7 @@ inline a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, a3ui32* t
 
 					//Get index of third edge
 					edgeIndex = -1;
-					GetIndexOfEdge(&edgeIndex, edgesOccurring, &edgesInTriangle, &triEdges[2]);
+					GetIndexOfEdge(&edgeIndex, edgesOccurring, &edgeCount, &triEdges[2]);
 
 					//If index found, increment count
 					if (edgeIndex >= 0)
@@ -923,17 +930,55 @@ inline a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, a3ui32* t
 						edgeOccurrencesCount[edgeCount] = 1;
 						edgeCount++;
 					}
-					
-					/*if (occurrences.TryGetValue(edges[0], out int numA))
-					{
-						occurrences[edges[0]]++;
-					}
-					else
-					{
-						occurrences.Add(edges[0], 1);
-					}*/
 				}
+
+
+				//Get the polygon of all edges that are not duplicates
+				//For every triangle containing the current point in their circumcircle
+				for (a3ui32 containingIndex = 0; containingIndex < containingCount; containingIndex++)
+				{
+					//Get edges in triangle from "containing"
+					Edge triEdges[3];
+					ConstructEdgesFromTriangle(triEdges, &containing[containingIndex]);
+
+					//For each edge in this triangle
+					for (a3ui32 edgeIndex = 0; edgeIndex < EDGES_IN_TRIANGLE; edgeIndex++)
+					{
+						a3i32 index = -1;
+						GetIndexOfEdge(&index, edgesOccurring, &edgeCount, &triEdges[edgeIndex]);
+
+						//Sanity check, if index is less than 0, edge does not occur which should be impossible
+						if (index < 0)
+						{
+							printf("ERROR - Edge does not exist");
+							free(containing);
+							return -1;
+						}
+
+						//If edge does not occur more than once
+						if (edgeOccurrencesCount[index] == 1)
+						{
+							//Add edge to the polygon
+							polygon[polygonEdgeCount] = triEdges[edgeIndex];
+						}
+					}
+				}
+
+				//Remove triangles in "containing" from the array of all triangles "triArray_out"
+
+				/*for (a3ui32 containIndex = 0; containIndex < containingCount; containIndex++)
+				{
+
+				}*/
+
+				//Create a new triangle using each valid edge and the current point
+
+
 			}
+
+			//Delete all triangles that contain points from the super triangle
+
+
 
 			////Just a test, draws 3 tiangles each taking two points from the super triangle and one point as the current point
 			////Visually just draws lines from super triangle vertices to current point.
