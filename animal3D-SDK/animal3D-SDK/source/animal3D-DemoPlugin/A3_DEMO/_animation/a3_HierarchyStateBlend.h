@@ -102,6 +102,19 @@ a3_SpatialPose* a3spatialPoseOpBiCubic(a3_SpatialPose* pose_out,
 	a3_SpatialPose* poseSet, //Array of 16 poses
 	a3real* uArray); //Array of 5 a3real3's
 
+////////////////// Additional Operations /////////////////////////
+
+// pointer-based smoothstep/easing interpolate/blend/mix operation for single spatial pose
+a3_SpatialPose* a3spatialPoseOpSmoothStep(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, const a3real u);
+
+// pointer-based descale/bi-directional scale operation for single spatial pose
+a3_SpatialPose* a3spatialPoseOpDescale(a3_SpatialPose* pose_out, a3_SpatialPose const* pose_in, const a3real u);
+
+// pointer-based Convert operation for single spatial pose
+a3_SpatialPose* a3spatialPoseOpConvert(a3_SpatialPose* pose_out);
+
+// pointer-based revert/restore operation for single spatial pose
+a3_SpatialPose* a3spatialPoseOpRevert(a3_SpatialPose* pose_out);
 
 //-----------------------------------------------------------------------------
 
@@ -224,11 +237,23 @@ a3_HierarchyPose* a3hierarchyPoseDOpBiCubic(a3_HierarchyPose* pose_out, a3ui32 n
 	a3_HierarchyPose* poseSet, //Array of 16 poses
 	a3real* uArray); //Array of 5 a3real3's
 
+////////////////// Additional Operations /////////////////////////
+
+// pointer-based forward kinematics operation for single spatial pose
+//a3_HierarchyPose* a3hierarchyPoseOpFK(a3mat4* objectSpaceTransform_out, a3_HierarchyPose* pose_out, a3mat4* objectSpaceTransform_in, a3mat4* localSpaceTransform_in);
+
+// pointer-based inverse kinematics operation for single spatial pose
+//a3_HierarchyPose* a3hierarchyPoseOpIK(a3mat4* localSpaceTransform_out, a3_HierarchyPose* pose_out, a3mat4* objectSpaceTransform_in, a3mat4* localSpaceTransform_in);
+
+// I'm not too sure what I'm supposed to do with these two, I'll ask Dan in class - Neo
+
 //-----------------------------------------------------------------------------
 
 // Helper Functions
 
 a3real a3cubic(a3real p0, a3real p1, a3real m0, a3real m1, a3real t);
+
+a3real a3smoothStep(a3real x);
 
 
 //-----------------------------------------------------------------------------

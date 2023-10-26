@@ -260,6 +260,40 @@ inline a3_SpatialPose* a3spatialPoseOpBiCubic(a3_SpatialPose* pose_out,
 	return pose_out;
 }
 
+inline a3_SpatialPose* a3spatialPoseOpSmoothStep(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, const a3real u)
+{
+	a3spatialPoseOpLERP(pose_out, pose0, pose1, u);
+
+	a3real3 trans, rot, scale;
+	trans[0] = a3smoothStep(pose_out->translate.x);
+	trans[1] = a3smoothStep(pose_out->translate.y);
+	trans[2] = a3smoothStep(pose_out->translate.z);
+	rot[0] = a3smoothStep(pose_out->rotate.x);
+	rot[1] = a3smoothStep(pose_out->rotate.y);
+	rot[2] = a3smoothStep(pose_out->rotate.z);
+	scale[0] = a3smoothStep(pose_out->scale.x);
+	scale[1] = a3smoothStep(pose_out->scale.y);
+	scale[2] = a3smoothStep(pose_out->scale.z);
+
+	a3spatialPoseOpConstruct(pose_out, trans, rot, scale);
+	
+	return pose_out;
+}
+
+inline a3_SpatialPose* a3spatialPoseOpDescale(a3_SpatialPose* pose_out, a3_SpatialPose const* pose_in, const a3real u)
+{
+	return pose_out;
+}
+
+inline a3_SpatialPose* a3spatialPoseOpConvert(a3_SpatialPose* pose_out)
+{
+	return pose_out;
+}
+
+inline a3_SpatialPose* a3spatialPoseOpRevert(a3_SpatialPose* pose_out)
+{
+	return pose_out;
+}
 
 
 //-----------------------------------------------------------------------------
@@ -665,26 +699,6 @@ inline a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, const a3v
 
 // cubic function
 inline a3real a3cubic(a3real p0, a3real p1, a3real m0, a3real m1, a3real t) {
-	/*return (a3real)(((a3real)2.0 * (a3real)pow(t, (a3real)3.0) - (a3real)3.0 * (a3real)pow(t, (a3real)2.0) + (a3real)1.0) * p0)
-		+ (((a3real)pow(t, (a3real)3.0) - (a3real)2.0 * (a3real)pow(t, (a3real)2.0) + t) * m0)
-		+ (((a3real)-2.0 * (a3real)pow(t, (a3real)3.0) + (a3real)3.0 * (a3real)pow(t, (a3real)2.0)) * p1)
-		+ (((a3real)pow(t, (a3real)3.0) - (a3real)pow(t, (a3real)2.0)) * m1);*/
-		/*return (a3real)
-			(
-				(
-					2.0 * pow(t, 3.0) - 3.0 * pow(t, 2.0) + 1.0
-					) * p0
-				+ (
-					pow(t, 3.0) - 2.0 * pow(t, 2.0) + t
-					) * m0
-				+ (
-					-2.0 * pow(t, 3.0) + 3.0 * pow(t, 2.0)
-					) * p1
-				+ (
-					pow(t, 3.0) - pow(t, 2.0)
-				) * m1
-			);*/
-
 	return (a3real)(
 		((-.5 * p0 + 1.5 * p1 - 1.5 * m0 + .5 * m1) * (t * t * t)) +
 		((p0 - 2.5 * p1 + 2 * m0 - .5 * m1) * (t * t)) +
@@ -693,6 +707,11 @@ inline a3real a3cubic(a3real p0, a3real p1, a3real m0, a3real m1, a3real t) {
 		);
 }
 
+// smooth step math function
+inline a3real a3smoothStep(a3real x)
+{	
+	return (a3real)(x * x * (3 - 2 * x));
+}
 
 #endif	// !__ANIMAL3D_HIERARCHYSTATEBLEND_INL
 #endif	// __ANIMAL3D_HIERARCHYSTATEBLEND_H
