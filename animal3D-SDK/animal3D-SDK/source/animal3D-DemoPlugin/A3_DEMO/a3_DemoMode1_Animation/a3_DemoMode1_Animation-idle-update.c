@@ -173,9 +173,16 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		if (CompareFloats(areaPAB + areaPBC + areaPAC, areaABC))
 		{
 			demoMode->currentTri = currentTri;
-			demoMode->triBlends[0] = areaPAB / areaABC;
-			demoMode->triBlends[1] = areaPBC / areaABC;
-			demoMode->triBlends[2] = areaPAC / areaABC;
+
+			//Get normalized areas of triangles (all 3 add up to 1)
+			a3real ratioPAB = areaPAB / areaABC;
+			a3real ratioPBC = areaPBC / areaABC;
+			a3real ratioPAC = areaPAC / areaABC;
+
+			//Blends are directly proportionate to the area of the triangle that does not contain their corresponding point
+			demoMode->triBlends[0] = ratioPBC;
+			demoMode->triBlends[1] = ratioPAC;
+			demoMode->triBlends[2] = ratioPAB;
 
 
 			printf("AB: %f, %f   BC: %f, %f   AC: %f, %f   Blends: %f, %f, %f\n", 
