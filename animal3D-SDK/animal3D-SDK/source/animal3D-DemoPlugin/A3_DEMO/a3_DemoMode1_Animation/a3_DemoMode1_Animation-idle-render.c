@@ -52,7 +52,7 @@
 //-----------------------------------------------------------------------------
 
 void draw_line(const a3_DemoStateShaderProgram* program, a3vec2 start, a3vec2 end, const a3f32* color,
-	a3real startX, a3real startY, a3real graphWidth, a3real graphHeight);
+	a3boolean remap_value, a3real startX, a3real startY, a3real graphWidth, a3real graphHeight);
 a3real remap_render(a3real value, a3real low1, a3real high1, a3real low2, a3real high2);;
 
 //-----------------------------------------------------------------------------
@@ -765,11 +765,11 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 
 						//Draw each individual edge
 						draw_line(currentDemoProgram, tri->pointA, tri->pointB, blue,
-							demoMode->graphStartX, demoMode->graphStartY, demoMode->graphViewWidth, demoMode->graphViewHeight);
+							a3true, demoMode->graphStartX, demoMode->graphStartY, demoMode->graphViewWidth, demoMode->graphViewHeight);
 						draw_line(currentDemoProgram, tri->pointB, tri->pointC, blue,
-							demoMode->graphStartX, demoMode->graphStartY, demoMode->graphViewWidth, demoMode->graphViewHeight);
+							a3true, demoMode->graphStartX, demoMode->graphStartY, demoMode->graphViewWidth, demoMode->graphViewHeight);
 						draw_line(currentDemoProgram, tri->pointC, tri->pointA, blue,
-							demoMode->graphStartX, demoMode->graphStartY, demoMode->graphViewWidth, demoMode->graphViewHeight);
+							a3true, demoMode->graphStartX, demoMode->graphStartY, demoMode->graphViewWidth, demoMode->graphViewHeight);
 					}
 				}
 
@@ -787,14 +787,30 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 					a3vec2 topRight = { 1, 1 };
 
 					draw_line(currentDemoProgram, bottomLeft, topLeft, green,
-						demoMode->graphStartX, demoMode->graphStartY, demoMode->graphViewWidth, demoMode->graphViewHeight);
+						a3true, demoMode->graphStartX, demoMode->graphStartY, demoMode->graphViewWidth, demoMode->graphViewHeight);
 					draw_line(currentDemoProgram, topLeft, topRight, green,
-						demoMode->graphStartX, demoMode->graphStartY, demoMode->graphViewWidth, demoMode->graphViewHeight);
+						a3true, demoMode->graphStartX, demoMode->graphStartY, demoMode->graphViewWidth, demoMode->graphViewHeight);
 					draw_line(currentDemoProgram, topRight, bottomRight, green,
-						demoMode->graphStartX, demoMode->graphStartY, demoMode->graphViewWidth, demoMode->graphViewHeight);
+						a3true, demoMode->graphStartX, demoMode->graphStartY, demoMode->graphViewWidth, demoMode->graphViewHeight);
 					draw_line(currentDemoProgram, bottomRight, bottomLeft, green,
-						demoMode->graphStartX, demoMode->graphStartY, demoMode->graphViewWidth, demoMode->graphViewHeight);
+						a3true, demoMode->graphStartX, demoMode->graphStartY, demoMode->graphViewWidth, demoMode->graphViewHeight);
 				}
+
+				/*
+				*
+				*	Inner Triangle Lines
+				*
+				*/
+				//{
+				//	//Still using spline shader
+
+				//	draw_line(currentDemoProgram, actualTriPos, demoMode->currentTri->pointA, yellow,
+				//		a3true, demoMode->graphStartX, demoMode->graphStartY, demoMode->graphViewWidth, demoMode->graphViewHeight);
+				//	draw_line(currentDemoProgram, actualTriPos, demoMode->currentTri->pointB, yellow,
+				//		a3true, demoMode->graphStartX, demoMode->graphStartY, demoMode->graphViewWidth, demoMode->graphViewHeight);
+				//	draw_line(currentDemoProgram, actualTriPos, demoMode->currentTri->pointC, yellow,
+				//		a3true, demoMode->graphStartX, demoMode->graphStartY, demoMode->graphViewWidth, demoMode->graphViewHeight);
+				//}
 
 				const a3real DOT_RADIUS = (a3real).01;
 				const a3real TRIANGLE_DOT_RADIUS = (a3real).03;
@@ -958,15 +974,23 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 }
 
 void draw_line(const a3_DemoStateShaderProgram* program, a3vec2 start, a3vec2 end, const a3f32* color,
-	a3real startX, a3real startY, a3real graphWidth, a3real graphHeight)
+	a3boolean remap_value, a3real startX, a3real startY, a3real graphWidth, a3real graphHeight)
 {
 	
 
 	a3vec2 sectionData[] =
 	{
-		{remap_render(start.x, 0, 1, startX, startX + graphWidth), remap_render(start.y, 0, 1, startY, startY + graphHeight)},
-		{remap_render(end.x, 0, 1, startX, startX + graphWidth), remap_render(end.y, 0, 1, startY, startY + graphHeight)}
+		{start.x, start.y },
+		{end.x, end.y}
 	};
+
+	if (remap_value)
+	{
+		sectionData[0].x = remap_render(start.x, 0, 1, startX, startX + graphWidth);
+		sectionData[0].y = remap_render(start.y, 0, 1, startY, startY + graphHeight);
+		sectionData[1].x = remap_render(end.x, 0, 1, startX, startX + graphWidth);
+		sectionData[1].y = remap_render(end.y, 0, 1, startY, startY + graphHeight);
+	}
 
 	//Submit color to shader
 	if (a3shaderUniformSendFloat(a3unif_vec4, program->uColor, 1, color) < 0)

@@ -329,15 +329,17 @@ a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, a3ui32* triCount
 
 //Pointer based spatial pose level operation using delaunay blending
 a3_SpatialPose* a3spatialPoseOPDelaunay(a3_SpatialPose* pose_out,
+	const a3_HierarchyPose* poses,	//Poses from which to get poses by indexes in clip controllers
 	const a3vec2* pointSet, const a3_ClipController* clipCtrls, const a3ui32* pointCount, //Data per point
-	const Triangle* triArray,	//Delaunay Triangulation based on pointSet
+	const Triangle* currentTri,	//Currently selected triangle
 	const a3real* blends		//Blend parameter inputs
 );
 
 // pointer-based delaunay operation for hierarchical pose
 a3_HierarchyPose* a3hierarchyPoseOpDelaunay(a3_HierarchyPose* pose_out, a3ui32 numNodes,
+	const a3_HierarchyPose* poses,	//Poses from which to get poses by indexes in clip controllers
 	const a3vec2* pointSet, const a3_ClipController* clipCtrls, const a3ui32* pointCount, //Data per point
-	const Triangle* triArray,	//Delaunay Triangulation based on pointSet
+	const Triangle* currentTri,	//Currently selected triangle
 	const a3real* blends		//Blend parameter inputs
 );
 

@@ -475,45 +475,45 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 
 		//Delaunay Clip Controllers
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_ymca");
-		a3clipControllerInit(&demoMode->delaunayClipControllerSet[0], "xbot_ctrl_delaunay0", demoMode->clipPool, j, rate, fps);
+		a3clipControllerInit(&demoMode->delaunayClipControllerSet[0], "xbot_ctrl_delaunay0_ymca", demoMode->clipPool, j, rate, fps);
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_idle_pistol");
-		a3clipControllerInit(&demoMode->delaunayClipControllerSet[1], "xbot_ctrl_delaunay1", demoMode->clipPool, j, rate, fps);
+		a3clipControllerInit(&demoMode->delaunayClipControllerSet[1], "xbot_ctrl_delaunay1_pistol", demoMode->clipPool, j, rate, fps);
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_skintest");
-		a3clipControllerInit(&demoMode->delaunayClipControllerSet[2], "xbot_ctrl_delaunay2", demoMode->clipPool, j, rate, fps);
+		a3clipControllerInit(&demoMode->delaunayClipControllerSet[2], "xbot_ctrl_delaunay2_skintest", demoMode->clipPool, j, rate, fps);
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_gangnam");
-		a3clipControllerInit(&demoMode->delaunayClipControllerSet[3], "xbot_ctrl_delaunay3", demoMode->clipPool, j, rate, fps);
+		a3clipControllerInit(&demoMode->delaunayClipControllerSet[3], "xbot_ctrl_delaunay3_gangnam", demoMode->clipPool, j, rate, fps);
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_samba");
-		a3clipControllerInit(&demoMode->delaunayClipControllerSet[4], "xbot_ctrl_delaunay4", demoMode->clipPool, j, rate, fps);
+		a3clipControllerInit(&demoMode->delaunayClipControllerSet[4], "xbot_ctrl_delaunay4_samba", demoMode->clipPool, j, rate, fps);
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_backflip");
-		a3clipControllerInit(&demoMode->delaunayClipControllerSet[5], "xbot_ctrl_delaunay5", demoMode->clipPool, j, rate, fps);
+		a3clipControllerInit(&demoMode->delaunayClipControllerSet[5], "xbot_ctrl_delaunay5_backflip", demoMode->clipPool, j, rate, fps);
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_idle_f");
-		a3clipControllerInit(&demoMode->delaunayClipControllerSet[6], "xbot_ctrl_delaunay6", demoMode->clipPool, j, rate, fps);
+		a3clipControllerInit(&demoMode->delaunayClipControllerSet[6], "xbot_ctrl_delaunay6_idle_f", demoMode->clipPool, j, rate, fps);
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_jump_f");
-		a3clipControllerInit(&demoMode->delaunayClipControllerSet[7], "xbot_ctrl_delaunay7", demoMode->clipPool, j, rate, fps);
+		a3clipControllerInit(&demoMode->delaunayClipControllerSet[7], "xbot_ctrl_delaunay7_jump_f", demoMode->clipPool, j, rate, fps);
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_walk_f");
-		a3clipControllerInit(&demoMode->delaunayClipControllerSet[8], "xbot_ctrl_delaunay8", demoMode->clipPool, j, rate, fps);
+		a3clipControllerInit(&demoMode->delaunayClipControllerSet[8], "xbot_ctrl_delaunay8_walk_f", demoMode->clipPool, j, rate, fps);
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_run_f");
-		a3clipControllerInit(&demoMode->delaunayClipControllerSet[9], "xbot_ctrl_delaunay9", demoMode->clipPool, j, rate, fps);
+		a3clipControllerInit(&demoMode->delaunayClipControllerSet[9], "xbot_ctrl_delaunay9_run_f", demoMode->clipPool, j, rate, fps);
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_walk_s_l_f");
-		a3clipControllerInit(&demoMode->delaunayClipControllerSet[10], "xbot_ctrl_delaunay10", demoMode->clipPool, j, rate, fps);
+		a3clipControllerInit(&demoMode->delaunayClipControllerSet[10], "xbot_ctrl_delaunay10_walk_s_l_f", demoMode->clipPool, j, rate, fps);
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_strafe_l_f");
-		a3clipControllerInit(&demoMode->delaunayClipControllerSet[11], "xbot_ctrl_delaunay11", demoMode->clipPool, j, rate, fps);
+		a3clipControllerInit(&demoMode->delaunayClipControllerSet[11], "xbot_ctrl_delaunay11_strafe_l_f", demoMode->clipPool, j, rate, fps);
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_turn_l_f");
-		a3clipControllerInit(&demoMode->delaunayClipControllerSet[12], "xbot_ctrl_delaunay12", demoMode->clipPool, j, rate, fps);
+		a3clipControllerInit(&demoMode->delaunayClipControllerSet[12], "xbot_ctrl_delaunay12_turn_l_f", demoMode->clipPool, j, rate, fps);
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_walk_s_r_f");
-		a3clipControllerInit(&demoMode->delaunayClipControllerSet[13], "xbot_ctrl_delaunay13", demoMode->clipPool, j, rate, fps);
+		a3clipControllerInit(&demoMode->delaunayClipControllerSet[13], "xbot_ctrl_delaunay13_walk_s_r_f", demoMode->clipPool, j, rate, fps);
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_strafe_r_f");
-		a3clipControllerInit(&demoMode->delaunayClipControllerSet[14], "xbot_ctrl_delaunay14", demoMode->clipPool, j, rate, fps);
+		a3clipControllerInit(&demoMode->delaunayClipControllerSet[14], "xbot_ctrl_delaunay14_strafe_r_f", demoMode->clipPool, j, rate, fps);
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_turn_r_f");
-		a3clipControllerInit(&demoMode->delaunayClipControllerSet[15], "xbot_ctrl_delaunay15", demoMode->clipPool, j, rate, fps);
+		a3clipControllerInit(&demoMode->delaunayClipControllerSet[15], "xbot_ctrl_delaunay15_turn_r_f", demoMode->clipPool, j, rate, fps);
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_idle_m");
-		a3clipControllerInit(&demoMode->delaunayClipControllerSet[16], "xbot_ctrl_delaunay16", demoMode->clipPool, j, rate, fps);
+		a3clipControllerInit(&demoMode->delaunayClipControllerSet[16], "xbot_ctrl_delaunay16_idle_m", demoMode->clipPool, j, rate, fps);
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_jump_m");
-		a3clipControllerInit(&demoMode->delaunayClipControllerSet[17], "xbot_ctrl_delaunay17", demoMode->clipPool, j, rate, fps);
+		a3clipControllerInit(&demoMode->delaunayClipControllerSet[17], "xbot_ctrl_delaunay17_jump_m", demoMode->clipPool, j, rate, fps);
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_walk_m");
-		a3clipControllerInit(&demoMode->delaunayClipControllerSet[18], "xbot_ctrl_delaunay18", demoMode->clipPool, j, rate, fps);
+		a3clipControllerInit(&demoMode->delaunayClipControllerSet[18], "xbot_ctrl_delaunay18_walk_m", demoMode->clipPool, j, rate, fps);
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_run_m");
-		a3clipControllerInit(&demoMode->delaunayClipControllerSet[19], "xbot_ctrl_delaunay19", demoMode->clipPool, j, rate, fps);
+		a3clipControllerInit(&demoMode->delaunayClipControllerSet[19], "xbot_ctrl_delaunay19_run_m", demoMode->clipPool, j, rate, fps);
 	}
 
 	//Set delaunay as the displayed mode

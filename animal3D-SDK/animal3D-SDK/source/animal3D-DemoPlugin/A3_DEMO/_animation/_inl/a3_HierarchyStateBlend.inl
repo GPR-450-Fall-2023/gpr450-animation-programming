@@ -202,7 +202,7 @@ inline a3_SpatialPose* a3spatialPoseOpTriangular(a3_SpatialPose* pose_out, a3_Sp
 	a3_SpatialPose scaled0 = a3spatialPoseDOpScale(*pose0, u0);
 	a3_SpatialPose scaled1 = a3spatialPoseDOpScale(*pose1, u1);
 
-	float gamma = 1 - u0 - u1;
+	a3real gamma = (a3real)1 - u0 - u1;
 
 	a3_SpatialPose scaled2 = a3spatialPoseDOpScale(*pose2, gamma);
 
@@ -864,23 +864,51 @@ inline a3i32 GetIndexOfEdge(a3i32* index_out, const Edge* edgeArray, const a3ui3
 
 //Pointer based spatial pose level operation using delaunay blending
 inline a3_SpatialPose* a3spatialPoseOPDelaunay(a3_SpatialPose* pose_out,
+	const a3_HierarchyPose* poses,	//Poses from which to get poses by indexes in clip controllers
 	const a3vec2* pointSet, const a3_ClipController* clipCtrls, const a3ui32* pointCount, //Data per point
-	const Triangle* triArray,	//Delaunay Triangulation based on pointSet
+	const Triangle* currentTri,	//Currently selected triangle
 	const a3real* blends		//Blend parameter inputs
 )
 {
+	//Find each point from the selected triangle in the point set
+	//Get the clip controller associated with each point
+
+	//Above process for point A
+	a3i32 indexA = -1;
+	GetIndexOfVec2(&indexA, pointSet, pointCount, &currentTri->pointA);
+	const a3_ClipController* controllerA = &clipCtrls[indexA];
+
+	//Above process for point B
+	a3i32 indexB = -1;
+	GetIndexOfVec2(&indexB, pointSet, pointCount, &currentTri->pointB);
+	const a3_ClipController* controllerB = &clipCtrls[indexB];
+
+	//Above process for point C
+	a3i32 indexC = -1;
+	GetIndexOfVec2(&indexC, pointSet, pointCount, &currentTri->pointC);
+	const a3_ClipController* controllerC = &clipCtrls[indexC];
+
+	//Call triangulate with the poses pointed to by the clip controllers and with the blend parameters passed into this function
+	const a3_SpatialPose* poseA = poses->pose + controllerA->keyframe->sampleIndex0;
+	const a3_SpatialPose* poseB = poses->pose + controllerB->keyframe->sampleIndex0;
+	const a3_SpatialPose* poseC = poses->pose + controllerC->keyframe->sampleIndex0;
+
+	//Execute triangular with poses associated with points in triangle and with associated blend parameters
+	a3spatialPoseOpTriangular(pose_out, poseA, poseB, poseC, blends[0], blends[1]);
+
 	return pose_out;
 }
 
 // pointer-based delaunay operation for hierarchical pose
 inline a3_HierarchyPose* a3hierarchyPoseOpDelaunay(a3_HierarchyPose* pose_out, a3ui32 numNodes,
+	const a3_HierarchyPose* poses,	//Poses from which to get poses by indexes in clip controllers
 	const a3vec2* pointSet, const a3_ClipController* clipCtrls, const a3ui32* pointCount, //Data per point
-	const Triangle* triArray,	//Delaunay Triangulation based on pointSet
+	const Triangle* currentTri,	//Currently selected triangle
 	const a3real* blends		//Blend parameter inputs
 )
 {
 	for (a3ui32 i = 0; i < numNodes; i++) {
-		a3spatialPoseOPDelaunay(&pose_out->pose[i], pointSet, clipCtrls, pointCount, triArray, blends);
+		a3spatialPoseOPDelaunay(&pose_out->pose[i], poses, pointSet, clipCtrls, pointCount, currentTri, blends);
 	}
 
 	return pose_out;
