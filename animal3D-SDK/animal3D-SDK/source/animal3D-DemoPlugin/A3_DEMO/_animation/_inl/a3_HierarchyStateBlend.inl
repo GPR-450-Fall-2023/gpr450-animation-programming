@@ -864,28 +864,18 @@ inline a3i32 GetIndexOfEdge(a3i32* index_out, const Edge* edgeArray, const a3ui3
 
 //Pointer based spatial pose level operation using delaunay blending
 inline a3_SpatialPose* a3spatialPoseOPDelaunay(a3_SpatialPose* pose_out,
-	const a3_HierarchyPose* poses,	//Poses from which to get poses by indexes in clip controllers
-	const a3vec2* pointSet, const a3_ClipController** clipCtrls, const a3ui32* pointCount, //Data per point
-	const Triangle* currentTri,	//Currently selected triangle
-	const a3real* blends,		//Blend parameter inputs
-	const a3ui32 offset
+	const a3_SpatialPose* poseA0, const a3_SpatialPose* poseA1,
+	const a3_SpatialPose* poseB0, const a3_SpatialPose* poseB1,
+	const a3_SpatialPose* poseC0, const a3_SpatialPose* poseC1,
+	const a3real keyframeParam1, const a3real keyframeParam2, const a3real keyframeParam3,
+	const a3real* blends		//Blend parameter inputs
 )
-{
-	//Get pose0		demoMode->clipPool->keyframe[clipCtrl->keyframeIndex].sampleIndex0
-	const a3_SpatialPose* poseA0 = (poses + clipCtrls[0]->clipPool->keyframe[clipCtrls[0]->keyframeIndex].sampleIndex0)->pose + offset;
-	const a3_SpatialPose* poseB0 = (poses + clipCtrls[1]->clipPool->keyframe[clipCtrls[1]->keyframeIndex].sampleIndex0)->pose + offset;
-	const a3_SpatialPose* poseC0 = (poses + clipCtrls[2]->clipPool->keyframe[clipCtrls[2]->keyframeIndex].sampleIndex0)->pose + offset;
-
-	//Get pose1
-	const a3_SpatialPose* poseA1 = (poses + clipCtrls[0]->clipPool->keyframe[clipCtrls[0]->keyframeIndex].sampleIndex1)->pose + offset;
-	const a3_SpatialPose* poseB1 = (poses + clipCtrls[1]->clipPool->keyframe[clipCtrls[1]->keyframeIndex].sampleIndex1)->pose + offset;
-	const a3_SpatialPose* poseC1 = (poses + clipCtrls[2]->clipPool->keyframe[clipCtrls[2]->keyframeIndex].sampleIndex1)->pose + offset;
-								   
+{						   
 	//Bilerp poseA, B, and C using their respective keyframe parameters to get the spatial pose at the currnet moment
 	a3_SpatialPose pose0, pose1, pose2;
-	a3spatialPoseLerp(&pose0, poseA0, poseA1, (a3real)clipCtrls[0]->keyframeParam);
-	a3spatialPoseLerp(&pose1, poseB0, poseB1, (a3real)clipCtrls[1]->keyframeParam);
-	a3spatialPoseLerp(&pose2, poseC0, poseC1, (a3real)clipCtrls[2]->keyframeParam);
+	a3spatialPoseLerp(&pose0, poseA0, poseA1, keyframeParam1);
+	a3spatialPoseLerp(&pose1, poseB0, poseB1, keyframeParam2);
+	a3spatialPoseLerp(&pose2, poseC0, poseC1, keyframeParam3);
 
 	//Triangular operation on the resulting poses 
 	a3spatialPoseOpTriangular(pose_out, &pose0, &pose1, &pose2, blends[0], blends[1]);
@@ -926,7 +916,18 @@ inline a3_HierarchyPose* a3hierarchyPoseOpDelaunay(a3_HierarchyPose* pose_out, a
 
 	for (a3ui32 i = 0; i < numNodes; i++) {
 
-		a3spatialPoseOPDelaunay(&pose_out->pose[i], poses, pointSet, controllers, pointCount, currentTri, blends, i);
+		//Get pose0		demoMode->clipPool->keyframe[clipCtrl->keyframeIndex].sampleIndex0
+		const a3_SpatialPose* poseA0 = (poses + controllers[0]->clipPool->keyframe[controllers[0]->keyframeIndex].sampleIndex0)->pose + i;
+		const a3_SpatialPose* poseB0 = (poses + controllers[1]->clipPool->keyframe[controllers[1]->keyframeIndex].sampleIndex0)->pose + i;
+		const a3_SpatialPose* poseC0 = (poses + controllers[2]->clipPool->keyframe[controllers[2]->keyframeIndex].sampleIndex0)->pose + i;
+
+		//Get pose1
+		const a3_SpatialPose* poseA1 = (poses + controllers[0]->clipPool->keyframe[controllers[0]->keyframeIndex].sampleIndex1)->pose + i;
+		const a3_SpatialPose* poseB1 = (poses + controllers[1]->clipPool->keyframe[controllers[1]->keyframeIndex].sampleIndex1)->pose + i;
+		const a3_SpatialPose* poseC1 = (poses + controllers[2]->clipPool->keyframe[controllers[2]->keyframeIndex].sampleIndex1)->pose + i;
+
+		a3spatialPoseOPDelaunay(&pose_out->pose[i], poseA0, poseA1, poseB0, poseB1, poseC0, poseC1, 
+			(a3real)controllers[0]->keyframeParam, (a3real)controllers[1]->keyframeParam, (a3real)controllers[2]->keyframeParam, blends);
 	}
 
 	return pose_out;
