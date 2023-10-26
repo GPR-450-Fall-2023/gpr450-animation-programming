@@ -185,12 +185,12 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 			demoMode->triBlends[2] = ratioPAB;
 
 
-			printf("AB: %f, %f   BC: %f, %f   AC: %f, %f   Blends: %f, %f, %f\n", 
+			/*printf("AB: %f, %f   BC: %f, %f   AC: %f, %f   Blends: %f, %f, %f\n", 
 				currentTri->pointA.x, currentTri->pointA.y,
 				currentTri->pointB.x, currentTri->pointB.y,
 				currentTri->pointC.x, currentTri->pointC.y,
-				demoMode->triBlends[0], demoMode->triBlends[1], demoMode->triBlends[2]);
-			break;
+				demoMode->triBlends[0], demoMode->triBlends[1], demoMode->triBlends[2]);*/
+			break; //Break when we've found the containing triangle
 		}
 	}
 

@@ -474,76 +474,64 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		a3clipControllerInit(demoMode->clipCtrlB, "xbot_ctrlB", demoMode->clipPool, j, rate, fps);
 	}
 
+
+	//Graph dimensions
 	demoMode->graphStartX = (a3real)-.9;
 	demoMode->graphStartY = (a3real)-.5;
 	demoMode->graphViewWidth = (a3real).5;
 	demoMode->graphViewHeight = (a3real).5;
 
+	//Starting value of triangulation position controlled by mouse
 	demoMode->triangulationPosition.x = demoMode->graphStartX;
 	demoMode->triangulationPosition.y = demoMode->graphStartY;
 
-	a3vec2 pointSet[20];
-	pointSet[0].x = (a3real)0;
-	pointSet[0].y = (a3real)0;
-	pointSet[1].x = (a3real)0;
-	pointSet[1].y = (a3real)1;
-	pointSet[2].x = (a3real)1;
-	pointSet[2].y = (a3real)0;
-	pointSet[3].x = (a3real)1;
-	pointSet[3].y = (a3real)1;
-	pointSet[4].x = (a3real).1;
-	pointSet[4].y = (a3real).5;
-	pointSet[5].x = (a3real).6;
-	pointSet[5].y = (a3real).7;
-	pointSet[6].x = (a3real).9;
-	pointSet[6].y = (a3real).2;
-	pointSet[7].x = (a3real)0;
-	pointSet[7].y = (a3real).1;
-	pointSet[8].x = (a3real).7;
-	pointSet[8].y = (a3real).2;
-	pointSet[9].x = (a3real).8;
-	pointSet[9].y = (a3real).3;
-	pointSet[10].x = (a3real).9;
-	pointSet[10].y = (a3real)0;
-	pointSet[11].x = (a3real).6;
-	pointSet[11].y = (a3real).1;
-	pointSet[12].x = (a3real).9;
-	pointSet[12].y = (a3real).7;
-	pointSet[13].x = (a3real).8;
-	pointSet[13].y = (a3real).1;
-	pointSet[14].x = (a3real).2;
-	pointSet[14].y = (a3real).8;
-	pointSet[15].x = (a3real).4;
-	pointSet[15].y = (a3real).1;
-	pointSet[16].x = (a3real)0;
-	pointSet[16].y = (a3real).5;
-	pointSet[17].x = (a3real).5;
-	pointSet[17].y = (a3real)0;
-	pointSet[18].x = (a3real).5;
-	pointSet[18].y = (a3real)1;
-	pointSet[19].x = (a3real)1;
-	pointSet[19].y = (a3real).5;
+	//Locations of points normalized to delaunay graph bounds
+	demoMode->delaunayPointSet[0].x = (a3real)0;
+	demoMode->delaunayPointSet[0].y = (a3real)0;
+	demoMode->delaunayPointSet[1].x = (a3real)0;
+	demoMode->delaunayPointSet[1].y = (a3real)1;
+	demoMode->delaunayPointSet[2].x = (a3real)1;
+	demoMode->delaunayPointSet[2].y = (a3real)0;
+	demoMode->delaunayPointSet[3].x = (a3real)1;
+	demoMode->delaunayPointSet[3].y = (a3real)1;
+	demoMode->delaunayPointSet[4].x = (a3real).1;
+	demoMode->delaunayPointSet[4].y = (a3real).5;
+	demoMode->delaunayPointSet[5].x = (a3real).6;
+	demoMode->delaunayPointSet[5].y = (a3real).7;
+	demoMode->delaunayPointSet[6].x = (a3real).9;
+	demoMode->delaunayPointSet[6].y = (a3real).2;
+	demoMode->delaunayPointSet[7].x = (a3real)0;
+	demoMode->delaunayPointSet[7].y = (a3real).1;
+	demoMode->delaunayPointSet[8].x = (a3real).7;
+	demoMode->delaunayPointSet[8].y = (a3real).2;
+	demoMode->delaunayPointSet[9].x = (a3real).8;
+	demoMode->delaunayPointSet[9].y = (a3real).3;
+	demoMode->delaunayPointSet[10].x = (a3real).9;
+	demoMode->delaunayPointSet[10].y = (a3real)0;
+	demoMode->delaunayPointSet[11].x = (a3real).6;
+	demoMode->delaunayPointSet[11].y = (a3real).1;
+	demoMode->delaunayPointSet[12].x = (a3real).9;
+	demoMode->delaunayPointSet[12].y = (a3real).7;
+	demoMode->delaunayPointSet[13].x = (a3real).8;
+	demoMode->delaunayPointSet[13].y = (a3real).1;
+	demoMode->delaunayPointSet[14].x = (a3real).2;
+	demoMode->delaunayPointSet[14].y = (a3real).8;
+	demoMode->delaunayPointSet[15].x = (a3real).4;
+	demoMode->delaunayPointSet[15].y = (a3real).1;
+	demoMode->delaunayPointSet[16].x = (a3real)0;
+	demoMode->delaunayPointSet[16].y = (a3real).5;
+	demoMode->delaunayPointSet[17].x = (a3real).5;
+	demoMode->delaunayPointSet[17].y = (a3real)0;
+	demoMode->delaunayPointSet[18].x = (a3real).5;
+	demoMode->delaunayPointSet[18].y = (a3real)1;
+	demoMode->delaunayPointSet[19].x = (a3real)1;
+	demoMode->delaunayPointSet[19].y = (a3real).5;
 
-	a3ui32 pointCount = 20;
-
-	/*Edge edge[5];
-	edge[0].pointA = pointSet[0];
-	edge[0].pointB = pointSet[1];
-	edge[1].pointA = pointSet[2];
-	edge[1].pointB = pointSet[3];
-	edge[2].pointA = pointSet[4];
-	edge[2].pointB = pointSet[5];
-	edge[3].pointA = pointSet[6];
-	edge[3].pointB = pointSet[7];
-	edge[4].pointA = pointSet[8];
-	edge[4].pointB = pointSet[9];
-
-	a3ui32 testEdgeCount = 5;
-	a3ui32 index = 2;
-	RemoveEdgeFromArray(edge, &testEdgeCount, &index);*/
+	//Number of poinsts/poses
+	demoMode->delaunayPointCount = 20;
 
 	//Run Delaunay Triangulation
-	a3_calculateDelaunayTriangulation(demoMode->delaunayTriangles, &demoMode->triCount, pointSet, &pointCount);
+	a3_calculateDelaunayTriangulation(demoMode->delaunayTriangles, &demoMode->triCount, demoMode->delaunayPointSet, &demoMode->delaunayPointCount);
 }
 
 

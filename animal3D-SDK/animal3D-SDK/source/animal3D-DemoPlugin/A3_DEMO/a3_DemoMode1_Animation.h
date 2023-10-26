@@ -170,6 +170,11 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 		a3dualquat dq_skin[128];
 
 		//Delaunay Blend Graph
+		a3vec2 delaunayPointSet[20]; //Set of points on delaunay graph
+		a3_ClipController delaunayPoseSet[20]; //Set of clip controllers corresponding to points on delaunay graph
+		
+		a3ui32 delaunayPointCount; //Number of points/poses
+
 		Triangle delaunayTriangles[128];	//Triangles contained in triangulation to be drawn, max 128
 		a3ui32 triCount;	//Number of triangles in triangulation
 
