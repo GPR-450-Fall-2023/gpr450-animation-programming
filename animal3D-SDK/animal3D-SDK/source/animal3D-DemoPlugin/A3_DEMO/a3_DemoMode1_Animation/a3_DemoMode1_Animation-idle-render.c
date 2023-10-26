@@ -825,15 +825,13 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 								(a3real)(radius * a3cosd((a3real)(segmentAngle * i))) + currentPoint.x,
 								0, 1, demoMode->graphStartX, demoMode->graphStartX + demoMode->graphViewWidth);
 							pointsToDraw[i + 1].y = remap_render(
-								(a3real)(radius * a3sind((a3real)(segmentAngle * i))) + currentPoint.y,
+								(a3real)(radius * a3sind((a3real)(segmentAngle * i)) * demoState->frameAspect) + currentPoint.y,
 								0, 1, demoMode->graphStartY, demoMode->graphStartY + demoMode->graphViewHeight);
 						}
 
 						//Set last index to same values as first point after center
-						pointsToDraw[CIRCLE_SEGMENTS + 1].x = remap_render(pointsToDraw[1].x,
-							0, 1, demoMode->graphStartX, demoMode->graphStartX + demoMode->graphViewWidth);
-						pointsToDraw[CIRCLE_SEGMENTS + 1].y = remap_render(pointsToDraw[1].y,
-							0, 1, demoMode->graphStartY, demoMode->graphStartY + demoMode->graphViewHeight);
+						pointsToDraw[CIRCLE_SEGMENTS + 1].x = pointsToDraw[1].x;
+						pointsToDraw[CIRCLE_SEGMENTS + 1].y = pointsToDraw[1].y;
 
 						//Submit color to shader
 						if (a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, magenta) < 0)
@@ -883,7 +881,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 				for (a3ui32 i = 0; i < CIRCLE_SEGMENTS + 1; i++)
 				{
 					pointsToDraw[i + 1].x = (a3real)(DOT_RADIUS * a3cosd((a3real)(segmentAngle * i))) + actualTriPos.x;
-					pointsToDraw[i + 1].y = (a3real)(DOT_RADIUS * a3sind((a3real)(segmentAngle * i))) + actualTriPos.y;
+					pointsToDraw[i + 1].y = (a3real)(DOT_RADIUS * a3sind((a3real)(segmentAngle * i)) * demoState->frameAspect) + actualTriPos.y;
 				}
 
 				//Set last index to same values as first point after center
