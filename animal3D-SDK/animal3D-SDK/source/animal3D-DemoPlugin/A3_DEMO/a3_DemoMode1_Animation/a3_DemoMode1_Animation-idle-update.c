@@ -207,16 +207,30 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		a3clipControllerUpdate(demoMode->clipCtrlA, dt);
 		a3clipControllerUpdate(demoMode->clipCtrlB, dt);
 
+		//Update all delaunay clip controllers
+		for (a3ui32 controlIndex = 0; controlIndex < demoMode->delaunayPointCount; controlIndex++)
+		{
+			a3clipControllerUpdate(&demoMode->delaunayClipControllerSet[controlIndex], dt);
+		}
+
 		// STEP
 	//	a3hierarchyPoseCopy(activeHS->animPose,
 	//		demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipCtrl->keyframeIndex,
 	//		demoMode->hierarchy_skel->numNodes);
 
-		// LERP
-		a3hierarchyPoseLerp(activeHS->animPose,
-			demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[clipCtrl->keyframeIndex].sampleIndex0,
-			demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[clipCtrl->keyframeIndex].sampleIndex1,
-			(a3f32)clipCtrl->keyframeParam, demoMode->hierarchy_skel->numNodes);
+		if (demoMode->toolMode == animation_tool_default)
+		{
+			// LERP
+			a3hierarchyPoseLerp(activeHS->animPose,
+				demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[clipCtrl->keyframeIndex].sampleIndex0,
+				demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[clipCtrl->keyframeIndex].sampleIndex1,
+				(a3f32)clipCtrl->keyframeParam, demoMode->hierarchy_skel->numNodes);
+		}
+		else if (demoMode->toolMode == animation_tool_delaunay)
+		{
+
+		}
+		
 
 		// FK pipeline
 		//a3hierarchyPoseConcat(activeHS->localSpace,	// goal to calculate

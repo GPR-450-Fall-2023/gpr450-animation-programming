@@ -472,66 +472,113 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		a3clipControllerInit(demoMode->clipCtrlA, "xbot_ctrlA", demoMode->clipPool, j, rate, fps);
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_skintest");
 		a3clipControllerInit(demoMode->clipCtrlB, "xbot_ctrlB", demoMode->clipPool, j, rate, fps);
+
+		//Delaunay Clip Controllers
+		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_ymca");
+		a3clipControllerInit(&demoMode->delaunayClipControllerSet[0], "xbot_ctrl_delaunay0", demoMode->clipPool, j, rate, fps);
+		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_idle_pistol");
+		a3clipControllerInit(&demoMode->delaunayClipControllerSet[1], "xbot_ctrl_delaunay1", demoMode->clipPool, j, rate, fps);
+		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_skintest");
+		a3clipControllerInit(&demoMode->delaunayClipControllerSet[2], "xbot_ctrl_delaunay2", demoMode->clipPool, j, rate, fps);
+		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_gangnam");
+		a3clipControllerInit(&demoMode->delaunayClipControllerSet[3], "xbot_ctrl_delaunay3", demoMode->clipPool, j, rate, fps);
+		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_samba");
+		a3clipControllerInit(&demoMode->delaunayClipControllerSet[4], "xbot_ctrl_delaunay4", demoMode->clipPool, j, rate, fps);
+		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_backflip");
+		a3clipControllerInit(&demoMode->delaunayClipControllerSet[5], "xbot_ctrl_delaunay5", demoMode->clipPool, j, rate, fps);
+		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_idle_f");
+		a3clipControllerInit(&demoMode->delaunayClipControllerSet[6], "xbot_ctrl_delaunay6", demoMode->clipPool, j, rate, fps);
+		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_jump_f");
+		a3clipControllerInit(&demoMode->delaunayClipControllerSet[7], "xbot_ctrl_delaunay7", demoMode->clipPool, j, rate, fps);
+		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_walk_f");
+		a3clipControllerInit(&demoMode->delaunayClipControllerSet[8], "xbot_ctrl_delaunay8", demoMode->clipPool, j, rate, fps);
+		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_run_f");
+		a3clipControllerInit(&demoMode->delaunayClipControllerSet[9], "xbot_ctrl_delaunay9", demoMode->clipPool, j, rate, fps);
+		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_walk_s_l_f");
+		a3clipControllerInit(&demoMode->delaunayClipControllerSet[10], "xbot_ctrl_delaunay10", demoMode->clipPool, j, rate, fps);
+		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_strafe_l_f");
+		a3clipControllerInit(&demoMode->delaunayClipControllerSet[11], "xbot_ctrl_delaunay11", demoMode->clipPool, j, rate, fps);
+		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_turn_l_f");
+		a3clipControllerInit(&demoMode->delaunayClipControllerSet[12], "xbot_ctrl_delaunay12", demoMode->clipPool, j, rate, fps);
+		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_walk_s_r_f");
+		a3clipControllerInit(&demoMode->delaunayClipControllerSet[13], "xbot_ctrl_delaunay13", demoMode->clipPool, j, rate, fps);
+		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_strafe_r_f");
+		a3clipControllerInit(&demoMode->delaunayClipControllerSet[14], "xbot_ctrl_delaunay14", demoMode->clipPool, j, rate, fps);
+		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_turn_r_f");
+		a3clipControllerInit(&demoMode->delaunayClipControllerSet[15], "xbot_ctrl_delaunay15", demoMode->clipPool, j, rate, fps);
+		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_idle_m");
+		a3clipControllerInit(&demoMode->delaunayClipControllerSet[16], "xbot_ctrl_delaunay16", demoMode->clipPool, j, rate, fps);
+		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_jump_m");
+		a3clipControllerInit(&demoMode->delaunayClipControllerSet[17], "xbot_ctrl_delaunay17", demoMode->clipPool, j, rate, fps);
+		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_walk_m");
+		a3clipControllerInit(&demoMode->delaunayClipControllerSet[18], "xbot_ctrl_delaunay18", demoMode->clipPool, j, rate, fps);
+		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_run_m");
+		a3clipControllerInit(&demoMode->delaunayClipControllerSet[19], "xbot_ctrl_delaunay19", demoMode->clipPool, j, rate, fps);
 	}
 
+	//Set delaunay as the displayed mode
+	demoMode->toolMode = animation_tool_delaunay;
 
-	//Graph dimensions
-	demoMode->graphStartX = (a3real)-.9;
-	demoMode->graphStartY = (a3real)-.5;
-	demoMode->graphViewWidth = (a3real).5;
-	demoMode->graphViewHeight = (a3real).5;
+	//Delaunay Points and Triangulation
+	{
+		//Graph dimensions
+		demoMode->graphStartX = (a3real)-.9;
+		demoMode->graphStartY = (a3real)-.5;
+		demoMode->graphViewWidth = (a3real).5;
+		demoMode->graphViewHeight = (a3real).5;
 
-	//Starting value of triangulation position controlled by mouse
-	demoMode->triangulationPosition.x = demoMode->graphStartX;
-	demoMode->triangulationPosition.y = demoMode->graphStartY;
+		//Starting value of triangulation position controlled by mouse
+		demoMode->triangulationPosition.x = demoMode->graphStartX;
+		demoMode->triangulationPosition.y = demoMode->graphStartY;
 
-	//Locations of points normalized to delaunay graph bounds
-	demoMode->delaunayPointSet[0].x = (a3real)0;
-	demoMode->delaunayPointSet[0].y = (a3real)0;
-	demoMode->delaunayPointSet[1].x = (a3real)0;
-	demoMode->delaunayPointSet[1].y = (a3real)1;
-	demoMode->delaunayPointSet[2].x = (a3real)1;
-	demoMode->delaunayPointSet[2].y = (a3real)0;
-	demoMode->delaunayPointSet[3].x = (a3real)1;
-	demoMode->delaunayPointSet[3].y = (a3real)1;
-	demoMode->delaunayPointSet[4].x = (a3real).1;
-	demoMode->delaunayPointSet[4].y = (a3real).5;
-	demoMode->delaunayPointSet[5].x = (a3real).6;
-	demoMode->delaunayPointSet[5].y = (a3real).7;
-	demoMode->delaunayPointSet[6].x = (a3real).9;
-	demoMode->delaunayPointSet[6].y = (a3real).2;
-	demoMode->delaunayPointSet[7].x = (a3real)0;
-	demoMode->delaunayPointSet[7].y = (a3real).1;
-	demoMode->delaunayPointSet[8].x = (a3real).7;
-	demoMode->delaunayPointSet[8].y = (a3real).2;
-	demoMode->delaunayPointSet[9].x = (a3real).8;
-	demoMode->delaunayPointSet[9].y = (a3real).3;
-	demoMode->delaunayPointSet[10].x = (a3real).9;
-	demoMode->delaunayPointSet[10].y = (a3real)0;
-	demoMode->delaunayPointSet[11].x = (a3real).6;
-	demoMode->delaunayPointSet[11].y = (a3real).1;
-	demoMode->delaunayPointSet[12].x = (a3real).9;
-	demoMode->delaunayPointSet[12].y = (a3real).7;
-	demoMode->delaunayPointSet[13].x = (a3real).8;
-	demoMode->delaunayPointSet[13].y = (a3real).1;
-	demoMode->delaunayPointSet[14].x = (a3real).2;
-	demoMode->delaunayPointSet[14].y = (a3real).8;
-	demoMode->delaunayPointSet[15].x = (a3real).4;
-	demoMode->delaunayPointSet[15].y = (a3real).1;
-	demoMode->delaunayPointSet[16].x = (a3real)0;
-	demoMode->delaunayPointSet[16].y = (a3real).5;
-	demoMode->delaunayPointSet[17].x = (a3real).5;
-	demoMode->delaunayPointSet[17].y = (a3real)0;
-	demoMode->delaunayPointSet[18].x = (a3real).5;
-	demoMode->delaunayPointSet[18].y = (a3real)1;
-	demoMode->delaunayPointSet[19].x = (a3real)1;
-	demoMode->delaunayPointSet[19].y = (a3real).5;
+		//Locations of points normalized to delaunay graph bounds
+		demoMode->delaunayPointSet[0].x = (a3real)0;
+		demoMode->delaunayPointSet[0].y = (a3real)0;
+		demoMode->delaunayPointSet[1].x = (a3real)0;
+		demoMode->delaunayPointSet[1].y = (a3real)1;
+		demoMode->delaunayPointSet[2].x = (a3real)1;
+		demoMode->delaunayPointSet[2].y = (a3real)0;
+		demoMode->delaunayPointSet[3].x = (a3real)1;
+		demoMode->delaunayPointSet[3].y = (a3real)1;
+		demoMode->delaunayPointSet[4].x = (a3real).1;
+		demoMode->delaunayPointSet[4].y = (a3real).5;
+		demoMode->delaunayPointSet[5].x = (a3real).6;
+		demoMode->delaunayPointSet[5].y = (a3real).7;
+		demoMode->delaunayPointSet[6].x = (a3real).9;
+		demoMode->delaunayPointSet[6].y = (a3real).2;
+		demoMode->delaunayPointSet[7].x = (a3real)0;
+		demoMode->delaunayPointSet[7].y = (a3real).1;
+		demoMode->delaunayPointSet[8].x = (a3real).7;
+		demoMode->delaunayPointSet[8].y = (a3real).2;
+		demoMode->delaunayPointSet[9].x = (a3real).8;
+		demoMode->delaunayPointSet[9].y = (a3real).3;
+		demoMode->delaunayPointSet[10].x = (a3real).9;
+		demoMode->delaunayPointSet[10].y = (a3real)0;
+		demoMode->delaunayPointSet[11].x = (a3real).6;
+		demoMode->delaunayPointSet[11].y = (a3real).1;
+		demoMode->delaunayPointSet[12].x = (a3real).9;
+		demoMode->delaunayPointSet[12].y = (a3real).7;
+		demoMode->delaunayPointSet[13].x = (a3real).8;
+		demoMode->delaunayPointSet[13].y = (a3real).1;
+		demoMode->delaunayPointSet[14].x = (a3real).2;
+		demoMode->delaunayPointSet[14].y = (a3real).8;
+		demoMode->delaunayPointSet[15].x = (a3real).4;
+		demoMode->delaunayPointSet[15].y = (a3real).1;
+		demoMode->delaunayPointSet[16].x = (a3real)0;
+		demoMode->delaunayPointSet[16].y = (a3real).5;
+		demoMode->delaunayPointSet[17].x = (a3real).5;
+		demoMode->delaunayPointSet[17].y = (a3real)0;
+		demoMode->delaunayPointSet[18].x = (a3real).5;
+		demoMode->delaunayPointSet[18].y = (a3real)1;
+		demoMode->delaunayPointSet[19].x = (a3real)1;
+		demoMode->delaunayPointSet[19].y = (a3real).5;
 
-	//Number of poinsts/poses
-	demoMode->delaunayPointCount = 20;
+		//Number of poinsts/poses
+		demoMode->delaunayPointCount = 20;
 
-	//Run Delaunay Triangulation
-	a3_calculateDelaunayTriangulation(demoMode->delaunayTriangles, &demoMode->triCount, demoMode->delaunayPointSet, &demoMode->delaunayPointCount);
+		//Run Delaunay Triangulation
+		a3_calculateDelaunayTriangulation(demoMode->delaunayTriangles, &demoMode->triCount, demoMode->delaunayPointSet, &demoMode->delaunayPointCount);
+	}
 }
 
 

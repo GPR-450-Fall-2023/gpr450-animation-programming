@@ -53,6 +53,7 @@ typedef enum a3_DemoMode1_Animation_PassName				a3_DemoMode1_Animation_PassName;
 typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetName;
 typedef enum a3_DemoMode1_Animation_ControlTarget			a3_DemoMode1_Animation_ControlTarget;
 typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMode;
+typedef enum a3_DemoMode1_Animation_ToolMode					a3_DemoMode1_Animation_ToolMode;
 #endif	// __cplusplus
 
 
@@ -140,6 +141,14 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 		animation_inputmode_max
 	};
 
+	enum a3_DemoMode1_Animation_ToolMode
+	{
+		animation_tool_default,
+		animation_tool_delaunay,
+		
+		animation_tool_max
+	};
+
 
 //-----------------------------------------------------------------------------
 
@@ -153,6 +162,8 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 		a3_DemoMode1_Animation_PipelineName pipeline;
 		a3_DemoMode1_Animation_PassName pass;
 		a3_DemoMode1_Animation_TargetName targetIndex[animation_pass_max], targetCount[animation_pass_max];
+
+		a3_DemoMode1_Animation_ToolMode toolMode;
 
 		// scene graph
 		a3_Hierarchy sceneGraph[1];
@@ -171,10 +182,13 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 
 		//Delaunay Blend Graph
 		a3vec2 delaunayPointSet[20]; //Set of points on delaunay graph
-		a3_ClipController delaunayPoseSet[20]; //Set of clip controllers corresponding to points on delaunay graph
+		a3_ClipController delaunayClipControllerSet[20]; //Set of clip controllers corresponding to points on delaunay graph
 		
 		a3ui32 delaunayPointCount; //Number of points/poses
 
+		//A more performant way to do this may be to use indices within the point set instead of full triangles, but 
+		//we also need this to temporarily store the super triangle for delaunay triangulation and that triangle does
+		//not have any points that exist in point set so that causes a problem
 		Triangle delaunayTriangles[128];	//Triangles contained in triangulation to be drawn, max 128
 		a3ui32 triCount;	//Number of triangles in triangulation
 

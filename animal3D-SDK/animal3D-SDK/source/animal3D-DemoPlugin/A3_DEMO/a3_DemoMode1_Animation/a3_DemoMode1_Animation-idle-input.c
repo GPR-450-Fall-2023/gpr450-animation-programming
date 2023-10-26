@@ -70,6 +70,11 @@ void a3animation_input_keyCharPress(a3_DemoState const* demoState, a3_DemoMode1_
 
 		// toggle rotation input mode
 		a3demoCtrlCasesLoop(demoMode->ctrl_rotation, animation_inputmode_max, '+', '_');
+
+		//Toggle tool mode (base project vs delaunay)
+		a3demoCtrlCasesLoop(demoMode->toolMode, animation_tool_max, '0', '9');
+
+
 	}
 }
 

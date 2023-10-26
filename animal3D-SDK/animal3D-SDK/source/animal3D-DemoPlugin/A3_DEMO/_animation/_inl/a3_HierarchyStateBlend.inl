@@ -803,6 +803,35 @@ inline a3i32 GetIndexOfTriangle(a3i32* index_out, const Triangle* triArray, cons
 	return -1;
 }
 
+inline a3i32 GetIndexOfVec2(a3i32* index_out, const a3vec2* vecArray, const a3ui32* vecCount, const a3vec2* vecSearch)
+{
+	if (vecArray && vecCount)
+	{
+		for (a3ui32 i = 0; i < *vecCount; i++)
+		{
+			//Determine if triangles are the same
+			a3boolean equal;
+			equal = CompareVec2(vecArray[i], *vecSearch);
+
+			//If triangle is found, store index and break early
+			if (equal)
+			{
+				//Return the given index
+				*index_out = (a3i32)i;
+
+				return 1;
+			}
+		}
+
+		//Return -1 if not found
+		*index_out = -1;
+
+		return 1;
+	}
+
+	return -1;
+}
+
 inline a3i32 GetIndexOfEdge(a3i32* index_out, const Edge* edgeArray, const a3ui32* edgeCount, const Edge* edgeSearch)
 {
 	if (edgeArray && edgeSearch)

@@ -307,6 +307,10 @@ a3boolean CompareVec2(a3vec2 lhs, a3vec2 rhs);
 //Returns -1 if not found
 a3i32 GetIndexOfTriangle(a3i32* index_out, const Triangle* triArray, const a3ui32* triCount, const Triangle* triSearch);
 
+//Returns the index of an a3real if it exists in the array
+//Returns -1 if not found
+a3i32 GetIndexOfVec2(a3i32* index_out, const a3vec2* vecArray, const a3ui32* vecCount, const a3vec2* vecSearch);
+
 //Returns the index of a edge if it exists in the array
 // Takes in an index as an out parameter
 // an array of edges
