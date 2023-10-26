@@ -34,6 +34,11 @@
 
 #include "../_a3_demo_utilities/a3_DemoRenderUtils.h"
 
+#include "../_a3_demo_utilities/a3_DemoMacros.h"
+
+#include <stdio.h>
+#include <math.h>
+
 
 // OpenGL
 #ifdef _WIN32
@@ -44,6 +49,11 @@
 #include <OpenGL/gl3.h>
 #endif	// _WIN32
 
+//-----------------------------------------------------------------------------
+
+void draw_line(const a3_DemoStateShaderProgram* program, a3vec2 start, a3vec2 end, const a3f32* color,
+	a3boolean remap_value, a3real startX, a3real startY, a3real graphWidth, a3real graphHeight);
+a3real remap_render(a3real value, a3real low1, a3real high1, a3real low2, a3real high2);;
 
 //-----------------------------------------------------------------------------
 
@@ -110,6 +120,11 @@ void a3animation_render_controls(a3_DemoState const* demoState, a3_DemoMode1_Ani
 		"Interpolate to target velocity (fake acceleration)",
 	};
 
+	a3byte const* toolModeName[animation_tool_max] = {
+		"Default Project",
+		"Delaunay Blending",
+	};
+
 	// pipeline and target
 	a3_DemoMode1_Animation_RenderProgramName const render = demoMode->render;
 	a3_DemoMode1_Animation_DisplayProgramName const display = demoMode->display;
@@ -148,6 +163,9 @@ void a3animation_render_controls(a3_DemoState const* demoState, a3_DemoMode1_Ani
 		a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 			"    Input mode (rotation) (%u / %u) ('_'/pad A | '+'/pad Y): %s", inputRot + 1, animation_inputmode_max, inputModeName[inputRot]);
 	}
+
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"    Tool mode (%u / %u) ('9' | '0'): %s", demoMode->toolMode + 1, animation_tool_max, toolModeName[demoMode->toolMode]);
 }
 
 
@@ -614,36 +632,314 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 		// hidden volumes
 		if (demoState->displayHiddenVolumes)
 		{
-			const a3_HierarchyState* currentHierarchyState;
-			const a3_Hierarchy* currentHierarchy;
-
-			// set up to draw skeleton
-			currentDemoProgram = demoState->prog_drawColorUnif_instanced;
-			a3shaderProgramActivate(currentDemoProgram->program);
-			currentHierarchyState = demoMode->hierarchyState_skel;
-			currentHierarchy = currentHierarchyState->hierarchy;
-
-			// draw skeletal joints
-			a3shaderUniformBufferActivate(demoState->ubo_transformMVP, 0);
-			a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, rose);
-			currentDrawable = demoState->draw_node;
-			a3vertexDrawableActivateAndRenderInstanced(currentDrawable, currentHierarchy->numNodes);
-
-			// draw bones
-			a3shaderProgramActivate(currentDemoProgram->program);
-			a3shaderUniformBufferActivate(demoState->ubo_transformMVPB, 0);
-			a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, sky);
-			currentDrawable = demoState->draw_link;
-			a3vertexDrawableActivateAndRenderInstanced(currentDrawable, currentHierarchy->numNodes);
-
-			// draw skeletal joint orientations
-			if (demoState->displayTangentBases)
+			/*
+			*
+			*	Draw Skeleton
+			* 
+			*/
 			{
-				currentDemoProgram = demoState->prog_drawColorAttrib_instanced;
+				const a3_HierarchyState* currentHierarchyState;
+				const a3_Hierarchy* currentHierarchy;
+
+				// set up to draw skeleton
+				currentDemoProgram = demoState->prog_drawColorUnif_instanced;
 				a3shaderProgramActivate(currentDemoProgram->program);
+				currentHierarchyState = demoMode->hierarchyState_skel;
+				currentHierarchy = currentHierarchyState->hierarchy;
+
+				// draw skeletal joints
 				a3shaderUniformBufferActivate(demoState->ubo_transformMVP, 0);
-				currentDrawable = demoState->draw_axes;
+				a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, rose);
+				currentDrawable = demoState->draw_node;
 				a3vertexDrawableActivateAndRenderInstanced(currentDrawable, currentHierarchy->numNodes);
+
+				// draw bones
+				a3shaderProgramActivate(currentDemoProgram->program);
+				a3shaderUniformBufferActivate(demoState->ubo_transformMVPB, 0);
+				a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, sky);
+				currentDrawable = demoState->draw_link;
+				a3vertexDrawableActivateAndRenderInstanced(currentDrawable, currentHierarchy->numNodes);
+
+				// draw skeletal joint orientations
+				if (demoState->displayTangentBases)
+				{
+					currentDemoProgram = demoState->prog_drawColorAttrib_instanced;
+					a3shaderProgramActivate(currentDemoProgram->program);
+					a3shaderUniformBufferActivate(demoState->ubo_transformMVP, 0);
+					currentDrawable = demoState->draw_axes;
+					a3vertexDrawableActivateAndRenderInstanced(currentDrawable, currentHierarchy->numNodes);
+				}
+			}
+
+			//If delaunay blend tool is selected, display UI
+			if (demoMode->toolMode == animation_tool_delaunay)
+			{
+				//Get position of mouse clamped within delaunay graph
+			//a3vec2 actualTriPos = { (a3real)a3clamp(demoMode->graphStartX, demoMode->graphStartX + demoMode->graphViewWidth, demoMode->triangulationPosition.x),
+			//	(a3real)a3clamp(demoMode->graphStartY, demoMode->graphStartY + demoMode->graphViewHeight, demoMode->triangulationPosition.y) };
+				a3vec2 actualTriPos = demoMode->triangulationPosition;
+
+
+				//printf("%f, %f\n", actualTriPos.x, actualTriPos.y);
+
+				/*
+				*
+				*	Draw Currently Selected Triangle
+				*
+				*/
+				{
+					if (demoMode->currentTri)
+					{
+						// Draw Triangle (same logic as dot but with just one triangle
+						currentDemoProgram = demoState->prog_drawDot;
+						a3shaderProgramActivate(currentDemoProgram->program);
+						a3vertexDrawableDeactivate();
+
+						a3vec2 pointsToDraw[3]; // Array of points we will draw
+
+						//Initial position is same as mouse
+						pointsToDraw[0].x = remap_render(demoMode->currentTri->pointA.x, 0, 1, demoMode->graphStartX, demoMode->graphStartX + demoMode->graphViewWidth);
+						pointsToDraw[0].y = remap_render(demoMode->currentTri->pointA.y, 0, 1, demoMode->graphStartY, demoMode->graphStartY + demoMode->graphViewHeight);
+						pointsToDraw[1].x = remap_render(demoMode->currentTri->pointB.x, 0, 1, demoMode->graphStartX, demoMode->graphStartX + demoMode->graphViewWidth);
+						pointsToDraw[1].y = remap_render(demoMode->currentTri->pointB.y, 0, 1, demoMode->graphStartY, demoMode->graphStartY + demoMode->graphViewHeight);
+						pointsToDraw[2].x = remap_render(demoMode->currentTri->pointC.x, 0, 1, demoMode->graphStartX, demoMode->graphStartX + demoMode->graphViewWidth);;
+						pointsToDraw[2].y = remap_render(demoMode->currentTri->pointC.y, 0, 1, demoMode->graphStartY, demoMode->graphStartY + demoMode->graphViewHeight);;
+
+						//Submit color to shader
+						if (a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, cyan) < 0)
+						{
+							printf("Problem with uColor\n");
+						}
+
+						// Pass in sectionData (point data) using uAxis
+						if (a3shaderUniformSendFloat(a3unif_vec2, currentDemoProgram->uAxis, 3, (a3f32*)pointsToDraw) < 0)
+						{
+							printf("Problem with uAxis\n");
+						}
+
+						a3i32 segmentCount = 2;
+						// Pass in sectionDataCount using uCount
+						if (a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uCount, 1, &segmentCount) < 0)
+						{
+							printf("Problem with uCount\n");
+						}
+
+						// Execute shader and draw line
+						glDrawArrays(GL_POINTS, 0, 1);
+					}
+					else
+					{
+						printf("RENDER ERROR - No delaunay triangle contains mouse point\n");
+					}
+				}
+
+
+				/*
+				*
+				*	Draw Delaunay Blend Graph
+				*
+				*/
+				{
+					//Code below written by Dillon Drummond based on Joseph Lyons and Dan Buckstein's 
+					// framework for drawing a graph view for the keyframe controller
+
+#define MAX_POINTS 1024 // Max number of points we can display
+
+					const a3ui32 sectionDataCount = 1; // How many points we're passing in
+
+					// DRAW SPLINE (Dan Buckstein)
+					currentDemoProgram = demoState->prog_drawSpline;
+					a3shaderProgramActivate(currentDemoProgram->program);
+					a3vertexDrawableDeactivate();
+
+					//a3vec2 pointsToDraw[MAX_POINTS]; // Array of points we will draw
+
+					//TODO - Optimize by pulling out a set of edges to avoid repeats
+
+
+
+					//Iterate through triangles
+					for (a3ui32 index = 0; index < demoMode->triCount; index++)
+					{
+						const Triangle* tri = &demoMode->delaunayTriangles[index];
+
+						//Draw each individual edge
+						draw_line(currentDemoProgram, tri->pointA, tri->pointB, blue,
+							a3true, demoMode->graphStartX, demoMode->graphStartY, demoMode->graphViewWidth, demoMode->graphViewHeight);
+						draw_line(currentDemoProgram, tri->pointB, tri->pointC, blue,
+							a3true, demoMode->graphStartX, demoMode->graphStartY, demoMode->graphViewWidth, demoMode->graphViewHeight);
+						draw_line(currentDemoProgram, tri->pointC, tri->pointA, blue,
+							a3true, demoMode->graphStartX, demoMode->graphStartY, demoMode->graphViewWidth, demoMode->graphViewHeight);
+					}
+				}
+
+				/*
+				*
+				*	Graph Borders
+				*
+				*/
+				{
+					//Still using spline shader
+
+					a3vec2 bottomLeft = { 0, 0 };
+					a3vec2 topLeft = { 0, 1 };
+					a3vec2 bottomRight = { 1, 0 };
+					a3vec2 topRight = { 1, 1 };
+
+					draw_line(currentDemoProgram, bottomLeft, topLeft, green,
+						a3true, demoMode->graphStartX, demoMode->graphStartY, demoMode->graphViewWidth, demoMode->graphViewHeight);
+					draw_line(currentDemoProgram, topLeft, topRight, green,
+						a3true, demoMode->graphStartX, demoMode->graphStartY, demoMode->graphViewWidth, demoMode->graphViewHeight);
+					draw_line(currentDemoProgram, topRight, bottomRight, green,
+						a3true, demoMode->graphStartX, demoMode->graphStartY, demoMode->graphViewWidth, demoMode->graphViewHeight);
+					draw_line(currentDemoProgram, bottomRight, bottomLeft, green,
+						a3true, demoMode->graphStartX, demoMode->graphStartY, demoMode->graphViewWidth, demoMode->graphViewHeight);
+				}
+
+				/*
+				*
+				*	Inner Triangle Lines
+				*
+				*/
+				{
+					//Still using spline shader
+					a3vec2 tempPos;
+					tempPos.x = remap_render(actualTriPos.x, (a3real)demoMode->graphStartX, (a3real)demoMode->graphStartX + demoMode->graphViewWidth, (a3real)0, (a3real)1);
+					tempPos.y = remap_render(actualTriPos.y, (a3real)demoMode->graphStartY, (a3real)demoMode->graphStartY + demoMode->graphViewHeight, (a3real)0, (a3real)1);
+
+					draw_line(currentDemoProgram, tempPos, demoMode->currentTri->pointA, yellow,
+						a3true, demoMode->graphStartX, demoMode->graphStartY, demoMode->graphViewWidth, demoMode->graphViewHeight);
+					draw_line(currentDemoProgram, tempPos, demoMode->currentTri->pointB, yellow,
+						a3true, demoMode->graphStartX, demoMode->graphStartY, demoMode->graphViewWidth, demoMode->graphViewHeight);
+					draw_line(currentDemoProgram, tempPos, demoMode->currentTri->pointC, yellow,
+						a3true, demoMode->graphStartX, demoMode->graphStartY, demoMode->graphViewWidth, demoMode->graphViewHeight);
+				}
+
+				const a3real DOT_RADIUS = (a3real).01;
+				const a3real TRIANGLE_DOT_RADIUS = (a3real).03;
+				const a3ui32 CIRCLE_SEGMENTS = 16;
+
+				/*
+				*
+				*	Draw Triangle Point Dots
+				*
+				*/
+				{
+					if (demoMode->currentTri)
+					{
+						for (a3ui32 pointIndex = 0; pointIndex < 3; pointIndex++)
+						{
+							//Index of one of the three points in the current triangle
+							a3vec2 currentPoint = *((a3vec2*)demoMode->currentTri + pointIndex);
+
+							a3real radius = (*(demoMode->triBlends + pointIndex) * TRIANGLE_DOT_RADIUS) + (a3real).01;
+
+							// Draw dot
+							currentDemoProgram = demoState->prog_drawDot;
+							a3shaderProgramActivate(currentDemoProgram->program);
+							a3vertexDrawableDeactivate();
+
+							a3vec2 pointsToDraw[MAX_POINTS]; // Array of points we will draw
+
+							//Initial position is same as mouse
+							pointsToDraw[0].x = remap_render(currentPoint.x, 0, 1, demoMode->graphStartX, demoMode->graphStartX + demoMode->graphViewWidth);
+							pointsToDraw[0].y = remap_render(currentPoint.y, 0, 1, demoMode->graphStartY, demoMode->graphStartY + demoMode->graphViewHeight);
+
+							//Increment angle
+							a3real segmentAngle = (a3real)360.0 / CIRCLE_SEGMENTS;
+
+							//Get points around center
+							for (a3ui32 i = 0; i < CIRCLE_SEGMENTS + 1; i++)
+							{
+								pointsToDraw[i + 1].x = remap_render(
+									(a3real)(radius * a3cosd((a3real)(segmentAngle * i))) + currentPoint.x,
+									0, 1, demoMode->graphStartX, demoMode->graphStartX + demoMode->graphViewWidth);
+								pointsToDraw[i + 1].y = remap_render(
+									(a3real)(radius * a3sind((a3real)(segmentAngle * i)) * demoState->frameAspect) + currentPoint.y,
+									0, 1, demoMode->graphStartY, demoMode->graphStartY + demoMode->graphViewHeight);
+							}
+
+							//Set last index to same values as first point after center
+							pointsToDraw[CIRCLE_SEGMENTS + 1].x = pointsToDraw[1].x;
+							pointsToDraw[CIRCLE_SEGMENTS + 1].y = pointsToDraw[1].y;
+
+							//Submit color to shader
+							if (a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, magenta) < 0)
+							{
+								printf("Problem with uColor\n");
+							}
+
+							// Pass in sectionData (point data) using uAxis
+							if (a3shaderUniformSendFloat(a3unif_vec2, currentDemoProgram->uAxis, CIRCLE_SEGMENTS + 2, (a3f32*)pointsToDraw) < 0)
+							{
+								printf("Problem with uAxis\n");
+							}
+
+							a3i32 segmentCount = CIRCLE_SEGMENTS + 1;
+							// Pass in sectionDataCount using uCount
+							if (a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uCount, 1, &segmentCount) < 0)
+							{
+								printf("Problem with uCount\n");
+							}
+
+							// Execute shader and draw line
+							glDrawArrays(GL_POINTS, 0, 1);
+						}
+					}
+				}
+
+				/*
+				*
+				*	Draw Mouse Dot
+				*
+				*/
+				{
+					// Draw dot
+					currentDemoProgram = demoState->prog_drawDot;
+					a3shaderProgramActivate(currentDemoProgram->program);
+					a3vertexDrawableDeactivate();
+
+					a3vec2 pointsToDraw[MAX_POINTS]; // Array of points we will draw
+
+					//Initial position is same as mouse
+					pointsToDraw[0] = actualTriPos;
+
+					//Increment angle
+					a3real segmentAngle = (a3real)360.0 / CIRCLE_SEGMENTS;
+
+					//Get points around center
+					for (a3ui32 i = 0; i < CIRCLE_SEGMENTS + 1; i++)
+					{
+						pointsToDraw[i + 1].x = (a3real)(DOT_RADIUS * a3cosd((a3real)(segmentAngle * i))) + actualTriPos.x;
+						pointsToDraw[i + 1].y = (a3real)(DOT_RADIUS * a3sind((a3real)(segmentAngle * i)) * demoState->frameAspect) + actualTriPos.y;
+					}
+
+					//Set last index to same values as first point after center
+					pointsToDraw[CIRCLE_SEGMENTS + 1].x = pointsToDraw[1].x;
+					pointsToDraw[CIRCLE_SEGMENTS + 1].y = pointsToDraw[1].y;
+
+					//Submit color to shader
+					if (a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, red) < 0)
+					{
+						printf("Problem with uColor\n");
+					}
+
+					// Pass in sectionData (point data) using uAxis
+					if (a3shaderUniformSendFloat(a3unif_vec2, currentDemoProgram->uAxis, CIRCLE_SEGMENTS + 2, (a3f32*)pointsToDraw) < 0)
+					{
+						printf("Problem with uAxis\n");
+					}
+
+					a3i32 segmentCount = CIRCLE_SEGMENTS + 1;
+					// Pass in sectionDataCount using uCount
+					if (a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uCount, 1, &segmentCount) < 0)
+					{
+						printf("Problem with uCount\n");
+					}
+
+					// Execute shader and draw line
+					glDrawArrays(GL_POINTS, 0, 1);
+				}
 			}
 		}
 
@@ -678,6 +974,53 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 		//	}
 		}
 	}
+}
+
+void draw_line(const a3_DemoStateShaderProgram* program, a3vec2 start, a3vec2 end, const a3f32* color,
+	a3boolean remap_value, a3real startX, a3real startY, a3real graphWidth, a3real graphHeight)
+{
+	
+
+	a3vec2 sectionData[] =
+	{
+		{start.x, start.y },
+		{end.x, end.y}
+	};
+
+	if (remap_value)
+	{
+		sectionData[0].x = remap_render(start.x, 0, 1, startX, startX + graphWidth);
+		sectionData[0].y = remap_render(start.y, 0, 1, startY, startY + graphHeight);
+		sectionData[1].x = remap_render(end.x, 0, 1, startX, startX + graphWidth);
+		sectionData[1].y = remap_render(end.y, 0, 1, startY, startY + graphHeight);
+	}
+
+	//Submit color to shader
+	if (a3shaderUniformSendFloat(a3unif_vec4, program->uColor, 1, color) < 0)
+	{
+		printf("Problem with uColor\n");
+	}
+
+	// Pass in sectionData (point data) using uAxis
+	if (a3shaderUniformSendFloat(a3unif_vec2, program->uAxis, 2, (a3f32*)sectionData) < 0)
+	{
+		printf("Problem with uAxis\n");
+	}
+
+	//// Pass in sectionDataCount using uCount
+	//if(a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uCount, 1, &sectionDataCount) < 0)
+	//{
+	//	printf("Problem with uCount\n");
+	//}
+
+	// Execute shader and draw line
+	glDrawArrays(GL_POINTS, 0, 1);
+}
+
+
+inline a3real remap_render(a3real value, a3real low1, a3real high1, a3real low2, a3real high2)
+{
+	return low2 + (value - low1) * (high2 - low2) / (high1 - low1);
 }
 
 

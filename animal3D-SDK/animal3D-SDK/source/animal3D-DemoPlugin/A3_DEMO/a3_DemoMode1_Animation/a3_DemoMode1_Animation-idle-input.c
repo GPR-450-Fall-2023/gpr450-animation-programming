@@ -70,6 +70,11 @@ void a3animation_input_keyCharPress(a3_DemoState const* demoState, a3_DemoMode1_
 
 		// toggle rotation input mode
 		a3demoCtrlCasesLoop(demoMode->ctrl_rotation, animation_inputmode_max, '+', '_');
+
+		//Toggle tool mode (base project vs delaunay)
+		a3demoCtrlCasesLoop(demoMode->toolMode, animation_tool_max, '0', '9');
+
+
 	}
 }
 
@@ -111,6 +116,22 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 
 		// transform to world space
 		a3real4Real4x4Mul(projector->sceneObject->modelMat.m, coord.v);
+	}
+
+	//Get mouse position when right click held
+	if (a3mouseGetState(demoState->mouse, a3mouse_right) == a3input_down)
+	{
+		// get window coordinates
+		a3i32 const x = a3mouseGetX(demoState->mouse) + demoState->frameBorder;
+		a3i32 const y = a3mouseGetY(demoState->mouse) + demoState->frameBorder;
+
+		// transform to NDC
+		a3vec2 coord = a3vec2_one;
+		coord.x = +((a3real)x * demoState->frameWidthInv * a3real_two - a3real_one);
+		coord.y = -((a3real)y * demoState->frameHeightInv * a3real_two - a3real_one);
+
+		demoMode->triangulationPosition.x = (a3real)a3clamp(demoMode->graphStartX, demoMode->graphStartX + demoMode->graphViewWidth, coord.x);
+		demoMode->triangulationPosition.y = (a3real)a3clamp(demoMode->graphStartY, demoMode->graphStartY + demoMode->graphViewHeight, coord.y);
 	}
 	
 	// choose control target

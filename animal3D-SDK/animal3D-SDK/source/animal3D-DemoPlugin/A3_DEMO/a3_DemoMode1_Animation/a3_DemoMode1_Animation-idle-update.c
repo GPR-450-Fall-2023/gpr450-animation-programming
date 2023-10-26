@@ -66,6 +66,10 @@ inline a3real4x2r a3demo_mat2dquat_safe(a3real4x2 Q, a3real4x4 const m)
 	return Q;
 }
 
+inline a3real remap_update(a3real value, a3real low1, a3real high1, a3real low2, a3real high2)
+{
+	return low2 + (value - low1) * (high2 - low2) / (high1 - low1);
+}
 
 //-----------------------------------------------------------------------------
 
@@ -139,8 +143,60 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 			a3mat4_identity.m);
 	}
 
+	/////////////// Delaunay //////////////////
+	
+	//Loop through all triangles to find the one containing the clamped mouse position
+	for (i = 0; i < demoMode->triCount; i++)
+	{
+		Triangle* currentTri = &demoMode->delaunayTriangles[i];
+		a3vec2 currentPoint;
+		currentPoint.x = remap_update(demoMode->triangulationPosition.x, demoMode->graphStartX, demoMode->graphStartX + demoMode->graphViewWidth, 0, 1);
+		currentPoint.y = remap_update(demoMode->triangulationPosition.y, demoMode->graphStartY, demoMode->graphStartY + demoMode->graphViewHeight, 0, 1);
+		
+		//Get area of triangles created from one edge of triangle and the mouse point
+		a3real areaPAB = a3absolute((currentTri->pointA.x * (currentTri->pointB.y - currentPoint.y) +
+			currentTri->pointB.x * (currentPoint.y - currentTri->pointA.y) +
+			currentPoint.x * (currentTri->pointA.y - currentTri->pointB.y)) / (a3real)2.0);
+		a3real areaPBC = a3absolute((currentTri->pointB.x * (currentTri->pointC.y - currentPoint.y) +
+			currentTri->pointC.x * (currentPoint.y - currentTri->pointB.y) +
+			currentPoint.x * (currentTri->pointB.y - currentTri->pointC.y)) / (a3real)2.0);
+		a3real areaPAC = a3absolute((currentTri->pointA.x * (currentTri->pointC.y - currentPoint.y) +
+			currentTri->pointC.x * (currentPoint.y - currentTri->pointA.y) +
+			currentPoint.x * (currentTri->pointA.y - currentTri->pointC.y)) / (a3real)2.0);
 
-	// skeletal
+		//Get area of Delaunay Triangle
+		a3real areaABC = a3absolute((currentTri->pointA.x * (currentTri->pointB.y - currentTri->pointC.y) +
+			currentTri->pointB.x * (currentTri->pointC.y - currentTri->pointA.y) +
+			currentTri->pointC.x * (currentTri->pointA.y - currentTri->pointB.y)) / (a3real)2.0);
+
+		//If sum of new triangles equals the delaunay triangle, the point is contained by that triangle
+		if (CompareFloats(areaPAB + areaPBC + areaPAC, areaABC))
+		{
+			demoMode->currentTri = currentTri;
+
+			//Get normalized areas of triangles (all 3 add up to 1)
+			a3real ratioPAB = areaPAB / areaABC;
+			a3real ratioPBC = areaPBC / areaABC;
+			a3real ratioPAC = areaPAC / areaABC;
+
+			//Blends are directly proportionate to the area of the triangle that does not contain their corresponding point
+			demoMode->triBlends[0] = ratioPBC;
+			demoMode->triBlends[1] = ratioPAC;
+			demoMode->triBlends[2] = ratioPAB;
+
+
+			/*printf("AB: %f, %f   BC: %f, %f   AC: %f, %f   Blends: %f, %f, %f\n", 
+				currentTri->pointA.x, currentTri->pointA.y,
+				currentTri->pointB.x, currentTri->pointB.y,
+				currentTri->pointC.x, currentTri->pointC.y,
+				demoMode->triBlends[0], demoMode->triBlends[1], demoMode->triBlends[2]);*/
+			break; //Break when we've found the containing triangle
+		}
+	}
+
+
+	/////////////// Skeletal //////////////////
+
 	if (demoState->updateAnimation)
 	{
 		a3real const dtr = (a3real)dt;
@@ -151,16 +207,34 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		a3clipControllerUpdate(demoMode->clipCtrlA, dt);
 		a3clipControllerUpdate(demoMode->clipCtrlB, dt);
 
+		//Update all delaunay clip controllers
+		for (a3ui32 controlIndex = 0; controlIndex < demoMode->delaunayPointCount; controlIndex++)
+		{
+			a3clipControllerUpdate(&demoMode->delaunayClipControllerSet[controlIndex], dt);
+		}
+
 		// STEP
 	//	a3hierarchyPoseCopy(activeHS->animPose,
 	//		demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipCtrl->keyframeIndex,
 	//		demoMode->hierarchy_skel->numNodes);
 
-		// LERP
-		a3hierarchyPoseLerp(activeHS->animPose,
-			demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[clipCtrl->keyframeIndex].sampleIndex0,
-			demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[clipCtrl->keyframeIndex].sampleIndex1,
-			(a3f32)clipCtrl->keyframeParam, demoMode->hierarchy_skel->numNodes);
+		if (demoMode->toolMode == animation_tool_default)
+		{
+			// LERP
+			a3hierarchyPoseLerp(activeHS->animPose,
+				demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[clipCtrl->keyframeIndex].sampleIndex0,
+				demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[clipCtrl->keyframeIndex].sampleIndex1,
+				(a3f32)clipCtrl->keyframeParam, demoMode->hierarchy_skel->numNodes);
+		}
+		else if (demoMode->toolMode == animation_tool_delaunay)
+		{
+			//TODO - condense the functionality from earlier in update into this function
+			a3hierarchyPoseOpDelaunay(activeHS->animPose, demoMode->hierarchy_skel->numNodes,
+				demoMode->hierarchyPoseGroup_skel->hpose,
+				demoMode->delaunayPointSet, demoMode->delaunayClipControllerSet, &demoMode->delaunayPointCount,
+				demoMode->currentTri, demoMode->triBlends);
+		}
+		
 
 		// FK pipeline
 		//a3hierarchyPoseConcat(activeHS->localSpace,	// goal to calculate
@@ -256,6 +330,5 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		a3bufferRefillOffset(demoState->ubo_transformBlend, 0, t_skin_size, dq_skin_size, demoMode->dq_skin);
 	}
 }
-
 
 //-----------------------------------------------------------------------------

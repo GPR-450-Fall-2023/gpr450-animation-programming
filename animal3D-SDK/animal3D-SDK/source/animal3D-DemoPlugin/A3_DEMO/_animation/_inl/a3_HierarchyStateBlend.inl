@@ -28,7 +28,11 @@
 #define __ANIMAL3D_HIERARCHYSTATEBLEND_INL
 
 #include <math.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 
+#include "../a3_KeyframeAnimationController.h"
 
 //-----------------------------------------------------------------------------
 
@@ -198,7 +202,7 @@ inline a3_SpatialPose* a3spatialPoseOpTriangular(a3_SpatialPose* pose_out, a3_Sp
 	a3_SpatialPose scaled0 = a3spatialPoseDOpScale(*pose0, u0);
 	a3_SpatialPose scaled1 = a3spatialPoseDOpScale(*pose1, u1);
 
-	float gamma = 1 - u0 - u1;
+	a3real gamma = (a3real)1 - u0 - u1;
 
 	a3_SpatialPose scaled2 = a3spatialPoseDOpScale(*pose2, gamma);
 
@@ -616,12 +620,80 @@ inline void ConstructTriangle(Triangle* tri_out,
 	const a3real pointBX, const a3real pointBY,
 	const a3real pointCX, const a3real pointCY)
 {
-	tri_out->pointA[0] = pointAX;
-	tri_out->pointA[1] = pointAY;
-	tri_out->pointB[0] = pointBX;
-	tri_out->pointB[1] = pointBY;
-	tri_out->pointC[0] = pointCX;
-	tri_out->pointC[1] = pointCY;
+	//Edge 1
+	tri_out->pointA.x = pointAX;
+	tri_out->pointA.y = pointAY;
+
+	//Edge 2
+	tri_out->pointB.x = pointBX;
+	tri_out->pointB.y = pointBY;
+
+	//Edge 3
+	tri_out->pointC.x = pointCX;
+	tri_out->pointC.y = pointCY;
+}
+
+inline a3i32 TrianglesEquivalent(a3boolean* equal_out, const Triangle* lhs, const Triangle* rhs)
+{
+	if (lhs && rhs && equal_out)
+	{
+		//Check each point against all 3 of the other triangle, order doesn't matter
+		*equal_out = (
+			(CompareVec2(lhs->pointA, rhs->pointA) || CompareVec2(lhs->pointA, rhs->pointB) || CompareVec2(lhs->pointA, rhs->pointC)) &&
+			(CompareVec2(lhs->pointB, rhs->pointA) || CompareVec2(lhs->pointB, rhs->pointB) || CompareVec2(lhs->pointB, rhs->pointC)) &&
+			(CompareVec2(lhs->pointC, rhs->pointA) || CompareVec2(lhs->pointC, rhs->pointB) || CompareVec2(lhs->pointC, rhs->pointC))
+			);
+
+		return 1;
+	}
+
+	return -1;
+}
+
+inline void PrintTriangle(Triangle* tri)
+{
+	//Print out 3 points of triangle
+	printf("Point A: (%f, %f)   Point B: (%f, %f)   Point C: (%f, %f)\n",
+		tri->pointA.x, tri->pointA.y, 
+		tri->pointB.x, tri->pointB.y, 
+		tri->pointC.x, tri->pointC.y);
+}
+
+inline a3i32 ConstructEdgesFromTriangle(Edge* edges_out, const Triangle* tri_in)
+{
+	if (edges_out && tri_in)
+	{
+		//Edge 1
+		edges_out[0].pointA = tri_in[0].pointA;
+		edges_out[0].pointB = tri_in[0].pointB;
+
+		//Edge 2
+		edges_out[1].pointA = tri_in[0].pointB;
+		edges_out[1].pointB = tri_in[0].pointC;
+
+		//Edge 3
+		edges_out[2].pointA = tri_in[0].pointC;
+		edges_out[2].pointB = tri_in[0].pointA;
+
+		return 1;
+	}
+
+	return -1;
+}
+
+inline a3i32 EdgesEquivalent(a3boolean* equal_out, const Edge* lhs, const Edge* rhs)
+{
+	if (lhs && rhs && equal_out)
+	{
+		//Check each point against both of the others, values may be flipped
+		*equal_out =
+			(CompareVec2(lhs->pointA, rhs->pointA) || CompareVec2(lhs->pointA, rhs->pointB)) &&
+			(CompareVec2(lhs->pointB, rhs->pointA) || CompareVec2(lhs->pointB, rhs->pointB));
+
+		return 1;
+	}
+
+	return -1;
 }
 
 // The equation for finding the circumcenter of a triangle was derived from this website
@@ -630,24 +702,68 @@ inline a3i32 a3_findCircumcenter(Circumcircle* circum_out, Triangle* tri)
 {
 	if (circum_out)
 	{
-		a3real2 abMid;
-		a3real2Set(abMid, (tri->pointA[0] + tri->pointB[0]) / (a3real)2.0, (tri->pointA[1] + tri->pointB[1]) / (a3real)2.0);
+		a3vec3 ac = { tri->pointC.x - tri->pointA.x, tri->pointC.y - tri->pointA.y, 0 };
+		a3vec3 ab = { tri->pointB.x - tri->pointA.x, tri->pointB.y - tri->pointA.y, 0 };
+		a3vec3 abCrossAC;
+		a3real3Cross(abCrossAC.v, ab.v, ac.v);
 
-		a3real2 bcMid;
-		a3real2Set(bcMid, (tri->pointC[0] + tri->pointB[0]) / (a3real)2.0, (tri->pointC[1] + tri->pointB[1]) / (a3real)2.0);
+		a3vec3 abCrossACCrossAB;
+		a3real3Cross(abCrossACCrossAB.v, abCrossAC.v, ab.v);
 
-		a3real abSlope = (tri->pointB[0] - tri->pointA[0]) / (tri->pointB[1] - tri->pointA[1]);
-		a3real bcSlope = (tri->pointC[0] - tri->pointB[0]) / (tri->pointC[1] - tri->pointB[1]);
+		a3vec3 mul1;
+		a3real3SetReal3(mul1.v, abCrossACCrossAB.v);
+		a3real3MulS(mul1.v, a3real3LengthSquared(ac.v));
+		
+		a3vec3 acCrossABCrossAC;
+		a3real3Cross(acCrossABCrossAC.v, ac.v, abCrossAC.v);
 
-		//Expanded formula for solving for x using point-slope equation
-		circum_out->center[0] = ((abSlope * abMid[0]) - abMid[1] - (bcSlope * bcMid[0]) + bcMid[1]) / (abSlope - bcSlope);
-		circum_out->center[1] = (abSlope * (circum_out->center[0] - abMid[0])) + abMid[1];
+		a3vec3 mul2;
+		a3real3SetReal3(mul2.v, acCrossABCrossAC.v);
+		a3real3MulS(mul2.v, a3real3LengthSquared(ab.v));
 
-		a3real2 diff;
-		diff[0] = circum_out->center[0] - tri->pointA[0];
-		diff[1] = circum_out->center[1] - tri->pointA[1];
+		a3vec3 sum;
+		a3real3Sum(sum.v, mul1.v, mul2.v);
 
-		circum_out->radius = a3real2Length(diff);
+		a3real denominator = (a3real)2.0 * a3real3LengthSquared(abCrossAC.v);
+
+		a3vec3 aToCenter;
+		a3real3SetReal3(aToCenter.v, sum.v);
+		a3real3DivS(aToCenter.v, denominator);
+
+		circum_out->radius = a3real3Length(aToCenter.v);
+		
+		if (circum_out->radius < 0) { circum_out->radius = circum_out->radius * -1; }
+
+		a3real3 newCenter;
+		a3real3Sum(newCenter, tri->pointA.v, aToCenter.v);
+
+		circum_out->center.x = newCenter[0];
+		circum_out->center.y = newCenter[1];
+		
+		return 1;
+	}
+
+	return -1;
+}
+
+inline a3i32 RemoveTriangleFromArray(Triangle* triArray_out, a3ui32* triCount, const a3ui32* index)
+{
+	if (triArray_out && triCount)
+	{
+		//Move all elements past the given index back one space to erase it
+		for (a3ui32 i = (a3ui32)(*index); i < *triCount; i++)
+		{
+			triArray_out[i] = triArray_out[i + 1];
+		}
+
+		//Erase the value at the end of the array if there is one
+		if (*triCount > 0)
+		{
+			memset(&triArray_out[*triCount - 1], 0, sizeof(Triangle));
+		}
+
+		//Update number of triangles
+		*triCount -= 1;
 
 		return 1;
 	}
@@ -655,43 +771,200 @@ inline a3i32 a3_findCircumcenter(Circumcircle* circum_out, Triangle* tri)
 	return -1;
 }
 
-//Given a set of points, calculate the triangulation of said points and return the triangles in that triangulation
-inline a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, const a3vec2* triSet, const a3real* triCount)
+inline a3i32 RemoveEdgeFromArray(Edge* edgeArray_out, a3ui32* edgeCount, const a3ui32* index)
 {
-	//Declare empty list/array of triangles
-	//Find super triangle
-	//Add it to list of triangles called "triangles"
-	//for every point "p"
-		//Initialize a list that will have triangles containing this point (in their circumcircle)
-		//Initialize a hash map of <Edge, int> that will have number of occurrences of each edge
-		// 
-		//for every triangle (new ones added at each iteration of the above loop)
-			//if circumsphere contains the point
-				//add the triangle to list of triangles containing this point
-				//update hashmap of occurences to add 1 to the occurence of each edge in the triangle
-		// 
-		//Create a list of edges "polygon"
-		//for every containing triangle
-			//get the edges within that triangle
-			//for each edge in triangle
-				//if edge only occurs once in "occurences"
-					//add edge to list of edges "polygon"
-		//
-		//for every triangle in containing
-			//remove that triangle from "triangles"
-		//
-		//for every edge in "polygon"
-			//add a new triangle using the current point "p" as the third point
+	if (edgeArray_out && edgeCount)
+	{
+		//Move all elements past the given index back one space to erase it
+		for (a3ui32 i = (a3ui32)(*index); i < *edgeCount; i++)
+		{
+			edgeArray_out[i] = edgeArray_out[i + 1];
+		}
 
-	//Positions are normalized between 0 and 1
-	//This super triangle is guaranteed to contain the entire square with the corners of 0,0 and 1,1
-	Triangle superTriangle;
-	ConstructTriangle(&superTriangle, 
-		-.1, -.1,
-		2.1, 0,
-		0, 2.1);
+		//Erase the value at the end of the array if there is one
+		if (*edgeCount > 0)
+		{
+			memset(&edgeArray_out[*edgeCount - 1], 0, sizeof(Triangle));
+		}
 
-	triArray_out[0] = superTriangle;
+		//Update number of edges
+		*edgeCount -= 1;
+
+		return 1;
+	}
+
+	return -1;
+}
+
+//Compares floats to see if they are reasonably close enough to be considered equal
+inline a3boolean CompareFloats(a3real lhs, a3real rhs)
+{
+	return fabs(lhs - rhs) < .00001f;
+}
+
+//Compares vec2s to see if they are reasonably close enough to be considered equal
+inline a3boolean CompareVec2(a3vec2 lhs, a3vec2 rhs)
+{
+	//Uses compare floats to check equality within certain bound
+	return CompareFloats(lhs.x, rhs.x) && CompareFloats(lhs.y, rhs.y);
+}
+
+inline a3i32 GetIndexOfTriangle(a3i32* index_out, const Triangle* triArray, const a3ui32* triCount, const Triangle* triSearch)
+{
+	if (triArray && triSearch)
+	{
+		for (a3ui32 i = 0; i < *triCount; i++)
+		{
+			//Determine if triangles are the same
+			a3boolean equal;
+			TrianglesEquivalent(&equal, &triArray[i], triSearch);
+
+			//If triangle is found, store index and break early
+			if (equal)
+			{
+				//Return the given index
+				*index_out = (a3i32)i;
+
+				return 1;
+			}
+		}
+
+		//Return -1 if not found
+		*index_out = -1;
+
+		return 1;
+	}
+
+	return -1;
+}
+
+inline a3i32 GetIndexOfVec2(a3i32* index_out, const a3vec2* vecArray, const a3ui32* vecCount, const a3vec2* vecSearch)
+{
+	if (vecArray && vecCount)
+	{
+		for (a3ui32 i = 0; i < *vecCount; i++)
+		{
+			//Determine if triangles are the same
+			a3boolean equal;
+			equal = CompareVec2(vecArray[i], *vecSearch);
+
+			//If triangle is found, store index and break early
+			if (equal)
+			{
+				//Return the given index
+				*index_out = (a3i32)i;
+
+				return 1;
+			}
+		}
+
+		//Return -1 if not found
+		*index_out = -1;
+
+		return 1;
+	}
+
+	return -1;
+}
+
+inline a3i32 GetIndexOfEdge(a3i32* index_out, const Edge* edgeArray, const a3ui32* edgeCount, const Edge* edgeSearch)
+{
+	if (edgeArray && edgeSearch)
+	{
+		for (a3ui32 i = 0; i < *edgeCount; i++)
+		{
+			//Determine if edges are the same
+			a3boolean equal;
+			EdgesEquivalent(&equal, &edgeArray[i], edgeSearch);
+
+			//If triangle is found, store index and break early
+			if (equal)
+			{
+				//Return the given index
+				*index_out = (a3i32)i;
+
+				return 1;
+			}
+		}
+
+		//Return -1 if not found
+		*index_out = -1;
+
+		return 1;
+	}
+
+	return -1;
+}
+
+//Pointer based spatial pose level operation using delaunay blending
+inline a3_SpatialPose* a3spatialPoseOPDelaunay(a3_SpatialPose* pose_out,
+	const a3_SpatialPose* poseA0, const a3_SpatialPose* poseA1,
+	const a3_SpatialPose* poseB0, const a3_SpatialPose* poseB1,
+	const a3_SpatialPose* poseC0, const a3_SpatialPose* poseC1,
+	const a3real keyframeParam1, const a3real keyframeParam2, const a3real keyframeParam3,
+	const a3real* blends		//Blend parameter inputs
+)
+{						   
+	//Bilerp poseA, B, and C using their respective keyframe parameters to get the spatial pose at the currnet moment
+	a3_SpatialPose pose0, pose1, pose2;
+	a3spatialPoseLerp(&pose0, poseA0, poseA1, keyframeParam1);
+	a3spatialPoseLerp(&pose1, poseB0, poseB1, keyframeParam2);
+	a3spatialPoseLerp(&pose2, poseC0, poseC1, keyframeParam3);
+
+	//Triangular operation on the resulting poses 
+	a3spatialPoseOpTriangular(pose_out, &pose0, &pose1, &pose2, blends[0], blends[1]);
+	//*pose_out = *poseC0;
+	//a3spatialPoseOpCopy(pose_out, poseA0);
+
+	return pose_out;
+}
+
+// pointer-based delaunay operation for hierarchical pose
+inline a3_HierarchyPose* a3hierarchyPoseOpDelaunay(a3_HierarchyPose* pose_out, a3ui32 numNodes,
+	const a3_HierarchyPose* poses,	//Poses from which to get poses by indexes in clip controllers
+	const a3vec2* pointSet, const a3_ClipController* clipCtrls, const a3ui32* pointCount, //Data per point
+	const Triangle* currentTri,	//Currently selected triangle
+	const a3real* blends		//Blend parameter inputs
+)
+{
+	//Find each point from the selected triangle in the point set
+	//Get the clip controller associated with each point
+	const a3_ClipController* controllers[3];
+
+	//Above process for point A
+	a3i32 indexA = -1;
+	GetIndexOfVec2(&indexA, pointSet, pointCount, &currentTri->pointA);
+	controllers[0] = &clipCtrls[indexA];
+
+	printf("Controller: %s   KeyframeIndex: %i\n", controllers[0]->name, controllers[0]->keyframe->sampleIndex0);
+
+	//Above process for point B
+	a3i32 indexB = -1;
+	GetIndexOfVec2(&indexB, pointSet, pointCount, &currentTri->pointB);
+	controllers[1] = &clipCtrls[indexB];
+
+	//Above process for point C
+	a3i32 indexC = -1;
+	GetIndexOfVec2(&indexC, pointSet, pointCount, &currentTri->pointC);
+	controllers[2] = &clipCtrls[indexC];
+
+	for (a3ui32 i = 0; i < numNodes; i++) {
+
+		//Get pose0		demoMode->clipPool->keyframe[clipCtrl->keyframeIndex].sampleIndex0
+		const a3_SpatialPose* poseA0 = (poses + controllers[0]->clipPool->keyframe[controllers[0]->keyframeIndex].sampleIndex0)->pose + i;
+		const a3_SpatialPose* poseB0 = (poses + controllers[1]->clipPool->keyframe[controllers[1]->keyframeIndex].sampleIndex0)->pose + i;
+		const a3_SpatialPose* poseC0 = (poses + controllers[2]->clipPool->keyframe[controllers[2]->keyframeIndex].sampleIndex0)->pose + i;
+
+		//Get pose1
+		const a3_SpatialPose* poseA1 = (poses + controllers[0]->clipPool->keyframe[controllers[0]->keyframeIndex].sampleIndex1)->pose + i;
+		const a3_SpatialPose* poseB1 = (poses + controllers[1]->clipPool->keyframe[controllers[1]->keyframeIndex].sampleIndex1)->pose + i;
+		const a3_SpatialPose* poseC1 = (poses + controllers[2]->clipPool->keyframe[controllers[2]->keyframeIndex].sampleIndex1)->pose + i;
+
+		a3spatialPoseOPDelaunay(&pose_out->pose[i], poseA0, poseA1, poseB0, poseB1, poseC0, poseC1, 
+			(a3real)controllers[0]->keyframeParam, (a3real)controllers[1]->keyframeParam, (a3real)controllers[2]->keyframeParam, blends);
+	}
+
+	return pose_out;
 }
 
 

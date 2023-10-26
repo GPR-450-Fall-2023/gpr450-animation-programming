@@ -38,9 +38,14 @@ extern "C"
 
 #endif	// __cplusplus
 
+//Typedefs
 typedef struct Circumcircle Circumcircle;
 typedef struct Edge Edge;
 typedef struct Triangle Triangle;
+typedef struct a3_ClipController a3_ClipController;
+
+//Forward Declarations
+struct a3_ClipController;
 
 
 //-----------------------------------------------------------------------------
@@ -259,40 +264,110 @@ a3real a3smoothStep(a3real x);
 //-----------------------------------------------------------------------------
 
 // Delaunay Triangulation
+// Referenced C#/Unity code on a previous project by Dillon Drummond: 
+// https://github.com/dillondrum70/daedalus-dungeon-generator/blob/8c4f452b369f37f34d6a853c8958b298a805f42e/Assets/Scripts/DelaunayTriangulation.cs
+// https://github.com/dillondrum70/daedalus-dungeon-generator/blob/8c4f452b369f37f34d6a853c8958b298a805f42e/Assets/Scripts/DungeonGenerator.cs#L246
 
 struct Circumcircle
 {
-	a3real2 center;
+	a3vec2 center;
 	a3real radius;
 };
 
 struct Edge
 {
-	a3real2 pointA;
-	a3real2 pointB;
+	a3vec2 pointA;
+	a3vec2 pointB;
 };
 
 struct Triangle
 {
 	//Points that define triangle
-	a3real2 pointA;
-	a3real2 pointB;
-	a3real2 pointC;
+	a3vec2 pointA;
+	a3vec2 pointB;
+	a3vec2 pointC;
 };
 
+//Fill values in triangle
 void ConstructTriangle(Triangle* tri_out,
 	const a3real pointAX, const a3real pointAY,
 	const a3real pointBX, const a3real pointBY,
 	const a3real pointCX, const a3real pointCY);
 
+//Check if two triangles are equivalent
+//Checks values not addresses
+a3i32 TrianglesEquivalent(a3boolean* equal_out, const Triangle* lhs, const Triangle* rhs);
+
+//Print out the points in the triangle
+void PrintTriangle(Triangle* tri);
+
+
+
+//Construct edges from triangle
+a3i32 ConstructEdgesFromTriangle(Edge* edges_out, const Triangle* tri_in);
+
+//Chcek if two edges are equivalent
+//Checks values not addresses
+a3i32 EdgesEquivalent(a3boolean* equal_out, const Edge* lhs, const Edge* rhs);
+
+
+
 //Find circumcenter of a triangle
 a3i32 a3_findCircumcenter(Circumcircle* circum_out, Triangle* tri);
 
+
+
+//Removes an entry from an array and shifts everything in front of it backwards, updates the count value to match
+a3i32 RemoveTriangleFromArray(Triangle* triArray_out, a3ui32* triCount, const a3ui32* index);
+
+//Same as RemoveTriangleFromArray but for edges
+a3i32 RemoveEdgeFromArray(Edge* edgeArray_out, a3ui32* edgeCount, const a3ui32* index);
+
+
+
+//Compares floats to see if they are reasonably close enough to be considered equal
+a3boolean CompareFloats(a3real lhs, a3real rhs);
+
+//Compares vec2s to see if they are reasonably close enough to be considered equal
+a3boolean CompareVec2(a3vec2 lhs, a3vec2 rhs);
+
+
+
+//Returns the index of a triangle if it exists in the array
+//Returns -1 if not found
+a3i32 GetIndexOfTriangle(a3i32* index_out, const Triangle* triArray, const a3ui32* triCount, const Triangle* triSearch);
+
+//Returns the index of an a3real if it exists in the array
+//Returns -1 if not found
+a3i32 GetIndexOfVec2(a3i32* index_out, const a3vec2* vecArray, const a3ui32* vecCount, const a3vec2* vecSearch);
+
+//Returns the index of a edge if it exists in the array
+// Takes in an index as an out parameter
+// an array of edges
+// the length of the array of edges
+// and the edge to search for
+//Returns -1 if not found
+a3i32 GetIndexOfEdge(a3i32* index_out, const Edge* edgeArray, const a3ui32* edgeCount, const Edge* edgeSearch);
+
 //Given a set of points, calculate the triangulation of said points and return the triangles in that triangulation
-a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, const a3vec2* triSet, const a3real* triCount);
+a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, a3ui32* triCount_out, const a3vec2* pointSet, const a3ui32* pointCount);
 
+//Pointer based spatial pose level operation using delaunay blending
+a3_SpatialPose* a3spatialPoseOPDelaunay(a3_SpatialPose* pose_out,
+	const a3_SpatialPose* poseA0, const a3_SpatialPose* poseA1,
+	const a3_SpatialPose* poseB0, const a3_SpatialPose* poseB1,
+	const a3_SpatialPose* poseC0, const a3_SpatialPose* poseC1,
+	const a3real keyframeParam1, const a3real keyframeParam2, const a3real keyframeParam3,
+	const a3real* blends		//Blend parameter inputs
+);
 
-a3_SpatialPose* a3spatialPoseOPDelaunay(a3_SpatialPose* pose_out, a3real2p point);
+// pointer-based delaunay operation for hierarchical pose
+a3_HierarchyPose* a3hierarchyPoseOpDelaunay(a3_HierarchyPose* pose_out, a3ui32 numNodes,
+	const a3_HierarchyPose* poses,	//Poses from which to get poses by indexes in clip controllers
+	const a3vec2* pointSet, const a3_ClipController* clipCtrls, const a3ui32* pointCount, //Data per point
+	const Triangle* currentTri,	//Currently selected triangle
+	const a3real* blends		//Blend parameter inputs
+);
 
 
 #ifdef __cplusplus

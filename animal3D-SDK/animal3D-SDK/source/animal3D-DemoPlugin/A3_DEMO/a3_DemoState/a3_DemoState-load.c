@@ -495,6 +495,7 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 			// vertex shaders
 			// base
 			a3_DemoStateShader
+				passIDs_vs[1],
 				passthru_transform_vs[1],
 				passColor_transform_vs[1],
 				passthru_transform_instanced_vs[1],
@@ -514,6 +515,10 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 			// 00-common
 			a3_DemoStateShader
 				drawTangentBasis_gs[1];
+			// custom
+			a3_DemoStateShader
+				drawSpline_gs[1],
+				drawDot_gs[1];
 
 			// fragment shaders
 			// base
@@ -534,6 +539,7 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 
 			// vs
 			// base
+			{ { { 0 },	"shdr-vs:pass-id",					a3shader_vertex  ,	1,{ A3_DEMO_VS"passIDs_vs4x.glsl" } } },
 			{ { { 0 },	"shdr-vs:passthru-trans",			a3shader_vertex  ,	1,{ A3_DEMO_VS"e/passthru_transform_vs4x.glsl" } } },
 			{ { { 0 },	"shdr-vs:pass-col-trans",			a3shader_vertex  ,	1,{ A3_DEMO_VS"e/passColor_transform_vs4x.glsl" } } },
 			{ { { 0 },	"shdr-vs:passthru-trans-inst",		a3shader_vertex  ,	1,{ A3_DEMO_VS"e/passthru_transform_instanced_vs4x.glsl" } } },
@@ -556,6 +562,10 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 			// 00-common
 			{ { { 0 },	"shdr-gs:draw-tb",					a3shader_geometry,	2,{ A3_DEMO_GS"00-common/e/drawTangentBasis_gs4x.glsl",
 																					A3_DEMO_GS"00-common/e/utilCommon_gs4x.glsl",} } },
+
+			// custom
+			{ { { 0 },	"shdr-gs:draw-spline",				a3shader_geometry,	1,{ A3_DEMO_GS"custom/drawSpline_gs4x.glsl",} } },
+			{ { { 0 },	"shdr-gs:draw-dot",				a3shader_geometry,	1,{ A3_DEMO_GS"custom/drawDot_gs4x.glsl",} } },
 
 			// fs
 			// base
@@ -713,6 +723,21 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passTangentBasis_skin_transform_instanced_vs->shader);
 	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawTangentBasis_gs->shader);
 	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawColorAttrib_fs->shader);
+
+	// CUSTOM programs:
+	// draw spline
+	currentDemoProg = demoState->prog_drawSpline;
+	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-spline");
+	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passIDs_vs->shader);
+	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawSpline_gs->shader);
+	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawColorUnif_fs->shader);
+
+	// draw dot
+	currentDemoProg = demoState->prog_drawDot;
+	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-dot");
+	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passIDs_vs->shader);
+	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawDot_gs->shader);
+	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawColorUnif_fs->shader);
 
 
 	// activate a primitive for validation
