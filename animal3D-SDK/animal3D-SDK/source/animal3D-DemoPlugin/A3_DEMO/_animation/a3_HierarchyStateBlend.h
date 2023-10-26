@@ -38,9 +38,14 @@ extern "C"
 
 #endif	// __cplusplus
 
+//Typedefs
 typedef struct Circumcircle Circumcircle;
 typedef struct Edge Edge;
 typedef struct Triangle Triangle;
+typedef struct a3_ClipController a3_ClipController;
+
+//Forward Declarations
+struct a3_ClipController;
 
 
 //-----------------------------------------------------------------------------
@@ -322,7 +327,19 @@ a3i32 GetIndexOfEdge(a3i32* index_out, const Edge* edgeArray, const a3ui32* edge
 //Given a set of points, calculate the triangulation of said points and return the triangles in that triangulation
 a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, a3ui32* triCount_out, const a3vec2* pointSet, const a3ui32* pointCount);
 
-a3_SpatialPose* a3spatialPoseOPDelaunay(a3_SpatialPose* pose_out, a3real2p point);
+//Pointer based spatial pose level operation using delaunay blending
+a3_SpatialPose* a3spatialPoseOPDelaunay(a3_SpatialPose* pose_out,
+	const a3vec2* pointSet, const a3_ClipController* clipCtrls, const a3ui32* pointCount, //Data per point
+	const Triangle* triArray,	//Delaunay Triangulation based on pointSet
+	const a3real* blends		//Blend parameter inputs
+);
+
+// pointer-based delaunay operation for hierarchical pose
+a3_HierarchyPose* a3hierarchyPoseOpDelaunay(a3_HierarchyPose* pose_out, a3ui32 numNodes,
+	const a3vec2* pointSet, const a3_ClipController* clipCtrls, const a3ui32* pointCount, //Data per point
+	const Triangle* triArray,	//Delaunay Triangulation based on pointSet
+	const a3real* blends		//Blend parameter inputs
+);
 
 
 #ifdef __cplusplus

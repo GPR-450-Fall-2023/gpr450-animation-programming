@@ -228,7 +228,9 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		}
 		else if (demoMode->toolMode == animation_tool_delaunay)
 		{
-
+			a3hierarchyPoseOpDelaunay(activeHS->animPose, demoMode->hierarchy_skel->numNodes,
+				demoMode->delaunayPointSet, demoMode->delaunayClipControllerSet, &demoMode->delaunayPointCount,
+				demoMode->delaunayTriangles, demoMode->triBlends);
 		}
 		
 

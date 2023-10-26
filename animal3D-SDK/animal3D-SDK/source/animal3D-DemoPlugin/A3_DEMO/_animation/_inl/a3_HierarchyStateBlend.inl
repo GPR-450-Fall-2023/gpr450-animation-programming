@@ -32,6 +32,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "../a3_KeyframeAnimationController.h"
 
 //-----------------------------------------------------------------------------
 
@@ -859,6 +860,30 @@ inline a3i32 GetIndexOfEdge(a3i32* index_out, const Edge* edgeArray, const a3ui3
 	}
 
 	return -1;
+}
+
+//Pointer based spatial pose level operation using delaunay blending
+inline a3_SpatialPose* a3spatialPoseOPDelaunay(a3_SpatialPose* pose_out,
+	const a3vec2* pointSet, const a3_ClipController* clipCtrls, const a3ui32* pointCount, //Data per point
+	const Triangle* triArray,	//Delaunay Triangulation based on pointSet
+	const a3real* blends		//Blend parameter inputs
+)
+{
+	return pose_out;
+}
+
+// pointer-based delaunay operation for hierarchical pose
+inline a3_HierarchyPose* a3hierarchyPoseOpDelaunay(a3_HierarchyPose* pose_out, a3ui32 numNodes,
+	const a3vec2* pointSet, const a3_ClipController* clipCtrls, const a3ui32* pointCount, //Data per point
+	const Triangle* triArray,	//Delaunay Triangulation based on pointSet
+	const a3real* blends		//Blend parameter inputs
+)
+{
+	for (a3ui32 i = 0; i < numNodes; i++) {
+		a3spatialPoseOPDelaunay(&pose_out->pose[i], pointSet, clipCtrls, pointCount, triArray, blends);
+	}
+
+	return pose_out;
 }
 
 
