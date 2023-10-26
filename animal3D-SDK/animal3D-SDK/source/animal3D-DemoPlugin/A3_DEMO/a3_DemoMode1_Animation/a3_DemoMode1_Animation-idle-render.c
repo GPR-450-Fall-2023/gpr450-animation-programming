@@ -801,16 +801,19 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 				*	Inner Triangle Lines
 				*
 				*/
-				//{
-				//	//Still using spline shader
+				{
+					//Still using spline shader
+					a3vec2 tempPos;
+					tempPos.x = remap_render(actualTriPos.x, (a3real)demoMode->graphStartX, (a3real)demoMode->graphStartX + demoMode->graphViewWidth, (a3real)0, (a3real)1);
+					tempPos.y = remap_render(actualTriPos.y, (a3real)demoMode->graphStartY, (a3real)demoMode->graphStartY + demoMode->graphViewHeight, (a3real)0, (a3real)1);
 
-				//	draw_line(currentDemoProgram, actualTriPos, demoMode->currentTri->pointA, yellow,
-				//		a3true, demoMode->graphStartX, demoMode->graphStartY, demoMode->graphViewWidth, demoMode->graphViewHeight);
-				//	draw_line(currentDemoProgram, actualTriPos, demoMode->currentTri->pointB, yellow,
-				//		a3true, demoMode->graphStartX, demoMode->graphStartY, demoMode->graphViewWidth, demoMode->graphViewHeight);
-				//	draw_line(currentDemoProgram, actualTriPos, demoMode->currentTri->pointC, yellow,
-				//		a3true, demoMode->graphStartX, demoMode->graphStartY, demoMode->graphViewWidth, demoMode->graphViewHeight);
-				//}
+					draw_line(currentDemoProgram, tempPos, demoMode->currentTri->pointA, yellow,
+						a3true, demoMode->graphStartX, demoMode->graphStartY, demoMode->graphViewWidth, demoMode->graphViewHeight);
+					draw_line(currentDemoProgram, tempPos, demoMode->currentTri->pointB, yellow,
+						a3true, demoMode->graphStartX, demoMode->graphStartY, demoMode->graphViewWidth, demoMode->graphViewHeight);
+					draw_line(currentDemoProgram, tempPos, demoMode->currentTri->pointC, yellow,
+						a3true, demoMode->graphStartX, demoMode->graphStartY, demoMode->graphViewWidth, demoMode->graphViewHeight);
+				}
 
 				const a3real DOT_RADIUS = (a3real).01;
 				const a3real TRIANGLE_DOT_RADIUS = (a3real).03;
