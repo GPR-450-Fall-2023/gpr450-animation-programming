@@ -359,6 +359,28 @@ a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, a3ui32* triCount
 //-------------------------------------------
 
 
+// Create blend node with passed in variables
+a3_BlendNode* a3_CreateBlendNode(a3_BlendNode* dataNodes[a3_blend_data_max], a3_BlendData* data[a3_blend_data_max], a3_BlendParam const* param[a3_blend_param_max], a3_BlendOp blendOperation)
+{
+	a3_BlendNode* newNode = (a3_BlendNode*) malloc(sizeof(a3_BlendNode));
+
+	if (newNode == NULL) return newNode;
+
+	for (a3ui32 i = 0; i < a3_blend_data_max; i++)
+	{
+		newNode->dataNodes[i] = dataNodes[i];
+		newNode->data[i] = data[i];
+	}
+
+	for (a3ui32 i = 0; i < a3_blend_param_max; i++)
+	{
+		newNode->param[i] = param[i];
+	}
+
+	return newNode;
+}
+
+
 a3boolean a3_InitDataFromNodes(a3_BlendNode* node_out, a3ui32 numData)
 {
 	for(a3ui32 i = 0; i < numData; i++)
@@ -367,8 +389,12 @@ a3boolean a3_InitDataFromNodes(a3_BlendNode* node_out, a3ui32 numData)
 
 		if(dataNode != NULL)
 		{
-			dataNode->blendOperation(dataNode);
-			node_out->data[i] = &(dataNode->result);
+			a3boolean result = dataNode->blendOperation(dataNode);
+
+			if (result == true) // Node successfully run
+			{
+				node_out->data[i] = &(dataNode->result);
+			}
 		}
 	}
 

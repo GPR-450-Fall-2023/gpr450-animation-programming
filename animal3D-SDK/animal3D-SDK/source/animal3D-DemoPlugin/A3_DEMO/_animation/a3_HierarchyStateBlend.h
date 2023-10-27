@@ -63,9 +63,8 @@ typedef a3_SpatialPose a3_BlendData; // Data used in blend operations
 typedef a3real a3_BlendParam; // Params used in blend operations
 
 // Forward declare
-struct a3_BlendNode;
-
 // https://www.reddit.com/r/C_Programming/comments/12td7vj/typedef_a_struct_with_a_pointer_to_itself/
+struct a3_BlendNode;
 
 // Function delegate for blend operation
 // Returns -1 for error, 1 for success
@@ -306,8 +305,12 @@ a3real a3smoothStep(a3real x);
 
 // Blend Tree Functions
 //-----------------------------------------------------------------------------
+a3_BlendNode* a3_CreateBlendNode(a3_BlendNode* dataNodes[a3_blend_data_max], a3_BlendData* data[a3_blend_data_max], 
+	a3_BlendParam const* param[a3_blend_param_max], a3_BlendOp blendOperation);
+
 a3boolean a3_InitDataFromNodes(a3_BlendNode* node, a3ui32 numData);
 
+// Operations
 a3boolean a3_BlendOpIdentity(a3_BlendNode* const node_identity);
 a3boolean a3_BlendOpLerp(a3_BlendNode* const node_lerp);
 a3boolean a3_BlendOpConcat(a3_BlendNode* const node_concat);

@@ -619,6 +619,12 @@ void a3animation_loadValidate(a3_DemoState* demoState, a3_DemoMode1_Animation* d
 }
 
 
+void a3animation_init_blend_tree(a3_DemoMode1_Animation* demoMode)
+{
+	//demoMode->blendTree.nodes = malloc(sizeof(Blend_nod))
+}
+
+
 void a3animation_load(a3_DemoState const* demoState, a3_DemoMode1_Animation* demoMode)
 {
 	a3ui32 i;
@@ -690,6 +696,7 @@ void a3animation_load(a3_DemoState const* demoState, a3_DemoMode1_Animation* dem
 
 	// setup
 	a3animation_init_animation(demoState, demoMode);
+	a3animation_init_blend_tree(demoMode);
 }
 
 
