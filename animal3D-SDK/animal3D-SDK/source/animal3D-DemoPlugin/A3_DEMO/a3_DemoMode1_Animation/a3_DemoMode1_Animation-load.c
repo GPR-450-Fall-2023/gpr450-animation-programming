@@ -621,6 +621,12 @@ void a3animation_loadValidate(a3_DemoState* demoState, a3_DemoMode1_Animation* d
 
 void a3animation_init_blend_tree(a3_DemoMode1_Animation* demoMode)
 {
+	{
+		a3_BlendNode* lerpNode = a3_CreateBlendNode(a3_BlendOpLerp);
+
+		//lerpNode->
+
+	}
 	//demoMode->blendTree.nodes = malloc(sizeof(Blend_nod))
 }
 

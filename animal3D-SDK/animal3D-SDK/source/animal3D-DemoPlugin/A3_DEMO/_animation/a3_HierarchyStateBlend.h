@@ -75,7 +75,9 @@ typedef struct a3_BlendNode
 	a3_BlendData result; // One thing that is physically there to store result
 
 	struct a3_BlendNode* dataNodes[a3_blend_data_max];
-	a3_BlendData* data[a3_blend_data_max];
+
+	a3_BlendData* spatialData[a3_blend_data_max];
+	void* miscData[a3_blend_data_max];
 
 	a3_BlendParam const* param[a3_blend_param_max];
 
@@ -305,13 +307,15 @@ a3real a3smoothStep(a3real x);
 
 // Blend Tree Functions
 //-----------------------------------------------------------------------------
-a3_BlendNode* a3_CreateBlendNode(a3_BlendNode* dataNodes[a3_blend_data_max], a3_BlendData* data[a3_blend_data_max], 
+a3_BlendNode* a3_CreateBlendNode(a3_BlendOp blendOperation);
+a3_BlendNode* a3_CreateInitializedBlendNode(a3_BlendNode* dataNodes[a3_blend_data_max], a3_BlendData* data[a3_blend_data_max], 
 	a3_BlendParam const* param[a3_blend_param_max], a3_BlendOp blendOperation);
 
 a3boolean a3_InitDataFromNodes(a3_BlendNode* node, a3ui32 numData);
 
 // Operations
 a3boolean a3_BlendOpIdentity(a3_BlendNode* const node_identity);
+a3boolean a3_BlendOpGetClipControllerPose(a3_BlendNode* const node_pose);
 a3boolean a3_BlendOpLerp(a3_BlendNode* const node_lerp);
 a3boolean a3_BlendOpConcat(a3_BlendNode* const node_concat);
 a3boolean a3_BlendOpScale(a3_BlendNode* const node_scale);
