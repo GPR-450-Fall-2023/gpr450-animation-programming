@@ -514,7 +514,35 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		a3clipControllerInit(&demoMode->delaunayClipControllerSet[18], "xbot_ctrl_delaunay18_walk_m", demoMode->clipPool, j, rate, fps);
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_strafe_r_m");
 		a3clipControllerInit(&demoMode->delaunayClipControllerSet[19], "xbot_ctrl_delaunay19_run_m", demoMode->clipPool, j, rate, fps);
+
+		////Delaunay Clip Controllers
+		//// 
+		////Forward
+		//j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_idle_f");
+		//a3clipControllerInit(&demoMode->delaunayClipControllerSet[0], "xbot_ctrl_delaunay6_idle_f", demoMode->clipPool, j, rate, fps);
+		//j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_walk_f");
+		//a3clipControllerInit(&demoMode->delaunayClipControllerSet[1], "xbot_ctrl_delaunay8_walk_f", demoMode->clipPool, j, rate, fps);
+		//j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_run_f");
+		//a3clipControllerInit(&demoMode->delaunayClipControllerSet[2], "xbot_ctrl_delaunay11_strafe_l_f", demoMode->clipPool, j, rate, fps);
+		//
+		////Left
+		//j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_turn_l_f");
+		//a3clipControllerInit(&demoMode->delaunayClipControllerSet[3], "xbot_ctrl_delaunay9_run_f", demoMode->clipPool, j, rate, fps);
+		//j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_walk_s_l_f");
+		//a3clipControllerInit(&demoMode->delaunayClipControllerSet[4], "xbot_ctrl_delaunay10_walk_s_l_f", demoMode->clipPool, j, rate, fps);
+		//j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_strafe_l_f");
+		//a3clipControllerInit(&demoMode->delaunayClipControllerSet[5], "xbot_ctrl_delaunay12_turn_l_f", demoMode->clipPool, j, rate, fps);
+		//
+		////Right
+		//j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_turn_r_f");
+		//a3clipControllerInit(&demoMode->delaunayClipControllerSet[6], "xbot_ctrl_delaunay14_turn_r_f", demoMode->clipPool, j, rate, fps);
+		//j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_walk_s_r_f");
+		//a3clipControllerInit(&demoMode->delaunayClipControllerSet[7], "xbot_ctrl_delaunay13_walk_s_r_f", demoMode->clipPool, j, rate, fps);
+		//j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_strafe_r_f");
+		//a3clipControllerInit(&demoMode->delaunayClipControllerSet[8], "xbot_ctrl_delaunay14_strafe_r_f", demoMode->clipPool, j, rate, fps);
+		//}
 	}
+
 
 	//Set delaunay as the displayed mode
 	demoMode->toolMode = animation_tool_delaunay;
@@ -531,6 +559,29 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		demoMode->triangulationPosition.x = demoMode->graphStartX;
 		demoMode->triangulationPosition.y = demoMode->graphStartY;
 
+		////Cleaner graph of animations that blend together more realistically
+		//demoMode->delaunayPointSet[0].x = (a3real).5;
+		//demoMode->delaunayPointSet[0].y = (a3real)0;
+		//demoMode->delaunayPointSet[1].x = (a3real).5;
+		//demoMode->delaunayPointSet[1].y = (a3real).5;
+		//demoMode->delaunayPointSet[2].x = (a3real).5;
+		//demoMode->delaunayPointSet[2].y = (a3real)1;
+		//demoMode->delaunayPointSet[3].x = (a3real)0;
+		//demoMode->delaunayPointSet[3].y = (a3real)0;
+		//demoMode->delaunayPointSet[4].x = (a3real)0;
+		//demoMode->delaunayPointSet[4].y = (a3real).5;
+		//demoMode->delaunayPointSet[5].x = (a3real)0;
+		//demoMode->delaunayPointSet[5].y = (a3real)1;
+		//demoMode->delaunayPointSet[6].x = (a3real)1;
+		//demoMode->delaunayPointSet[6].y = (a3real)0;
+		//demoMode->delaunayPointSet[7].x = (a3real)1;
+		//demoMode->delaunayPointSet[7].y = (a3real).5;
+		//demoMode->delaunayPointSet[8].x = (a3real)1;
+		//demoMode->delaunayPointSet[8].y = (a3real)1;
+
+		//demoMode->delaunayPointCount = 9;
+
+		//Random graph
 		//Locations of points normalized to delaunay graph bounds
 		demoMode->delaunayPointSet[0].x = (a3real)0;
 		demoMode->delaunayPointSet[0].y = (a3real)0;
