@@ -351,4 +351,29 @@ a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, a3ui32* triCount
 	return -1;
 }
 
+
+
+
+
+// BLEND OPERATIONS
+//-------------------------------------------
+
+
+a3boolean a3_BlendOpLerp(a3_BlendNode* const node_lerp)
+{
+	if (!node_lerp) return false;
+
+	a3_BlendData* const data_out = &(node_lerp->result);
+	a3_BlendData const* const data0 = node_lerp->data[0];
+	a3_BlendData const* const data1 = node_lerp->data[1];
+	a3_BlendParam const param = *(node_lerp->param[0]);
+
+
+	//a3hierarchyPoseLerp((node_lerp->result))
+
+	return true;
+}
+
+
+
 //-----------------------------------------------------------------------------

@@ -34,6 +34,7 @@
 
 #include "../a3_KeyframeAnimationController.h"
 
+
 //-----------------------------------------------------------------------------
 
 // pointer-based reset/identity operation for single spatial pose
@@ -985,6 +986,9 @@ inline a3real a3smoothStep(a3real x)
 {	
 	return (a3real)(x * x * (3 - 2 * x));
 }
+
+
+
 
 #endif	// !__ANIMAL3D_HIERARCHYSTATEBLEND_INL
 #endif	// __ANIMAL3D_HIERARCHYSTATEBLEND_H
