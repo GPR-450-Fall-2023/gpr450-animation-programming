@@ -359,11 +359,39 @@ a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, a3ui32* triCount
 //-------------------------------------------
 
 
+a3boolean a3_InitDataFromNodes(a3_BlendNode* node_out, a3ui32 numData)
+{
+	for(a3ui32 i = 0; i < numData; i++)
+	{
+		a3_BlendNode* dataNode = node_out->dataNodes[i];
+
+		if(dataNode != NULL)
+		{
+			dataNode->blendOperation(dataNode);
+			node_out->data[i] = &(dataNode->result);
+		}
+	}
+
+	return true;
+}
+
+
+a3boolean a3_BlendOpIdentity(a3_BlendNode* const node_identity)
+{
+	node_identity->result = *node_identity->data[0];
+
+	return true;
+}
+
+
 a3boolean a3_BlendOpLerp(a3_BlendNode* const node_lerp)
 {
 	if (!node_lerp) return false;
 
 	a3_BlendData* const data_out = &(node_lerp->result);
+
+	a3_InitDataFromNodes(node_lerp, 2);
+
 	const a3_BlendData* data0 = node_lerp->data[0];
 	const a3_BlendData* data1 = node_lerp->data[1];
 	const a3_BlendParam param = *(node_lerp->param[0]);
@@ -378,6 +406,8 @@ a3boolean a3_BlendOpConcat(a3_BlendNode* const node_concat)
 {
 	if (!node_concat) return false;
 
+	a3_InitDataFromNodes(node_concat, 2);
+
 	a3_BlendData* const data_out = &(node_concat->result);
 	const a3_BlendData* data0 = node_concat->data[0];
 	const a3_BlendData* data1 = node_concat->data[1];
@@ -391,6 +421,8 @@ a3boolean a3_BlendOpConcat(a3_BlendNode* const node_concat)
 a3boolean a3_BlendOpScale(a3_BlendNode* const node_scale)
 {
 	if (!node_scale) return false;
+
+	a3_InitDataFromNodes(node_scale, 2);
 
 	a3_BlendData* const data_out = &(node_scale->result);
 	const a3_BlendData* data0 = node_scale->data[0];
