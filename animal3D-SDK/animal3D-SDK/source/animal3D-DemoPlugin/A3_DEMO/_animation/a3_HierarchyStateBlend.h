@@ -116,10 +116,10 @@ a3_SpatialPose* a3spatialPoseOpSmoothStep(a3_SpatialPose* pose_out, a3_SpatialPo
 a3_SpatialPose* a3spatialPoseOpDescale(a3_SpatialPose* pose_out, a3_SpatialPose const* pose_in, const a3real u);
 
 // pointer-based Convert operation for single spatial pose
-a3_SpatialPose* a3spatialPoseOpConvert(a3_SpatialPose* pose_out);
+a3_SpatialPose* a3spatialPoseOpCONVERT(a3_SpatialPose* pose_out);
 
 // pointer-based revert/restore operation for single spatial pose
-a3_SpatialPose* a3spatialPoseOpRevert(a3_SpatialPose* pose_out);
+a3_SpatialPose* a3spatialPoseOpREVERT(a3_SpatialPose* pose_out);
 
 //-----------------------------------------------------------------------------
 
@@ -244,13 +244,23 @@ a3_HierarchyPose* a3hierarchyPoseDOpBiCubic(a3_HierarchyPose* pose_out, a3ui32 n
 
 ////////////////// Additional Operations /////////////////////////
 
-// pointer-based forward kinematics operation for single spatial pose
-//a3_HierarchyPose* a3hierarchyPoseOpFK(a3mat4* objectSpaceTransform_out, a3_HierarchyPose* pose_out, a3mat4* objectSpaceTransform_in, a3mat4* localSpaceTransform_in);
+// pointer-based smoothstep/easing interpolate/blend/mix operation for single hierarchy pose
+a3_HierarchyPose* a3hierarchyPoseOpSmoothStep(a3_HierarchyPose* pose_out, a3_HierarchyPose const* pose0, a3_HierarchyPose const* pose1, a3real const u, a3ui32 const numNodes);
 
-// pointer-based inverse kinematics operation for single spatial pose
-//a3_HierarchyPose* a3hierarchyPoseOpIK(a3mat4* localSpaceTransform_out, a3_HierarchyPose* pose_out, a3mat4* objectSpaceTransform_in, a3mat4* localSpaceTransform_in);
+// pointer-based descale/bi-directional scale operation for single hierarchy pose
+a3_HierarchyPose* a3hierarchyPoseOpDescale(a3_HierarchyPose* pose_out, a3_HierarchyPose const* pose_in, a3real const u, a3ui32 const numNodes);
 
-// I'm not too sure what I'm supposed to do with these two, I'll ask Dan in class - Neo
+// pointer-based Convert operation for single hierarchy pose
+a3_HierarchyPose* a3hierarchyPoseOpCONVERT(a3_HierarchyPose* pose_out, a3ui32 const numNodes);
+
+// pointer-based revert/restore operation for single hierarchy pose
+a3_HierarchyPose* a3hierarchyPoseOpREVERT(a3_HierarchyPose* pose_out, a3ui32 const numNodes);
+
+// pointer-based forward kinematics operation for single hierarchy pose
+a3mat4* a3hierarchyPoseOpFK(a3mat4* objectSpaceTransform_out, a3mat4 const* localSpaceTransform_in, a3_HierarchyNode const* hierarchyNodes, a3ui32 const numNodes);
+
+// pointer-based inverse kinematics operation for single hierarchy pose
+a3mat4* a3hierarchyPoseOpIK(a3mat4* localSpaceTransform_out, a3mat4 const* objectSpaceTransform_in, a3_HierarchyNode const* hierarchyNodes, a3ui32 const numNodes);
 
 //-----------------------------------------------------------------------------
 

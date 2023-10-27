@@ -264,6 +264,7 @@ inline a3_SpatialPose* a3spatialPoseOpBiCubic(a3_SpatialPose* pose_out,
 	return pose_out;
 }
 
+// pointer-based smooth step operation for single spatial pose
 inline a3_SpatialPose* a3spatialPoseOpSmoothStep(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, const a3real u)
 {
 	a3spatialPoseOpLERP(pose_out, pose0, pose1, u);
@@ -284,18 +285,28 @@ inline a3_SpatialPose* a3spatialPoseOpSmoothStep(a3_SpatialPose* pose_out, a3_Sp
 	return pose_out;
 }
 
+// pointer-based descale/bi-directional operation for single spatial pose
 inline a3_SpatialPose* a3spatialPoseOpDescale(a3_SpatialPose* pose_out, a3_SpatialPose const* pose_in, const a3real u)
 {
+	a3spatialPoseOpScale(pose_out, pose_in, (a3real)1.0 / u);
 	return pose_out;
 }
 
-inline a3_SpatialPose* a3spatialPoseOpConvert(a3_SpatialPose* pose_out)
+// pointer-based Convert operation for single spatial pose
+inline a3_SpatialPose* a3spatialPoseOpCONVERT(a3_SpatialPose* pose_out)
 {
+	a3_SpatialPoseChannel const channel = a3poseChannel_rotate_xyz | a3poseChannel_translate_xyz | a3poseChannel_scale_xyz;
+	a3spatialPoseConvert(pose_out, channel, a3poseEulerOrder_xyz);
+	
 	return pose_out;
 }
 
-inline a3_SpatialPose* a3spatialPoseOpRevert(a3_SpatialPose* pose_out)
+// pointer-based revert/restore operation for single spatial pose
+inline a3_SpatialPose* a3spatialPoseOpREVERT(a3_SpatialPose* pose_out)
 {
+	a3_SpatialPoseChannel const channel = a3poseChannel_rotate_xyz | a3poseChannel_translate_xyz | a3poseChannel_scale_xyz;
+	a3spatialPoseRestore(pose_out, channel, a3poseEulerOrder_xyz);
+	
 	return pose_out;
 }
 
@@ -613,6 +624,64 @@ inline a3_HierarchyPose* a3hierarchyPoseOpBiCubic(a3_HierarchyPose* pose_out, a3
 
 	// done
 	return pose_out;
+}
+
+// pointer-based smoothstep/easing interpolate/blend/mix operation for single hierarchy pose
+inline a3_HierarchyPose* a3hierarchyPoseOpSmoothStep(a3_HierarchyPose* pose_out, a3_HierarchyPose const* pose0, a3_HierarchyPose const* pose1, a3real const u, a3ui32 const numNodes)
+{
+	for (a3ui32 i = 0; i < numNodes; i++) {
+		a3spatialPoseOpSmoothStep(&pose_out->pose[i], &pose0->pose[i], &pose1->pose[i], u);
+	}
+	
+	return pose_out;
+}
+
+// pointer-based descale/bi-directional scale operation for single hierarchy pose
+inline a3_HierarchyPose* a3hierarchyPoseOpDescale(a3_HierarchyPose* pose_out, a3_HierarchyPose const* pose_in, a3real const u, a3ui32 const numNodes)
+{
+	for (a3ui32 i = 0; i < numNodes; i++) {
+		a3spatialPoseOpDescale(&pose_out->pose[i], &pose_in->pose[i], u);
+	}
+	
+	return pose_out;
+}
+
+// pointer-based Convert operation for single hierarchy pose
+inline a3_HierarchyPose* a3hierarchyPoseOpCONVERT(a3_HierarchyPose* pose_out, a3ui32 const numNodes)
+{
+	for (a3ui32 i = 0; i < numNodes; i++) {
+		a3spatialPoseOpCONVERT(&pose_out->pose[i]);
+	}
+	
+	return pose_out;
+}
+
+// pointer-based revert/restore operation for single hierarchy pose
+inline a3_HierarchyPose* a3hierarchyPoseOpREVERT(a3_HierarchyPose* pose_out, a3ui32 const numNodes)
+{
+	for (a3ui32 i = 0; i < numNodes; i++) {
+		a3spatialPoseOpREVERT(&pose_out->pose[i]);
+	}
+	
+	return pose_out;
+}
+
+// Utility operation that performs the fundamental forward kinematics operation,
+// converting the provided local-space transform into the target object-space transform;
+// behaves in a similar fashion as convert.
+inline a3mat4* a3hierarchyPoseOpFK(a3mat4* objectSpaceTransform_out, a3mat4 const* localSpaceTransform_in, a3_HierarchyNode const* hierarchyNodes, a3ui32 const numNodes)
+{
+	
+	return objectSpaceTransform_out;
+}
+
+// Utility operation that performs the fundamental inverse kinematics operation,
+// converting the provided object-space transform into the target local-space transform;
+// behaves in a similar fashion as convert.
+inline a3mat4* a3hierarchyPoseOpIK(a3mat4* localSpaceTransform_out, a3mat4 const* objectSpaceTransform_in, a3_HierarchyNode const* hierarchyNodes, a3ui32 const numNodes)
+{
+	
+	return localSpaceTransform_out;
 }
 
 inline void ConstructTriangle(Triangle* tri_out, 
