@@ -298,6 +298,8 @@ a3real a3smoothStep(a3real x);
 // Blend Tree Functions
 //-----------------------------------------------------------------------------
 a3boolean a3_BlendOpLerp(a3_BlendNode* const node_lerp);
+a3boolean a3_BlendOpConcat(a3_BlendNode* const node_concat);
+a3boolean a3_BlendOpScale(a3_BlendNode* const node_scale);
 //-----------------------------------------------------------------------------
 
 

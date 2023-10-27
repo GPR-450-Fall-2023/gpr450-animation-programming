@@ -364,14 +364,41 @@ a3boolean a3_BlendOpLerp(a3_BlendNode* const node_lerp)
 	if (!node_lerp) return false;
 
 	a3_BlendData* const data_out = &(node_lerp->result);
-	a3_BlendData const* const data0 = node_lerp->data[0];
-	a3_BlendData const* const data1 = node_lerp->data[1];
-	a3_BlendParam const param = *(node_lerp->param[0]);
+	const a3_BlendData* data0 = node_lerp->data[0];
+	const a3_BlendData* data1 = node_lerp->data[1];
+	const a3_BlendParam param = *(node_lerp->param[0]);
+
+	a3_SpatialPose* result = a3spatialPoseOpLERP(data_out, data0, data1, param);
+
+	return result == data_out;
+}
 
 
-	//a3hierarchyPoseLerp((node_lerp->result))
+a3boolean a3_BlendOpConcat(a3_BlendNode* const node_concat)
+{
+	if (!node_concat) return false;
 
-	return true;
+	a3_BlendData* const data_out = &(node_concat->result);
+	const a3_BlendData* data0 = node_concat->data[0];
+	const a3_BlendData* data1 = node_concat->data[1];
+
+	a3_SpatialPose* result = a3spatialPoseOpConcatenate(data_out, data0, data1);
+
+	return result == data_out;
+}
+
+
+a3boolean a3_BlendOpScale(a3_BlendNode* const node_scale)
+{
+	if (!node_scale) return false;
+
+	a3_BlendData* const data_out = &(node_scale->result);
+	const a3_BlendData* data0 = node_scale->data[0];
+	const a3_BlendParam param = *(node_scale->param[0]);
+
+	a3_SpatialPose* result = a3spatialPoseOpScale(data_out, data0, param);
+
+	return result == data_out;
 }
 
 
