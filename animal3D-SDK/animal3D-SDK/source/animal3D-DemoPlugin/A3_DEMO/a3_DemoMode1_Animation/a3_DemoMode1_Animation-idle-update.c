@@ -221,10 +221,13 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		if (demoMode->toolMode == animation_tool_default)
 		{
 			// LERP
-			a3hierarchyPoseLerp(activeHS->animPose,
+			// THIS IS WHERE YOU PUT THE BLEND TREE
+			/*hierarchyPoseLerp(activeHS->animPose,
 				demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[clipCtrl->keyframeIndex].sampleIndex0,
 				demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[clipCtrl->keyframeIndex].sampleIndex1,
-				(a3f32)clipCtrl->keyframeParam, demoMode->hierarchy_skel->numNodes);
+				(a3f32)clipCtrl->keyframeParam, demoMode->hierarchy_skel->numNodes);*/
+
+			//*(activeHS->animPose) = a3_GetNodeResult(demoMode->blendTree.root);
 		}
 		else if (demoMode->toolMode == animation_tool_delaunay)
 		{

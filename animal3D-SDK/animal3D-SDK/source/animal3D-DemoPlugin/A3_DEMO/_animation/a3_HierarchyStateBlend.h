@@ -58,7 +58,7 @@ typedef struct Triangle Triangle;
 typedef struct a3_ClipController a3_ClipController;
 
 // Blend Typedefs
-typedef a3_Hierarchy a3_BlendTree; // Hierarchy of blend nodes
+//typedef a3_Hierarchy a3_BlendTree; // Hierarchy of blend nodes // Not using this because not compatible with blend node
 typedef a3_SpatialPose a3_BlendData; // Data used in blend operations
 typedef a3real a3_BlendParam; // Params used in blend operations
 
@@ -83,6 +83,13 @@ typedef struct a3_BlendNode
 
 	a3_BlendOp blendOperation;
 } a3_BlendNode;
+
+
+typedef struct a3_BlendTree
+{
+	a3_BlendNode* root; // Root of tree
+
+} a3_BlendTree;
 
 
 //Forward Declarations
@@ -313,9 +320,12 @@ a3_BlendNode* a3_CreateInitializedBlendNode(a3_BlendNode* dataNodes[a3_blend_dat
 
 a3boolean a3_InitDataFromNodes(a3_BlendNode* node, a3ui32 numData);
 
+a3_BlendData a3_GetNodeResult(a3_BlendNode* node);
+a3boolean a3_RunBlendTree(a3_HierarchyPose* pose_out, a3_HierarchyPose* hierarchy);
+
 // Operations
 a3boolean a3_BlendOpIdentity(a3_BlendNode* const node_identity);
-a3boolean a3_BlendOpGetClipControllerPose(a3_BlendNode* const node_pose);
+//a3boolean a3_BlendOpGetClipControllerPose(a3_BlendNode* const node_pose);
 a3boolean a3_BlendOpLerp(a3_BlendNode* const node_lerp);
 a3boolean a3_BlendOpConcat(a3_BlendNode* const node_concat);
 a3boolean a3_BlendOpScale(a3_BlendNode* const node_scale);

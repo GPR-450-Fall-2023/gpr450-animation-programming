@@ -411,6 +411,18 @@ a3boolean a3_InitDataFromNodes(a3_BlendNode* node_out, a3ui32 numData)
 }
 
 
+a3_BlendData a3_GetNodeResult(a3_BlendNode* node)
+{
+	node->blendOperation(node);
+	return node->result;
+}
+
+a3boolean a3_RunBlendTree(a3_HierarchyPose* pose_out, a3_Hierarchy* poseHierarchy)
+{
+	for(a3ui32 i = 0; i < hierarchy.)
+}
+
+
 a3boolean a3_BlendOpIdentity(a3_BlendNode* const node_identity)
 {
 	node_identity->result = *node_identity->spatialData[0];
@@ -420,20 +432,33 @@ a3boolean a3_BlendOpIdentity(a3_BlendNode* const node_identity)
 
 
 // Requires:
-// miscData: [0] = clip controller
-a3boolean a3_BlendOpGetClipControllerPose(a3_BlendNode* const node_pose)
-{
-	if (!node_pose) return false;
-	
-	/*a3_ClipController* clipController = (a3_ClipController*) node_pose->miscData[0];
-
-	a3_Keyframe pose0 = clipController->keyframe[clipController->keyframeIndex];
-	
-	a3_Keyframe pose1;*/
-	//if(clipController->clip[clipController->clipIndex].keyframeCount - 1 <= a3clipControllerUpdate)
-
-	return true;
-}
+// miscData: [0] = clip controller : a3_ClipController*, [1] = clip pool : a3_ClipPool*,
+	// [2] = skeletonGroup : a3_HierarchyPoseGroup*, [3] = skeletonHierarchy : a3_Hierarchy*
+//a3boolean a3_BlendOpGetClipControllerPose(a3_BlendNode* const node_pose)
+//{
+//	if (!node_pose) return false;
+//	
+//	a3_ClipController* clipController = (a3_ClipController*) node_pose->miscData[0];
+//	a3_ClipPool* clipPool = (a3_ClipPool*) node_pose->miscData[1];
+//	a3_HierarchyPoseGroup* skeletonGroup = (a3_HierarchyPoseGroup*) node_pose->miscData[2];
+//	a3_Hierarchy* skeletonHierarchy = (a3_Hierarchy*) node_pose->miscData[3];
+//
+//	a3_Keyframe keyframe = clipController->keyframe[clipController->keyframeIndex];
+//	//a3_Keyframe pose1 = clipController->keyframe[a3clipControllerGetNextKeyframeIndex(clipController)];
+//
+//	if(pose == NULL) return false;
+//
+//	a3hierarchyPoseLerp(node_pose->result,
+//		demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[clipCtrl->keyframeIndex].sampleIndex0,
+//		demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[clipCtrl->keyframeIndex].sampleIndex1,
+//		(a3f32)clipCtrl->keyframeParam, demoMode->hierarchy_skel->numNodes);
+//
+//	//a3spatialPoseOpLERP(pose0.)
+//
+//	//if(clipController->clip[clipController->clipIndex].keyframeCount - 1 <= a3clipControllerUpdate)
+//
+//	return true;
+//}
 
 
 a3boolean a3_BlendOpLerp(a3_BlendNode* const node_lerp)
@@ -449,7 +474,7 @@ a3boolean a3_BlendOpLerp(a3_BlendNode* const node_lerp)
 	const a3_BlendParam param = *(node_lerp->param[0]);
 
 	a3_SpatialPose* result = a3spatialPoseOpLERP(data_out, data0, data1, param);
-
+	a3hierarchyPoseOpLERP()
 	return result == data_out;
 }
 
