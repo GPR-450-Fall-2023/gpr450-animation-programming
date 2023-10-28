@@ -362,6 +362,14 @@ a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, a3ui32* triCount
 a3_BlendNode* a3_CreateBlendNode(a3_BlendOp blendOperation)
 {
 	a3_BlendNode* newNode = (a3_BlendNode*)malloc(sizeof(a3_BlendNode));
+
+	if(newNode == NULL) return newNode;
+
+	for (a3ui32 i = 0; i < a3_blend_data_max; i++)
+	{
+		newNode->dataNodes[i] = NULL;
+	}
+
 	newNode->blendOperation = blendOperation;
 
 	return newNode;
@@ -417,11 +425,6 @@ a3_BlendData a3_GetNodeResult(a3_BlendNode* node)
 	return node->result;
 }
 
-a3boolean a3_RunBlendTree(a3_HierarchyPose* pose_out, a3_Hierarchy* poseHierarchy)
-{
-	for(a3ui32 i = 0; i < hierarchy.)
-}
-
 
 a3boolean a3_BlendOpIdentity(a3_BlendNode* const node_identity)
 {
@@ -474,7 +477,6 @@ a3boolean a3_BlendOpLerp(a3_BlendNode* const node_lerp)
 	const a3_BlendParam param = *(node_lerp->param[0]);
 
 	a3_SpatialPose* result = a3spatialPoseOpLERP(data_out, data0, data1, param);
-	a3hierarchyPoseOpLERP()
 	return result == data_out;
 }
 

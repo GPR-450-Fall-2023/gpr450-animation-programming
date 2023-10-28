@@ -228,6 +228,19 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 				(a3f32)clipCtrl->keyframeParam, demoMode->hierarchy_skel->numNodes);*/
 
 			//*(activeHS->animPose) = a3_GetNodeResult(demoMode->blendTree.root);
+
+			a3_HierarchyPose* pose0 = demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[clipCtrl->keyframeIndex].sampleIndex0;
+			a3_HierarchyPose* pose1 = demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[clipCtrl->keyframeIndex].sampleIndex1;
+
+			demoMode->blendTree.root->param[0] = (a3real*) & (demoMode->clipCtrl->keyframeParam);
+
+			for (a3ui32 i = 0; i < demoMode->hierarchy_skel->numNodes; i++)
+			{
+				demoMode->blendTree.root->spatialData[0] = pose0->pose + i;
+				demoMode->blendTree.root->spatialData[1] = pose1->pose + i;
+
+				activeHS->animPose[0].pose[i] = a3_GetNodeResult(demoMode->blendTree.root);
+			}
 		}
 		else if (demoMode->toolMode == animation_tool_delaunay)
 		{

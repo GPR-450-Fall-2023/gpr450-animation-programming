@@ -321,7 +321,6 @@ a3_BlendNode* a3_CreateInitializedBlendNode(a3_BlendNode* dataNodes[a3_blend_dat
 a3boolean a3_InitDataFromNodes(a3_BlendNode* node, a3ui32 numData);
 
 a3_BlendData a3_GetNodeResult(a3_BlendNode* node);
-a3boolean a3_RunBlendTree(a3_HierarchyPose* pose_out, a3_HierarchyPose* hierarchy);
 
 // Operations
 a3boolean a3_BlendOpIdentity(a3_BlendNode* const node_identity);
