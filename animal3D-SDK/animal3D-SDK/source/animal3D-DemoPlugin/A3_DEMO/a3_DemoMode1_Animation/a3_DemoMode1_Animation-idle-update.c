@@ -200,7 +200,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	if (demoState->updateAnimation)
 	{
 		a3real const dtr = (a3real)dt;
-		a3_ClipController* clipCtrl = demoMode->clipCtrlA;
+		a3_ClipController* clipCtrl = demoMode->clipCtrlB;
 
 		// update controllers
 		a3clipControllerUpdate(demoMode->clipCtrl, dt);
@@ -222,22 +222,31 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		{
 			// LERP
 			// THIS IS WHERE YOU PUT THE BLEND TREE
-			/*hierarchyPoseLerp(activeHS->animPose,
+			/*a3hierarchyPoseLerp(activeHS->animPose,
 				demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[clipCtrl->keyframeIndex].sampleIndex0,
 				demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[clipCtrl->keyframeIndex].sampleIndex1,
 				(a3f32)clipCtrl->keyframeParam, demoMode->hierarchy_skel->numNodes);*/
 
-			//*(activeHS->animPose) = a3_GetNodeResult(demoMode->blendTree.root);
+			// USE BLEND TREE
+			a3_HierarchyPose* pose0C0 = demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[demoMode->clipCtrlA->keyframeIndex].sampleIndex0;
+			a3_HierarchyPose* pose1C0 = demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[demoMode->clipCtrlA->keyframeIndex].sampleIndex1;
 
-			a3_HierarchyPose* pose0 = demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[clipCtrl->keyframeIndex].sampleIndex0;
-			a3_HierarchyPose* pose1 = demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[clipCtrl->keyframeIndex].sampleIndex1;
+			a3_HierarchyPose* pose0C1 = demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[demoMode->clipCtrlB->keyframeIndex].sampleIndex0;
+			a3_HierarchyPose* pose1C1 = demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[demoMode->clipCtrlB->keyframeIndex].sampleIndex1;
 
-			demoMode->blendTree.root->param[0] = (a3real*) & (demoMode->clipCtrl->keyframeParam);
+			demoMode->blendTree.root->dataNodes[0]->param[0] = (a3real*)&(demoMode->clipCtrlA->keyframeParam);
+			demoMode->blendTree.root->dataNodes[1]->param[0] = (a3real*)&(demoMode->clipCtrlB->keyframeParam);
 
 			for (a3ui32 i = 0; i < demoMode->hierarchy_skel->numNodes; i++)
 			{
-				demoMode->blendTree.root->spatialData[0] = pose0->pose + i;
-				demoMode->blendTree.root->spatialData[1] = pose1->pose + i;
+				demoMode->blendTree.root->dataNodes[0]->spatialData[0] = pose0C0->pose + i;
+				demoMode->blendTree.root->dataNodes[0]->spatialData[1] = pose1C0->pose + i;
+
+				demoMode->blendTree.root->dataNodes[1]->spatialData[0] = pose0C1->pose + i;
+				demoMode->blendTree.root->dataNodes[1]->spatialData[1] = pose1C1->pose + i;
+
+				//demoMode->blendTree.root->spatialData[0] = pose0->pose + i;
+				//demoMode->blendTree.root->spatialData[1] = pose1->pose + i;
 
 				activeHS->animPose[0].pose[i] = a3_GetNodeResult(demoMode->blendTree.root);
 			}

@@ -167,6 +167,7 @@ typedef enum a3_DemoMode1_Animation_ToolMode					a3_DemoMode1_Animation_ToolMode
 
 		// Blend tree
 		a3_BlendTree blendTree;
+		a3real blendTreeLerpParam;
 
 		// scene graph
 		a3_Hierarchy sceneGraph[1];
