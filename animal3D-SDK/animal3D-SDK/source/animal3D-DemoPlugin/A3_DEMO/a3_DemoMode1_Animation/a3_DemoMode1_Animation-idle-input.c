@@ -98,6 +98,7 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 	// Modify blend tree param
 	a3real* blendParam = &(demoState->demoMode1_animation->blendTreeLerpParam);
 
+	// Handle blend param modification for demonstrating blend tree
 	if (a3keyboardGetState(demoState->keyboard, a3key_leftArrow))
 	{
 		*blendParam -= (a3real) dt;

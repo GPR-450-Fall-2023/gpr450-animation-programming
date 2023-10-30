@@ -318,8 +318,10 @@ a3_BlendNode* a3_CreateBlendNode(a3_BlendOp blendOperation);
 a3_BlendNode* a3_CreateInitializedBlendNode(a3_BlendNode* dataNodes[a3_blend_data_max], a3_BlendData* data[a3_blend_data_max], 
 	a3_BlendParam const* param[a3_blend_param_max], a3_BlendOp blendOperation);
 
+// Loop through and try to update parameters for blend tree with blend node results
 a3boolean a3_InitDataFromNodes(a3_BlendNode* node, a3ui32 numData);
 
+// Returns result of node's blend operation
 a3_BlendData a3_GetNodeResult(a3_BlendNode* node);
 
 // Operations

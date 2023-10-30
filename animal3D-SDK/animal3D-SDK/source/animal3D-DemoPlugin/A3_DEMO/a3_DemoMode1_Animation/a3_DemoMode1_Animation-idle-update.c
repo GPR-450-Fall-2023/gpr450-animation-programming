@@ -221,22 +221,23 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		if (demoMode->toolMode == animation_tool_default)
 		{
 			// LERP
-			// THIS IS WHERE YOU PUT THE BLEND TREE
 			/*a3hierarchyPoseLerp(activeHS->animPose,
 				demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[clipCtrl->keyframeIndex].sampleIndex0,
 				demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[clipCtrl->keyframeIndex].sampleIndex1,
 				(a3f32)clipCtrl->keyframeParam, demoMode->hierarchy_skel->numNodes);*/
 
 			// USE BLEND TREE
+			// Get poses to pass into blend tree
 			a3_HierarchyPose* pose0C0 = demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[demoMode->clipCtrlA->keyframeIndex].sampleIndex0;
 			a3_HierarchyPose* pose1C0 = demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[demoMode->clipCtrlA->keyframeIndex].sampleIndex1;
-
 			a3_HierarchyPose* pose0C1 = demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[demoMode->clipCtrlB->keyframeIndex].sampleIndex0;
 			a3_HierarchyPose* pose1C1 = demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[demoMode->clipCtrlB->keyframeIndex].sampleIndex1;
 
+			// Load params for interpolating clip controller poses
 			demoMode->blendTree.root->dataNodes[0]->param[0] = (a3real*)&(demoMode->clipCtrlA->keyframeParam);
 			demoMode->blendTree.root->dataNodes[1]->param[0] = (a3real*)&(demoMode->clipCtrlB->keyframeParam);
 
+			// Loop through each spatial pose and run blend tree
 			for (a3ui32 i = 0; i < demoMode->hierarchy_skel->numNodes; i++)
 			{
 				demoMode->blendTree.root->dataNodes[0]->spatialData[0] = pose0C0->pose + i;
