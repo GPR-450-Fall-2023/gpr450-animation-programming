@@ -630,7 +630,7 @@ void a3animation_init_blend_tree(a3_DemoMode1_Animation* demoMode)
 		combineLerpNode->dataNodes[0] = clipController0LerpNode;
 		combineLerpNode->dataNodes[1] = clipController1LerpNode;
 		
-		demoMode->blendTreeLerpParam = 1;
+		demoMode->blendTreeLerpParam = .5;
 		combineLerpNode->param[0] = &(demoMode->blendTreeLerpParam);
 
 		demoMode->blendTree.root = combineLerpNode; // Just pass in root
