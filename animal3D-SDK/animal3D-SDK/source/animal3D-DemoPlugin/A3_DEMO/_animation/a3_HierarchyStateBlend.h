@@ -181,6 +181,20 @@ a3_SpatialPose a3spatialPoseDOpBiCubic(a3_SpatialPose* pose_out,
 	a3_SpatialPose* poseSet, //Array of 16 poses
 	a3real* uArray); //Array of 5 a3real3's
 
+////////////////// Additional Operations /////////////////////////
+
+// data-based smoothstep/easing interpolate/blend/mix operation for single spatial pose
+a3_SpatialPose a3spatialPoseDOpSmoothStep(a3_SpatialPose pose_out, a3_SpatialPose const pose0, a3_SpatialPose const pose1, const a3real u);
+
+// data-based descale/bi-directional scale operation for single spatial pose
+a3_SpatialPose a3spatialPoseDOpDescale(a3_SpatialPose pose_out, a3_SpatialPose const pose_in, const a3real u);
+
+// data-based Convert operation for single spatial pose
+a3_SpatialPose a3spatialPoseDOpCONVERT(a3_SpatialPose pose_out);
+
+// data-based revert/restore operation for single spatial pose
+a3_SpatialPose a3spatialPoseDOpREVERT(a3_SpatialPose pose_out);
+
 
 //-----------------------------------------------------------------------------
 
@@ -257,10 +271,10 @@ a3_HierarchyPose* a3hierarchyPoseOpCONVERT(a3_HierarchyPose* pose_out, a3ui32 co
 a3_HierarchyPose* a3hierarchyPoseOpREVERT(a3_HierarchyPose* pose_out, a3ui32 const numNodes);
 
 // pointer-based forward kinematics operation for single hierarchy pose
-a3mat4* a3hierarchyPoseOpFK(a3mat4* objectSpaceTransform_out, a3mat4 const* localSpaceTransform_in, a3_HierarchyNode const* hierarchyNodes, a3ui32 const numNodes);
+a3mat4* a3hierarchyPoseOpFK(a3mat4* objectSpaceTransform_out, a3_HierarchyState const* pose, a3mat4 const* localSpaceTransform_in, a3_HierarchyNode const* hierarchyNodes, a3ui32 const numNodes);
 
 // pointer-based inverse kinematics operation for single hierarchy pose
-a3mat4* a3hierarchyPoseOpIK(a3mat4* localSpaceTransform_out, a3mat4 const* objectSpaceTransform_in, a3_HierarchyNode const* hierarchyNodes, a3ui32 const numNodes);
+a3mat4* a3hierarchyPoseOpIK(a3mat4* localSpaceTransform_out, a3_HierarchyState const* pose, a3mat4 const* objectSpaceTransform_in, a3_HierarchyNode const* hierarchyNodes, a3ui32 const numNodes);
 
 //-----------------------------------------------------------------------------
 

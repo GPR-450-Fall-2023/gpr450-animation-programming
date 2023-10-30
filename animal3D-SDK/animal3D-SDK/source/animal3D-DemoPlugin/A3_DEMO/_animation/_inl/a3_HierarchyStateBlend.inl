@@ -458,6 +458,30 @@ inline a3_SpatialPose a3spatialPoseDOpBiCubic(a3_SpatialPose* pose_out,
 	return result;
 }
 
+inline a3_SpatialPose a3spatialPoseDOpSmoothStep(a3_SpatialPose pose_out, a3_SpatialPose const pose0, a3_SpatialPose const pose1, const a3real u)
+{
+	a3spatialPoseOpSmoothStep(&pose_out, &pose0, &pose1, u);
+	return pose_out;
+}
+
+inline a3_SpatialPose a3spatialPoseDOpDescale(a3_SpatialPose pose_out, a3_SpatialPose const pose_in, const a3real u)
+{
+	a3spatialPoseOpDescale(&pose_out, &pose_in, u);
+	return pose_out;
+}
+
+inline a3_SpatialPose a3spatialPoseDOpCONVERT(a3_SpatialPose pose_out)
+{
+	a3spatialPoseOpCONVERT(&pose_out);
+	return pose_out;
+}
+
+inline a3_SpatialPose a3spatialPoseDOpREVERT(a3_SpatialPose pose_out)
+{
+	a3spatialPoseOpREVERT(&pose_out);
+	return pose_out;
+}
+
 
 //-----------------------------------------------------------------------------
 
@@ -669,18 +693,24 @@ inline a3_HierarchyPose* a3hierarchyPoseOpREVERT(a3_HierarchyPose* pose_out, a3u
 // Utility operation that performs the fundamental forward kinematics operation,
 // converting the provided local-space transform into the target object-space transform;
 // behaves in a similar fashion as convert.
-inline a3mat4* a3hierarchyPoseOpFK(a3mat4* objectSpaceTransform_out, a3mat4 const* localSpaceTransform_in, a3_HierarchyNode const* hierarchyNodes, a3ui32 const numNodes)
+inline a3mat4* a3hierarchyPoseOpFK(a3mat4* objectSpaceTransform_out, a3_HierarchyState const* pose, a3mat4 const* localSpaceTransform_in, a3_HierarchyNode const* hierarchyNodes, a3ui32 const numNodes)
 {
+	a3kinematicsSolveForward(pose);
 	
+	*objectSpaceTransform_out = pose->objectSpace->pose->transformMat;
+
 	return objectSpaceTransform_out;
 }
 
 // Utility operation that performs the fundamental inverse kinematics operation,
 // converting the provided object-space transform into the target local-space transform;
 // behaves in a similar fashion as convert.
-inline a3mat4* a3hierarchyPoseOpIK(a3mat4* localSpaceTransform_out, a3mat4 const* objectSpaceTransform_in, a3_HierarchyNode const* hierarchyNodes, a3ui32 const numNodes)
+inline a3mat4* a3hierarchyPoseOpIK(a3mat4* localSpaceTransform_out, a3_HierarchyState const* pose, a3mat4 const* objectSpaceTransform_in, a3_HierarchyNode const* hierarchyNodes, a3ui32 const numNodes)
 {
-	
+	a3kinematicsSolveInverse(pose);
+
+	*localSpaceTransform_out = pose->localSpace->pose->transformMat;
+
 	return localSpaceTransform_out;
 }
 
