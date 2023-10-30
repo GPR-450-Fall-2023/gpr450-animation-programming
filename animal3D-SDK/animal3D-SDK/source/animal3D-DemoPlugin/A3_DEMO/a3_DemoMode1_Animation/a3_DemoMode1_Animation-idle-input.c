@@ -95,6 +95,30 @@ void a3demo_input_controlProjector(
 
 void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode, a3f64 const dt)
 {
+	// Modify blend tree param
+	a3real* blendParam = &(demoState->demoMode1_animation->blendTreeLerpParam);
+
+	// Handle blend param modification for demonstrating blend tree
+	if (a3keyboardGetState(demoState->keyboard, a3key_leftArrow))
+	{
+		*blendParam -= (a3real) dt;
+
+		if (*blendParam < 0)
+		{
+			*blendParam = 0;
+		}
+	}
+	else if (a3keyboardGetState(demoState->keyboard, a3key_rightArrow))
+	{
+		*blendParam += (a3real) dt;
+
+		if (*blendParam > 1)
+		{
+			*blendParam = 1;
+		}
+	}
+
+
 	a3_DemoProjector* projector = demoMode->projector + demoMode->activeCamera;
 
 	// right click to ray pick

@@ -38,11 +38,59 @@ extern "C"
 
 #endif	// __cplusplus
 
+
+
+
+
+
+// Blend Enums
+enum // Max array sizes for blend data and params
+{
+	a3_blend_data_max = 16,
+	a3_blend_param_max = 16
+};
+
+
 //Typedefs
 typedef struct Circumcircle Circumcircle;
 typedef struct Edge Edge;
 typedef struct Triangle Triangle;
 typedef struct a3_ClipController a3_ClipController;
+
+// Blend Typedefs
+//typedef a3_Hierarchy a3_BlendTree; // Hierarchy of blend nodes // Not using this because not compatible with blend node
+typedef a3_SpatialPose a3_BlendData; // Data used in blend operations
+typedef a3real a3_BlendParam; // Params used in blend operations
+
+// Forward declare
+// https://www.reddit.com/r/C_Programming/comments/12td7vj/typedef_a_struct_with_a_pointer_to_itself/
+struct a3_BlendNode;
+
+// Function delegate for blend operation
+// Returns -1 for error, 1 for success
+typedef a3boolean(*a3_BlendOp)(struct a3_BlendNode* node);
+
+typedef struct a3_BlendNode
+{
+	a3_BlendData result; // One thing that is physically there to store result
+
+	struct a3_BlendNode* dataNodes[a3_blend_data_max];
+
+	a3_BlendData* spatialData[a3_blend_data_max];
+	void* miscData[a3_blend_data_max];
+
+	a3_BlendParam const* param[a3_blend_param_max];
+
+	a3_BlendOp blendOperation;
+} a3_BlendNode;
+
+
+typedef struct a3_BlendTree
+{
+	a3_BlendNode* root; // Root of tree
+
+} a3_BlendTree;
+
 
 //Forward Declarations
 struct a3_ClipController;
@@ -286,6 +334,28 @@ a3real a3smoothStep(a3real x);
 
 
 //-----------------------------------------------------------------------------
+
+
+// Blend Tree Functions
+//-----------------------------------------------------------------------------
+a3_BlendNode* a3_CreateBlendNode(a3_BlendOp blendOperation);
+a3_BlendNode* a3_CreateInitializedBlendNode(a3_BlendNode* dataNodes[a3_blend_data_max], a3_BlendData* data[a3_blend_data_max], 
+	a3_BlendParam const* param[a3_blend_param_max], a3_BlendOp blendOperation);
+
+// Loop through and try to update parameters for blend tree with blend node results
+a3boolean a3_InitDataFromNodes(a3_BlendNode* node, a3ui32 numData);
+
+// Returns result of node's blend operation
+a3_BlendData a3_GetNodeResult(a3_BlendNode* node);
+
+// Operations
+a3boolean a3_BlendOpIdentity(a3_BlendNode* const node_identity);
+//a3boolean a3_BlendOpGetClipControllerPose(a3_BlendNode* const node_pose);
+a3boolean a3_BlendOpLerp(a3_BlendNode* const node_lerp);
+a3boolean a3_BlendOpConcat(a3_BlendNode* const node_concat);
+a3boolean a3_BlendOpScale(a3_BlendNode* const node_scale);
+//-----------------------------------------------------------------------------
+
 
 // Delaunay Triangulation
 // Referenced C#/Unity code on a previous project by Dillon Drummond: 

@@ -1,3 +1,4 @@
+#include "a3_KeyframeAnimationController.h"
 /*
 	Copyright 2011-2020 Daniel S. Buckstein
 
@@ -66,6 +67,43 @@ inline a3i32 a3clipControllerSetClip(a3_ClipController* clipCtrl, const a3_ClipP
 	}
 	return -1;
 }
+
+
+// Will return current keyframe index if not playing
+inline a3i32 a3clipControllerGetNextKeyframeIndex(a3_ClipController* clipCtrl)
+{
+	// Playing forward
+	if (clipCtrl->keyframeTime_sec - clipCtrl->keyframe->duration_sec >= 0.0)
+	{
+		if (clipCtrl->keyframeIndex == clipCtrl->clip->keyframeIndex_final)
+		{
+			return clipCtrl->clip->keyframeIndex_first;
+		}
+		// are we simply moving to the next keyframe
+		else
+		{
+			// set keyframe indices
+			return clipCtrl->keyframeIndex + clipCtrl->clip->keyframeDirection;
+		}
+	}
+	else if (clipCtrl->keyframeTime_sec < 0.0)
+	{
+		if (clipCtrl->keyframeIndex == clipCtrl->clip->keyframeIndex_final)
+		{
+			return clipCtrl->clip->keyframeIndex_first;
+		}
+		// are we simply moving to the next keyframe
+		else
+		{
+			return clipCtrl->keyframeIndex + clipCtrl->clip->keyframeDirection;
+		}
+	}
+	else
+	{
+		return clipCtrl->keyframeIndex;
+	}
+}
+
 
 // update clip controller
 inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, a3f64 dt)

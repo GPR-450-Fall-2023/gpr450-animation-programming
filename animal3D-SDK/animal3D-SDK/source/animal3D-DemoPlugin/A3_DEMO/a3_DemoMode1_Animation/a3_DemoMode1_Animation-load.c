@@ -670,6 +670,30 @@ void a3animation_loadValidate(a3_DemoState* demoState, a3_DemoMode1_Animation* d
 }
 
 
+void a3animation_init_blend_tree(a3_DemoMode1_Animation* demoMode)
+{
+	{ // Simple clip blend tree
+
+		a3_BlendNode* combineLerpNode = a3_CreateBlendNode(a3_BlendOpLerp);
+		a3_BlendNode* clipController0LerpNode = a3_CreateBlendNode(a3_BlendOpLerp);
+		a3_BlendNode* clipController1LerpNode = a3_CreateBlendNode(a3_BlendOpLerp);
+
+		combineLerpNode->dataNodes[0] = clipController0LerpNode;
+		combineLerpNode->dataNodes[1] = clipController1LerpNode;
+		
+		demoMode->blendTreeLerpParam = .5;
+		combineLerpNode->param[0] = &(demoMode->blendTreeLerpParam);
+
+		demoMode->blendTree.root = combineLerpNode; // Just pass in root
+	}
+
+	{ // Test blend tree, just lerps between two poses
+		/*a3_BlendNode* combineLerpNode = a3_CreateBlendNode(a3_BlendOpLerp);
+		demoMode->blendTree.root = combineLerpNode;*/
+	}
+}
+
+
 void a3animation_load(a3_DemoState const* demoState, a3_DemoMode1_Animation* demoMode)
 {
 	a3ui32 i;
@@ -741,6 +765,7 @@ void a3animation_load(a3_DemoState const* demoState, a3_DemoMode1_Animation* dem
 
 	// setup
 	a3animation_init_animation(demoState, demoMode);
+	a3animation_init_blend_tree(demoMode);
 }
 
 
