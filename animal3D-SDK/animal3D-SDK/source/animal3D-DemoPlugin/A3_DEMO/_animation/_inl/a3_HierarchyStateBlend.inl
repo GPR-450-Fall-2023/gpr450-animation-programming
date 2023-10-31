@@ -293,19 +293,19 @@ inline a3_SpatialPose* a3spatialPoseOpDescale(a3_SpatialPose* pose_out, a3_Spati
 }
 
 // pointer-based Convert operation for single spatial pose
-inline a3_SpatialPose* a3spatialPoseOpCONVERT(a3_SpatialPose* pose_out)
+inline a3_SpatialPose* a3spatialPoseOpCONVERT(a3_SpatialPose* pose_out, const a3_SpatialPoseChannel channel, const a3_SpatialPoseEulerOrder order)
 {
-	a3_SpatialPoseChannel const channel = a3poseChannel_rotate_xyz | a3poseChannel_translate_xyz | a3poseChannel_scale_xyz;
-	a3spatialPoseConvert(pose_out, channel, a3poseEulerOrder_xyz);
+	//a3_SpatialPoseChannel const channel = a3poseChannel_rotate_xyz | a3poseChannel_translate_xyz | a3poseChannel_scale_xyz;
+	a3spatialPoseConvert(pose_out, channel, order);
 	
 	return pose_out;
 }
 
 // pointer-based revert/restore operation for single spatial pose
-inline a3_SpatialPose* a3spatialPoseOpREVERT(a3_SpatialPose* pose_out)
+inline a3_SpatialPose* a3spatialPoseOpREVERT(a3_SpatialPose* pose_out, const a3_SpatialPoseChannel channel, const a3_SpatialPoseEulerOrder order)
 {
-	a3_SpatialPoseChannel const channel = a3poseChannel_rotate_xyz | a3poseChannel_translate_xyz | a3poseChannel_scale_xyz;
-	a3spatialPoseRestore(pose_out, channel, a3poseEulerOrder_xyz);
+	//a3_SpatialPoseChannel const channel = a3poseChannel_rotate_xyz | a3poseChannel_translate_xyz | a3poseChannel_scale_xyz;
+	a3spatialPoseRestore(pose_out, channel, order);
 	
 	return pose_out;
 }
@@ -470,15 +470,15 @@ inline a3_SpatialPose a3spatialPoseDOpDescale(a3_SpatialPose pose_out, a3_Spatia
 	return pose_out;
 }
 
-inline a3_SpatialPose a3spatialPoseDOpCONVERT(a3_SpatialPose pose_out)
+inline a3_SpatialPose a3spatialPoseDOpCONVERT(a3_SpatialPose pose_out, const a3_SpatialPoseChannel channel, const a3_SpatialPoseEulerOrder order)
 {
-	a3spatialPoseOpCONVERT(&pose_out);
+	a3spatialPoseOpCONVERT(&pose_out, channel, order);
 	return pose_out;
 }
 
-inline a3_SpatialPose a3spatialPoseDOpREVERT(a3_SpatialPose pose_out)
+inline a3_SpatialPose a3spatialPoseDOpREVERT(a3_SpatialPose pose_out, const a3_SpatialPoseChannel channel, const a3_SpatialPoseEulerOrder order)
 {
-	a3spatialPoseOpREVERT(&pose_out);
+	a3spatialPoseOpREVERT(&pose_out, channel, order);
 	return pose_out;
 }
 
@@ -671,20 +671,20 @@ inline a3_HierarchyPose* a3hierarchyPoseOpDescale(a3_HierarchyPose* pose_out, a3
 }
 
 // pointer-based Convert operation for single hierarchy pose
-inline a3_HierarchyPose* a3hierarchyPoseOpCONVERT(a3_HierarchyPose* pose_out, a3ui32 const numNodes)
+inline a3_HierarchyPose* a3hierarchyPoseOpCONVERT(a3_HierarchyPose* pose_out, a3ui32 const numNodes, const a3_SpatialPoseChannel channel, const a3_SpatialPoseEulerOrder order)
 {
 	for (a3ui32 i = 0; i < numNodes; i++) {
-		a3spatialPoseOpCONVERT(&pose_out->pose[i]);
+		a3spatialPoseOpCONVERT(&pose_out->pose[i], channel, order);
 	}
 	
 	return pose_out;
 }
 
 // pointer-based revert/restore operation for single hierarchy pose
-inline a3_HierarchyPose* a3hierarchyPoseOpREVERT(a3_HierarchyPose* pose_out, a3ui32 const numNodes)
+inline a3_HierarchyPose* a3hierarchyPoseOpREVERT(a3_HierarchyPose* pose_out, a3ui32 const numNodes, const a3_SpatialPoseChannel channel, const a3_SpatialPoseEulerOrder order)
 {
 	for (a3ui32 i = 0; i < numNodes; i++) {
-		a3spatialPoseOpREVERT(&pose_out->pose[i]);
+		a3spatialPoseOpREVERT(&pose_out->pose[i], channel, order);
 	}
 	
 	return pose_out;
@@ -693,25 +693,44 @@ inline a3_HierarchyPose* a3hierarchyPoseOpREVERT(a3_HierarchyPose* pose_out, a3u
 // Utility operation that performs the fundamental forward kinematics operation,
 // converting the provided local-space transform into the target object-space transform;
 // behaves in a similar fashion as convert.
-inline a3mat4* a3hierarchyPoseOpFK(a3mat4* objectSpaceTransform_out, a3_HierarchyState const* pose, a3mat4 const* localSpaceTransform_in, a3_HierarchyNode const* hierarchyNodes, a3ui32 const numNodes)
+inline a3_HierarchyPose* a3hierarchyPoseOpFK(a3_HierarchyPose* objectSpacePose_out, a3_HierarchyPose const* localSpacePose_in, a3_HierarchyNode const* hNodes, a3ui32 numNodes)
 {
-	a3kinematicsSolveForward(pose);
-	
-	*objectSpaceTransform_out = pose->objectSpace->pose->transformMat;
+	for (a3ui32 i = 0; i < numNodes; i++) {
+		a3i32 parentIndex = (hNodes + i)->parentIndex;
+		if (parentIndex >= 0)
+		{
+			a3real4x4Product(objectSpacePose_out->pose[i].transformMat.m, objectSpacePose_out->pose[parentIndex].transformMat.m, localSpacePose_in->pose[i].transformMat.m);
+		}
+		else
+		{
+			objectSpacePose_out->pose->transformMat = localSpacePose_in->pose->transformMat;
+		}
+	}
 
-	return objectSpaceTransform_out;
+	return objectSpacePose_out;
 }
 
 // Utility operation that performs the fundamental inverse kinematics operation,
 // converting the provided object-space transform into the target local-space transform;
 // behaves in a similar fashion as convert.
-inline a3mat4* a3hierarchyPoseOpIK(a3mat4* localSpaceTransform_out, a3_HierarchyState const* pose, a3mat4 const* objectSpaceTransform_in, a3_HierarchyNode const* hierarchyNodes, a3ui32 const numNodes)
+inline a3_HierarchyPose* a3hierarchyPoseOpIK(a3_HierarchyPose* localSpacePose_out, a3_HierarchyPose const* objectSpacePose_in, a3_HierarchyNode const* hNodes, a3ui32 numNodes)
 {
-	a3kinematicsSolveInverse(pose);
+	for (a3ui32 i = 0; i < numNodes; i++) {
+		a3i32 parentIndex = (hNodes + i)->parentIndex;
+		if (parentIndex >= 0)
+		{
+			a3mat4 parentObjectSpaceTransform;
+			a3real4x4TransformInverse(parentObjectSpaceTransform.m, objectSpacePose_in->pose[parentIndex].transformMat.m);
+			
+			a3real4x4Product(localSpacePose_out->pose[i].transformMat.m, parentObjectSpaceTransform.m, objectSpacePose_in->pose[i].transformMat.m);
+		}
+		else
+		{
+			localSpacePose_out->pose->transformMat = objectSpacePose_in->pose->transformMat;
+		}
+	}
 
-	*localSpaceTransform_out = pose->localSpace->pose->transformMat;
-
-	return localSpaceTransform_out;
+	return localSpacePose_out;
 }
 
 inline void ConstructTriangle(Triangle* tri_out, 

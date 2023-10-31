@@ -245,11 +245,11 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 			demoMode->hierarchy_skel->numNodes,
 			baseHS->localSpace, 
 			activeHS->animPose);
-		a3hierarchyPoseConvert(activeHS->localSpace,
-			demoMode->hierarchy_skel->numNodes,
-			demoMode->hierarchyPoseGroup_skel->channel,
-			demoMode->hierarchyPoseGroup_skel->order);
-		a3kinematicsSolveForward(activeHS);
+		//a3hierarchyPoseConvert(activeHS->localSpace, demoMode->hierarchy_skel->numNodes, demoMode->hierarchyPoseGroup_skel->channel, demoMode->hierarchyPoseGroup_skel->order);
+		a3hierarchyPoseOpCONVERT(activeHS->localSpace, demoMode->hierarchy_skel->numNodes, *demoMode->hierarchyPoseGroup_skel->channel, *demoMode->hierarchyPoseGroup_skel->order);
+		//a3kinematicsSolveForward(activeHS);
+		//a3mat4 activeM4 = a3mat4_identity;
+		a3hierarchyPoseOpFK(activeHS->objectSpace, activeHS->localSpace, activeHS->hierarchy->nodes, activeHS->hierarchy->numNodes);
 		a3hierarchyStateUpdateObjectInverse(activeHS);
 		a3hierarchyStateUpdateObjectBindToCurrent(activeHS, baseHS);
 
