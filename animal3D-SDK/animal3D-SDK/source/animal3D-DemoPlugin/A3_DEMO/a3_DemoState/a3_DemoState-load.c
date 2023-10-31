@@ -543,7 +543,7 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 			{ { { 0 },	"shdr-vs:pass-tb-trans",			a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTangentBasis_transform_vs4x.glsl" } } },
 			{ { { 0 },	"shdr-vs:pass-tb-morph5-t",			a3shader_vertex  ,	2,{ A3_DEMO_VS"00-common/e/passTangentBasis_morph5_transform_vs4x.glsl",
 																					A3_DEMO_VS"00-common/e/utilCommon_vs4x.glsl",} } },
-			{ { { 0 },	"shdr-vs:pass-tb-skin-t",			a3shader_vertex  ,	2,{ A3_DEMO_VS"00-common/e/passTangentBasis_skin_transform_vs4x.glsl",
+			{ { { 0 },	"shdr-vs:pass-tb-skin-t",			a3shader_vertex  ,	2,{ A3_DEMO_VS"00-common/passTangentBasis_skin_transform_vs4x.glsl",
 																					A3_DEMO_VS"00-common/e/utilCommon_vs4x.glsl",} } },
 			{ { { 0 },	"shdr-vs:pass-tex-trans-inst",		a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTexcoord_transform_instanced_vs4x.glsl" } } },
 			{ { { 0 },	"shdr-vs:pass-tb-trans-inst",		a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTangentBasis_transform_instanced_vs4x.glsl" } } },
