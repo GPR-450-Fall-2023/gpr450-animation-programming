@@ -351,4 +351,167 @@ a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, a3ui32* triCount
 	return -1;
 }
 
+
+
+
+
+// BLEND OPERATIONS
+//-------------------------------------------
+
+
+a3_BlendNode* a3_CreateBlendNode(a3_BlendOp blendOperation)
+{
+	a3_BlendNode* newNode = (a3_BlendNode*)malloc(sizeof(a3_BlendNode));
+
+	if(newNode == NULL) return newNode;
+
+	for (a3ui32 i = 0; i < a3_blend_data_max; i++)
+	{
+		newNode->dataNodes[i] = NULL;
+	}
+
+	newNode->blendOperation = blendOperation;
+
+	return newNode;
+}
+
+
+// Create blend node with passed in variables
+a3_BlendNode* a3_CreateInitializedBlendNode(a3_BlendNode* dataNodes[a3_blend_data_max], a3_BlendData* data[a3_blend_data_max], a3_BlendParam const* param[a3_blend_param_max], a3_BlendOp blendOperation)
+{
+	a3_BlendNode* newNode = a3_CreateBlendNode(blendOperation);
+
+	if (newNode == NULL) return newNode;
+
+	for (a3ui32 i = 0; i < a3_blend_data_max; i++)
+	{
+		newNode->dataNodes[i] = dataNodes[i];
+		newNode->spatialData[i] = data[i];
+	}
+
+	for (a3ui32 i = 0; i < a3_blend_param_max; i++)
+	{
+		newNode->param[i] = param[i];
+	}
+
+	return newNode;
+}
+
+
+a3boolean a3_InitDataFromNodes(a3_BlendNode* node_out, a3ui32 numData)
+{
+	for(a3ui32 i = 0; i < numData; i++)
+	{
+		a3_BlendNode* dataNode = node_out->dataNodes[i];
+
+		if(dataNode != NULL)
+		{
+			a3boolean result = dataNode->blendOperation(dataNode);
+
+			if (result == true) // Node successfully run
+			{
+				node_out->spatialData[i] = &(dataNode->result);
+			}
+		}
+	}
+
+	return true;
+}
+
+
+a3_BlendData a3_GetNodeResult(a3_BlendNode* node)
+{
+	node->blendOperation(node);
+	return node->result;
+}
+
+
+a3boolean a3_BlendOpIdentity(a3_BlendNode* const node_identity)
+{
+	node_identity->result = *node_identity->spatialData[0];
+
+	return true;
+}
+
+
+// Requires:
+// miscData: [0] = clip controller : a3_ClipController*, [1] = clip pool : a3_ClipPool*,
+	// [2] = skeletonGroup : a3_HierarchyPoseGroup*, [3] = skeletonHierarchy : a3_Hierarchy*
+//a3boolean a3_BlendOpGetClipControllerPose(a3_BlendNode* const node_pose)
+//{
+//	if (!node_pose) return false;
+//	
+//	a3_ClipController* clipController = (a3_ClipController*) node_pose->miscData[0];
+//	a3_ClipPool* clipPool = (a3_ClipPool*) node_pose->miscData[1];
+//	a3_HierarchyPoseGroup* skeletonGroup = (a3_HierarchyPoseGroup*) node_pose->miscData[2];
+//	a3_Hierarchy* skeletonHierarchy = (a3_Hierarchy*) node_pose->miscData[3];
+//
+//	a3_Keyframe keyframe = clipController->keyframe[clipController->keyframeIndex];
+//	//a3_Keyframe pose1 = clipController->keyframe[a3clipControllerGetNextKeyframeIndex(clipController)];
+//
+//	if(pose == NULL) return false;
+//
+//	a3hierarchyPoseLerp(node_pose->result,
+//		demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[clipCtrl->keyframeIndex].sampleIndex0,
+//		demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[clipCtrl->keyframeIndex].sampleIndex1,
+//		(a3f32)clipCtrl->keyframeParam, demoMode->hierarchy_skel->numNodes);
+//
+//	//a3spatialPoseOpLERP(pose0.)
+//
+//	//if(clipController->clip[clipController->clipIndex].keyframeCount - 1 <= a3clipControllerUpdate)
+//
+//	return true;
+//}
+
+
+a3boolean a3_BlendOpLerp(a3_BlendNode* const node_lerp)
+{
+	if (!node_lerp) return false;
+
+	a3_BlendData* const data_out = &(node_lerp->result);
+
+	a3_InitDataFromNodes(node_lerp, 2);
+
+	const a3_BlendData* data0 = node_lerp->spatialData[0];
+	const a3_BlendData* data1 = node_lerp->spatialData[1];
+	const a3_BlendParam param = *(node_lerp->param[0]);
+
+	a3_SpatialPose* result = a3spatialPoseOpLERP(data_out, data0, data1, param);
+	return result == data_out;
+}
+
+
+a3boolean a3_BlendOpConcat(a3_BlendNode* const node_concat)
+{
+	if (!node_concat) return false;
+
+	a3_InitDataFromNodes(node_concat, 2);
+
+	a3_BlendData* const data_out = &(node_concat->result);
+	const a3_BlendData* data0 = node_concat->spatialData[0];
+	const a3_BlendData* data1 = node_concat->spatialData[1];
+
+	a3_SpatialPose* result = a3spatialPoseOpConcatenate(data_out, data0, data1);
+
+	return result == data_out;
+}
+
+
+a3boolean a3_BlendOpScale(a3_BlendNode* const node_scale)
+{
+	if (!node_scale) return false;
+
+	a3_InitDataFromNodes(node_scale, 2);
+
+	a3_BlendData* const data_out = &(node_scale->result);
+	const a3_BlendData* data0 = node_scale->spatialData[0];
+	const a3_BlendParam param = *(node_scale->param[0]);
+
+	a3_SpatialPose* result = a3spatialPoseOpScale(data_out, data0, param);
+
+	return result == data_out;
+}
+
+
+
 //-----------------------------------------------------------------------------
