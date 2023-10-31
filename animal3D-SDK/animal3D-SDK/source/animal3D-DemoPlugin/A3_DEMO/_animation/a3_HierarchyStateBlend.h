@@ -354,6 +354,32 @@ a3boolean a3_BlendOpIdentity(a3_BlendNode* const node_identity);
 a3boolean a3_BlendOpLerp(a3_BlendNode* const node_lerp);
 a3boolean a3_BlendOpConcat(a3_BlendNode* const node_concat);
 a3boolean a3_BlendOpScale(a3_BlendNode* const node_scale);
+
+// Per-channel blending (just my notes -aster)
+// visual notes:
+// https://docs.google.com/drawings/d/1Y0LQy7nzvATCiEv2u_vOMQLqZpBZjFNM_ECRPMf763w/edit?usp=sharing
+// 
+// example channels (from a3_SpatialPoseChannel):
+// a3poseChannel_rotate_xyz
+// a3poseChannel_scale_xyz
+// a3poseChannel_translate_xyz
+
+// each blend operation sends the operation to the corresponding spatial pose operation
+// so do I need to append each of the a3_BlendOp and a3_SpatialOp functions with an extra param:
+// const a3_SpatialPoseChannel channel ?
+
+/* REFERENCE:
+// single pose for a single node
+struct a3_SpatialPose
+{
+	a3mat4 transformMat;
+	a3dualquat transformDQ;
+	a3vec4 rotate;
+	a3vec4 scale;
+	a3vec4 translate;
+	a3vec4 user;
+};
+*/
 //-----------------------------------------------------------------------------
 
 
