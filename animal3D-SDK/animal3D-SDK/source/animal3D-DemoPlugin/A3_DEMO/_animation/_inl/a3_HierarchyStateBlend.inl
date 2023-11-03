@@ -33,6 +33,7 @@
 #include <string.h>
 
 #include "../a3_KeyframeAnimationController.h"
+#include "a3_HierarchyStateBlend.h"
 
 
 //-----------------------------------------------------------------------------
@@ -159,6 +160,20 @@ inline a3_SpatialPose* a3spatialPoseOpCubic(a3_SpatialPose* pose_out, a3_Spatial
 	a3spatialPoseOpConstruct(pose_out, trans, rot, scale);
 	// done
 	return pose_out;
+}
+
+
+inline a3_SpatialPose* a3spatialPoseOpTranslate(a3_SpatialPose* pose, a3vec4 translation)
+{
+	pose->translate.x += translation.x;
+	pose->translate.y += translation.y;
+	pose->translate.z += translation.z;
+
+	pose->transformMat.m10 += translation.x;
+	pose->transformMat.m20 += translation.y;
+	pose->transformMat.m30 += translation.z;
+
+	return pose;
 }
 
 // pointer-based deconcatenate operation for single spatial pose
@@ -566,6 +581,18 @@ inline a3_HierarchyPose* a3hierarchyPoseOpCubic(a3_HierarchyPose* pose_out, a3ui
 	// done
 	return pose_out;
 }
+
+
+inline a3_HierarchyPose* a3hierarchyPoseOpTranslate(a3_HierarchyPose* pose, a3ui32 numNodes, a3vec4 translation)
+{
+	for (a3ui32 i = 0; i < numNodes; i++)
+	{
+		a3spatialPoseOpTranslate(pose[i].pose, translation);
+	}
+
+	return pose;
+}
+
 
 // pointer-based deconcatenate operation for single hierarchy pose
 inline a3_HierarchyPose* a3hierarchyPoseOpDeconcatenate(a3_HierarchyPose* pose_out, a3ui32 numNodes, a3_HierarchyPose* const pose_left, a3_HierarchyPose* const pose_right)

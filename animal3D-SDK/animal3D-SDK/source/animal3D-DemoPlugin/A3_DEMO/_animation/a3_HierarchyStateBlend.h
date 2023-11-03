@@ -125,6 +125,8 @@ a3_SpatialPose* a3spatialPoseOpLERP(a3_SpatialPose* pose_out, a3_SpatialPose con
 a3_SpatialPose* a3spatialPoseOpCubic(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1,
 	a3_SpatialPose const* pose2, a3_SpatialPose const* pose3, const a3real u);
 
+a3_SpatialPose* a3spatialPoseOpTranslate(a3_SpatialPose* pose, a3vec4 translation);
+
 ////////////////// Derivative Operations /////////////////////////
 
 // pointer-based deconcatenate operation for single spatial pose
@@ -273,6 +275,8 @@ a3_HierarchyPose* a3hierarchyPoseOpLERP(a3_HierarchyPose* pose_out, a3ui32 numNo
 // pointer-based cubic operation for single hierarchy pose
 a3_HierarchyPose* a3hierarchyPoseOpCubic(a3_HierarchyPose* pose_out, a3ui32 numNodes, a3_HierarchyPose* const pose0, a3_HierarchyPose* const pose1,
 	a3_HierarchyPose* const pose2, a3_HierarchyPose* const pose3, const a3real u);
+
+a3_HierarchyPose* a3hierarchyPoseOpTranslate(a3_HierarchyPose* pose, a3ui32 numNodes, a3vec4 translation);
 
 ////////////////// Derivative Operations /////////////////////////
 
