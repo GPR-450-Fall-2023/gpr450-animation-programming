@@ -157,6 +157,8 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 			a3mat4_identity.m);
 	}
 
+	//printf("Movement: (%f, %f)   Rotate: (%f, %f)\n", demoMode->axis_l[0], demoMode->axis_l[1], demoMode->axis_r[0], demoMode->axis_r[1]);
+
 
 	// skeletal
 	if (demoState->updateAnimation)

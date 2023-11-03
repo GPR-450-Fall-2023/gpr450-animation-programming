@@ -174,7 +174,9 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 		a3_DemoMode1_Animation_InputMode ctrl_position, ctrl_rotation;
 
 		// input axes & integration variables
-		a3f64 axis_l[2], axis_r[2];
+
+		//Need to check if using keyboard for axis_r because input method changes from normalized stick to non-normalized mouse delta
+		a3f64 axis_l[2], axis_r[2]; 
 		a3vec2 pos, vel, acc;
 		a3real rot, velr, accr;
 

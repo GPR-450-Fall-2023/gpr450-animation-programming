@@ -132,14 +132,33 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 		// capture axes
 		if (a3XboxControlIsConnected(demoState->xcontrol))
 		{
-			// ****TO-DO:
 			// get directly from joysticks
-		
+			a3XboxControlGetJoysticks(demoState->xcontrol, demoMode->axis_l, demoMode->axis_r);
 		}
 		else
 		{
-			// ****TO-DO:
+			//Movement
 			// calculate normalized vectors given keyboard state
+			demoMode->axis_l[0] = (a3real)a3keyboardGetDifference(demoState->keyboard, a3key_D, a3key_A);
+			demoMode->axis_l[1] = (a3real)a3keyboardGetDifference(demoState->keyboard, a3key_S, a3key_W);
+
+			//Normalize if magnitude is not 0
+			if (demoMode->axis_l[0] != 0 && demoMode->axis_l[1] != 0)
+			{
+				a3real shortAxis[2];
+				shortAxis[0] = (a3real)demoMode->axis_l[0];
+				shortAxis[1] = (a3real)demoMode->axis_l[1];
+				a3real2Normalize(shortAxis);
+				demoMode->axis_l[0] = (a3f64)shortAxis[0];
+				demoMode->axis_l[1] = (a3f64)shortAxis[1];
+			}
+
+			//Rotation
+			a3real pitch = -(a3real)a3mouseGetDeltaY(demoState->mouse);
+			a3real yaw = -(a3real)a3mouseGetDeltaX(demoState->mouse);
+
+			demoMode->axis_r[0] = pitch;
+			demoMode->axis_r[1] = yaw;
 		}
 		break;
 	}

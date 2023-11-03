@@ -156,7 +156,6 @@ a3i32 a3clipGetIndexInPool(const a3_ClipPool* clipPool, const a3byte clipName[a3
 
 a3boolean a3testBranchFunction(void* data)
 {
-	printf("Called");
 	a3_DemoMode1_Animation* demoMode = (a3_DemoMode1_Animation*)data;
 
 	if (!demoMode)

@@ -484,7 +484,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		/////////// TESTING TRANSITION BRANCHING ////////////////////
 		//Set test clip transition that returns true when receiving forward input
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_idle_pistol");
-		demoMode->clipPool[j].clip->transitionForward->clipTransitionBranch = &a3testBranchFunction;
+		demoMode->clipPool[0].clip[j].transitionForward[0].clipTransitionBranch = &a3testBranchFunction;
 		/////////////////////////////////////////////////////////////
 	}
 }
