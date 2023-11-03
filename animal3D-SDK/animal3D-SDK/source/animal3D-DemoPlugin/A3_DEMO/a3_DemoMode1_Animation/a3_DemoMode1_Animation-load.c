@@ -472,6 +472,13 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		a3clipControllerInit(demoMode->clipCtrlA, "xbot_ctrlA", demoMode->clipPool, j, rate, fps);
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_skintest");
 		a3clipControllerInit(demoMode->clipCtrlB, "xbot_ctrlB", demoMode->clipPool, j, rate, fps);
+
+
+		/////////// TESTING TRANSITION BRANCHING ////////////////////
+		//Set test clip transition that returns true when receiving forward input
+		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_idle_pistol");
+		demoMode->clipPool[j].clip->transitionForward->clipTransitionBranch = &a3testBranchFunction;
+		/////////////////////////////////////////////////////////////
 	}
 }
 

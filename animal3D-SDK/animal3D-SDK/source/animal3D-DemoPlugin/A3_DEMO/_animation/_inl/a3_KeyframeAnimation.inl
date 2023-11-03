@@ -26,7 +26,6 @@
 #ifndef __ANIMAL3D_KEYFRAMEANIMATION_INL
 #define __ANIMAL3D_KEYFRAMEANIMATION_INL
 
-
 //-----------------------------------------------------------------------------
 
 // calculate clip duration as sum of keyframes' durations

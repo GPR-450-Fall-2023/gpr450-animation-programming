@@ -151,6 +151,21 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		a3clipControllerUpdate(demoMode->clipCtrlA, dt);
 		a3clipControllerUpdate(demoMode->clipCtrlB, dt);
 
+		//////////////////// TESTING TRANSITION BRANCHING //////////////////////////
+		a3_Clip* currentClip = &demoMode->clipCtrlA->clipPool->clip[demoMode->clipCtrlA->clipIndex];
+
+		//Null check
+		if (currentClip->transitionForward[0].clipTransitionBranch)
+		{
+			//Call function pointer and pass in demoMode
+			if ((*currentClip->transitionForward[0].clipTransitionBranch)(demoMode))
+			{
+				//If true, print
+				printf("Function pointer works on forward input");
+			}
+		}
+		/////////////////////////////////////////////////////////////////////////////
+
 		// STEP
 	//	a3hierarchyPoseCopy(activeHS->animPose,
 	//		demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipCtrl->keyframeIndex,

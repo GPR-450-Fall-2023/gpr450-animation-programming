@@ -91,6 +91,10 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, a3f64 dt)
 			{
 				// handle forward transition
 
+				//switch clip
+				//switch direction
+				//move playhead by overstep in the given direction
+
 				// default testing behavior: loop with overstep
 				clipCtrl->keyframeIndex = clipCtrl->clip->keyframeIndex_first;
 				clipCtrl->keyframe = clipCtrl->clipPool->keyframe + clipCtrl->keyframeIndex;

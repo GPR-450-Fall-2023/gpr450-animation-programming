@@ -23,6 +23,7 @@
 */
 
 #include "../a3_KeyframeAnimation.h"
+#include "../../a3_DemoMode1_Animation.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -113,6 +114,7 @@ a3i32 a3clipTransitionInit(a3_ClipTransition* transition, a3_ClipTransitionFlag 
 		transition->flag = transitionFlag;
 		transition->offset = offset;
 		transition->clipIndex = clip->index;
+		transition->clipTransitionBranch = 0;
 		return transitionFlag;
 	}
 	return -1;
@@ -147,6 +149,31 @@ a3i32 a3clipGetIndexInPool(const a3_ClipPool* clipPool, const a3byte clipName[a3
 				return i;
 	}
 	return -1;
+}
+
+//-----------------------------------------------------------------------------
+//Clip transition branch functions
+
+a3boolean a3testBranchFunction(void* data)
+{
+	printf("Called");
+	a3_DemoMode1_Animation* demoMode = (a3_DemoMode1_Animation*)data;
+
+	if (!demoMode)
+	{
+		printf("ERROR - demoMode is invalid in a3testBranchFunction");
+		return false;
+	}
+
+	//Left stick forward
+	a3real forward = (a3real)demoMode->axis_l[1];
+
+	if (forward > 0)
+	{
+		return a3true;
+	}
+
+	return a3false;
 }
 
 

@@ -44,6 +44,10 @@ typedef struct a3_Clip						a3_Clip;
 typedef struct a3_ClipPool					a3_ClipPool;
 #endif	// __cplusplus
 
+typedef a3boolean(*a3_TransitionBranchFunc)(void*);
+
+struct a3_DemoMode1_Animation;
+
 
 //-----------------------------------------------------------------------------
 
@@ -115,6 +119,10 @@ struct a3_ClipTransition
 	a3_ClipTransitionFlag flag;
 	a3i32 offset;
 	a3i32 clipIndex;
+
+	//Function pointer that returns a bool, typically used to determine which clip to transition to next
+	//This is kept generic so that it can have multiple use cases
+	a3_TransitionBranchFunc clipTransitionBranch;
 };
 
 // description of single clip
@@ -178,6 +186,17 @@ a3i32 a3clipCalculateDuration(a3_ClipPool const* clipPool, const a3ui32 clipInde
 // calculate keyframes' durations by distributing clip's duration
 a3i32 a3clipDistributeDuration(a3_ClipPool const* clipPool, const a3ui32 clipIndex, const a3f64 playback_stepPerSec);
 
+//-----------------------------------------------------------------------------
+// Clip Transition Branch Functions
+
+//We may have literally any kind or amount of data in these functions so I decided to use a void pointer and cast within the function
+
+/// <summary>
+/// Test function, takes in a3_DemoMode1_Animation*
+/// </summary>
+/// <param name="demoMode">Points to a a3_DemoMode1_Animation*</param>
+/// <returns>Whether or not we are receiving forward input</returns>
+a3boolean a3testBranchFunction(void* demoMode);
 
 //-----------------------------------------------------------------------------
 
