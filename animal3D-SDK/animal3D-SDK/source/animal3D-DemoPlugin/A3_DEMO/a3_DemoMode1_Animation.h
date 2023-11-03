@@ -178,6 +178,8 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 		a3vec2 pos, vel, acc;
 		a3real rot, velr, accr;
 
+		a3_SpatialPose* ctrlNode; // Input node that will update obj_skeleton_ctrl with values every frame
+
 		// objects
 		union {
 			a3_DemoSceneObject object_scene[animationMaxCount_sceneObject];

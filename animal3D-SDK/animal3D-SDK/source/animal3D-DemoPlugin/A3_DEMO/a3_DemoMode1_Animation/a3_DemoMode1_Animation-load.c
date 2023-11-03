@@ -511,6 +511,22 @@ void a3animation_loadValidate(a3_DemoState* demoState, a3_DemoMode1_Animation* d
 	demoMode->clipCtrl->keyframe = demoMode->clipPool->keyframe + demoMode->clipCtrl->keyframeIndex;
 }
 
+// Initialize ctrl node with data from skeleton scene object
+void a3animation_initCtrlNode(a3_DemoMode1_Animation* demoMode)
+{
+	demoMode->ctrlNode = (a3_SpatialPose*) malloc(sizeof(a3_SpatialPose));
+
+	a3spatialPoseSetScale(demoMode->ctrlNode, demoMode->obj_skeleton_ctrl->scale.x,
+		demoMode->obj_skeleton_ctrl->scale.y, demoMode->obj_skeleton_ctrl->scale.z);
+	
+	a3spatialPoseSetRotation(demoMode->ctrlNode, demoMode->obj_skeleton_ctrl->euler.x,
+		demoMode->obj_skeleton_ctrl->euler.y, demoMode->obj_skeleton_ctrl->euler.z);
+	
+	a3spatialPoseSetTranslation(demoMode->ctrlNode, demoMode->obj_skeleton_ctrl->position.x,
+		demoMode->obj_skeleton_ctrl->position.y, demoMode->obj_skeleton_ctrl->position.z);
+
+}
+
 
 void a3animation_load(a3_DemoState const* demoState, a3_DemoMode1_Animation* demoMode)
 {
@@ -583,6 +599,7 @@ void a3animation_load(a3_DemoState const* demoState, a3_DemoMode1_Animation* dem
 
 	// setup
 	a3animation_init_animation(demoState, demoMode);
+	a3animation_initCtrlNode(demoMode);
 }
 
 

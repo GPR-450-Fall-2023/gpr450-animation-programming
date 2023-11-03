@@ -92,13 +92,6 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 {
 	a3_DemoProjector* projector = demoMode->projector + demoMode->activeCamera;
 
-	if (a3keyboardIsHeld(demoState->keyboard, a3key_rightArrow))
-	{
-		a3vec4 trans = { 1, 1, 1, 0 };
-		a3hierarchyPoseOpTranslate(demoMode->sceneGraphState->hpose, 6, trans);
-		//a3_h demoMode->sceneGraphState
-	}
-
 	// right click to ray pick
 	if (a3mouseGetState(demoState->mouse, a3mouse_right) == a3input_down)
 	{
