@@ -91,7 +91,7 @@ void a3animation_updateSkeletonCtrl(a3_DemoMode1_Animation* demoMode)
 	ctrl->position.x = node->translate.x;
 	ctrl->position.y = node->translate.y;
 	ctrl->position.z = node->translate.z;
-
+	
 	ctrl->euler.x = node->rotate.x;
 	ctrl->euler.y = node->rotate.y;
 	ctrl->euler.z = node->rotate.z;
@@ -197,9 +197,10 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		// process input
 
 		// apply input
-		demoMode->obj_skeleton_ctrl->position.x = +(demoMode->pos.x);
+		// Deprecated, now getting values from spatial pose - Joey
+		/*demoMode->obj_skeleton_ctrl->position.x = +(demoMode->pos.x);
 		demoMode->obj_skeleton_ctrl->position.y = +(demoMode->pos.y);
-		demoMode->obj_skeleton_ctrl->euler.z = -a3trigValid_sind(demoMode->rot);
+		demoMode->obj_skeleton_ctrl->euler.z = -a3trigValid_sind(demoMode->rot);*/
 	}
 
 

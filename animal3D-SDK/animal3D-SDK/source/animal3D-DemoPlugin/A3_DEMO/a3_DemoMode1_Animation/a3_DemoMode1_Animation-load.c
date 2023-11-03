@@ -380,8 +380,15 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	demoMode->obj_skeleton->euler.y = a3real_oneeighty;
 
 	// control node
-	demoMode->obj_skeleton_ctrl->position.y = +a3real_four;
-	demoMode->obj_skeleton_ctrl->euler.z = a3real_oneeighty;
+	// Original control init parameters
+	// Looks like it didn't really matter since it was being immediately overwritten in update with demoMode->pos, etc.
+	/*demoMode->obj_skeleton_ctrl->position.y = +a3real_four;
+	demoMode->obj_skeleton_ctrl->euler.z = a3real_oneeighty;*/
+
+	// Control Node - Joey
+	demoMode->obj_skeleton_ctrl->position = (a3vec3){ .x = 0, .y = 0, .z = 0 };
+	demoMode->obj_skeleton_ctrl->euler = (a3vec3){ .x = 0, .y = 0, .z = 0 };
+	demoMode->obj_skeleton_ctrl->scale = (a3vec3){ .x = 1, .y = 1, .z = 1 };
 
 	// map relevant objects to scene graph
 	demoMode->obj_camera_main->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_camera_main");
