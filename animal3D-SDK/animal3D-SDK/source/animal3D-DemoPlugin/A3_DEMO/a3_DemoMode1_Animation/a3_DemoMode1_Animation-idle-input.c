@@ -90,6 +90,13 @@ void a3demo_input_controlProjector(
 
 void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode, a3f64 const dt)
 {
+	// TEST - Manipulating ctrlNode
+	/*a3ret horizontal = a3keyboardGetState(demoState->keyboard, a3key_rightArrow) - a3keyboardGetState(demoState->keyboard, a3key_leftArrow);
+	a3ret vertical = a3keyboardGetState(demoState->keyboard, a3key_upArrow) - a3keyboardGetState(demoState->keyboard, a3key_downArrow);
+
+	a3spatialPoseSetTranslation(demoMode->ctrlNode, demoMode->ctrlNode->translate.x + horizontal, demoMode->ctrlNode->translate.y + vertical, demoMode->ctrlNode->translate.z);*/
+
+
 	a3_DemoProjector* projector = demoMode->projector + demoMode->activeCamera;
 
 	// right click to ray pick
@@ -133,7 +140,6 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 		{
 			// ****TO-DO:
 			// calculate normalized vectors given keyboard state
-
 		}
 		break;
 	}

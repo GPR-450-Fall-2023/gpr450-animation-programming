@@ -83,6 +83,24 @@ void a3demo_update_pointLight(a3_DemoSceneObject* obj_camera, a3_DemoPointLight*
 
 void a3demo_applyScale_internal(a3_DemoSceneObject* sceneObject, a3real4x4p s);
 
+void a3animation_updateSkeletonCtrl(a3_DemoMode1_Animation* demoMode)
+{
+	a3_SpatialPose* node = demoMode->ctrlNode;
+	a3_DemoSceneObject* ctrl = demoMode->obj_skeleton_ctrl;
+
+	ctrl->position.x = node->translate.x;
+	ctrl->position.y = node->translate.y;
+	ctrl->position.z = node->translate.z;
+	
+	ctrl->euler.x = node->rotate.x;
+	ctrl->euler.y = node->rotate.y;
+	ctrl->euler.z = node->rotate.z;
+
+	ctrl->scale.x = node->scale.x;
+	ctrl->scale.y = node->scale.y;
+	ctrl->scale.z = node->scale.z;
+}
+
 void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode, a3f64 const dt)
 {
 	a3ui32 i, j;
@@ -194,9 +212,10 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		// process input
 
 		// apply input
-		demoMode->obj_skeleton_ctrl->position.x = +(demoMode->pos.x);
+		// Deprecated, now getting values from spatial pose - Joey
+		/*demoMode->obj_skeleton_ctrl->position.x = +(demoMode->pos.x);
 		demoMode->obj_skeleton_ctrl->position.y = +(demoMode->pos.y);
-		demoMode->obj_skeleton_ctrl->euler.z = -a3trigValid_sind(demoMode->rot);
+		demoMode->obj_skeleton_ctrl->euler.z = -a3trigValid_sind(demoMode->rot);*/
 	}
 
 
@@ -265,6 +284,10 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		a3bufferRefill(demoState->ubo_transformMVPB, 0, mvp_size, demoMode->mvp_bone);
 		a3bufferRefill(demoState->ubo_transformBlend, 0, t_skin_size, demoMode->t_skin);
 		a3bufferRefillOffset(demoState->ubo_transformBlend, 0, t_skin_size, dq_skin_size, demoMode->dq_skin);
+
+
+		// Update obj_skeleton_ctrl with values from ctrlNode
+		a3animation_updateSkeletonCtrl(demoMode);
 	}
 }
 
