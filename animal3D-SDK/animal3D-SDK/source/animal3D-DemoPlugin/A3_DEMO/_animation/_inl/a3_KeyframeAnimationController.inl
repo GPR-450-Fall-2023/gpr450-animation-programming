@@ -91,14 +91,87 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, a3f64 dt)
 			{
 				// handle forward transition
 
+				const a3_ClipTransition* transition = &clipCtrl->clip->transitionForward[0];
+
 				//switch clip
 				//switch direction
 				//move playhead by overstep in the given direction
 
+				if (transition->flag == a3clip_stopFlag) //Flags empty, stop
+				{
+					//stop
+					clipCtrl->keyframeIndex = clipCtrl->clip->keyframeIndex_first;
+					clipCtrl->keyframe = clipCtrl->clipPool->keyframe + clipCtrl->keyframeIndex;
+					clipCtrl->keyframeTime_sec = 0;
+					clipCtrl->playback_sec = 0;
+				}
+				else if (transition->flag & a3clip_playFlag) //Flags contain play
+				{
+					if (transition->flag & a3clip_reverseFlag)
+					{
+						//Reverse play direction
+						clipCtrl->playback_sec = (a3f64)(- 1 * clipCtrl->playback_step * clipCtrl->playback_secPerStep);
+					}
+					else
+					{
+						//Play forward
+						clipCtrl->playback_sec = (a3f64)clipCtrl->playback_step * clipCtrl->playback_secPerStep;
+					}
+
+					if (transition->flag & a3clip_skipFlag)
+					{
+						//skip frame
+					}
+
+					a3f64 appliedOverstep = 0;
+					if (transition->flag & a3clip_overstepFlag)
+					{
+						//Add overstep
+						appliedOverstep = overstep;
+					}
+
+					//This step happens before we add overstep, offset, etc.
+					if (transition->flag & a3clip_terminusFlag)
+					{
+						//Move to end of clip
+						
+					}
+					else
+					{
+						//Move to beginning of clip
+
+					}
+
+					a3f64 offset;
+					if (transition->flag & a3clip_offsetFlag)
+					{
+						//Add offset time
+						offset = transition->offset;
+					}
+
+					if (transition->flag & a3clip_clipFlag)
+					{
+						//Change clips
+					}
+
+					if (transition->flag & a3clip_branchFlag)
+					{
+						//Run branching function, this may handle any logic for changing the clip based on the branching
+					}
+
+					//Set new time
+
+					clipCtrl->keyframeIndex = clipCtrl->clip->keyframeIndex_first;
+					clipCtrl->keyframe = clipCtrl->clipPool->keyframe + clipCtrl->keyframeIndex;
+					clipCtrl->keyframeTime_sec = appliedOverstep;
+				}
+
+				
+
 				// default testing behavior: loop with overstep
-				clipCtrl->keyframeIndex = clipCtrl->clip->keyframeIndex_first;
-				clipCtrl->keyframe = clipCtrl->clipPool->keyframe + clipCtrl->keyframeIndex;
-				clipCtrl->keyframeTime_sec = overstep;
+				//clipCtrl->keyframeIndex = clipCtrl->clip->keyframeIndex_first;
+				//clipCtrl->keyframe = clipCtrl->clipPool->keyframe + clipCtrl->keyframeIndex;
+				//clipCtrl->keyframeTime_sec = overstep;
 			}
 			// are we simply moving to the next keyframe
 			else
