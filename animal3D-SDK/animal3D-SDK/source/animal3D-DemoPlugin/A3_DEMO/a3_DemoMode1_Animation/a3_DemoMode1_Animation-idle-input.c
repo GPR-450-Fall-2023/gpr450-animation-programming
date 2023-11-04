@@ -140,7 +140,7 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 			//Movement
 			// calculate normalized vectors given keyboard state
 			demoMode->axis_l[0] = (a3real)a3keyboardGetDifference(demoState->keyboard, a3key_D, a3key_A);
-			demoMode->axis_l[1] = (a3real)a3keyboardGetDifference(demoState->keyboard, a3key_S, a3key_W);
+			demoMode->axis_l[1] = (a3real)a3keyboardGetDifference(demoState->keyboard, a3key_W, a3key_S);
 
 			//Normalize if magnitude is not 0
 			if (demoMode->axis_l[0] != 0 && demoMode->axis_l[1] != 0)

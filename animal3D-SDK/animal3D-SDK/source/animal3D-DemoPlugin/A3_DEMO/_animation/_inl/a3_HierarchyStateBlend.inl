@@ -1094,37 +1094,37 @@ inline a3_HierarchyPose* a3hierarchyPoseOpRotateBoneName(a3_HierarchyPose* pose_
 
 		if (index >= 0)
 		{
-			a3hierarchyPoseOpRotateBoneIndex(pose_out, hierarchy, rotate, (a3ui32)index);
+			a3hierarchyPoseOpRotateBoneIndex(pose_out, rotate, (a3ui32)index);
 		}
 	}
 
 	return pose_out;
 }
 
-inline a3_HierarchyPose* a3hierarchyPoseOpRotateBoneIndex(a3_HierarchyPose* pose_out, const a3_Hierarchy* hierarchy, const a3vec3 rotate, const a3ui32 boneIndex)
+inline a3_HierarchyPose* a3hierarchyPoseOpRotateBoneIndex(a3_HierarchyPose* pose_out, const a3vec3 rotate, const a3ui32 boneIndex)
 {
 	if (pose_out)
 	{
-		const a3_HierarchyNode* currentNode = &hierarchy->nodes[boneIndex];
+		a3quat quat = { 0,0,0,0 };
+		a3quat quatCtrl = { 0,0,0,0 };
+		a3quat quatWorld = { 0,0,0,0 };
+		a3quatSetEulerXYZScale(quat.q, rotate.x, rotate.y, rotate.z, (a3real)1);
+		a3quatSetEulerXYZScale(quatCtrl.q, 
+			pose_out->pose[0].rotate.x, 
+			pose_out->pose[0].rotate.y, 
+			pose_out->pose[0].rotate.z, 
+			(a3real)1);
 
-		a3vec3 rotateTransform = { rotate.x, rotate.y, rotate.z };
+		a3quatInvert(quatCtrl.q);
 
-		a3vec3 rotateOriginal = { rotate.x, rotate.y, rotate.z };
-		rotateOriginal.x += rotateTransform.x;
-		rotateOriginal.y += rotateTransform.y;
-		rotateOriginal.z += rotateTransform.z;
+		a3quatProduct(quatWorld.q, quatCtrl.q, quat.q);
 
-		/*while (currentNode->parentIndex >= 0)
-		{
-			rotateTransform.x -= pose_out->pose[currentNode->parentIndex].rotate.x;
-			rotateTransform.y -= pose_out->pose[currentNode->parentIndex].rotate.y;
-			rotateTransform.z -= pose_out->pose[currentNode->parentIndex].rotate.z;
+		a3vec3 rotateTransform = { 0, 0, 0 };
 
-			currentNode = &hierarchy->nodes[currentNode->parentIndex];
-		}*/
+		a3quatGetEulerXYZ(quatWorld.q, &rotateTransform.x, &rotateTransform.y, &rotateTransform.z);
 
 		pose_out->pose[boneIndex].rotate.x += rotateTransform.x;
-		pose_out->pose[boneIndex].rotate.y += rotateTransform.y;
+		pose_out->pose[boneIndex].rotate.y += 0;
 		pose_out->pose[boneIndex].rotate.z += rotateTransform.z;
 		
 	}
