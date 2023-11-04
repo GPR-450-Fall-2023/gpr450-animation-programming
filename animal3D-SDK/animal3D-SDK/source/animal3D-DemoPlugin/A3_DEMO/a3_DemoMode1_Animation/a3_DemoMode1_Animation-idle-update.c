@@ -220,7 +220,8 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		demoMode->pitch = a3clamp(demoMode->pitchLimits.x, demoMode->pitchLimits.y, demoMode->pitch);
 		
 		a3vec3 rotateSpine = { demoMode->pitch, 0, 0 };
-		a3hierarchyPoseOpRotateBoneName(activeHS->animPose, activeHS->hierarchy, rotateSpine, "mixamorig:Spine");
+		//a3hierarchyPoseOpRotateBoneName(activeHS->animPose, activeHS->hierarchy, rotateSpine, "mixamorig:Spine");
+		a3hierarchyPoseOpRotateBoneRange(activeHS->animPose, activeHS->hierarchy, rotateSpine, "mixamorig:Spine", "mixamorig:Spine2");
 
 		printf("Spine: (%f, %f, %f)   Root: (%f, %f, %f)\n",
 			activeHS->animPose->pose[1].rotate.x,

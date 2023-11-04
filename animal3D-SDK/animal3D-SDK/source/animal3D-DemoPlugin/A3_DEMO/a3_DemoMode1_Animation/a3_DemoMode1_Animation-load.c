@@ -499,10 +499,10 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		demoMode->xcontrolSensitivity = 4;
 		demoMode->mouseSensitivity = 1;
 
-		demoMode->pitchLimits.x = -20;
-		demoMode->pitchLimits.y = 60;
+		demoMode->pitchLimits.x = 20;
+		demoMode->pitchLimits.y = 100;
 
-		demoMode->pitch = 20;
+		demoMode->pitch = 60;
 	}
 }
 

@@ -1101,6 +1101,34 @@ inline a3_HierarchyPose* a3hierarchyPoseOpRotateBoneName(a3_HierarchyPose* pose_
 	return pose_out;
 }
 
+inline a3_HierarchyPose* a3hierarchyPoseOpRotateBoneRange(a3_HierarchyPose* pose_out, const a3_Hierarchy* hierarchy, 
+	const a3vec3 rotate, const a3byte* boneStartName, const a3byte* boneEndName)
+{
+	if (pose_out && boneStartName && boneEndName)
+	{
+		//Start and end bone indices in hierarchy
+		a3i32 indexStart = (a3i32)a3hierarchyGetNodeIndex(hierarchy, boneStartName);
+		a3i32 indexEnd = (a3i32)a3hierarchyGetNodeIndex(hierarchy, boneEndName);
+
+		if (indexStart >= 0 && indexEnd >= 0)
+		{
+			//Number of bones to affect
+			a3ui32 nodeCount = a3absolute(indexEnd - indexStart) + 1;
+
+			//Fraction of rotate amount to be applied to each bone
+			a3vec3 rotateFrac = { rotate.x / nodeCount, rotate.y / nodeCount, rotate.z / nodeCount };
+
+			for (a3ui32 i = 0; i < nodeCount; i++)
+			{
+				//Rotate each bone between start and end by fraction amount
+				a3hierarchyPoseOpRotateBoneIndex(pose_out, rotateFrac, (a3ui32)indexStart + i);
+			}
+		}
+	}
+
+	return pose_out;
+}
+
 inline a3_HierarchyPose* a3hierarchyPoseOpRotateBoneIndex(a3_HierarchyPose* pose_out, const a3vec3 rotate, const a3ui32 boneIndex)
 {
 	if (pose_out)
