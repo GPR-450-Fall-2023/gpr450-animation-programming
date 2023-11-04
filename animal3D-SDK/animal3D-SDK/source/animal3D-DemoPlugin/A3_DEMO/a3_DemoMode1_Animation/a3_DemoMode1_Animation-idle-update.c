@@ -210,15 +210,25 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		///////// Spine Rotation
 		if (a3XboxControlIsConnected(demoState->xcontrol))
 		{
-			demoMode->pitch += (a3real)demoMode->axis_r[1] * demoMode->xcontrolSensitivity;
+			demoMode->pitch -= (a3real)demoMode->axis_r[1] * demoMode->xcontrolSensitivity;
 		}
 		else
 		{
-			demoMode->pitch += (a3real)demoMode->axis_r[1] * demoMode->mouseSensitivity;
+			demoMode->pitch -= (a3real)demoMode->axis_r[1] * demoMode->mouseSensitivity;
 		}
+
+		demoMode->pitch = a3clamp(demoMode->pitchLimits.x, demoMode->pitchLimits.y, demoMode->pitch);
 		
 		a3vec3 rotateSpine = { demoMode->pitch, 0, 0 };
 		a3hierarchyPoseOpRotateBoneName(activeHS->animPose, activeHS->hierarchy, rotateSpine, "mixamorig:Spine");
+
+		printf("Spine: (%f, %f, %f)   Root: (%f, %f, %f)\n",
+			activeHS->animPose->pose[1].rotate.x,
+			activeHS->animPose->pose[1].rotate.y,
+			activeHS->animPose->pose[1].rotate.z,
+			activeHS->animPose->pose[0].rotate.x,
+			activeHS->animPose->pose[0].rotate.y,
+			activeHS->animPose->pose[0].rotate.z);
 		//////////////////////////
 
 		// FK pipeline

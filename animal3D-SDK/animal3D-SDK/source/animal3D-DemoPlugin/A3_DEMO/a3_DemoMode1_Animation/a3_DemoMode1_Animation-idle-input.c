@@ -154,7 +154,7 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 			}
 
 			//Rotation
-			a3real pitch = (a3real)a3mouseGetDeltaY(demoState->mouse);
+			a3real pitch = -(a3real)a3mouseGetDeltaY(demoState->mouse);
 			a3real yaw = -(a3real)a3mouseGetDeltaX(demoState->mouse);
 
 			demoMode->axis_r[0] = yaw;
