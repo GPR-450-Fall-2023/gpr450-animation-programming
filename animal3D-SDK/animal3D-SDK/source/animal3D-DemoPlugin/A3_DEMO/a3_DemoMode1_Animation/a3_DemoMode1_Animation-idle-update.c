@@ -170,6 +170,16 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		a3clipControllerUpdate(demoMode->clipCtrl, dt);
 		a3clipControllerUpdate(demoMode->clipCtrlA, dt);
 		a3clipControllerUpdate(demoMode->clipCtrlB, dt);
+		
+		system("cls");
+		printf("Clip Index: %i\nClip Param: %f\nClip Time: %f\nKeyframe Index: %i\nKeyframe Param: %f\nKeyframe Time: %f\nPlayback Speed: %f\n\n",
+			demoMode->clipCtrlA->clipIndex,
+			demoMode->clipCtrlA->clipParam,
+			demoMode->clipCtrlA->clipTime_sec,
+			demoMode->clipCtrlA->keyframeIndex,
+			demoMode->clipCtrlA->keyframeParam,
+			demoMode->clipCtrlA->keyframeTime_sec,
+			demoMode->clipCtrlA->playback_sec);
 
 		//////////////////// TESTING TRANSITION BRANCHING //////////////////////////
 		a3_Clip* currentClip = &demoMode->clipCtrlA->clipPool->clip[demoMode->clipCtrlA->clipIndex];

@@ -475,17 +475,25 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot");
 		a3clipControllerInit(demoMode->clipCtrl, "xbot_ctrl", demoMode->clipPool, j, rate, fps);
-		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_idle_pistol");
+		/*j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_idle_pistol");
 		a3clipControllerInit(demoMode->clipCtrlA, "xbot_ctrlA", demoMode->clipPool, j, rate, fps);
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_skintest");
+		a3clipControllerInit(demoMode->clipCtrlB, "xbot_ctrlB", demoMode->clipPool, j, rate, fps);*/
+
+		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_skintest");
+		a3clipControllerInit(demoMode->clipCtrlA, "xbot_ctrlA", demoMode->clipPool, j, rate, fps);
+		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_idle_pistol");
 		a3clipControllerInit(demoMode->clipCtrlB, "xbot_ctrlB", demoMode->clipPool, j, rate, fps);
 
 
 		/////////// TESTING TRANSITION BRANCHING ////////////////////
 		//Set test clip transition that returns true when receiving forward input
-		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_idle_pistol");
+		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_skintest");
 		demoMode->clipPool[0].clip[j].transitionForward[0].clipTransitionBranch = &a3testBranchFunction;
-		demoMode->clipPool[0].clip[j].transitionForward[0].flag = a3clip_playFlag;
+		demoMode->clipPool[0].clip[j].transitionForward[0].flag = a3clip_playFlag | a3clip_reverseFlag | a3clip_terminusFlag | a3clip_overstepFlag;
+		demoMode->clipPool[0].clip[j].transitionReverse[0].clipTransitionBranch = &a3testBranchFunction;
+		demoMode->clipPool[0].clip[j].transitionReverse[0].flag = a3clip_playFlag | a3clip_overstepFlag;
+		
 		/////////////////////////////////////////////////////////////
 	}
 }
