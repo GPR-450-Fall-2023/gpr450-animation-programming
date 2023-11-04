@@ -179,6 +179,9 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 		a3f64 axis_l[2], axis_r[2]; 
 		a3vec2 pos, vel, acc;
 		a3real rot, velr, accr;
+		a3real pitch;
+		a3real xcontrolSensitivity;
+		a3real mouseSensitivity;
 
 		a3_SpatialPose* ctrlNode; // Input node that will update obj_skeleton_ctrl with values every frame
 

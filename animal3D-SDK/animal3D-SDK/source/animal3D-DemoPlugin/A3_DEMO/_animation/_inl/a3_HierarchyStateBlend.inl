@@ -1086,6 +1086,34 @@ inline a3_HierarchyPose* a3hierarchyPoseOpDelaunay(a3_HierarchyPose* pose_out, a
 	return pose_out;
 }
 
+inline a3_HierarchyPose* a3hierarchyPoseOpRotateBoneName(a3_HierarchyPose* pose_out, const a3_Hierarchy* hierarchy, const a3vec3 rotate, const a3byte* boneName)
+{
+	if (pose_out && boneName)
+	{
+		a3i32 index = (a3i32)a3hierarchyGetNodeIndex(hierarchy, boneName);
+
+		if (index >= 0)
+		{
+			a3hierarchyPoseOpRotateBoneIndex(pose_out, rotate, (a3ui32)index);
+		}
+	}
+
+	return pose_out;
+}
+
+inline a3_HierarchyPose* a3hierarchyPoseOpRotateBoneIndex(a3_HierarchyPose* pose_out, const a3vec3 rotate, const a3ui32 boneIndex)
+{
+	if (pose_out)
+	{
+		pose_out->pose[boneIndex].rotate.x += rotate.x;
+		pose_out->pose[boneIndex].rotate.y += rotate.y;
+		pose_out->pose[boneIndex].rotate.z += rotate.z;
+		
+	}
+
+	return pose_out;
+}
+
 
 //-----------------------------------------------------------------------------
 

@@ -171,7 +171,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		a3clipControllerUpdate(demoMode->clipCtrlA, dt);
 		a3clipControllerUpdate(demoMode->clipCtrlB, dt);
 		
-		system("cls");
+		/*system("cls");
 		printf("Clip Index: %i\nClip Param: %f\nClip Time: %f\nKeyframe Index: %i\nKeyframe Param: %f\nKeyframe Time: %f\nPlayback Speed: %f\n\n",
 			demoMode->clipCtrlA->clipIndex,
 			demoMode->clipCtrlA->clipParam,
@@ -179,7 +179,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 			demoMode->clipCtrlA->keyframeIndex,
 			demoMode->clipCtrlA->keyframeParam,
 			demoMode->clipCtrlA->keyframeTime_sec,
-			demoMode->clipCtrlA->playback_sec);
+			demoMode->clipCtrlA->playback_sec);*/
 
 		//////////////////// TESTING TRANSITION BRANCHING //////////////////////////
 		a3_Clip* currentClip = &demoMode->clipCtrlA->clipPool->clip[demoMode->clipCtrlA->clipIndex];
@@ -206,6 +206,20 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 			demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[clipCtrl->keyframeIndex].sampleIndex0,
 			demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[clipCtrl->keyframeIndex].sampleIndex1,
 			(a3f32)clipCtrl->keyframeParam, demoMode->hierarchy_skel->numNodes);
+
+		///////// Spine Rotation
+		if (a3XboxControlIsConnected(demoState->xcontrol))
+		{
+			demoMode->pitch += (a3real)demoMode->axis_r[1] * demoMode->xcontrolSensitivity;
+		}
+		else
+		{
+			demoMode->pitch += (a3real)demoMode->axis_r[1] * demoMode->mouseSensitivity;
+		}
+		
+		a3vec3 rotateSpine = { demoMode->pitch, 0, 0 };
+		a3hierarchyPoseOpRotateBoneName(activeHS->animPose, activeHS->hierarchy, rotateSpine, "mixamorig:Spine");
+		//////////////////////////
 
 		// FK pipeline
 		a3hierarchyPoseConcat(activeHS->localSpace,	// goal to calculate

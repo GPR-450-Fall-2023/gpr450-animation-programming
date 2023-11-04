@@ -324,6 +324,10 @@ a3_HierarchyPose* a3hierarchyPoseOpFK(a3_HierarchyPose* objectSpacePose_out, a3_
 // pointer-based inverse kinematics operation for single hierarchy pose
 a3_HierarchyPose* a3hierarchyPoseOpIK(a3_HierarchyPose* localSpacePose_out, a3_HierarchyPose const* objectSpacePose_in, a3_HierarchyNode const* hNodes, a3ui32 numNodes);
 
+a3_HierarchyPose* a3hierarchyPoseOpRotateBoneName(a3_HierarchyPose* pose_out, const a3_Hierarchy* hierarchy, const a3vec3 rotate, const a3byte* boneName);
+
+a3_HierarchyPose* a3hierarchyPoseOpRotateBoneIndex(a3_HierarchyPose* pose_out, const a3vec3 rotate, const a3ui32 boneIndex);
+
 //-----------------------------------------------------------------------------
 
 // Helper Functions
