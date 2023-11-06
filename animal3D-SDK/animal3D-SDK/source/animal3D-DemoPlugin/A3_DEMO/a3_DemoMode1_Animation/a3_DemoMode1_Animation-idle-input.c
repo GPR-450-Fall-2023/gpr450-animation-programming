@@ -82,6 +82,67 @@ void a3animation_input_keyCharHold(a3_DemoState const* demoState, a3_DemoMode1_A
 }
 
 
+
+void a3handleLocomotionInput(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode, a3f64 const dt)
+{
+	//a3_DemoMode1_Animation_InputMode
+
+	// Define constants for move and rotate magnitude
+	const a3real MOVE_MAGNITUDE = 5;
+	const a3real ROT_MAGNITUDE = 180;
+	
+	// Get inputs and prep them for use
+	a3vec2 posInput = { (a3real) (a3keyboardGetState(demoState->keyboard, a3key_D) - a3keyboardGetState(demoState->keyboard, a3key_A)) * MOVE_MAGNITUDE,
+						(a3real) (a3keyboardGetState(demoState->keyboard, a3key_W) - a3keyboardGetState(demoState->keyboard, a3key_S)) * MOVE_MAGNITUDE };
+	a3vec4 posVec4 = (a3vec4) { posInput.x, posInput.y, 0, demoMode->ctrlNode->translate.w };
+
+	a3real rotInput = (a3real) (a3keyboardGetState(demoState->keyboard, a3key_J) - a3keyboardGetState(demoState->keyboard, a3key_L));
+	a3vec4 rotVec4 = (a3vec4){ 0, 0, rotInput * ROT_MAGNITUDE, demoMode->ctrlNode->translate.w };
+
+
+	switch(demoMode->ctrl_position)
+	{
+	case animation_input_direct:
+		demoMode->ctrlNode->translate = posVec4;
+		break;
+
+	case animation_input_euler:
+		break;
+			
+	case animation_input_kinematic:
+		break;
+
+	case animation_input_interpolate1:
+		break;
+
+	case animation_input_interpolate2:
+		break;
+	}
+	
+
+	switch (demoMode->ctrl_rotation)
+	{
+	case animation_input_direct:
+		demoMode->ctrlNode->rotate = rotVec4;
+		break;
+
+	case animation_input_euler:
+		break;
+
+	case animation_input_kinematic:
+		break;
+
+	case animation_input_interpolate1:
+		break;
+
+	case animation_input_interpolate2:
+		break;
+	}
+}
+
+
+
+
 //-----------------------------------------------------------------------------
 
 void a3demo_input_controlProjector(
@@ -159,6 +220,8 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 
 			demoMode->axis_r[0] = yaw;
 			demoMode->axis_r[1] = pitch;
+
+			a3handleLocomotionInput(demoState, demoMode, dt);
 		}
 		break;
 	}
@@ -181,61 +244,4 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 		if (a3XboxControlIsPressed(demoState->xcontrol, a3xbox_A))
 			a3demoCtrlDecLoop(demoMode->ctrl_rotation, animation_inputmode_max);
 	}
-}
-
-
-//-----------------------------------------------------------------------------
-// Locomotion Algorithms
-
-// Euler Integration --------------------------------------------------
-
-// Scalar
-a3real fIntegrateEuler1(a3real x, a3real dx_dt, a3real dt) {
-	a3real result = x + (dx_dt * dt);
-	return result;
-}
-
-// Vec2
-a3vec2 fIntegrateEuler2(a3vec2 x, a3vec2 dx_dt, a3real dt) {
-	a3vec2 result = a3vec2_one;
-	result.x = x.x + (dx_dt.x * dt);
-	result.y = x.y + (dx_dt.y * dt);
-	return result;
-}
-
-// Vec3
-a3vec3 fIntegrateEuler3(a3vec3 x, a3vec3 dx_dt, a3real dt) {
-	a3vec3 result = a3vec3_one;
-	result.x = x.x + (dx_dt.x * dt);
-	result.y = x.y + (dx_dt.y * dt);
-	result.z = x.z + (dx_dt.z * dt);
-	return result;
-}
-
-// Kinematic Integration --------------------------------------------------
-// For Aster To Do...
-
-// Interpolation-based Integration --------------------------------------------------
-
-// Scalar
-a3real fIntegrateInterpolation1(a3real x, a3real xc, a3real u) {
-	a3real result = x + ((xc - x) * u);
-	return result;
-}
-
-// Vec2
-a3vec2 fIntegrateInterpolation2(a3vec2 x, a3vec2 xc, a3real u) {
-	a3vec2 result = a3vec2_one;
-	result.x = x.x + ((xc.x - x.x) * u);
-	result.y = x.y + ((xc.y - x.y) * u);
-	return result;
-}
-
-// Vec3
-a3vec3 fIntegrateInterpolation3(a3vec3 x, a3vec3 xc, a3real u) {
-	a3vec3 result = a3vec3_one;
-	result.x = x.x + ((xc.x - x.x) * u);
-	result.y = x.y + ((xc.y - x.y) * u);
-	result.z = x.z + ((xc.z - x.z) * u);
-	return result;
 }

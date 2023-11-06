@@ -496,6 +496,42 @@ a3_HierarchyPose* a3hierarchyPoseOpDelaunay(a3_HierarchyPose* pose_out, a3ui32 n
 );
 
 
+
+
+//-----------------------------------------------------------------------------
+// Locomotion Algorithms
+
+// Euler Integration --------------------------------------------------
+
+// Scalar
+a3real fIntegrateEuler1(a3real x, a3real dx_dt, a3real dt);
+
+// Vec2
+a3vec2 fIntegrateEuler2(a3vec2 x, a3vec2 dx_dt, a3real dt);
+// Vec3
+a3vec3 fIntegrateEuler3(a3vec3 x, a3vec3 dx_dt, a3real dt);
+
+// Kinematic Integration --------------------------------------------------
+// For Aster To Do...
+
+// Interpolation-based Integration --------------------------------------------------
+
+// Scalar
+a3real fIntegrateInterpolation1(a3real x, a3real xc, a3real u);
+
+// Vec2
+a3vec2 fIntegrateInterpolation2(a3vec2 x, a3vec2 xc, a3real u);
+
+// Vec3
+a3vec3 fIntegrateInterpolation3(a3vec3 x, a3vec3 xc, a3real u);
+
+
+
+
+
+
+
+
 #ifdef __cplusplus
 }
 #endif	// __cplusplus
