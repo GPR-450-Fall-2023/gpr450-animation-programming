@@ -87,26 +87,41 @@ void a3handleLocomotionInput(a3_DemoState* demoState, a3_DemoMode1_Animation* de
 {
 	//a3_DemoMode1_Animation_InputMode
 
+	a3real realDT = (a3real)dt;
+
+
 	// Define constants for move and rotate magnitude
-	const a3real MOVE_MAGNITUDE = 5;
-	const a3real ROT_MAGNITUDE = 180;
+	const a3real MOVE_MAGNITUDE = 1;
+	const a3real ROT_MAGNITUDE = 10;
+
 	
 	// Get inputs and prep them for use
 	a3vec2 posInput = { (a3real) (a3keyboardGetState(demoState->keyboard, a3key_D) - a3keyboardGetState(demoState->keyboard, a3key_A)) * MOVE_MAGNITUDE,
 						(a3real) (a3keyboardGetState(demoState->keyboard, a3key_W) - a3keyboardGetState(demoState->keyboard, a3key_S)) * MOVE_MAGNITUDE };
-	a3vec4 posVec4 = (a3vec4) { posInput.x, posInput.y, 0, demoMode->ctrlNode->translate.w };
 
 	a3real rotInput = (a3real) (a3keyboardGetState(demoState->keyboard, a3key_J) - a3keyboardGetState(demoState->keyboard, a3key_L));
-	a3vec4 rotVec4 = (a3vec4){ 0, 0, rotInput * ROT_MAGNITUDE, demoMode->ctrlNode->translate.w };
+
+
+	a3vec2 posResult = { demoMode->ctrlNode->translate.x, demoMode->ctrlNode->translate.y };
+	a3real rotResult = { demoMode->ctrlNode->rotate.z };
+
+
+	a3vec2 posIntegrateResult;
 
 
 	switch(demoMode->ctrl_position)
 	{
 	case animation_input_direct:
-		demoMode->ctrlNode->translate = posVec4;
+		posResult = (a3vec2) { posInput.x * MOVE_MAGNITUDE, posInput.y * MOVE_MAGNITUDE };
 		break;
 
 	case animation_input_euler:
+
+		demoMode->ctrlVelocity = (a3vec2){ posInput.x * MOVE_MAGNITUDE, posInput.y * MOVE_MAGNITUDE };
+		posIntegrateResult = fIntegrateEuler2(posInput, demoMode->ctrlVelocity, realDT);
+
+		posResult.x += posIntegrateResult.x;
+		posResult.y += posIntegrateResult.y;
 		break;
 			
 	case animation_input_kinematic:
@@ -123,10 +138,11 @@ void a3handleLocomotionInput(a3_DemoState* demoState, a3_DemoMode1_Animation* de
 	switch (demoMode->ctrl_rotation)
 	{
 	case animation_input_direct:
-		demoMode->ctrlNode->rotate = rotVec4;
+		rotResult = rotInput * ROT_MAGNITUDE;
 		break;
 
 	case animation_input_euler:
+		rotResult += fIntegrateEuler1(rotInput, demoMode->ctrlAngularVelocity, realDT);
 		break;
 
 	case animation_input_kinematic:
@@ -138,6 +154,11 @@ void a3handleLocomotionInput(a3_DemoState* demoState, a3_DemoMode1_Animation* de
 	case animation_input_interpolate2:
 		break;
 	}
+
+
+	demoMode->ctrlNode->translate = (a3vec4){ posResult.x, posResult.y, 0, demoMode->ctrlNode->translate.w };
+	demoMode->ctrlNode->rotate = (a3vec4){ 0, 0, rotResult, demoMode->ctrlNode->translate.w };
+
 }
 
 
