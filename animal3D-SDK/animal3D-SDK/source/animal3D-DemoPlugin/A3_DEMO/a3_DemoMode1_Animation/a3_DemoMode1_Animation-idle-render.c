@@ -147,6 +147,20 @@ void a3animation_render_controls(a3_DemoState const* demoState, a3_DemoMode1_Ani
 			"    Input mode (position) (%u / %u) ('-'/pad X | '='/pad B): %s", inputPos + 1, animation_inputmode_max, inputModeName[inputPos]);
 		a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 			"    Input mode (rotation) (%u / %u) ('_'/pad A | '+'/pad Y): %s", inputRot + 1, animation_inputmode_max, inputModeName[inputRot]);
+
+		a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+			"    Clip controller current clip: %s", demoMode->clipCtrlA->clip->name);
+
+		if (strcmp(demoMode->clipCtrlA->clip->name, "xbot_idle_pistol") == 0)
+		{
+			a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+				"    Will transition to xbot_jump_f if player provides input");
+		}
+		else if (strcmp(demoMode->clipCtrlA->clip->name, "xbot_jump_f") == 0)
+		{
+			a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+				"    Will transition to xbot_idle_pistol if player does not provide input");
+		}
 	}
 }
 
