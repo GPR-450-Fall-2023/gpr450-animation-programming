@@ -518,8 +518,8 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		demoMode->clipPool[0].clip[walkClipIndex].transitionReverse[0].trueClipIndex = walkClipIndex;
 		/////////////////////////////////////////////////////////////
 
-		demoMode->xcontrolSensitivity = 4;
-		demoMode->mouseSensitivity = 1;
+		demoMode->xcontrolSensitivity = 2;
+		demoMode->mouseSensitivity = (a3real).25;
 
 		demoMode->pitchLimits.x = 20;
 		demoMode->pitchLimits.y = 100;

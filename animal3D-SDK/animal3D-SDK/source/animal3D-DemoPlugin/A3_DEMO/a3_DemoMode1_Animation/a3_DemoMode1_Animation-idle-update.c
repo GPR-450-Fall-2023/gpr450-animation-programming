@@ -101,6 +101,146 @@ void a3animation_updateSkeletonCtrl(a3_DemoMode1_Animation* demoMode)
 	ctrl->scale.z = node->scale.z;
 }
 
+void a3handleLocomotionInput(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode, a3f64 const dt)
+{
+	//a3_DemoMode1_Animation_InputMode
+
+	a3real realDT = (a3real)dt;
+
+
+	// Define constants for animation inputs
+	const a3real MOVE_MAGNITUDE = 2.5;
+	const a3real ROT_MAGNITUDE = 180;
+
+	const a3real VEL_MAGNITUDE = 4;
+	const a3real ACC_MAGNITUDE = 4;
+
+	const a3real ANG_VEL_MAGNITUDE = 45;
+	const a3real ANG_ACC_MAGNITUDE = 45;
+
+	const a3real INTEGRATE1_DT_MULT = 3;
+	const a3real INTEGRATE2_DT_MULT = 6;
+
+	a3vec2 posInput;
+	posInput.x = (a3real)demoMode->axis_l[0];
+	posInput.y = (a3real)demoMode->axis_l[1];
+
+	a3real rotInput = (a3real)demoMode->axis_r[0];;
+
+	demoMode->ctrlInputsRegistered = posInput.x != 0 || posInput.y != 0 || rotInput != 0;
+
+
+	a3vec2 posResult = { demoMode->ctrlNode->translate.x, demoMode->ctrlNode->translate.y };
+	a3real rotResult = { demoMode->ctrlNode->rotate.z };
+
+
+	a3vec2 posIntegrateResult;
+	a3real rotIntegrateResult;
+
+	///////// Spine Rotation
+	if (a3XboxControlIsConnected(demoState->xcontrol))
+	{
+		demoMode->pitch -= (a3real)demoMode->axis_r[1] * demoMode->xcontrolSensitivity;
+		rotInput *= -demoMode->xcontrolSensitivity;
+	}
+	else
+	{
+		demoMode->pitch -= (a3real)demoMode->axis_r[1] * demoMode->mouseSensitivity;
+		rotInput *= demoMode->mouseSensitivity;
+	}
+
+	demoMode->pitch = a3clamp(demoMode->pitchLimits.x, demoMode->pitchLimits.y, demoMode->pitch);
+	//////////////
+
+
+	switch (demoMode->ctrl_position)
+	{
+	case animation_input_direct:
+		posResult = (a3vec2){ posInput.x * MOVE_MAGNITUDE, posInput.y * MOVE_MAGNITUDE };
+		break;
+
+	case animation_input_euler:
+
+		demoMode->ctrlVelocity = (a3vec2){ posInput.x * VEL_MAGNITUDE, posInput.y * VEL_MAGNITUDE };
+
+		posResult = fIntegrateEuler2(posResult, demoMode->ctrlVelocity, realDT);
+
+		break;
+
+	case animation_input_kinematic:
+		break;
+
+	case animation_input_interpolate1:
+
+		posInput.x *= MOVE_MAGNITUDE;
+		posInput.y *= MOVE_MAGNITUDE;
+
+		posIntegrateResult = fIntegrateInterpolation2(posResult, posInput, realDT * INTEGRATE1_DT_MULT);
+
+		posResult.x = posIntegrateResult.x;
+		posResult.y = posIntegrateResult.y;
+
+		break;
+
+	case animation_input_interpolate2:
+
+		posInput.x *= VEL_MAGNITUDE;
+		posInput.y *= VEL_MAGNITUDE;
+
+		demoMode->ctrlVelocity = fIntegrateInterpolation2(demoMode->ctrlVelocity, posInput, realDT * INTEGRATE2_DT_MULT);
+
+		posResult = fIntegrateEuler2(posResult, demoMode->ctrlVelocity, realDT);
+
+		break;
+	}
+
+
+	switch (demoMode->ctrl_rotation)
+	{
+	case animation_input_direct:
+		rotResult = rotInput * ROT_MAGNITUDE;
+		break;
+
+	case animation_input_euler:
+
+		demoMode->ctrlAngularVelocity = rotInput * ANG_VEL_MAGNITUDE;
+
+		rotResult = fIntegrateEuler1(rotResult, demoMode->ctrlAngularVelocity, realDT);
+
+		break;
+
+	case animation_input_kinematic:
+		break;
+
+	case animation_input_interpolate1:
+
+		rotInput *= ROT_MAGNITUDE;
+
+		rotIntegrateResult = fIntegrateInterpolation1(rotResult, rotInput, realDT * INTEGRATE1_DT_MULT);
+
+		rotResult = rotIntegrateResult;
+
+		break;
+
+	case animation_input_interpolate2:
+
+		rotInput *= ROT_MAGNITUDE;
+
+		demoMode->ctrlAngularVelocity = fIntegrateInterpolation1(demoMode->ctrlAngularVelocity, rotInput, realDT * INTEGRATE2_DT_MULT);
+
+		rotResult = fIntegrateEuler1(rotResult, demoMode->ctrlAngularVelocity, realDT);
+
+		break;
+	}
+
+	// Make sure rotation is between 0 and 360 degrees
+	rotResult = fmodf(rotResult, 360.0f);
+
+	demoMode->ctrlNode->translate = (a3vec4){ posResult.x, posResult.y, 0, demoMode->ctrlNode->translate.w };
+	demoMode->ctrlNode->rotate = (a3vec4){ 0, 0, rotResult, demoMode->ctrlNode->translate.w };
+
+}
+
 void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode, a3f64 const dt)
 {
 	a3ui32 i, j;
@@ -159,6 +299,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 
 	//printf("Movement: (%f, %f)   Rotate: (%f, %f)\n", demoMode->axis_l[0], demoMode->axis_l[1], demoMode->axis_r[0], demoMode->axis_r[1]);
 
+	a3handleLocomotionInput(demoState, demoMode, dt);
 
 	// skeletal
 	if (demoState->updateAnimation)
@@ -206,18 +347,6 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 			demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[clipCtrl->keyframeIndex].sampleIndex0,
 			demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[clipCtrl->keyframeIndex].sampleIndex1,
 			(a3f32)clipCtrl->keyframeParam, demoMode->hierarchy_skel->numNodes);
-
-		///////// Spine Rotation
-		if (a3XboxControlIsConnected(demoState->xcontrol))
-		{
-			demoMode->pitch -= (a3real)demoMode->axis_r[1] * demoMode->xcontrolSensitivity;
-		}
-		else
-		{
-			demoMode->pitch -= (a3real)demoMode->axis_r[1] * demoMode->mouseSensitivity;
-		}
-
-		demoMode->pitch = a3clamp(demoMode->pitchLimits.x, demoMode->pitchLimits.y, demoMode->pitch);
 		
 		a3vec3 rotateSpine = { demoMode->pitch, 0, 0 };
 		//a3hierarchyPoseOpRotateBoneName(activeHS->animPose, activeHS->hierarchy, rotateSpine, "mixamorig:Spine");
