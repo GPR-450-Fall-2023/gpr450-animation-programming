@@ -92,11 +92,14 @@ void a3handleLocomotionInput(a3_DemoState* demoState, a3_DemoMode1_Animation* de
 
 	// Define constants for animation inputs
 	const a3real MOVE_MAGNITUDE = 2.5;
-	const a3real ROT_MAGNITUDE = 10;
+	const a3real ROT_MAGNITUDE = 180;
+
 	const a3real VEL_MAGNITUDE = 4;
 	const a3real ACC_MAGNITUDE = 4;
 	
-	const a3real EULER_DT_MULT = .05f;
+	const a3real ANG_VEL_MAGNITUDE = 45;
+	const a3real ANG_ACC_MAGNITUDE = 45;
+
 	const a3real INTEGRATE1_DT_MULT = 3;
 	const a3real INTEGRATE2_DT_MULT = 6;
 
@@ -113,6 +116,7 @@ void a3handleLocomotionInput(a3_DemoState* demoState, a3_DemoMode1_Animation* de
 
 
 	a3vec2 posIntegrateResult;
+	a3real rotIntegrateResult;
 
 
 	switch(demoMode->ctrl_position)
@@ -165,20 +169,38 @@ void a3handleLocomotionInput(a3_DemoState* demoState, a3_DemoMode1_Animation* de
 
 	case animation_input_euler:
 
-		demoMode->ctrlAngularVelocity = fIntegrateEuler1(rotInput, demoMode->ctrlAngularVelocity, realDT);
-		rotResult += demoMode->ctrlAngularVelocity;
+		demoMode->ctrlAngularVelocity = rotInput * ANG_VEL_MAGNITUDE;
+
+		rotResult = fIntegrateEuler1(rotResult, demoMode->ctrlAngularVelocity, realDT);
+
 		break;
 
 	case animation_input_kinematic:
 		break;
 
 	case animation_input_interpolate1:
+
+		rotInput *= ROT_MAGNITUDE;
+
+		rotIntegrateResult = fIntegrateInterpolation1(rotResult, rotInput, realDT * INTEGRATE1_DT_MULT);
+
+		rotResult = rotIntegrateResult;
+
 		break;
 
 	case animation_input_interpolate2:
+
+		rotInput *= ROT_MAGNITUDE;
+
+		demoMode->ctrlAngularVelocity = fIntegrateInterpolation1(demoMode->ctrlAngularVelocity, rotInput, realDT * INTEGRATE2_DT_MULT);
+
+		rotResult = fIntegrateEuler1(rotResult, demoMode->ctrlAngularVelocity, realDT);
+
 		break;
 	}
 
+	// Make sure rotation is between 0 and 360 degrees
+	rotResult = fmodf(rotResult, 360.0f);
 
 	demoMode->ctrlNode->translate = (a3vec4){ posResult.x, posResult.y, 0, demoMode->ctrlNode->translate.w };
 	demoMode->ctrlNode->rotate = (a3vec4){ 0, 0, rotResult, demoMode->ctrlNode->translate.w };
