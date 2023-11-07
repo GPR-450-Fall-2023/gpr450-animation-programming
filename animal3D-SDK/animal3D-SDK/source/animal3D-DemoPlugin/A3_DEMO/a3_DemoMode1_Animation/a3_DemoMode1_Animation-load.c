@@ -405,7 +405,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	hierarchyState->hierarchy = 0;
 	a3hierarchyStateCreate(hierarchyState, hierarchy);
 	a3hierarchyPoseCopy(hierarchyState->localSpace, hierarchyPoseGroup->hpose, hierarchy->numNodes);
-	a3hierarchyPoseConvert(hierarchyState->localSpace, hierarchy->numNodes, hierarchyPoseGroup->channel, hierarchyPoseGroup->order);
+	a3hierarchyPoseConvert(hierarchyState->localSpace, hierarchy->numNodes, hierarchyPoseGroup->channel, hierarchyPoseGroup->order, a3root_All);
 	a3kinematicsSolveForward(hierarchyState);
 	a3hierarchyPoseRestore(hierarchyState->objectSpace, hierarchy->numNodes, hierarchyPoseGroup->channel, hierarchyPoseGroup->order);
 	a3hierarchyStateUpdateObjectInverse(hierarchyState);
@@ -480,7 +480,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_skintest");
 		a3clipControllerInit(demoMode->clipCtrlB, "xbot_ctrlB", demoMode->clipPool, j, rate, fps);*/
 
-		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_idle_pistol");
+		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_idle_f");//"xbot_idle_pistol");
 		a3clipControllerInit(demoMode->clipCtrlA, "xbot_ctrlA", demoMode->clipPool, j, rate, fps);
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_skintest");
 		a3clipControllerInit(demoMode->clipCtrlB, "xbot_ctrlB", demoMode->clipPool, j, rate, fps);
@@ -488,24 +488,28 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 
 		/////////// TESTING TRANSITION BRANCHING ////////////////////
 		//Set test clip transition that returns true when receiving forward input
-		a3i32 idleClipIndex = a3clipGetIndexInPool(demoMode->clipPool, "xbot_idle_pistol");
+		a3i32 idleClipIndex = a3clipGetIndexInPool(demoMode->clipPool, "xbot_idle_f");
 		demoMode->clipPool[0].clip[idleClipIndex].transitionForward[0].clipTransitionBranch = &a3checkForInputBranchFunction;
-		demoMode->clipPool[0].clip[idleClipIndex].transitionForward[0].flag = a3clip_playFlag | a3clip_reverseFlag | a3clip_terminusFlag | a3clip_overstepFlag | a3clip_branchFlag;
+		demoMode->clipPool[0].clip[idleClipIndex].transitionForward[0].flag = a3clip_playFlag | a3clip_overstepFlag | a3clip_branchFlag;
 		demoMode->clipPool[0].clip[idleClipIndex].transitionForward[0].parameters = demoMode;
 
 		demoMode->clipPool[0].clip[idleClipIndex].transitionReverse[0].clipTransitionBranch = &a3checkForInputBranchFunction;
-		demoMode->clipPool[0].clip[idleClipIndex].transitionReverse[0].flag = a3clip_playFlag | a3clip_overstepFlag | a3clip_branchFlag;
+		demoMode->clipPool[0].clip[idleClipIndex].transitionReverse[0].flag = a3clip_playFlag | a3clip_reverseFlag | a3clip_terminusFlag | a3clip_overstepFlag | a3clip_branchFlag;
 		demoMode->clipPool[0].clip[idleClipIndex].transitionReverse[0].parameters = demoMode;
 
 
-		a3i32 walkClipIndex = a3clipGetIndexInPool(demoMode->clipPool, "xbot_jump_f");
+		a3i32 walkClipIndex = a3clipGetIndexInPool(demoMode->clipPool, "xbot_walk_f");
+		demoMode->clipPool[0].clip[walkClipIndex].rootMotion = a3root_AllRot | a3root_YPosition;
+
 		demoMode->clipPool[0].clip[walkClipIndex].transitionForward[0].clipTransitionBranch = &a3checkForInputBranchFunction;
-		demoMode->clipPool[0].clip[walkClipIndex].transitionForward[0].flag = a3clip_playFlag | a3clip_reverseFlag | a3clip_terminusFlag | a3clip_overstepFlag | a3clip_branchFlag;
+		demoMode->clipPool[0].clip[walkClipIndex].transitionForward[0].flag = a3clip_playFlag | a3clip_overstepFlag | a3clip_branchFlag;
 		demoMode->clipPool[0].clip[walkClipIndex].transitionForward[0].parameters = demoMode;
 
 		demoMode->clipPool[0].clip[walkClipIndex].transitionReverse[0].clipTransitionBranch = &a3checkForInputBranchFunction;
-		demoMode->clipPool[0].clip[walkClipIndex].transitionReverse[0].flag = a3clip_playFlag | a3clip_overstepFlag | a3clip_branchFlag;
+		demoMode->clipPool[0].clip[walkClipIndex].transitionReverse[0].flag = a3clip_playFlag | a3clip_reverseFlag | a3clip_terminusFlag | a3clip_overstepFlag | a3clip_branchFlag;
 		demoMode->clipPool[0].clip[walkClipIndex].transitionReverse[0].parameters = demoMode;
+			
+
 
 		demoMode->clipPool[0].clip[idleClipIndex].transitionForward[0].trueClipIndex = walkClipIndex;
 		demoMode->clipPool[0].clip[idleClipIndex].transitionReverse[0].trueClipIndex = walkClipIndex;
@@ -521,10 +525,10 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		demoMode->xcontrolSensitivity = 2;
 		demoMode->mouseSensitivity = (a3real).25;
 
-		demoMode->pitchLimits.x = 20;
-		demoMode->pitchLimits.y = 100;
+		demoMode->pitchLimits.x = -50;
+		demoMode->pitchLimits.y = 50;
 
-		demoMode->pitch = 60;
+		demoMode->pitch = 0;
 	}
 }
 

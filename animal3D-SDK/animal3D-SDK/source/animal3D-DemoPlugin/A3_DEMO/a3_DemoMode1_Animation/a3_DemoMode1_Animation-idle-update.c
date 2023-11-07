@@ -352,25 +352,17 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		//a3hierarchyPoseOpRotateBoneName(activeHS->animPose, activeHS->hierarchy, rotateSpine, "mixamorig:Spine");
 		a3hierarchyPoseOpRotateBoneRange(activeHS->animPose, activeHS->hierarchy, rotateSpine, "mixamorig:Spine", "mixamorig:Spine2");
 
-		/*printf("Spine: (%f, %f, %f)   Root: (%f, %f, %f)\n",
-			activeHS->animPose->pose[1].rotate.x,
-			activeHS->animPose->pose[1].rotate.y,
-			activeHS->animPose->pose[1].rotate.z,
-			activeHS->animPose->pose[0].rotate.x,
-			activeHS->animPose->pose[0].rotate.y,
-			activeHS->animPose->pose[0].rotate.z);*/
-		//////////////////////////
-
 		// FK pipeline
-		a3hierarchyPoseConcat(activeHS->localSpace,	// goal to calculate
-			baseHS->localSpace, // holds base pose
-			activeHS->animPose, // holds current sample pose
-			demoMode->hierarchy_skel->numNodes);
-		a3hierarchyPoseConvert(activeHS->localSpace,
+		a3hierarchyPoseOpConcatenate(activeHS->localSpace,
 			demoMode->hierarchy_skel->numNodes,
-			demoMode->hierarchyPoseGroup_skel->channel,
-			demoMode->hierarchyPoseGroup_skel->order);
-		a3kinematicsSolveForward(activeHS);
+			baseHS->localSpace,
+			activeHS->animPose);
+		//a3hierarchyPoseConvert(activeHS->localSpace, demoMode->hierarchy_skel->numNodes, demoMode->hierarchyPoseGroup_skel->channel, demoMode->hierarchyPoseGroup_skel->order);
+		a3hierarchyPoseOpCONVERT(activeHS->localSpace, demoMode->hierarchy_skel->numNodes, *demoMode->hierarchyPoseGroup_skel->channel, 
+			*demoMode->hierarchyPoseGroup_skel->order, demoMode->clipPool->clip[clipCtrl->clipIndex].rootMotion);
+		//a3kinematicsSolveForward(activeHS);
+		//a3mat4 activeM4 = a3mat4_identity;
+		a3hierarchyPoseOpFK(activeHS->objectSpace, activeHS->localSpace, activeHS->hierarchy->nodes, activeHS->hierarchy->numNodes);
 		a3hierarchyStateUpdateObjectInverse(activeHS);
 		a3hierarchyStateUpdateObjectBindToCurrent(activeHS, baseHS);
 

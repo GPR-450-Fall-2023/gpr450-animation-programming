@@ -164,7 +164,7 @@ a3_SpatialPose* a3spatialPoseOpSmoothStep(a3_SpatialPose* pose_out, a3_SpatialPo
 a3_SpatialPose* a3spatialPoseOpDescale(a3_SpatialPose* pose_out, a3_SpatialPose const* pose_in, const a3real u);
 
 // pointer-based Convert operation for single spatial pose
-a3_SpatialPose* a3spatialPoseOpCONVERT(a3_SpatialPose* pose_out, const a3_SpatialPoseChannel channel, const a3_SpatialPoseEulerOrder order);
+a3_SpatialPose* a3spatialPoseOpCONVERT(a3_SpatialPose* pose_out, const a3_SpatialPoseChannel channel, const a3_SpatialPoseEulerOrder order, const a3_RootMotionFlag rootFlag);
 
 // pointer-based revert/restore operation for single spatial pose
 a3_SpatialPose* a3spatialPoseOpREVERT(a3_SpatialPose* pose_out, const a3_SpatialPoseChannel channel, const a3_SpatialPoseEulerOrder order);
@@ -238,7 +238,7 @@ a3_SpatialPose a3spatialPoseDOpSmoothStep(a3_SpatialPose pose_out, a3_SpatialPos
 a3_SpatialPose a3spatialPoseDOpDescale(a3_SpatialPose pose_out, a3_SpatialPose const pose_in, const a3real u);
 
 // data-based Convert operation for single spatial pose
-a3_SpatialPose a3spatialPoseDOpCONVERT(a3_SpatialPose pose_out, const a3_SpatialPoseChannel channel, const a3_SpatialPoseEulerOrder order);
+a3_SpatialPose a3spatialPoseDOpCONVERT(a3_SpatialPose pose_out, const a3_SpatialPoseChannel channel, const a3_SpatialPoseEulerOrder order, const a3_RootMotionFlag rootFlag);
 
 // data-based revert/restore operation for single spatial pose
 a3_SpatialPose a3spatialPoseDOpREVERT(a3_SpatialPose pose_out, const a3_SpatialPoseChannel channel, const a3_SpatialPoseEulerOrder order);
@@ -313,7 +313,7 @@ a3_HierarchyPose* a3hierarchyPoseOpSmoothStep(a3_HierarchyPose* pose_out, a3_Hie
 a3_HierarchyPose* a3hierarchyPoseOpDescale(a3_HierarchyPose* pose_out, a3_HierarchyPose const* pose_in, a3real const u, a3ui32 const numNodes);
 
 // pointer-based Convert operation for single hierarchy pose
-a3_HierarchyPose* a3hierarchyPoseOpCONVERT(a3_HierarchyPose* pose_out, a3ui32 const numNodes, const a3_SpatialPoseChannel channel, const a3_SpatialPoseEulerOrder order);
+a3_HierarchyPose* a3hierarchyPoseOpCONVERT(a3_HierarchyPose* pose_out, a3ui32 const numNodes, const a3_SpatialPoseChannel channel, const a3_SpatialPoseEulerOrder order, const a3_RootMotionFlag rootFlag);
 
 // pointer-based revert/restore operation for single hierarchy pose
 a3_HierarchyPose* a3hierarchyPoseOpREVERT(a3_HierarchyPose* pose_out, a3ui32 const numNodes, const a3_SpatialPoseChannel channel, const a3_SpatialPoseEulerOrder order);

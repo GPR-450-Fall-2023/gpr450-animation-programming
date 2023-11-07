@@ -29,7 +29,6 @@
 // A3 math library
 #include "animal3D-A3DM/animal3D-A3DM.h"
 
-
 //-----------------------------------------------------------------------------
 
 #ifdef __cplusplus
@@ -39,6 +38,7 @@ extern "C"
 typedef enum a3_SpatialPoseEulerOrder	a3_SpatialPoseEulerOrder;
 typedef enum a3_SpatialPoseChannel		a3_SpatialPoseChannel;
 typedef struct a3_SpatialPose			a3_SpatialPose;
+typedef enum a3_RootMotionFlag			a3_RootMotionFlag;
 #endif	// __cplusplus
 
 
@@ -106,6 +106,20 @@ enum a3_SpatialPoseChannel
 	a3poseChannel_user_xyz = a3poseChannel_user_xy | a3poseChannel_user_z,
 };
 
+enum a3_RootMotionFlag
+{
+	a3root_None = 0x00,
+	a3root_XRotation = 0x01,
+	a3root_YRotation = 0x02,
+	a3root_ZRotation = 0x04,
+	a3root_XPosition = 0x08,
+	a3root_YPosition = 0x10,
+	a3root_ZPosition = 0x20,
+	a3root_AllPos = a3root_XPosition | a3root_YPosition | a3root_ZPosition,
+	a3root_AllRot = a3root_XRotation | a3root_YRotation | a3root_ZRotation,
+	a3root_All = a3root_AllPos | a3root_AllRot,
+};
+
 	
 //-----------------------------------------------------------------------------
 
@@ -130,7 +144,7 @@ a3i32 a3spatialPoseSetRotation(a3_SpatialPose* spatialPose, const a3f32 rx_degre
 a3i32 a3spatialPoseSetScale(a3_SpatialPose* spatialPose, const a3f32 sx, const a3f32 sy, const a3f32 sz);
 
 // translation
-a3i32 a3spatialPoseSetTranslation(a3_SpatialPose* spatialPose, const a3f32 tx, const a3f32 ty, const a3f32 tz);
+a3i32 a3spatialPoseSetTranslation(a3_SpatialPose* spatialPose, const a3f32 tx, const a3f32 ty, const a3f32 ta3spatialPoseConvertz);
 
 
 //-----------------------------------------------------------------------------
@@ -139,7 +153,8 @@ a3i32 a3spatialPoseSetTranslation(a3_SpatialPose* spatialPose, const a3f32 tx, c
 a3i32 a3spatialPoseReset(a3_SpatialPose* spatialPose);
 
 // convert single node pose to matrix
-a3i32 a3spatialPoseConvert(a3_SpatialPose* spatialPose, const a3_SpatialPoseChannel channel, const a3_SpatialPoseEulerOrder order);
+a3i32 a3spatialPoseConvert(a3_SpatialPose* spatialPose, const a3_SpatialPoseChannel channel, 
+	const a3_SpatialPoseEulerOrder order, const a3_RootMotionFlag rootFlag);
 
 // restore single node pose from matrix
 a3i32 a3spatialPoseRestore(a3_SpatialPose* spatialPose, const a3_SpatialPoseChannel channel, const a3_SpatialPoseEulerOrder order);

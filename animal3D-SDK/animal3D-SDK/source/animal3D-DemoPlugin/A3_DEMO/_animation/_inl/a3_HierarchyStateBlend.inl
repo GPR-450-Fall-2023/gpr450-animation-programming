@@ -294,10 +294,10 @@ inline a3_SpatialPose* a3spatialPoseOpDescale(a3_SpatialPose* pose_out, a3_Spati
 }
 
 // pointer-based Convert operation for single spatial pose
-inline a3_SpatialPose* a3spatialPoseOpCONVERT(a3_SpatialPose* pose_out, const a3_SpatialPoseChannel channel, const a3_SpatialPoseEulerOrder order)
+inline a3_SpatialPose* a3spatialPoseOpCONVERT(a3_SpatialPose* pose_out, const a3_SpatialPoseChannel channel, const a3_SpatialPoseEulerOrder order, const a3_RootMotionFlag rootFlag)
 {
 	//a3_SpatialPoseChannel const channel = a3poseChannel_rotate_xyz | a3poseChannel_translate_xyz | a3poseChannel_scale_xyz;
-	a3spatialPoseConvert(pose_out, channel, order);
+	a3spatialPoseConvert(pose_out, channel, order, rootFlag);
 
 	return pose_out;
 }
@@ -471,9 +471,9 @@ inline a3_SpatialPose a3spatialPoseDOpDescale(a3_SpatialPose pose_out, a3_Spatia
 	return pose_out;
 }
 
-inline a3_SpatialPose a3spatialPoseDOpCONVERT(a3_SpatialPose pose_out, const a3_SpatialPoseChannel channel, const a3_SpatialPoseEulerOrder order)
+inline a3_SpatialPose a3spatialPoseDOpCONVERT(a3_SpatialPose pose_out, const a3_SpatialPoseChannel channel, const a3_SpatialPoseEulerOrder order, const a3_RootMotionFlag rootFlag)
 {
-	a3spatialPoseOpCONVERT(&pose_out, channel, order);
+	a3spatialPoseOpCONVERT(&pose_out, channel, order, rootFlag);
 	return pose_out;
 }
 
@@ -672,10 +672,13 @@ inline a3_HierarchyPose* a3hierarchyPoseOpDescale(a3_HierarchyPose* pose_out, a3
 }
 
 // pointer-based Convert operation for single hierarchy pose
-inline a3_HierarchyPose* a3hierarchyPoseOpCONVERT(a3_HierarchyPose* pose_out, a3ui32 const numNodes, const a3_SpatialPoseChannel channel, const a3_SpatialPoseEulerOrder order)
+inline a3_HierarchyPose* a3hierarchyPoseOpCONVERT(a3_HierarchyPose* pose_out, a3ui32 const numNodes, const a3_SpatialPoseChannel channel, const a3_SpatialPoseEulerOrder order, const a3_RootMotionFlag rootFlag)
 {
 	for (a3ui32 i = 0; i < numNodes; i++) {
-		a3spatialPoseOpCONVERT(&pose_out->pose[i], channel, order);
+		if(i == 0)
+			a3spatialPoseOpCONVERT(&pose_out->pose[i], channel, order, rootFlag);
+		else
+			a3spatialPoseOpCONVERT(&pose_out->pose[i], channel, order, a3root_All);
 	}
 
 	return pose_out;

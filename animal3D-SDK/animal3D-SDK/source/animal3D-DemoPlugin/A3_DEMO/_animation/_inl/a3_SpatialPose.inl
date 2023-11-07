@@ -89,14 +89,39 @@ inline a3i32 a3spatialPoseReset(a3_SpatialPose* spatialPose)
 }
 
 // convert single node pose to matrix
-inline a3i32 a3spatialPoseConvert(a3_SpatialPose* spatialPose, const a3_SpatialPoseChannel channel, const a3_SpatialPoseEulerOrder order)
+inline a3i32 a3spatialPoseConvert(a3_SpatialPose* spatialPose, const a3_SpatialPoseChannel channel, const a3_SpatialPoseEulerOrder order, const a3_RootMotionFlag rootFlag)
 {
 	if (spatialPose)
 	{
 		a3mat4 rx, ry, rz, r;
-		a3real4x4SetRotateX(rx.m, a3trigValid_sind(spatialPose->rotate.x));
-		a3real4x4SetRotateY(ry.m, a3trigValid_sind(spatialPose->rotate.y));
-		a3real4x4SetRotateZ(rz.m, a3trigValid_sind(spatialPose->rotate.z));
+
+		if (rootFlag & a3root_XRotation)
+		{
+			a3real4x4SetRotateX(rx.m, a3trigValid_sind(spatialPose->rotate.x));
+		}
+		else
+		{
+			a3real4x4SetRotateX(rx.m, a3trigValid_sind(0));
+		}
+
+		if (rootFlag & a3root_YRotation)
+		{
+			a3real4x4SetRotateY(ry.m, a3trigValid_sind(spatialPose->rotate.y));
+		}
+		else
+		{
+			a3real4x4SetRotateY(ry.m, a3trigValid_sind(0));
+		}
+
+		if (rootFlag & a3root_ZRotation)
+		{
+			a3real4x4SetRotateZ(rz.m, a3trigValid_sind(spatialPose->rotate.z));
+		}
+		else
+		{
+			a3real4x4SetRotateZ(rz.m, a3trigValid_sind(0));
+		}
+
 		switch (order)
 		{
 		case a3poseEulerOrder_xyz:
@@ -127,7 +152,35 @@ inline a3i32 a3spatialPoseConvert(a3_SpatialPose* spatialPose, const a3_SpatialP
 		a3real3MulS(spatialPose->transformMat.v0.v, spatialPose->scale.x);
 		a3real3MulS(spatialPose->transformMat.v1.v, spatialPose->scale.y);
 		a3real3MulS(spatialPose->transformMat.v2.v, spatialPose->scale.z);
-		spatialPose->transformMat.v3 = spatialPose->translate;
+
+		if (rootFlag & a3root_XPosition)
+		{
+			spatialPose->transformMat.v3.x = spatialPose->translate.x;
+		}
+		else
+		{
+			spatialPose->transformMat.v3.x = 0;
+		}
+
+		if (rootFlag & a3root_YPosition)
+		{
+			spatialPose->transformMat.v3.y = spatialPose->translate.y;
+		}
+		else
+		{
+			spatialPose->transformMat.v3.y = 0;
+		}
+
+		if (rootFlag & a3root_ZPosition)
+		{
+			spatialPose->transformMat.v3.z = spatialPose->translate.z;
+		}
+		else
+		{
+			spatialPose->transformMat.v3.z = 0;
+		}
+
+		//spatialPose->transformMat.v3 = spatialPose->translate;
 		return 1;
 	}
 	return -1;

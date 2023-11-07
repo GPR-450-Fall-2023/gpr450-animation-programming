@@ -29,6 +29,8 @@
 #include "animal3D-A3DM/a3math/a3vector.h"
 #include "animal3D-A3DM/a3math/a3interpolation.h"
 
+#include "a3_SpatialPose.h"
+
 
 //-----------------------------------------------------------------------------
 
@@ -146,6 +148,8 @@ struct a3_Clip
 
 	// duration in seconds and reciprocal
 	a3f64 duration_sec, durationInv;
+
+	a3_RootMotionFlag rootMotion;
 
 	// transitions
 	a3_ClipTransition transitionForward[1], transitionReverse[1];
