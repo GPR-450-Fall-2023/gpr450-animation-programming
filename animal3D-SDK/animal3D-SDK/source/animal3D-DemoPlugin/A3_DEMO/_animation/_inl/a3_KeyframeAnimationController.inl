@@ -128,18 +128,28 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, a3f64 dt)
 						offset = transition->offset * clipCtrl->playback_sec;
 					}
 
-					if (transition->flag & a3clip_clipFlag)
-					{
-						//Change clips
-						clipCtrl->clipIndex = transition->clipIndex;
-						clipCtrl->clip = &clipCtrl->clipPool->clip[transition->clipIndex];
-					}
-
 					if (transition->flag & a3clip_branchFlag)
 					{
 						//Run branching function, this may handle any logic for changing the clip based on the branching
 
-						//transition->clipTransitionBranch(0);
+						if (transition->clipTransitionBranch(transition->parameters))
+						{
+							//Change clips
+							clipCtrl->clipIndex = transition->trueClipIndex;
+							clipCtrl->clip = &clipCtrl->clipPool->clip[transition->trueClipIndex];
+						}
+						else
+						{
+							//Change clips
+							clipCtrl->clipIndex = transition->falseClipIndex;
+							clipCtrl->clip = &clipCtrl->clipPool->clip[transition->falseClipIndex];
+						}
+					}
+					else if(transition->flag & a3clip_clipFlag)
+					{
+						//Change clips
+						clipCtrl->clipIndex = transition->trueClipIndex;
+						clipCtrl->clip = &clipCtrl->clipPool->clip[transition->trueClipIndex];
 					}
 
 					//This step happens before we add overstep, offset, etc.
@@ -217,11 +227,28 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, a3f64 dt)
 						clipCtrl->playback_sec = (a3f64)clipCtrl->playback_step * clipCtrl->playback_secPerStep;
 					}
 
-					if (transition->flag & a3clip_clipFlag)
+					if (transition->flag & a3clip_branchFlag)
+					{
+						//Run branching function, this may handle any logic for changing the clip based on the branching
+
+						if (transition->clipTransitionBranch(transition->parameters))
+						{
+							//Change clips
+							clipCtrl->clipIndex = transition->trueClipIndex;
+							clipCtrl->clip = &clipCtrl->clipPool->clip[transition->trueClipIndex];
+						}
+						else
+						{
+							//Change clips
+							clipCtrl->clipIndex = transition->falseClipIndex;
+							clipCtrl->clip = &clipCtrl->clipPool->clip[transition->falseClipIndex];
+						}
+					}
+					else if (transition->flag & a3clip_clipFlag)
 					{
 						//Change clips
-						clipCtrl->clipIndex = transition->clipIndex;
-						clipCtrl->clip = &clipCtrl->clipPool->clip[transition->clipIndex];
+						clipCtrl->clipIndex = transition->trueClipIndex;
+						clipCtrl->clip = &clipCtrl->clipPool->clip[transition->trueClipIndex];
 					}
 
 					a3f64 appliedOverstep = 0;

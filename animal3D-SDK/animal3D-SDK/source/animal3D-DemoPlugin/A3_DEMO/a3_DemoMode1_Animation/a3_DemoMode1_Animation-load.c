@@ -488,12 +488,34 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 
 		/////////// TESTING TRANSITION BRANCHING ////////////////////
 		//Set test clip transition that returns true when receiving forward input
-		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_idle_pistol");
-		demoMode->clipPool[0].clip[j].transitionForward[0].clipTransitionBranch = &a3testBranchFunction;
-		demoMode->clipPool[0].clip[j].transitionForward[0].flag = a3clip_playFlag | a3clip_reverseFlag | a3clip_terminusFlag | a3clip_overstepFlag;
-		demoMode->clipPool[0].clip[j].transitionReverse[0].clipTransitionBranch = &a3testBranchFunction;
-		demoMode->clipPool[0].clip[j].transitionReverse[0].flag = a3clip_playFlag | a3clip_overstepFlag;
-		
+		a3i32 idleClipIndex = a3clipGetIndexInPool(demoMode->clipPool, "xbot_idle_pistol");
+		demoMode->clipPool[0].clip[idleClipIndex].transitionForward[0].clipTransitionBranch = &a3checkForInputBranchFunction;
+		demoMode->clipPool[0].clip[idleClipIndex].transitionForward[0].flag = a3clip_playFlag | a3clip_reverseFlag | a3clip_terminusFlag | a3clip_overstepFlag | a3clip_branchFlag;
+		demoMode->clipPool[0].clip[idleClipIndex].transitionForward[0].parameters = demoMode;
+
+		demoMode->clipPool[0].clip[idleClipIndex].transitionReverse[0].clipTransitionBranch = &a3checkForInputBranchFunction;
+		demoMode->clipPool[0].clip[idleClipIndex].transitionReverse[0].flag = a3clip_playFlag | a3clip_overstepFlag | a3clip_branchFlag;
+		demoMode->clipPool[0].clip[idleClipIndex].transitionReverse[0].parameters = demoMode;
+
+
+		a3i32 walkClipIndex = a3clipGetIndexInPool(demoMode->clipPool, "xbot_jump_f");
+		demoMode->clipPool[0].clip[walkClipIndex].transitionForward[0].clipTransitionBranch = &a3checkForInputBranchFunction;
+		demoMode->clipPool[0].clip[walkClipIndex].transitionForward[0].flag = a3clip_playFlag | a3clip_reverseFlag | a3clip_terminusFlag | a3clip_overstepFlag | a3clip_branchFlag;
+		demoMode->clipPool[0].clip[walkClipIndex].transitionForward[0].parameters = demoMode;
+
+		demoMode->clipPool[0].clip[walkClipIndex].transitionReverse[0].clipTransitionBranch = &a3checkForInputBranchFunction;
+		demoMode->clipPool[0].clip[walkClipIndex].transitionReverse[0].flag = a3clip_playFlag | a3clip_overstepFlag | a3clip_branchFlag;
+		demoMode->clipPool[0].clip[walkClipIndex].transitionReverse[0].parameters = demoMode;
+
+		demoMode->clipPool[0].clip[idleClipIndex].transitionForward[0].trueClipIndex = walkClipIndex;
+		demoMode->clipPool[0].clip[idleClipIndex].transitionReverse[0].trueClipIndex = walkClipIndex;
+		demoMode->clipPool[0].clip[idleClipIndex].transitionForward[0].falseClipIndex = idleClipIndex;
+		demoMode->clipPool[0].clip[idleClipIndex].transitionReverse[0].falseClipIndex = idleClipIndex;
+
+		demoMode->clipPool[0].clip[walkClipIndex].transitionForward[0].falseClipIndex = idleClipIndex;
+		demoMode->clipPool[0].clip[walkClipIndex].transitionReverse[0].falseClipIndex = idleClipIndex;
+		demoMode->clipPool[0].clip[walkClipIndex].transitionForward[0].trueClipIndex = walkClipIndex;
+		demoMode->clipPool[0].clip[walkClipIndex].transitionReverse[0].trueClipIndex = walkClipIndex;
 		/////////////////////////////////////////////////////////////
 
 		demoMode->xcontrolSensitivity = 4;

@@ -113,7 +113,8 @@ a3i32 a3clipTransitionInit(a3_ClipTransition* transition, a3_ClipTransitionFlag 
 	{
 		transition->flag = transitionFlag;
 		transition->offset = offset;
-		transition->clipIndex = clip->index;
+		transition->trueClipIndex = clip->index;
+		transition->falseClipIndex = clip->index;
 		transition->clipTransitionBranch = 0;
 		return transitionFlag;
 	}
@@ -154,24 +155,23 @@ a3i32 a3clipGetIndexInPool(const a3_ClipPool* clipPool, const a3byte clipName[a3
 //-----------------------------------------------------------------------------
 //Clip transition branch functions
 
-a3boolean a3testBranchFunction(void* data)
+a3boolean a3checkForInputBranchFunction(void* data)
 {
 	a3_DemoMode1_Animation* demoMode = (a3_DemoMode1_Animation*)data;
 
 	if (!demoMode)
 	{
 		printf("ERROR - demoMode is invalid in a3testBranchFunction");
-		return false;
+		return a3false;
 	}
 
-	//Left stick forward
-	a3real forward = (a3real)demoMode->axis_l[1];
-
-	if (forward > 0)
+	if (demoMode->ctrlInputsRegistered > 0)
 	{
+		printf("TRUE\n");
 		return a3true;
 	}
 
+	printf("FALSE\n");
 	return a3false;
 }
 

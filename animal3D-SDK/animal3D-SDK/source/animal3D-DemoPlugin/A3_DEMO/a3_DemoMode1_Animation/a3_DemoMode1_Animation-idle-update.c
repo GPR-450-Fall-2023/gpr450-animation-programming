@@ -182,18 +182,18 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 			demoMode->clipCtrlA->playback_sec);*/
 
 		//////////////////// TESTING TRANSITION BRANCHING //////////////////////////
-		a3_Clip* currentClip = &demoMode->clipCtrlA->clipPool->clip[demoMode->clipCtrlA->clipIndex];
+		//a3_Clip* currentClip = &demoMode->clipCtrlA->clipPool->clip[demoMode->clipCtrlA->clipIndex];
 
-		//Null check
-		if (currentClip->transitionForward[0].clipTransitionBranch)
-		{
-			//Call function pointer and pass in demoMode
-			if ((*currentClip->transitionForward[0].clipTransitionBranch)(demoMode))
-			{
-				//If true, print
-				printf("Function pointer works on forward input");
-			}
-		}
+		////Null check
+		//if (currentClip->transitionForward[0].clipTransitionBranch)
+		//{
+		//	//Call function pointer and pass in demoMode
+		//	if ((*currentClip->transitionForward[0].clipTransitionBranch)(demoMode))
+		//	{
+		//		//If true, print
+		//		//printf("Function pointer works on forward input");
+		//	}
+		//}
 		/////////////////////////////////////////////////////////////////////////////
 
 		// STEP
@@ -223,13 +223,13 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		//a3hierarchyPoseOpRotateBoneName(activeHS->animPose, activeHS->hierarchy, rotateSpine, "mixamorig:Spine");
 		a3hierarchyPoseOpRotateBoneRange(activeHS->animPose, activeHS->hierarchy, rotateSpine, "mixamorig:Spine", "mixamorig:Spine2");
 
-		printf("Spine: (%f, %f, %f)   Root: (%f, %f, %f)\n",
+		/*printf("Spine: (%f, %f, %f)   Root: (%f, %f, %f)\n",
 			activeHS->animPose->pose[1].rotate.x,
 			activeHS->animPose->pose[1].rotate.y,
 			activeHS->animPose->pose[1].rotate.z,
 			activeHS->animPose->pose[0].rotate.x,
 			activeHS->animPose->pose[0].rotate.y,
-			activeHS->animPose->pose[0].rotate.z);
+			activeHS->animPose->pose[0].rotate.z);*/
 		//////////////////////////
 
 		// FK pipeline

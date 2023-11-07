@@ -111,6 +111,9 @@ void a3handleLocomotionInput(a3_DemoState* demoState, a3_DemoMode1_Animation* de
 	a3real rotInput = (a3real) (a3keyboardGetState(demoState->keyboard, a3key_J) - a3keyboardGetState(demoState->keyboard, a3key_L));
 
 
+	demoMode->ctrlInputsRegistered = posInput.x != 0 || posInput.y != 0 || rotInput != 0;
+
+
 	a3vec2 posResult = { demoMode->ctrlNode->translate.x, demoMode->ctrlNode->translate.y };
 	a3real rotResult = { demoMode->ctrlNode->rotate.z };
 

@@ -118,7 +118,10 @@ struct a3_ClipTransition
 {
 	a3_ClipTransitionFlag flag;
 	a3i32 offset;
-	a3i32 clipIndex;
+	a3i32 trueClipIndex;
+	a3i32 falseClipIndex;
+
+	void* parameters;
 
 	//Function pointer that returns a bool, typically used to determine which clip to transition to next
 	//This is kept generic so that it can have multiple use cases
@@ -196,7 +199,7 @@ a3i32 a3clipDistributeDuration(a3_ClipPool const* clipPool, const a3ui32 clipInd
 /// </summary>
 /// <param name="demoMode">Points to a a3_DemoMode1_Animation*</param>
 /// <returns>Whether or not we are receiving forward input</returns>
-a3boolean a3testBranchFunction(void* demoMode);
+a3boolean a3checkForInputBranchFunction(void* demoMode);
 
 //-----------------------------------------------------------------------------
 
