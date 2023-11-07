@@ -90,9 +90,15 @@ void a3handleLocomotionInput(a3_DemoState* demoState, a3_DemoMode1_Animation* de
 	a3real realDT = (a3real)dt;
 
 
-	// Define constants for move and rotate magnitude
-	const a3real MOVE_MAGNITUDE = 1;
+	// Define constants for animation inputs
+	const a3real MOVE_MAGNITUDE = 2.5;
 	const a3real ROT_MAGNITUDE = 10;
+	const a3real VEL_MAGNITUDE = 4;
+	const a3real ACC_MAGNITUDE = 4;
+	
+	const a3real EULER_DT_MULT = .05f;
+	const a3real INTEGRATE1_DT_MULT = 3;
+	const a3real INTEGRATE2_DT_MULT = 6;
 
 	
 	// Get inputs and prep them for use
@@ -109,10 +115,6 @@ void a3handleLocomotionInput(a3_DemoState* demoState, a3_DemoMode1_Animation* de
 	a3vec2 posIntegrateResult;
 
 
-	demoMode->ctrlVelocity = (a3vec2){ posInput.x * MOVE_MAGNITUDE, posInput.y * MOVE_MAGNITUDE };
-	demoMode->ctrlAngularVelocity = fIntegrateEuler1(rotInput, demoMode->ctrlAngularVelocity, realDT);
-
-
 	switch(demoMode->ctrl_position)
 	{
 	case animation_input_direct:
@@ -121,10 +123,10 @@ void a3handleLocomotionInput(a3_DemoState* demoState, a3_DemoMode1_Animation* de
 
 	case animation_input_euler:
 
-		posIntegrateResult = fIntegrateEuler2(posInput, demoMode->ctrlVelocity, realDT);
+		demoMode->ctrlVelocity = (a3vec2){ posInput.x * VEL_MAGNITUDE, posInput.y * VEL_MAGNITUDE };
 
-		posResult.x += posIntegrateResult.x;
-		posResult.y += posIntegrateResult.y;
+		posResult = fIntegrateEuler2(posResult, demoMode->ctrlVelocity, realDT);
+
 		break;
 			
 	case animation_input_kinematic:
@@ -135,14 +137,22 @@ void a3handleLocomotionInput(a3_DemoState* demoState, a3_DemoMode1_Animation* de
 		posInput.x *= MOVE_MAGNITUDE;
 		posInput.y *= MOVE_MAGNITUDE;
 
-		posIntegrateResult = fIntegrateEuler2(posResult, posInput, realDT);
+		posIntegrateResult = fIntegrateInterpolation2(posResult, posInput, realDT * INTEGRATE1_DT_MULT);
 
-		posResult.x += posIntegrateResult.x;
-		posResult.y += posIntegrateResult.y;
+		posResult.x = posIntegrateResult.x;
+		posResult.y = posIntegrateResult.y;
 
 		break;
 
 	case animation_input_interpolate2:
+
+		posInput.x *= VEL_MAGNITUDE;
+		posInput.y *= VEL_MAGNITUDE;
+
+		demoMode->ctrlVelocity = fIntegrateInterpolation2(demoMode->ctrlVelocity, posInput, realDT * INTEGRATE2_DT_MULT);
+		
+		posResult = fIntegrateEuler2(posResult, demoMode->ctrlVelocity, realDT);
+
 		break;
 	}
 	
@@ -154,6 +164,8 @@ void a3handleLocomotionInput(a3_DemoState* demoState, a3_DemoMode1_Animation* de
 		break;
 
 	case animation_input_euler:
+
+		demoMode->ctrlAngularVelocity = fIntegrateEuler1(rotInput, demoMode->ctrlAngularVelocity, realDT);
 		rotResult += demoMode->ctrlAngularVelocity;
 		break;
 
