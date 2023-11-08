@@ -101,6 +101,9 @@ void a3animation_render_controls(a3_DemoState const* demoState, a3_DemoMode1_Ani
 	a3byte const* ctrlTargetName[animation_ctrlmode_max] = {
 		"CAMERA",
 		"CHARACTER",
+		"CHARACTER LOOKAT",
+		"CHARACTER WRIST EFFECTOR (R)",
+		"CHARACTER WRIST CONSTRAINT (R)",
 	};
 	a3byte const* inputModeName[animation_inputmode_max] = {
 		"Direct assignment",
@@ -231,13 +234,27 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 
 	// temp drawable pointers
 	const a3_VertexDrawable* drawable[] = {
+		0,
+		demoState->draw_node,
+		demoState->draw_node,
 		demoState->draw_unit_box,		// skybox
+		demoState->draw_node,
+		demoState->draw_node,
+		demoState->draw_node,
+		demoState->draw_node,
 		demoState->draw_character_skin,	// skinned model
 	};
 
 	// temp texture pointers
 	const a3_Texture* texture_dm[] = {
+		0,
+		0,
+		0,
 		demoState->tex_checker,
+		0,
+		0,
+		0,
+		0,
 		demoState->tex_checker,
 	};
 
@@ -409,11 +426,9 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 			modelViewMat.v3 = a3vec4_zero;
 			a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMV_nrm, 1, modelViewMat.mm);
 			a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uIndex, 1, &j);
-			i = (j * 2 + 1) % hueCount;
-			a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, rgba4[i].v);
+			a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, orange);
 			a3vertexDrawableActivateAndRender(demoState->draw_character_skin);
-			i = (j * 2 + 13) % hueCount;
-			a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, rgba4[i].v);
+			a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, sky);
 			a3vertexDrawableActivateAndRender(demoState->draw_character_skin_alt);
 		}
 
@@ -602,10 +617,10 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 					modelViewMat.v3 = a3vec4_zero;
 					a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMV_nrm, 1, modelViewMat.mm);
 					a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uAtlas, 1, a3mat4_identity.mm);
-					i = (j * 2 + 7) % hueCount;
+					i = (a3ui32)((a3vec4*)purple - rgba4);
 					a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uIndex, 1, &i);
 					a3vertexDrawableActivateAndRender(demoState->draw_character_skin);
-					i = (j * 2 + 19) % hueCount;
+					i = (a3ui32)((a3vec4*)lime - rgba4);
 					a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uIndex, 1, &i);
 					a3vertexDrawableActivateAndRender(demoState->draw_character_skin_alt);
 				}
@@ -634,7 +649,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 			// set up to draw skeleton
 			currentDemoProgram = demoState->prog_drawColorUnif_instanced;
 			a3shaderProgramActivate(currentDemoProgram->program);
-			currentHierarchyState = demoMode->hierarchyState_skel;
+			currentHierarchyState = demoMode->hierarchyState_skel_final;
 			currentHierarchy = currentHierarchyState->hierarchy;
 
 			// draw skeletal joints
@@ -650,8 +665,33 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 			currentDrawable = demoState->draw_link;
 			a3vertexDrawableActivateAndRenderInstanced(currentDrawable, currentHierarchy->numNodes);
 
+			// draw effectors
+			currentDemoProgram = demoState->prog_drawColorUnif;
+			a3shaderProgramActivate(currentDemoProgram->program);
+
+			i = (a3ui32)(demoMode->obj_skeleton_neckLookat_ctrl - demoMode->object_scene);
+			modelMat = demoMode->sceneGraphState->objectSpace->pose[i].transformMat;
+			a3real4x4Product(modelViewProjectionMat.m, viewProjectionMat.m, modelMat.m);
+			a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMVP, 1, modelViewProjectionMat.mm);
+			a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, cyan);
+			a3vertexDrawableActivateAndRender(drawable[i]);
+
+			i = (a3ui32)(demoMode->obj_skeleton_wristEffector_r_ctrl - demoMode->object_scene);
+			modelMat = demoMode->sceneGraphState->objectSpace->pose[i].transformMat;
+			a3real4x4Product(modelViewProjectionMat.m, viewProjectionMat.m, modelMat.m);
+			a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMVP, 1, modelViewProjectionMat.mm);
+			a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, magenta);
+			a3vertexDrawableActivateAndRender(drawable[i]);
+
+			i = (a3ui32)(demoMode->obj_skeleton_wristConstraint_r_ctrl - demoMode->object_scene);
+			modelMat = demoMode->sceneGraphState->objectSpace->pose[i].transformMat;
+			a3real4x4Product(modelViewProjectionMat.m, viewProjectionMat.m, modelMat.m);
+			a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMVP, 1, modelViewProjectionMat.mm);
+			a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, yellow);
+			a3vertexDrawableActivateAndRender(drawable[i]);
+
 			// draw skeletal joint orientations
-			if (demoState->displayTangentBases)
+			if (demoState->displayObjectAxes)
 			{
 				currentDemoProgram = demoState->prog_drawColorAttrib_instanced;
 				a3shaderProgramActivate(currentDemoProgram->program);
@@ -679,17 +719,18 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 		// individual objects (based on scene graph)
 		if (demoState->displayObjectAxes)
 		{
-			j = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_skeleton_ctrl");
-			modelMat = demoMode->sceneGraphState->objectSpace->pose[j].transformMat;
-			a3demo_drawModelSimple(modelViewProjectionMat.m, viewProjectionMat.m, modelMat.m, currentDemoProgram);
-		
-		//	for (currentSceneObject = demoMode->obj_skeleton, endSceneObject = demoMode->obj_skeleton;
-		//		currentSceneObject <= endSceneObject; ++currentSceneObject)
-		//	{
-		//		j = (a3ui32)(currentSceneObject - demoMode->object_scene);
-		//		modelMat = demoMode->sceneGraphState->objectSpace->pose[currentSceneObject->sceneGraphIndex].transformMat;
-		//		a3demo_drawModelSimple(modelViewProjectionMat.m, viewProjectionMat.m, modelMat.m, currentDemoProgram);
-		//	}
+			//j = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_skeleton_ctrl");
+			//modelMat = demoMode->sceneGraphState->objectSpace->pose[j].transformMat;
+			//a3demo_drawModelSimple(modelViewProjectionMat.m, viewProjectionMat.m, modelMat.m, currentDemoProgram);
+
+			for (currentSceneObject = demoMode->obj_skeleton_ctrl, endSceneObject = demoMode->obj_skeleton;
+				currentSceneObject < endSceneObject;
+				++currentSceneObject)
+			{
+				j = (a3ui32)(currentSceneObject - demoMode->object_scene);
+				modelMat = demoMode->sceneGraphState->objectSpace->pose[currentSceneObject->sceneGraphIndex].transformMat;
+				a3demo_drawModelSimple(modelViewProjectionMat.m, viewProjectionMat.m, modelMat.m, currentDemoProgram);
+			}
 		}
 	}
 }

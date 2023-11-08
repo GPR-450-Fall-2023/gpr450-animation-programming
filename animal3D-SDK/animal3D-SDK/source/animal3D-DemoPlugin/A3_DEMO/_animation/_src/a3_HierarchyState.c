@@ -182,6 +182,8 @@ a3i32 a3hierarchyStateCreate(a3_HierarchyState *state_out, const a3_Hierarchy *h
 		a3ui32 const memreq = sizeof(a3_SpatialPose) * sposeCount;
 		a3index i;
 
+
+
 		// allocate everything (one malloc)
 		state_out->hpose->pose = (a3_SpatialPose*)malloc(memreq);
 
@@ -205,16 +207,15 @@ a3i32 a3hierarchyStateRelease(a3_HierarchyState *state)
 	// validate param exists and is initialized
 	if (state && state->hierarchy)
 	{
+		a3ui32 const hposeCount = sizeof(state->hpose) / sizeof(a3_HierarchyPose);
+		a3ui32 i;
+
 		// release everything (one free)
 		free(state->hpose->pose);
 
 		// reset pointers
-		state->hierarchy = 0;
-		state->animPose->pose = 0;
-		state->localSpace->pose = 0;
-		state->objectSpace->pose = 0;
-		state->objectSpaceInv->pose = 0;
-		state->objectSpaceBindToCurrent->pose = 0;
+		for (i = 0; i < hposeCount; ++i)
+			state->hpose[i].pose = 0;
 
 		// done
 		return 1;

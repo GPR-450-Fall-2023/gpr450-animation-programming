@@ -89,18 +89,21 @@ struct a3_HierarchyState
 
 	// collection of poses
 	union {
-		a3_HierarchyPose hpose[5];
+		a3_HierarchyPose hpose[6];
 		struct {
 			// active animation pose
 			a3_HierarchyPose animPose[1];
 
-			// local-space pose
+			// local-space pose (node relative to parent's space)
 			a3_HierarchyPose localSpace[1];
 
-			// object-space pose
+			// object-space pose (node relative to root-parent's space)
 			a3_HierarchyPose objectSpace[1];
 
-			// object-space inverse pose
+			// local-space inverse pose (parent relative to node's space)
+			a3_HierarchyPose localSpaceInv[1];
+
+			// object-space inverse pose (root-parent relative to node's space)
 			a3_HierarchyPose objectSpaceInv[1];
 
 			// object-space bind-to-current pose
@@ -162,6 +165,9 @@ a3i32 a3hierarchyStateCreate(a3_HierarchyState *state_out, const a3_Hierarchy *h
 
 // release hierarchy state
 a3i32 a3hierarchyStateRelease(a3_HierarchyState *state);
+
+// update inverse local-space matrices
+a3i32 a3hierarchyStateUpdateLocalInverse(const a3_HierarchyState* state);
 
 // update inverse object-space matrices
 a3i32 a3hierarchyStateUpdateObjectInverse(const a3_HierarchyState *state);

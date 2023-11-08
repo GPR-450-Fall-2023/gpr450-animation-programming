@@ -61,8 +61,7 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 	// maximum unique objects
 	enum a3_DemoMode1_Animation_ObjectMaxCount
 	{
-		animationMaxCount_sceneObject = 8,
-		animationMaxCount_cameraObject = 1,
+		animationMaxCount_sceneObject = 16,
 		animationMaxCount_projector = 1,
 	};
 
@@ -124,6 +123,9 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 	{
 		animation_ctrl_camera,
 		animation_ctrl_character,
+		animation_ctrl_neckLookat,
+		animation_ctrl_wristEffector_r,
+		animation_ctrl_wristConstraint_r,
 
 		animation_ctrlmode_max
 	};
@@ -163,8 +165,17 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 		a3_ClipPool clipPool[1];
 
 		// skeletal animation
+		union {
+			a3_HierarchyState hierarchyState_skel[4];
+			struct {
+				a3_HierarchyState
+					hierarchyState_skel_ik[1],
+					hierarchyState_skel_fk[1],
+					hierarchyState_skel_final[1],
+					hierarchyState_skel_base[1];
+			};
+		};
 		a3_Hierarchy hierarchy_skel[1];
-		a3_HierarchyState hierarchyState_skel[2];
 		a3_HierarchyPoseGroup hierarchyPoseGroup_skel[1];
 		a3mat4 mvp_joint[128], mvp_bone[128], t_skin[128];
 		a3dualquat dq_skin[128];
@@ -195,23 +206,20 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 			a3_DemoSceneObject object_scene[animationMaxCount_sceneObject];
 			struct {
 				a3_DemoSceneObject
-					obj_skybox[1];
-				a3_DemoSceneObject
-					obj_skeleton[1];
-			};
-		};
-		union {
-			a3_DemoSceneObject object_scene_ctrl[animationMaxCount_sceneObject];
-			struct {
-				a3_DemoSceneObject
-					obj_skeleton_ctrl[1];
-			};
-		};
-		union {
-			a3_DemoSceneObject object_camera[animationMaxCount_cameraObject];
-			struct {
+					obj_world_root[1];
 				a3_DemoSceneObject
 					obj_camera_main[1];
+				a3_DemoSceneObject
+					obj_light_main[1];
+				a3_DemoSceneObject
+					obj_skybox[1];
+				a3_DemoSceneObject
+					obj_skeleton_ctrl[1];
+				a3_DemoSceneObject
+					obj_skeleton_neckLookat_ctrl[1],
+					obj_skeleton_wristEffector_r_ctrl[1],
+					obj_skeleton_wristConstraint_r_ctrl[1],
+					obj_skeleton[1];
 			};
 		};
 		union {

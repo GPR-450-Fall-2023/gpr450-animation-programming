@@ -86,6 +86,9 @@ void a3animation_input_keyCharHold(a3_DemoState const* demoState, a3_DemoMode1_A
 
 //-----------------------------------------------------------------------------
 
+void a3demo_input_controlObject(
+	a3_DemoState* demoState, a3_DemoSceneObject* object,
+	a3f64 const dt, a3real ctrlMoveSpeed, a3real ctrlRotateSpeed);
 void a3demo_input_controlProjector(
 	a3_DemoState* demoState, a3_DemoProjector* projector,
 	a3f64 const dt, a3real ctrlMoveSpeed, a3real ctrlRotateSpeed, a3real ctrlZoomSpeed);
@@ -100,6 +103,8 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 
 
 	a3_DemoProjector* projector = demoMode->projector + demoMode->activeCamera;
+	a3_DemoSceneObject* sceneObject;
+
 
 	// right click to ray pick
 	if (a3mouseGetState(demoState->mouse, a3mouse_right) == a3input_down)
@@ -163,6 +168,25 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 			demoMode->axis_r[1] = pitch;
 		}
 		break;
+	case animation_ctrl_neckLookat:
+	case animation_ctrl_wristEffector_r:
+	case animation_ctrl_wristConstraint_r:
+		sceneObject = demoMode->obj_skeleton_ctrl + demoMode->ctrl_target - animation_ctrl_character;
+		a3demo_input_controlObject(demoState, sceneObject, dt, a3real_one, a3real_zero);
+		/*	// capture axes
+		if (a3XboxControlIsConnected(demoState->xcontrol))
+		{
+			// ****TO-DO:
+			// get directly from joysticks
+
+		}
+		else
+		{
+			// ****TO-DO:
+			// calculate normalized vectors given keyboard state
+
+		}
+	*/break;
 	}
 
 	// allow the controller, if connected, to change control targets

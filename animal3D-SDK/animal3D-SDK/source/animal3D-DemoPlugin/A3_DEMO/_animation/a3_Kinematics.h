@@ -54,6 +54,7 @@ a3i32 a3kinematicsSolveForward(const a3_HierarchyState *hierarchyState);
 // forward kinematics solver starting at a specified joint
 a3i32 a3kinematicsSolveForwardPartial(const a3_HierarchyState *hierarchyState, const a3ui32 firstIndex, const a3ui32 nodeCount);
 
+void a3kinematicsSolveForwardSingle(const a3_HierarchyState* hierarchyState, const a3ui32 index, const a3ui32 parentIndex);
 
 //-----------------------------------------------------------------------------
 
@@ -70,6 +71,8 @@ a3i32 a3kinematicsSolveInverse(const a3_HierarchyState *hierarchyState);
 // inverse kinematics solver starting at a specified joint
 a3i32 a3kinematicsSolveInversePartial(const a3_HierarchyState *hierarchyState, const a3ui32 firstIndex, const a3ui32 nodeCount);
 
+// single node IK solver
+void a3kinematicsSolveInverseSingle(const a3_HierarchyState* hierarchyState, const a3ui32 index, const a3ui32 parentIndex);
 
 //-----------------------------------------------------------------------------
 
