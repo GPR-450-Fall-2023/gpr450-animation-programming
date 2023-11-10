@@ -98,7 +98,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	a3_SpatialPose* spatialPose = 0;
 
 	a3_FileStream fileStream[1] = { 0 };
-	const a3byte* const geometryStream = "./data/gpro_base_anim.dat";
+	const a3byte* const geometryStream = "./data/gpro_base_anim_working.dat";
 
 
 	// next set up hierarchy poses
@@ -114,7 +114,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		a3hierarchyLoadBinary(hierarchy, fileStream);
 		hierarchyPoseGroup->hierarchy = hierarchy;
 		a3hierarchyPoseGroupLoadBinary(hierarchyPoseGroup, fileStream);
-
+		
 		// done
 		a3fileStreamClose(fileStream);
 	}
@@ -514,7 +514,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 
 		// finally set up hierarchy states
 		// base state for skeleton
-		hierarchyState = demoMode->hierarchyState_skel;
+		hierarchyState = demoMode->hierarchyState_skel_base;
 		hierarchyState->hierarchy = 0;
 		a3hierarchyStateCreate(hierarchyState, hierarchy);
 		a3hierarchyPoseCopy(hierarchyState->localSpace, hierarchyPoseGroup->hpose, hierarchy->numNodes);

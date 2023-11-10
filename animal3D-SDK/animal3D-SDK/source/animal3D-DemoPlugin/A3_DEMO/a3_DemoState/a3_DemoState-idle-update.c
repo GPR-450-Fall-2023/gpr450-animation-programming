@@ -63,7 +63,7 @@ void a3demo_applyScale_internal(a3_DemoSceneObject *sceneObject, a3real4x4p s)
 //-----------------------------------------------------------------------------
 // UPDATE SUB-ROUTINES
 
-void a3demo_update_objects(a3_DemoState* demoState, a3f64 const dt,
+void a3demo_update_objects(a3f64 const dt,
 	a3_DemoSceneObject* sceneObjectBase, a3ui32 count, a3boolean useZYX, a3boolean applyScale)
 {
 	a3ui32 i;
