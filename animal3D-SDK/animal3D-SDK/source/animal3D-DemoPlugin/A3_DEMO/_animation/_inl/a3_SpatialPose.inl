@@ -191,7 +191,73 @@ inline a3i32 a3spatialPoseRestore(a3_SpatialPose* spatialPose, const a3_SpatialP
 {
 	if (spatialPose)
 	{
+		a3mat4 transform;
+		a3real4x4SetReal4x4(transform.m, spatialPose->transformMat.m);
 
+		//Positions is the far right column
+		a3real4Set(spatialPose->translate.v, transform.v3.x, transform.v3.y, transform.v3.z, 1);
+
+		//Scale is the magnitude of the columns
+		a3real xScale = a3real3Length(transform.v0.xyz.v);
+		a3real yScale = a3real3Length(transform.v1.xyz.v);
+		a3real zScale = a3real3Length(transform.v2.xyz.v);
+		a3real4Set(spatialPose->scale.v, xScale, yScale, zScale, 0);
+
+		a3real3DivS(transform.v0.xyz.v, xScale);
+		a3real3DivS(transform.v1.xyz.v, yScale);
+		a3real3DivS(transform.v2.xyz.v, zScale);
+
+		//https://math.stackexchange.com/questions/377018/how-do-i-find-the-euler-angles-if-i-already-have-start-and-ending-vector
+		a3real thetaX = 0, thetaY = 0, thetaZ = 0;
+		if (transform.m02 < +1)
+		{
+			if (transform.m02 > -1)
+			{
+				thetaY = a3asind(transform.m02);
+				thetaX = a3atan2d(-transform.m12, transform.m22);
+				thetaZ = a3atan2d(-transform.m01, transform.m00);
+			}
+			else // m02 = -1
+			{
+				// Not a unique solution: thetaZ - thetaX = atan2(r10,r11)
+				thetaY = -a3real_pi / 2;
+				thetaX = -a3atan2d(transform.m10, transform.m11);
+				thetaZ = 0;
+			}
+		}
+		else // m02 = +1
+		{
+			// Not a unique solution: thetaZ + thetaX = atan2(r10,r11)
+			thetaY = +a3real_pi / 2;
+			thetaX = a3atan2d(transform.m10, transform.m11);
+			thetaZ = 0;
+		}
+
+		//a3spatialPoseSetRotation(spatialPose, thetaX, thetaY, thetaZ);
+
+		switch (order)
+		{
+		case a3poseEulerOrder_xyz:
+			a3spatialPoseSetRotation(spatialPose, thetaX, thetaY, thetaZ);
+			break;
+		case a3poseEulerOrder_yzx:
+			a3spatialPoseSetRotation(spatialPose, thetaY, thetaZ, thetaX);
+			break;
+		case a3poseEulerOrder_zxy:
+			a3spatialPoseSetRotation(spatialPose, thetaZ, thetaX, thetaY);
+			break;
+		case a3poseEulerOrder_yxz:
+			a3spatialPoseSetRotation(spatialPose, thetaY, thetaX, thetaZ);
+			break;
+		case a3poseEulerOrder_xzy:
+			a3spatialPoseSetRotation(spatialPose, thetaX, thetaZ, thetaY);
+			break;
+		case a3poseEulerOrder_zyx:
+			a3spatialPoseSetRotation(spatialPose, thetaZ, thetaY, thetaX);
+			break;
+		}
+
+		return 1;
 	}
 	return -1;
 }

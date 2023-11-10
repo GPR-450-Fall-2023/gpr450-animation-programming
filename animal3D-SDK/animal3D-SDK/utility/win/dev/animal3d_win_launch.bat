@@ -2,7 +2,7 @@
 ::By Dan Buckstein
 
 if exist "%VS170COMNTOOLS%" (
-rem VISUAL STUDIO 2019 IF PATH EXISTS
+rem VISUAL STUDIO 2022 IF PATH EXISTS
 	set a3vstoolsdir="%VS170COMNTOOLS%"
 	set a3vslaunchpath="%VS170COMNTOOLS%..\IDE\devenv"
 	set a3platformtoolset=v142
