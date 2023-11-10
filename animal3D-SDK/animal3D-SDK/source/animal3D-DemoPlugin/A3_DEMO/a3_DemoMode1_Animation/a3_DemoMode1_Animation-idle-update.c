@@ -339,6 +339,7 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 			//N = baseToEnd x baseToConstraint
 			a3real3 planeNormal;
 			a3real3Cross(planeNormal, baseToEnd, baseToConstraint);
+			a3real3Normalize(planeNormal);
 
 			//T1 = normalize(S - W)
 			a3real3 shoulderTangent;
@@ -348,6 +349,7 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 			//B1 = T1 x N
 			a3real3 shoulderBitangent;
 			a3real3Cross(shoulderBitangent, shoulderTangent, planeNormal);
+			a3real3Normalize(shoulderBitangent);
 
 			//T2 = normalize(W - E)
 			a3real3 elbowTangent;
@@ -357,6 +359,7 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 			//B2 = T2 x N
 			a3real3 elbowBitangent;
 			a3real3Cross(elbowBitangent, elbowTangent, planeNormal);
+			a3real3Normalize(elbowTangent);
 
 			//Set first three columns of shoulder worldspace transform matrix to basis vectors
 			a3real4Set(jointTransform_shoulder.v0.v, shoulderTangent[0], shoulderTangent[1], shoulderTangent[2], 0);
@@ -365,9 +368,9 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 			//Position already set
 
 			//Set first three columns of elbow worldspace transform matrix to basis vectors
-			a3real4Set(jointTransform_shoulder.v0.v, elbowTangent[0], elbowTangent[1], elbowTangent[2], 0);
-			a3real4Set(jointTransform_shoulder.v1.v, elbowBitangent[0], elbowBitangent[1], elbowBitangent[2], 0);
-			a3real4Set(jointTransform_shoulder.v2.v, planeNormal[0], planeNormal[1], planeNormal[2], 0);
+			a3real4Set(jointTransform_elbow.v0.v, elbowTangent[0], elbowTangent[1], elbowTangent[2], 0);
+			a3real4Set(jointTransform_elbow.v1.v, elbowBitangent[0], elbowBitangent[1], elbowBitangent[2], 0);
+			a3real4Set(jointTransform_elbow.v2.v, planeNormal[0], planeNormal[1], planeNormal[2], 0);
 			//Position already set
 
 			// ****TO-DO: 
