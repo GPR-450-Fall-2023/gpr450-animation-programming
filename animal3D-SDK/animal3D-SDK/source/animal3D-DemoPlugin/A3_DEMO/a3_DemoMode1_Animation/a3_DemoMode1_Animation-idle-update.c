@@ -261,7 +261,8 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 			sceneObject = demoMode->obj_skeleton_wristEffector_r_ctrl;
 			a3real4Real4x4Product(controlLocator_wristEffector.v, controlToSkeleton.m,
 				demoMode->sceneGraphState->localSpace->pose[sceneObject->sceneGraphIndex].transformMat.v3.v);
-
+			
+			
 			//right wrist
 			j = j_wrist = a3hierarchyGetNodeIndex(activeHS->hierarchy, "mixamorig:RightHand");
 			jointTransform_wrist = activeHS->objectSpace->pose[j].transformMat;
@@ -321,6 +322,8 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 				a3real3Normalize(normalizedBaseToEnd);
 
 				///////// Position //////////
+
+				//Shoulder doesn't move
 
 				//Get position of elbow along the straight line between the base and end effector
 				//Then Translate into world space by adding shoulder world space position
@@ -392,6 +395,7 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 
 			activeHS->objectSpace->pose[j_shoulder].transformMat = jointTransform_shoulder;
 			activeHS->objectSpace->pose[j_elbow].transformMat = jointTransform_elbow;
+			activeHS->objectSpace->pose[j_wrist].transformMat = jointTransform_wrist;
 
 			j = a3hierarchyGetNodeIndex(activeHS->hierarchy, "mixamorig:RightShoulder");
 			a3kinematicsSolveInverseSingle(activeHS, j_shoulder, j);
@@ -410,13 +414,13 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 				&activeHS->objectSpace->pose[j_elbow],
 				&baseHS->objectSpace->pose[j_elbow]);
 
-			/*a3kinematicsSolveInverseSingle(activeHS, j_wrist, j_elbow);
+			a3kinematicsSolveInverseSingle(activeHS, j_wrist, j_elbow);
 			a3spatialPoseOpREVERT(&activeHS->objectSpace->pose[j_wrist],
 				*poseGroup->channel,
 				*poseGroup->order);
 			a3spatialPoseOpDeconcatenate(&activeHS->animPose->pose[j_wrist],
 				&activeHS->objectSpace->pose[j_wrist],
-				&baseHS->animPose->pose[j_wrist]);*/
+				&baseHS->animPose->pose[j_wrist]);
 		}
 	}
 }
