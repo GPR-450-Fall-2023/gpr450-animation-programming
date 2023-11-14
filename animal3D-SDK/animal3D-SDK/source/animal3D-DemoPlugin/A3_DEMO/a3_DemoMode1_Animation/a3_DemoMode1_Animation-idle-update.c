@@ -337,7 +337,7 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 			}
 			printf("\n");
 
-			////////// Rotation //////////
+			//////// Rotation //////////
 			
 			//N = baseToEnd x baseToConstraint
 			a3real3 planeNormal;
@@ -393,34 +393,37 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 				invElbow.m,
 				activeHS->localSpace->pose[j_wrist].transformMat.m);*/
 
-			activeHS->objectSpace->pose[j_shoulder].transformMat = jointTransform_shoulder;
+			a3real4x4SetReal4x4(activeHS->objectSpace->pose[j_shoulder].transformMat.m, jointTransform_shoulder.m);
+			a3real4x4SetReal4x4(activeHS->objectSpace->pose[j_elbow].transformMat.m, jointTransform_elbow.m);
+			a3real4x4SetReal4x4(activeHS->objectSpace->pose[j_wrist].transformMat.m, jointTransform_wrist.m);
+			/*activeHS->objectSpace->pose[j_shoulder].transformMat = jointTransform_shoulder;
 			activeHS->objectSpace->pose[j_elbow].transformMat = jointTransform_elbow;
-			activeHS->objectSpace->pose[j_wrist].transformMat = jointTransform_wrist;
+			activeHS->objectSpace->pose[j_wrist].transformMat = jointTransform_wrist;*/
 
-			j = a3hierarchyGetNodeIndex(activeHS->hierarchy, "mixamorig:RightShoulder");
+			//j = a3hierarchyGetNodeIndex(activeHS->hierarchy, "mixamorig:RightShoulder"); // Clavicle
 			//a3kinematicsSolveInverseSingle(activeHS, j_shoulder, j);
-			a3spatialPoseOpREVERT(&activeHS->objectSpace->pose[j_shoulder],
-				*poseGroup->channel,
-				*poseGroup->order);
-			a3spatialPoseOpDeconcatenate(&activeHS->animPose->pose[j_shoulder],
-				&activeHS->objectSpace->pose[j_shoulder],
-				&baseHS->objectSpace->pose[j_shoulder]);
+			//a3spatialPoseOpREVERT(&activeHS->localSpace->pose[j_shoulder],
+			//	*poseGroup->channel,
+			//	*poseGroup->order);
+			//a3spatialPoseOpDeconcatenate(&activeHS->animPose->pose[j_shoulder],
+			//	&activeHS->localSpace->pose[j_shoulder],
+			//	&baseHS->localSpace->pose[j_shoulder]);
 
 			//a3kinematicsSolveInverseSingle(activeHS, j_elbow, j_shoulder);
-			a3spatialPoseOpREVERT(&activeHS->objectSpace->pose[j_elbow],
-				*poseGroup->channel,
-				*poseGroup->order);
-			a3spatialPoseOpDeconcatenate(&activeHS->animPose->pose[j_elbow],
-				&activeHS->objectSpace->pose[j_elbow],
-				&baseHS->objectSpace->pose[j_elbow]);
+			//a3spatialPoseOpREVERT(&activeHS->localSpace->pose[j_elbow],
+			//	*poseGroup->channel,
+			//	*poseGroup->order);
+			//a3spatialPoseOpDeconcatenate(&activeHS->animPose->pose[j_elbow],
+			//	&activeHS->localSpace->pose[j_elbow],
+			//	&baseHS->localSpace->pose[j_elbow]);
 
 			//a3kinematicsSolveInverseSingle(activeHS, j_wrist, j_elbow);
-			a3spatialPoseOpREVERT(&activeHS->objectSpace->pose[j_wrist],
-				*poseGroup->channel,
-				*poseGroup->order);
-			a3spatialPoseOpDeconcatenate(&activeHS->animPose->pose[j_wrist],
-				&activeHS->objectSpace->pose[j_wrist],
-				&baseHS->animPose->pose[j_wrist]);
+			//a3spatialPoseOpREVERT(&activeHS->localSpace->pose[j_wrist],
+			//	*poseGroup->channel,
+			//	*poseGroup->order);
+			//a3spatialPoseOpDeconcatenate(&activeHS->animPose->pose[j_wrist],
+			//	&activeHS->localSpace->pose[j_wrist],
+			//	&baseHS->localSpace->pose[j_wrist]);
 		}
 	}
 }
@@ -489,11 +492,18 @@ void a3animation_update_animation(a3_DemoMode1_Animation* demoMode, a3f64 const 
 		//a3animation_update_ik(activeHS_ik, baseHS, poseGroup);
 	}
 
+	// more procedural here
+
 	// blend FK/IK to final
 	// testing: copy source to final
-	a3hierarchyPoseCopy(activeHS->animPose,	// dst: final anim
+	//a3hierarchyPoseCopy(activeHS->animPose,	// dst: final anim
+	//	//activeHS_fk->animPose,	// src: FK anim
+	//	activeHS_ik->animPose,	// src: IK anim
+	//	//baseHS->animPose,	// src: base anim (identity)
+	//	activeHS->hierarchy->numNodes);
+	a3hierarchyPoseCopy(activeHS->objectSpace,	// dst: final anim
 		//activeHS_fk->animPose,	// src: FK anim
-		activeHS_ik->animPose,	// src: IK anim
+		activeHS_ik->objectSpace,	// src: IK anim
 		//baseHS->animPose,	// src: base anim (identity)
 		activeHS->hierarchy->numNodes);
 
@@ -504,9 +514,11 @@ void a3animation_update_animation(a3_DemoMode1_Animation* demoMode, a3f64 const 
 		//a3hierarchyPoseOpRotateBoneRange(activeHS->animPose, activeHS->hierarchy, rotateSpine, "mixamorig:Spine", "mixamorig:Spine2"); //Blend rotation across 3 bones
 	}
 
+	// re-concat with base
+
 	// run FK pipeline (skinning optional)
-	a3animation_update_fk(activeHS, baseHS, poseGroup,
-		demoMode->clipPool->clip[clipCtrl_fk->clipIndex].rootMotion);
+	/*a3animation_update_fk(activeHS, baseHS, poseGroup,
+		demoMode->clipPool->clip[clipCtrl_fk->clipIndex].rootMotion);*/
 	a3animation_update_skin(activeHS, baseHS);
 }
 
