@@ -309,18 +309,56 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 			a3real elbowWristDist = a3real3Distance(baseHS->objectSpace->pose[j_elbow].translate.v, baseHS->objectSpace->pose[j_wrist].translate.v); //Length of elbow-wrist bone
 			a3real chainLength = shoulderElbowDist + elbowWristDist; //Total chain length
 
+			//Normalize base to end as direction
+			a3real3 normalizedBaseToEnd;
+			a3real3SetReal3(normalizedBaseToEnd, baseToEnd);
+			a3real3Normalize(normalizedBaseToEnd);
+
+			//N = baseToEnd x baseToConstraint
+			a3real3 planeNormal;
+			a3real3Cross(planeNormal, baseToEnd, baseToConstraint);
+			a3real3Normalize(planeNormal);
+
 			printf("Effector Dist: %f   Chain Length: %f   ", endEffectorDist, chainLength);
 			if (endEffectorDist < chainLength)
 			{
 				printf("Solvable");
+
+				//Get h
+				a3real3 heightDir;
+				a3real3Cross(heightDir, planeNormal, normalizedBaseToEnd);
+				a3real3Normalize(heightDir);
+
+				//Triangle Perimeter
+				a3real perimeter = (a3real)(.5 * (chainLength + endEffectorDist));
+
+				//Triangle area
+				a3real area = (a3real)sqrt(perimeter * (perimeter - endEffectorDist) * (perimeter - elbowWristDist) * (perimeter - shoulderElbowDist));
+
+				//Height, distance of elbow along heightDir
+				a3real height = (2 * area) / endEffectorDist;
+
+				//length of the vector projected onto the baseToEnd vector
+				a3real distanceAlongBase = (a3real)sqrt((shoulderElbowDist * shoulderElbowDist) - (height * height));
+
+				//Get vectors for local X and Y translation
+				a3real3 elbowD;
+				a3real3SetReal3(elbowD, normalizedBaseToEnd);
+				a3real3MulS(elbowD, distanceAlongBase);
+				a3real3 elbowH;
+				a3real3SetReal3(elbowH, heightDir);
+				a3real3MulS(elbowH, height);
+
+				//Calculate elbow position
+				a3real3 localElbow;
+				a3real3Sum(localElbow, elbowD, elbowH);
+				a3real3Sum(jointTransform_elbow.v3.xyz.v, jointTransform_shoulder.v3.xyz.v, localElbow);
+
+				//Set position of wrist to wrist effector
+				a3real3SetReal3(jointTransform_wrist.v3.xyz.v, controlLocator_wristEffector.v);
 			}
 			else //Arm should be straight out towards end effector, no solution
 			{
-				//Normalize base to end as direction
-				a3real3 normalizedBaseToEnd;
-				a3real3SetReal3(normalizedBaseToEnd, baseToEnd);
-				a3real3Normalize(normalizedBaseToEnd);
-
 				///////// Position //////////
 
 				//Shoulder doesn't move
@@ -338,11 +376,6 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 			printf("\n");
 
 			//////// Rotation //////////
-			
-			//N = baseToEnd x baseToConstraint
-			a3real3 planeNormal;
-			a3real3Cross(planeNormal, baseToEnd, baseToConstraint);
-			a3real3Normalize(planeNormal);
 
 			//T1 = normalize(S - W)
 			a3real3 shoulderTangent;
