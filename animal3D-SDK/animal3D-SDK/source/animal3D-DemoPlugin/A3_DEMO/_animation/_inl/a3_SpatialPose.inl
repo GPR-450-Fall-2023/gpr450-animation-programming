@@ -208,30 +208,36 @@ inline a3i32 a3spatialPoseRestore(a3_SpatialPose* spatialPose, const a3_SpatialP
 		a3real3DivS(transform.v2.xyz.v, zScale);
 
 		//https://math.stackexchange.com/questions/377018/how-do-i-find-the-euler-angles-if-i-already-have-start-and-ending-vector
+		//a3real thetaX = 0, thetaY = 0, thetaZ = 0;
+		//if (transform.m02 < +1)
+		//{
+		//	if (transform.m02 > -1)
+		//	{
+		//		thetaY = a3asind(transform.m02);
+		//		thetaX = a3atan2d(-transform.m12, transform.m22);
+		//		thetaZ = a3atan2d(-transform.m01, transform.m00);
+		//	}
+		//	else // m02 = -1
+		//	{
+		//		// Not a unique solution: thetaZ - thetaX = atan2(r10,r11)
+		//		thetaY = -a3real_pi / 2;
+		//		thetaX = -a3atan2d(transform.m10, transform.m11);
+		//		thetaZ = 0;
+		//	}
+		//}
+		//else // m02 = +1
+		//{
+		//	// Not a unique solution: thetaZ + thetaX = atan2(r10,r11)
+		//	thetaY = +a3real_pi / 2;
+		//	thetaX = a3atan2d(transform.m10, transform.m11);
+		//	thetaZ = 0;
+		//}
+
 		a3real thetaX = 0, thetaY = 0, thetaZ = 0;
-		if (transform.m02 < +1)
-		{
-			if (transform.m02 > -1)
-			{
-				thetaY = a3asind(transform.m02);
-				thetaX = a3atan2d(-transform.m12, transform.m22);
-				thetaZ = a3atan2d(-transform.m01, transform.m00);
-			}
-			else // m02 = -1
-			{
-				// Not a unique solution: thetaZ - thetaX = atan2(r10,r11)
-				thetaY = -a3real_pi / 2;
-				thetaX = -a3atan2d(transform.m10, transform.m11);
-				thetaZ = 0;
-			}
-		}
-		else // m02 = +1
-		{
-			// Not a unique solution: thetaZ + thetaX = atan2(r10,r11)
-			thetaY = +a3real_pi / 2;
-			thetaX = a3atan2d(transform.m10, transform.m11);
-			thetaZ = 0;
-		}
+
+		thetaY = -a3asind(transform.m02);
+		thetaX = a3asind(transform.m01 / a3cosd(thetaY));
+		thetaZ = a3asind(transform.m12 / a3cosd(thetaY));
 
 		//a3spatialPoseSetRotation(spatialPose, thetaX, thetaY, thetaZ);
 

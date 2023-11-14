@@ -398,7 +398,7 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 			activeHS->objectSpace->pose[j_wrist].transformMat = jointTransform_wrist;
 
 			j = a3hierarchyGetNodeIndex(activeHS->hierarchy, "mixamorig:RightShoulder");
-			a3kinematicsSolveInverseSingle(activeHS, j_shoulder, j);
+			//a3kinematicsSolveInverseSingle(activeHS, j_shoulder, j);
 			a3spatialPoseOpREVERT(&activeHS->objectSpace->pose[j_shoulder],
 				*poseGroup->channel,
 				*poseGroup->order);
@@ -406,7 +406,7 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 				&activeHS->objectSpace->pose[j_shoulder],
 				&baseHS->objectSpace->pose[j_shoulder]);
 
-			a3kinematicsSolveInverseSingle(activeHS, j_elbow, j_shoulder);
+			//a3kinematicsSolveInverseSingle(activeHS, j_elbow, j_shoulder);
 			a3spatialPoseOpREVERT(&activeHS->objectSpace->pose[j_elbow],
 				*poseGroup->channel,
 				*poseGroup->order);
@@ -414,7 +414,7 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 				&activeHS->objectSpace->pose[j_elbow],
 				&baseHS->objectSpace->pose[j_elbow]);
 
-			a3kinematicsSolveInverseSingle(activeHS, j_wrist, j_elbow);
+			//a3kinematicsSolveInverseSingle(activeHS, j_wrist, j_elbow);
 			a3spatialPoseOpREVERT(&activeHS->objectSpace->pose[j_wrist],
 				*poseGroup->channel,
 				*poseGroup->order);
