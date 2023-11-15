@@ -235,15 +235,14 @@ inline a3i32 a3spatialPoseRestore(a3_SpatialPose* spatialPose, const a3_SpatialP
 
 		a3real thetaX = 0, thetaY = 0, thetaZ = 0;
 
-		thetaY = -a3asind(transform.m02);
-		thetaX = a3asind(transform.m01 / a3cosd(thetaY));
-		thetaZ = a3asind(transform.m12 / a3cosd(thetaY));
-
 		//a3spatialPoseSetRotation(spatialPose, thetaX, thetaY, thetaZ);
 
 		switch (order)
 		{
 		case a3poseEulerOrder_xyz:
+			thetaY = -a3asind(transform.m02);
+			thetaX = a3asind(transform.m01 / a3cosd(thetaY));
+			thetaZ = a3asind(transform.m12 / a3cosd(thetaY));
 			a3spatialPoseSetRotation(spatialPose, thetaX, thetaY, thetaZ);
 			break;
 		case a3poseEulerOrder_yzx:
@@ -259,6 +258,9 @@ inline a3i32 a3spatialPoseRestore(a3_SpatialPose* spatialPose, const a3_SpatialP
 			a3spatialPoseSetRotation(spatialPose, thetaX, thetaZ, thetaY);
 			break;
 		case a3poseEulerOrder_zyx:
+			thetaY = a3asind(-transform.m02);
+			thetaX = a3atan2d(transform.m12, transform.m22);
+			thetaZ = a3atan2d(transform.m01, transform.m00);
 			a3spatialPoseSetRotation(spatialPose, thetaZ, thetaY, thetaX);
 			break;
 		}
