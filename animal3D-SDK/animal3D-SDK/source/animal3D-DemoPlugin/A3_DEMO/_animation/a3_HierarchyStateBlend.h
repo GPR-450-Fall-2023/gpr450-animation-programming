@@ -66,48 +66,60 @@ typedef a3real a3_BlendParam; // Params used in blend operations
 // Forward declare
 // https://www.reddit.com/r/C_Programming/comments/12td7vj/typedef_a_struct_with_a_pointer_to_itself/
 struct a3_BlendNode;
+struct a3_BlendTree;
 
 // Function delegate for blend operation
 // Returns -1 for error, 1 for success
-typedef a3boolean(*a3_BlendOp)(struct a3_BlendNode* node);
+typedef a3boolean(*a3_BlendOp)(struct a3_BlendNode* node, struct a3_BlendTree* tree);
+typedef a3boolean(*a3_ParamOp)(struct a3_ParamNode* node, struct a3_BlendTree* tree);
 
-typedef void*(*a3_DataFunction)(struct a3_BlendNode* node);
 
-typedef a3_BlendParam(*a3_ParamFunction)(struct a3_BlendNode* node);
+typedef struct a3_BlendTreeNodeInfo
+{
+	struct a3_BlendNode* spatialDataNodes[a3_blend_data_max];
+	struct a3_ParamNode* paramDataNodes[a3_blend_param_max];
+
+	a3_BlendData* spatialData[a3_blend_data_max];
+	a3_BlendParam* paramData[a3_blend_param_max];
+
+} a3_BlendTreeNodeInfo;
 
 
 typedef struct a3_BlendNode
 {
+	a3_BlendTreeNodeInfo info;
+
 	a3_BlendData result; // One thing that is physically there to store result
-
-	struct a3_BlendNode* spatialDataNodes[a3_blend_data_max];
-	struct a3_BlueprintFunction* miscBlueprintFunctions[a3_blend_data_max];
-	struct a3_ParamFunction* paramFunctions[a3_blend_data_max];
-
-	a3_BlendData* spatialData[a3_blend_data_max];
-	void* miscData[a3_blend_data_max];
-	a3_BlendParam const* paramData[a3_blend_param_max];
 
 	a3_BlendOp blendOperation;
 
 } a3_BlendNode;
 
 
+typedef struct a3_ParamNode
+{
+	a3_BlendTreeNodeInfo info;
+
+	a3_BlendParam result; // Stores param return val
+
+	a3_ParamOp paramOperation;
+
+} a3_ParamNode;
+
+
 typedef struct a3_BlendTree
 {
 	a3_BlendNode* root; // Root of tree
 
-	a3_BlendTreeVariable variables[a3_blend_tree_variable_max];
-
 } a3_BlendTree;
 
 
-typedef struct a3_BlendTreeVariable
-{
-	char name[32];
-	void* value;
-
-} a3_BlendTreeVariable;
+//typedef struct a3_BlendTreeVariable
+//{
+//	char name[32];
+//	void* value;
+//
+//} a3_BlendTreeVariable;
 
 
 //Forward Declarations
@@ -362,23 +374,27 @@ a3real a3smoothStep(a3real x);
 
 // Blend Tree Functions
 //-----------------------------------------------------------------------------
+void a3_InitBlendTreeNodeInfo(a3_BlendTreeNodeInfo* info);
 a3_BlendNode* a3_CreateBlendNode(a3_BlendOp blendOperation);
-a3_BlendNode* a3_CreateInitializedBlendNode(a3_BlendNode* dataNodes[a3_blend_data_max], a3_BlendData* data[a3_blend_data_max],
-	a3_BlendParam const* param[a3_blend_param_max], a3_BlendOp blendOperation);
+a3_ParamNode* a3_CreateParamNode(a3_ParamOp paramOperation);
+
+//a3_BlendNode* a3_CreateInitializedBlendNode(a3_BlendNode* dataNodes[a3_blend_data_max], a3_BlendData* data[a3_blend_data_max],
+//	a3_BlendParam const* param[a3_blend_param_max], a3_BlendOp blendOperation);
 
 // Loop through and try to update parameters for blend tree with blend node results
-a3boolean a3_InitDataFromNodes(a3_BlendNode* node, a3ui32 numData);
+a3boolean a3_InitDataFromNodes(a3_BlendNode* node, a3_BlendTree* tree, a3ui32 numBlendData, a3ui32 numParamData);
 
 // Returns result of node's blend operation
-a3_BlendData a3_GetNodeResult(a3_BlendNode* node);
+a3_BlendData a3_GetBlendNodeResult(a3_BlendNode* node, a3_BlendTree* const tree);
 
-// Operations
-a3boolean a3_BlendOpIdentity(a3_BlendNode* const node_identity);
-a3boolean a3_BlendOpLerp(a3_BlendNode* const node_lerp);
-a3boolean a3_BlendOpConcat(a3_BlendNode* const node_concat);
-a3boolean a3_BlendOpScale(a3_BlendNode* const node_scale);
+// Blend Operations
+a3boolean a3_BlendOp_Identity(a3_BlendNode* const node_identity, a3_BlendTree* const tree);
+a3boolean a3_BlendOp_Lerp(a3_BlendNode* const node_lerp, a3_BlendTree* const tree);
+a3boolean a3_BlendOp_Concat(a3_BlendNode* const node_concat, a3_BlendTree* const tree);
+a3boolean a3_BlendOp_Scale(a3_BlendNode* const node_scale, a3_BlendTree* const tree);
 
-void* a3_GetVariableValue(a3_BlendTree* const blendTree);
+// Param Operations
+a3boolean a3_ParamOp_Identity(a3_ParamNode* const node_identity, a3_BlendTree* const tree);
 
 // Per-channel blending (just my notes -aster)
 // visual notes:

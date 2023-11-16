@@ -327,21 +327,29 @@ a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, a3ui32* triCount
 //-------------------------------------------
 
 
+void a3_InitBlendTreeNodeInfo(a3_BlendTreeNodeInfo* info)
+{
+	for (a3ui32 i = 0; i < a3_blend_data_max; i++)
+	{
+		info->spatialData[i] = NULL;
+		info->spatialDataNodes[i] = NULL;
+	}
+
+	for (a3ui32 i = 0; i < a3_blend_param_max; i++)
+	{
+		info->paramData[i] = NULL;
+		info->paramDataNodes[i] = NULL;
+	}
+}
+
+
 a3_BlendNode* a3_CreateBlendNode(a3_BlendOp blendOperation)
 {
 	a3_BlendNode* newNode = (a3_BlendNode*)malloc(sizeof(a3_BlendNode));
 
 	if (newNode == NULL) return newNode;
 
-	for (a3ui32 i = 0; i < a3_blend_data_max; i++)
-	{
-		newNode->spatialData[i] = NULL;
-		/*newNode->spatialDataNodes[i] = NULL;
-		newNode->miscData[i] = NULL;
-		newNode->miscBlueprintFunctions[i] = NULL;
-		newNode->paramData[i] = NULL;
-		newNode->*/
-	}
+	a3_InitBlendTreeNodeInfo(&(newNode->info));
 
 	newNode->blendOperation = blendOperation;
 
@@ -349,41 +357,70 @@ a3_BlendNode* a3_CreateBlendNode(a3_BlendOp blendOperation)
 }
 
 
-// Create blend node with passed in variables
-a3_BlendNode* a3_CreateInitializedBlendNode(a3_BlendNode* dataNodes[a3_blend_data_max], a3_BlendData* data[a3_blend_data_max], a3_BlendParam const* param[a3_blend_param_max], a3_BlendOp blendOperation)
+a3_ParamNode* a3_CreateParamNode(a3_ParamOp paramOperation)
 {
-	a3_BlendNode* newNode = a3_CreateBlendNode(blendOperation);
+	a3_ParamNode* newNode = (a3_ParamNode*)malloc(sizeof(a3_ParamNode));
 
 	if (newNode == NULL) return newNode;
 
-	for (a3ui32 i = 0; i < a3_blend_data_max; i++)
-	{
-		newNode->spatialDataNodes[i] = dataNodes[i];
-		newNode->spatialData[i] = data[i];
-	}
+	a3_InitBlendTreeNodeInfo(&(newNode->info));
 
-	for (a3ui32 i = 0; i < a3_blend_param_max; i++)
-	{
-		newNode->paramData[i] = param[i];
-	}
+	newNode->paramOperation = paramOperation;
 
 	return newNode;
 }
 
 
-a3boolean a3_InitDataFromNodes(a3_BlendNode* node_out, a3ui32 numData)
+// Create blend node with passed in variables
+//a3_BlendNode* a3_CreateInitializedBlendNode(a3_BlendNode* dataNodes[a3_blend_data_max], a3_BlendData* data[a3_blend_data_max], a3_BlendParam const* param[a3_blend_param_max], a3_BlendOp blendOperation)
+//{
+//	a3_BlendNode* newNode = a3_CreateBlendNode(blendOperation);
+//
+//	if (newNode == NULL) return newNode;
+//
+//	for (a3ui32 i = 0; i < a3_blend_data_max; i++)
+//	{
+//		newNode->info.spatialDataNodes[i] = dataNodes[i];
+//		newNode->info.spatialData[i] = data[i];
+//	}
+//
+//	for (a3ui32 i = 0; i < a3_blend_param_max; i++)
+//	{
+//		newNode->paramData[i] = param[i];
+//	}
+//
+//	return newNode;
+//}
+
+
+a3boolean a3_InitDataFromNodes(a3_BlendNode* node_out, a3_BlendTree* tree, a3ui32 numBlendData, a3ui32 numParamData)
 {
-	for (a3ui32 i = 0; i < numData; i++)
+	for (a3ui32 i = 0; i < numBlendData; i++)
 	{
-		a3_BlendNode* dataNode = node_out->spatialDataNodes[i];
+		a3_BlendNode* dataNode = node_out->info.spatialDataNodes[i];
 
 		if (dataNode != NULL)
 		{
-			a3boolean result = dataNode->blendOperation(dataNode);
+			a3boolean result = dataNode->blendOperation(dataNode, tree);
 
 			if (result == true) // Node successfully run
 			{
-				node_out->spatialData[i] = &(dataNode->result);
+				node_out->info.spatialData[i] = &(dataNode->result);
+			}
+		}
+	}
+
+	for (a3ui32 i = 0; i < numParamData; i++)
+	{
+		a3_ParamNode* dataNode = node_out->info.paramDataNodes[i];
+
+		if (dataNode != NULL)
+		{
+			a3boolean result = dataNode->paramOperation(dataNode, tree);
+
+			if (result == true) // Node successfully run
+			{
+				node_out->info.paramData[i] = &(dataNode->result);
 			}
 		}
 	}
@@ -392,17 +429,18 @@ a3boolean a3_InitDataFromNodes(a3_BlendNode* node_out, a3ui32 numData)
 }
 
 
-a3_BlendData a3_GetNodeResult(a3_BlendNode* node)
+a3_BlendData a3_GetBlendNodeResult(a3_BlendNode* node, a3_BlendTree* tree)
 {
-	node->blendOperation(node);
+	node->blendOperation(node, tree);
 	return node->result;
 }
 
 
-a3boolean a3_BlendOpIdentity(a3_BlendNode* const node_identity)
-{
-	node_identity->result = *node_identity->spatialData[0];
+// BLEND OPERATIONS ------------------------------------------------------------------------------- 
 
+a3boolean a3_BlendOp_Identity(a3_BlendNode* const node_identity, a3_BlendTree* const tree)
+{
+	node_identity->result = *node_identity->info.spatialData[0];
 	return true;
 }
 
@@ -437,32 +475,32 @@ a3boolean a3_BlendOpIdentity(a3_BlendNode* const node_identity)
 //}
 
 
-a3boolean a3_BlendOpLerp(a3_BlendNode* const node_lerp)
+a3boolean a3_BlendOp_Lerp(a3_BlendNode* const node_lerp, a3_BlendTree* const tree)
 {
 	if (!node_lerp) return false;
 
 	a3_BlendData* const data_out = &(node_lerp->result);
 
-	a3_InitDataFromNodes(node_lerp, 2);
+	a3_InitDataFromNodes(node_lerp, tree, 2, 1);
 
-	const a3_BlendData* data0 = node_lerp->spatialData[0];
-	const a3_BlendData* data1 = node_lerp->spatialData[1];
-	const a3_BlendParam param = *(node_lerp->paramData[0]);
+	const a3_BlendData* data0 = node_lerp->info.spatialData[0];
+	const a3_BlendData* data1 = node_lerp->info.spatialData[1];
+	const a3_BlendParam param = *(node_lerp->info.paramData[0]);
 
 	a3_SpatialPose* result = a3spatialPoseOpLERP(data_out, data0, data1, param);
 	return result == data_out;
 }
 
 
-a3boolean a3_BlendOpConcat(a3_BlendNode* const node_concat)
+a3boolean a3_BlendOp_Concat(a3_BlendNode* const node_concat, a3_BlendTree* const tree)
 {
 	if (!node_concat) return false;
 
-	a3_InitDataFromNodes(node_concat, 2);
+	a3_InitDataFromNodes(node_concat, tree, 2, 0);
 
 	a3_BlendData* const data_out = &(node_concat->result);
-	const a3_BlendData* data0 = node_concat->spatialData[0];
-	const a3_BlendData* data1 = node_concat->spatialData[1];
+	const a3_BlendData* data0 = node_concat->info.spatialData[0];
+	const a3_BlendData* data1 = node_concat->info.spatialData[1];
 
 	a3_SpatialPose* result = a3spatialPoseOpConcatenate(data_out, data0, data1);
 
@@ -470,15 +508,15 @@ a3boolean a3_BlendOpConcat(a3_BlendNode* const node_concat)
 }
 
 
-a3boolean a3_BlendOpScale(a3_BlendNode* const node_scale)
+a3boolean a3_BlendOp_Scale(a3_BlendNode* const node_scale, a3_BlendTree* const tree)
 {
 	if (!node_scale) return false;
 
-	a3_InitDataFromNodes(node_scale, 2);
+	a3_InitDataFromNodes(node_scale, tree, 2, 1);
 
 	a3_BlendData* const data_out = &(node_scale->result);
-	const a3_BlendData* data0 = node_scale->spatialData[0];
-	const a3_BlendParam param = *(node_scale->paramData[0]);
+	const a3_BlendData* data0 = node_scale->info.spatialData[0];
+	const a3_BlendParam param = *(node_scale->info.paramData[0]);
 
 	a3_SpatialPose* result = a3spatialPoseOpScale(data_out, data0, param);
 
@@ -486,10 +524,14 @@ a3boolean a3_BlendOpScale(a3_BlendNode* const node_scale)
 }
 
 
-void* a3_GetVariableValue(a3_BlendTree* const blendTree)
-{
-}
+// PARAM OPERATIONS -------------------------------------------------------------------------------------
 
+
+a3boolean a3_ParamOp_Identity(a3_ParamNode* const node_identity, a3_BlendTree* const tree)
+{
+	node_identity->result = *node_identity->info.paramData[0];
+	return true;
+}
 
 
 //-----------------------------------------------------------------------------
