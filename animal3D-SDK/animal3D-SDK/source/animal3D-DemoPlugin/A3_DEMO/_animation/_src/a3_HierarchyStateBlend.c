@@ -335,7 +335,12 @@ a3_BlendNode* a3_CreateBlendNode(a3_BlendOp blendOperation)
 
 	for (a3ui32 i = 0; i < a3_blend_data_max; i++)
 	{
-		newNode->dataNodes[i] = NULL;
+		newNode->spatialData[i] = NULL;
+		/*newNode->spatialDataNodes[i] = NULL;
+		newNode->miscData[i] = NULL;
+		newNode->miscBlueprintFunctions[i] = NULL;
+		newNode->paramData[i] = NULL;
+		newNode->*/
 	}
 
 	newNode->blendOperation = blendOperation;
@@ -353,13 +358,13 @@ a3_BlendNode* a3_CreateInitializedBlendNode(a3_BlendNode* dataNodes[a3_blend_dat
 
 	for (a3ui32 i = 0; i < a3_blend_data_max; i++)
 	{
-		newNode->dataNodes[i] = dataNodes[i];
+		newNode->spatialDataNodes[i] = dataNodes[i];
 		newNode->spatialData[i] = data[i];
 	}
 
 	for (a3ui32 i = 0; i < a3_blend_param_max; i++)
 	{
-		newNode->param[i] = param[i];
+		newNode->paramData[i] = param[i];
 	}
 
 	return newNode;
@@ -370,7 +375,7 @@ a3boolean a3_InitDataFromNodes(a3_BlendNode* node_out, a3ui32 numData)
 {
 	for (a3ui32 i = 0; i < numData; i++)
 	{
-		a3_BlendNode* dataNode = node_out->dataNodes[i];
+		a3_BlendNode* dataNode = node_out->spatialDataNodes[i];
 
 		if (dataNode != NULL)
 		{
@@ -442,7 +447,7 @@ a3boolean a3_BlendOpLerp(a3_BlendNode* const node_lerp)
 
 	const a3_BlendData* data0 = node_lerp->spatialData[0];
 	const a3_BlendData* data1 = node_lerp->spatialData[1];
-	const a3_BlendParam param = *(node_lerp->param[0]);
+	const a3_BlendParam param = *(node_lerp->paramData[0]);
 
 	a3_SpatialPose* result = a3spatialPoseOpLERP(data_out, data0, data1, param);
 	return result == data_out;
@@ -473,11 +478,16 @@ a3boolean a3_BlendOpScale(a3_BlendNode* const node_scale)
 
 	a3_BlendData* const data_out = &(node_scale->result);
 	const a3_BlendData* data0 = node_scale->spatialData[0];
-	const a3_BlendParam param = *(node_scale->param[0]);
+	const a3_BlendParam param = *(node_scale->paramData[0]);
 
 	a3_SpatialPose* result = a3spatialPoseOpScale(data_out, data0, param);
 
 	return result == data_out;
+}
+
+
+void* a3_GetVariableValue(a3_BlendTree* const blendTree)
+{
 }
 
 

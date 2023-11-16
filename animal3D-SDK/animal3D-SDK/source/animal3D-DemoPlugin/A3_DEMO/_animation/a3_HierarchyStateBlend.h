@@ -47,7 +47,8 @@ extern "C"
 enum // Max array sizes for blend data and params
 {
 	a3_blend_data_max = 16,
-	a3_blend_param_max = 16
+	a3_blend_param_max = 16,
+	a3_blend_tree_variable_max = 16
 };
 
 
@@ -70,18 +71,25 @@ struct a3_BlendNode;
 // Returns -1 for error, 1 for success
 typedef a3boolean(*a3_BlendOp)(struct a3_BlendNode* node);
 
+typedef void*(*a3_DataFunction)(struct a3_BlendNode* node);
+
+typedef a3_BlendParam(*a3_ParamFunction)(struct a3_BlendNode* node);
+
+
 typedef struct a3_BlendNode
 {
 	a3_BlendData result; // One thing that is physically there to store result
 
-	struct a3_BlendNode* dataNodes[a3_blend_data_max];
+	struct a3_BlendNode* spatialDataNodes[a3_blend_data_max];
+	struct a3_BlueprintFunction* miscBlueprintFunctions[a3_blend_data_max];
+	struct a3_ParamFunction* paramFunctions[a3_blend_data_max];
 
 	a3_BlendData* spatialData[a3_blend_data_max];
 	void* miscData[a3_blend_data_max];
-
-	a3_BlendParam const* param[a3_blend_param_max];
+	a3_BlendParam const* paramData[a3_blend_param_max];
 
 	a3_BlendOp blendOperation;
+
 } a3_BlendNode;
 
 
@@ -89,7 +97,17 @@ typedef struct a3_BlendTree
 {
 	a3_BlendNode* root; // Root of tree
 
+	a3_BlendTreeVariable variables[a3_blend_tree_variable_max];
+
 } a3_BlendTree;
+
+
+typedef struct a3_BlendTreeVariable
+{
+	char name[32];
+	void* value;
+
+} a3_BlendTreeVariable;
 
 
 //Forward Declarations
@@ -356,10 +374,11 @@ a3_BlendData a3_GetNodeResult(a3_BlendNode* node);
 
 // Operations
 a3boolean a3_BlendOpIdentity(a3_BlendNode* const node_identity);
-//a3boolean a3_BlendOpGetClipControllerPose(a3_BlendNode* const node_pose);
 a3boolean a3_BlendOpLerp(a3_BlendNode* const node_lerp);
 a3boolean a3_BlendOpConcat(a3_BlendNode* const node_concat);
 a3boolean a3_BlendOpScale(a3_BlendNode* const node_scale);
+
+void* a3_GetVariableValue(a3_BlendTree* const blendTree);
 
 // Per-channel blending (just my notes -aster)
 // visual notes:
