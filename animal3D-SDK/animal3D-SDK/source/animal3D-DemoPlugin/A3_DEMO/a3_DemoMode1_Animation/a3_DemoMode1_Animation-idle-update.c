@@ -382,6 +382,7 @@ void a3animation_update_animation_from_blend_tree(a3_DemoMode1_Animation* demoMo
 	a3clipControllerUpdate(demoMode->idleClipCtrl, dt);
 	a3clipControllerUpdate(demoMode->walkClipCtrl, dt);
 	a3clipControllerUpdate(demoMode->runClipCtrl, dt);
+	a3clipControllerUpdate(demoMode->jumpClipCtrl, dt);
 
 	// Loop through each spatial pose and run blend tree
 	for (a3ui32 i = 0; i < demoMode->hierarchy_skel->numNodes; i++)

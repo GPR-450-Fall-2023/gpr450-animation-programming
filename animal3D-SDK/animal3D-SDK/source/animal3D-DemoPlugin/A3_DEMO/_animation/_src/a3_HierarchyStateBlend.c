@@ -681,6 +681,51 @@ a3boolean a3_BlendOp_BoolBranch(a3_BlendNode* const node_branch, a3_BlendTree* c
 }
 
 
+// Param Data: 0 = jumpDuration, 1 = jumpHeight, 2 = jumpFadeInTime, 3 = jumpFadeOutTime
+// Misc Data: 0 = timeSinceJump, 1 = jumpLerpParam, 2 = isJumping, 3 = ctrlNode
+a3boolean a3_BlendOp_HandleJump(a3_BlendNode* const node_jump, a3_BlendTree* const tree, a3ui32 hierarchyIndex, a3real dt)
+{
+	// Parabola equation: (-4H/D^2)t^2 + (4H/D)t
+	// H = Max jump height, D = Max jump duration
+
+	a3_InitDataFromNodes(node_jump, tree, hierarchyIndex, dt, 1, 0);
+	node_jump->result = *(node_jump->info.spatialData[0]);
+	
+	if (hierarchyIndex != 0) return true;
+
+	a3_BlendParam* jumpDuration = node_jump->info.paramData[0];
+	a3_BlendParam* jumpHeight = node_jump->info.paramData[1];
+	a3_BlendParam* jumpFadeInTime = node_jump->info.paramData[2];
+	a3_BlendParam* jumpFadeOutTime = node_jump->info.paramData[3];
+
+	a3real* timeSinceJump = (a3real*)node_jump->info.miscData[0];
+	a3real* jumpLerpParam = (a3real*)node_jump->info.miscData[1];
+	a3boolean* isJumping = (a3boolean*) node_jump->info.miscData[2];
+	a3_SpatialPose* ctrlNode = (a3_SpatialPose*)node_jump->info.miscData[3];
+
+	(*timeSinceJump) += dt;
+
+	// If we've been jumping for at least duration, reset
+	if (*timeSinceJump >= *jumpDuration)
+	{
+		*isJumping = false;
+		ctrlNode->translate.z = 0;
+		*timeSinceJump = 0;
+		return true;
+	}
+
+	//// Calculate jumpLerpParam
+	//if (timeSinceJump >= jumpFadeInTime)
+	//{
+	//	*jumpLerpParam = 
+	//}
+
+
+
+	return true;
+}
+
+
 // PARAM OPERATIONS -------------------------------------------------------------------------------------
 
 

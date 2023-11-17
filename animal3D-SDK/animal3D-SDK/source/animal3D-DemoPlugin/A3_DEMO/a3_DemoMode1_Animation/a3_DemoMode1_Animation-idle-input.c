@@ -92,9 +92,9 @@ void a3animation_tryStartJump(a3_DemoMode1_Animation* demoMode)
 	// Reset to beginning of jump clip
 	demoMode->jumpClipCtrl->keyframeIndex = demoMode->jumpClipCtrl->clip->keyframeIndex_first;
 	demoMode->jumpClipCtrl->keyframe = demoMode->jumpClipCtrl->clipPool->keyframe + demoMode->jumpClipCtrl->keyframeIndex;
-	demoMode->jumpClipCtrl->playback_sec = 0;
-	demoMode->jumpClipCtrl->clipTime_sec = 0;
-	demoMode->jumpClipCtrl->keyframeTime_sec = 0;
+	//demoMode->jumpClipCtrl->playback_sec = 0;
+	//demoMode->jumpClipCtrl->clipTime_sec = 0;
+	//demoMode->jumpClipCtrl->keyframeTime_sec = 0;
 
 
 }
@@ -226,7 +226,7 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 
 		if (a3XboxControlIsPressed(demoState->xcontrol, a3xbox_A))
 		{
-
+			a3animation_tryStartJump(demoMode);
 		}
 
 		if (a3XboxControlIsPressed(demoState->xcontrol, a3xbox_start))

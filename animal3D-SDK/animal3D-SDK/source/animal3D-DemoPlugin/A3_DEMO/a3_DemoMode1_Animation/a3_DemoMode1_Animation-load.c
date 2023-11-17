@@ -46,12 +46,16 @@ void a3animation_initBlendTree(a3_DemoMode1_Animation* demoMode)
 		demoMode->runBlendThreshold = 4;
 		demoMode->isJumping = false;
 		demoMode->timeSinceJump = 0;
-		demoMode->jumpFadeTimes = (a3vec2){ .3f, .3f };
+		demoMode->jumpFadeInTime = .3f;
+		demoMode->jumpFadeOutTime = .3f;
+		demoMode->jumpLerpParam = 0;
 		demoMode->jumpDuration = (a3real) demoMode->clipPool[0].clip[demoMode->jumpClipCtrl->clipIndex].duration_sec;
 
+		a3_BlendNode* jumpCCNode = a3_CreateBlendNode(a3_BlendOp_EvaluateClipController);
+		jumpCCNode->info.miscData[0] = demoMode->jumpClipCtrl;
+		jumpCCNode->info.miscData[1] = demoMode->hierarchyPoseGroup_skel;
+
 		a3_BlendNode* blendPoseNode = a3_CreateBlendNode(a3_BlendOp_Blend_3);
-		demoMode->blendTree.root = blendPoseNode;
-		
 		blendPoseNode->info.paramData[0] = &(demoMode->ctrlVelocityMagnitude);
 		blendPoseNode->info.paramData[1] = &(demoMode->idleBlendThreshold);
 		blendPoseNode->info.paramData[2] = &(demoMode->walkBlendThreshold);
@@ -74,6 +78,25 @@ void a3animation_initBlendTree(a3_DemoMode1_Animation* demoMode)
 		runCCNode->info.miscData[1] = demoMode->hierarchyPoseGroup_skel;
 
 		blendPoseNode->info.spatialDataNodes[2] = runCCNode;
+
+		a3_BlendNode* handleJumpNode = a3_CreateBlendNode(a3_BlendOp_HandleJump);
+		handleJumpNode->info.paramData[0] = &(demoMode->jumpDuration);
+		handleJumpNode->info.paramData[1] = &(demoMode->jumpHeight);
+		handleJumpNode->info.paramData[2] = &(demoMode->jumpFadeInTime);
+		handleJumpNode->info.paramData[3] = &(demoMode->jumpFadeOutTime);
+		handleJumpNode->info.miscData[0] = &(demoMode->timeSinceJump);
+		handleJumpNode->info.miscData[1] = &(demoMode->jumpLerpParam);
+		handleJumpNode->info.miscData[2] = &(demoMode->isJumping);
+		handleJumpNode->info.miscData[3] = &(demoMode->ctrlNode);
+		handleJumpNode->info.spatialDataNodes[0] = jumpCCNode;
+
+		a3_BlendNode* jumpBranchNode = a3_CreateBlendNode(a3_BlendOp_BoolBranch);
+		jumpBranchNode->info.miscData[0] = &(demoMode->isJumping);
+		jumpBranchNode->info.spatialDataNodes[0] = handleJumpNode; // True, we are jumping
+		jumpBranchNode->info.spatialDataNodes[1] = blendPoseNode; // False, we are on ground
+
+		demoMode->blendTree.root = jumpBranchNode;
+
 
 
 		//a3_BlendNode* combineLerpNode = a3_CreateBlendNode(a3_BlendOp_Lerp);
@@ -577,6 +600,9 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_idle_f");//"xbot_idle_pistol");
 		a3clipControllerInit(demoMode->idleClipCtrl, "xbot_idleCtrl", demoMode->clipPool, j, rate, fps);
 
+		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_jump_f");//"xbot_idle_pistol");
+		a3clipControllerInit(demoMode->jumpClipCtrl, "xbot_jumpCtrl", demoMode->clipPool, j, rate, fps);
+
 
 
 
@@ -651,6 +677,16 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 
 		demoMode->clipPool[0].clip[runClipIndex].transitionReverse[0].flag = a3clip_playFlag | a3clip_reverseFlag | a3clip_terminusFlag | a3clip_overstepFlag;
 		demoMode->clipPool[0].clip[runClipIndex].transitionReverse[0].parameters = demoMode;
+
+
+		a3i32 jumpClipIndex = a3clipGetIndexInPool(demoMode->clipPool, "xbot_jump_f");
+		demoMode->clipPool[0].clip[jumpClipIndex].rootMotion = a3root_AllRot | a3root_YPosition;
+
+		demoMode->clipPool[0].clip[jumpClipIndex].transitionForward[0].flag = a3clip_playFlag | a3clip_overstepFlag;
+		demoMode->clipPool[0].clip[jumpClipIndex].transitionForward[0].parameters = demoMode;
+
+		demoMode->clipPool[0].clip[jumpClipIndex].transitionReverse[0].flag = a3clip_playFlag | a3clip_reverseFlag | a3clip_terminusFlag | a3clip_overstepFlag;
+		demoMode->clipPool[0].clip[jumpClipIndex].transitionReverse[0].parameters = demoMode;
 			
 
 

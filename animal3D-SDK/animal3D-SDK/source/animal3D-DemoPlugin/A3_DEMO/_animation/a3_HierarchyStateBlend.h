@@ -397,6 +397,9 @@ a3boolean a3_BlendOp_Blend_3(a3_BlendNode* const node_blend, a3_BlendTree* const
 a3boolean a3_BlendOp_EvaluateClipController(a3_BlendNode* const node_eval, a3_BlendTree* const tree, a3ui32 hierarchyIndex, a3real dt);
 a3boolean a3_BlendOp_BoolBranch(a3_BlendNode* const node_branch, a3_BlendTree* const tree, a3ui32 hierarchyIndex, a3real dt);
 
+// Functionality for moving character during jump + updating variables accordingly, will pass connected spatial node / data unchanged to caller
+a3boolean a3_BlendOp_HandleJump(a3_BlendNode* const node_jump, a3_BlendTree* const tree, a3ui32 hierarchyIndex, a3real dt);
+
 // Param Operations
 a3boolean a3_ParamOp_Identity(a3_ParamNode* const node_identity, a3_BlendTree* const tree, a3ui32 hierarchyIndex, a3real dt);
 

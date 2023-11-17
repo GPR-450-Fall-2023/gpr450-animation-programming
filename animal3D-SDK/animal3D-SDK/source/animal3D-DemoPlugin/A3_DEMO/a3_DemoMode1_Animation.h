@@ -173,7 +173,10 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 		a3boolean isJumping;
 		a3real timeSinceJump;
 		a3real jumpDuration;
-		a3vec2 jumpFadeTimes; // Ex. <.3, .3> would take .3 seconds to fully blend into jump, and then take .3 seconds to fully blend out of jump
+		a3real jumpFadeInTime; // Ex. <.3, .3> would take .3 seconds to fully blend into jump, and then take .3 seconds to fully blend out of jump
+		a3real jumpFadeOutTime;
+		a3real jumpHeight;
+		a3real jumpLerpParam; // How jump should be blending with ground movement;
 
 		// skeletal animation
 		union {
