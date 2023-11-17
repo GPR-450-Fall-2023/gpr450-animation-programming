@@ -231,9 +231,9 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 
 		// need to properly transform joints to their parent frame and vice-versa
 		a3mat4 const controlToSkeleton = demoMode->sceneGraphState->localSpaceInv->pose[j].transformMat;
-		a3vec4 controlLocator_neckLookat, controlLocator_wristEffector, controlLocator_wristConstraint, controlLocator_wristBase, controlLocator_rightKneeConstraint, controlLocator_leftKneeConstraint, controlLocator_rightFootEffector, controlLocator_leftFootEffector;
-		a3mat4 jointTransform_neck = a3mat4_identity, jointTransform_wrist = a3mat4_identity, jointTransform_elbow = a3mat4_identity, jointTransform_shoulder = a3mat4_identity, jointTransform_rightUpLeg = a3mat4_identity, jointTransform_leftUpLeg = a3mat4_identity, jointTransform_rightKnee = a3mat4_identity, jointTransform_leftKnee = a3mat4_identity, jointTransform_rightFoot = a3mat4_identity, jointTransform_leftFoot = a3mat4_identity;
-		a3ui32 j_neck, j_wrist, j_elbow, j_shoulder, j_rightUpLeg, j_leftUpLeg, j_rightKnee, j_rightFoot, j_leftKnee, j_leftFoot;
+		a3vec4 controlLocator_neckLookat, controlLocator_wristEffector, controlLocator_wristConstraint, controlLocator_wristBase, controlLocator_rightKneeConstraint, controlLocator_leftKneeConstraint, controlLocator_rightFootEffector, controlLocator_leftFootEffector, controlLocator_rightLegBase, controlLocator_leftLegBase;
+		a3mat4 jointTransform_neck = a3mat4_identity, jointTransform_wrist = a3mat4_identity, jointTransform_elbow = a3mat4_identity, jointTransform_shoulder = a3mat4_identity, jointTransform_hips = a3mat4_identity, jointTransform_rightUpLeg = a3mat4_identity, jointTransform_leftUpLeg = a3mat4_identity, jointTransform_rightKnee = a3mat4_identity, jointTransform_leftKnee = a3mat4_identity, jointTransform_rightFoot = a3mat4_identity, jointTransform_leftFoot = a3mat4_identity;
+		a3ui32 j_neck, j_wrist, j_elbow, j_shoulder, j_hips, j_rightUpLeg, j_leftUpLeg, j_rightKnee, j_rightFoot, j_leftKnee, j_leftFoot;
 
 		// NECK LOOK-AT
 		{
@@ -462,8 +462,8 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 		// FEET EFFECTORS (for unlevel ground) - aster
 		{
 			// hips
-			//j = j_hips = a3hierarchyGetNodeIndex(activeHS->hierarchy, "mixamorig:Hips");
-		//	jointTransform_hips = activeHS->objectSpace->pose[j].transformMat;
+			j = j_hips = a3hierarchyGetNodeIndex(activeHS->hierarchy, "mixamorig:Hips");
+			jointTransform_hips = activeHS->objectSpace->pose[j].transformMat;
 
 			// right leg =========================================
 			// right foot effector
@@ -487,6 +487,7 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 			// right upper leg
 			j = j_rightUpLeg = a3hierarchyGetNodeIndex(activeHS->hierarchy, "mixamorig:RightUpLeg");
 			jointTransform_rightUpLeg = activeHS->objectSpace->pose[j].transformMat;
+			controlLocator_rightLegBase = jointTransform_rightUpLeg.v3;
 			// ===================================================
 
 			// left leg ==========================================
@@ -511,19 +512,155 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 			// left upper leg
 			j = j_leftUpLeg = a3hierarchyGetNodeIndex(activeHS->hierarchy, "mixamorig:RightUpLeg");
 			jointTransform_leftUpLeg = activeHS->objectSpace->pose[j].transformMat;
+			controlLocator_leftLegBase = jointTransform_leftUpLeg.v3;
 			// ===================================================
 
-			// based on the arms:
 			// ****TO-DO: 
-			// make raycast to find where the effectors should be placed based on the current foot position
-			// in this example, +Z is towards locator, +Y is up
+			// Calculate foot effector: 
+			// Raycast from hip height above the foot position to find where the foot should be to get the foot target effector
+			//      - If the foot is slightly in the object, you can use a sphere collider to find the next placement candidate (if the foot is able to back up)
+			//      - If the foot is FULLY in an object, raycast back upwards to find the next best foot placement
+			
 
+			// right foot
+			a3real3 raycastStartR;
+			a3real3Set(raycastStartR, jointTransform_rightFoot.v3.x, jointTransform_hips.v3.y, jointTransform_rightFoot.v3.z); // get x and z positions of the foot using y position of hips
+
+			// raycast
+			// ***************PLACEHOLDER*******************
+			// instead of raycasting, for now we'll just placeholder with y=2 to make sure it works
+			a3real3 raycastHitR;
+			a3real3Set(raycastHitR, jointTransform_rightFoot.v3.x, 2, jointTransform_rightFoot.v3.z);
+
+			// sphere collider (if we're near the edge of something
+			// to do
+
+			// raycast back upwards to find the next best foot placement
+			// to do
+
+			// Place the foot at the effector and solve for IK (below)
+			// based on dillon's implementation for the arm/wrist effectors
 			// ****TO-DO: 
 			// solve positions and orientations for joints
 			// in this example, +X points away from child, +Y is normal
 			// 1) check if solution exists
 			//	-> get vector between base and end effector; if it extends max length, straighten limb
 			//	-> position of end effector's target is at the minimum possible distance along this vector
+
+			
+			//Vector and distance between base and end effectors
+			a3real3 baseToEnd;
+			a3real3Diff(baseToEnd, controlLocator_wristEffector.xyz.v, controlLocator_wristBase.xyz.v);
+			a3real endEffectorDist = a3real3Length(baseToEnd);
+
+			//Vector between base and constraint
+			a3real3 baseToConstraint;
+			a3real3Diff(baseToConstraint, controlLocator_wristConstraint.xyz.v, controlLocator_wristBase.xyz.v);
+
+			a3real shoulderElbowDist = a3real3Distance(baseHS->objectSpace->pose[j_shoulder].translate.v, baseHS->objectSpace->pose[j_elbow].translate.v); //Length of shoulder-elbow bone
+			a3real elbowWristDist = a3real3Distance(baseHS->objectSpace->pose[j_elbow].translate.v, baseHS->objectSpace->pose[j_wrist].translate.v); //Length of elbow-wrist bone
+			a3real chainLength = shoulderElbowDist + elbowWristDist; //Total chain length
+
+			//Normalize base to end as direction
+			a3real3 normalizedBaseToEnd;
+			a3real3SetReal3(normalizedBaseToEnd, baseToEnd);
+			a3real3Normalize(normalizedBaseToEnd);
+
+			//N = baseToEnd x baseToConstraint
+			a3real3 planeNormal;
+			a3real3Cross(planeNormal, baseToEnd, baseToConstraint);
+			a3real3Normalize(planeNormal);
+
+			printf("Effector Dist: %f   Chain Length: %f   ", endEffectorDist, chainLength);
+			if (endEffectorDist < chainLength)
+			{
+				printf("Solvable");
+
+				//Get h
+				a3real3 heightDir;
+				a3real3Cross(heightDir, planeNormal, normalizedBaseToEnd);
+				a3real3Normalize(heightDir);
+
+				//Triangle Perimeter
+				a3real perimeter = (a3real)(.5 * (chainLength + endEffectorDist));
+
+				//Triangle area
+				a3real area = (a3real)sqrt(perimeter * (perimeter - endEffectorDist) * (perimeter - elbowWristDist) * (perimeter - shoulderElbowDist));
+
+				//Height, distance of elbow along heightDir
+				a3real height = (2 * area) / endEffectorDist;
+
+				//length of the vector projected onto the baseToEnd vector
+				a3real distanceAlongBase = (a3real)sqrt((shoulderElbowDist * shoulderElbowDist) - (height * height));
+
+				//Get vectors for local X and Y translation
+				a3real3 elbowD;
+				a3real3SetReal3(elbowD, normalizedBaseToEnd);
+				a3real3MulS(elbowD, distanceAlongBase);
+				a3real3 elbowH;
+				a3real3SetReal3(elbowH, heightDir);
+				a3real3MulS(elbowH, height);
+
+				//Calculate elbow position
+				a3real3 localElbow;
+				a3real3Sum(localElbow, elbowD, elbowH);
+				a3real3Sum(jointTransform_elbow.v3.xyz.v, jointTransform_shoulder.v3.xyz.v, localElbow);
+
+				//Set position of wrist to wrist effector
+				a3real3SetReal3(jointTransform_wrist.v3.xyz.v, controlLocator_wristEffector.v);
+			}
+			else //Arm should be straight out towards end effector, no solution
+			{
+				///////// Position //////////
+
+				// hip doesn't move
+
+				//Get position of elbow along the straight line between the base and end effector
+				//Then Translate into world space by adding shoulder world space position
+				a3real3ProductS(jointTransform_elbow.v3.xyz.v, normalizedBaseToEnd, shoulderElbowDist);
+				a3real3Sum(jointTransform_elbow.v3.xyz.v, jointTransform_elbow.v3.xyz.v, jointTransform_shoulder.v3.xyz.v);
+
+				//Get positions of wrist along the straight line between the base and end effector
+				//Then Translate into world space by adding elbow world space position
+				a3real3ProductS(jointTransform_wrist.v3.xyz.v, normalizedBaseToEnd, elbowWristDist);
+				a3real3Sum(jointTransform_wrist.v3.xyz.v, jointTransform_wrist.v3.xyz.v, jointTransform_elbow.v3.xyz.v);
+			}
+			printf("\n");
+
+			//////// Rotation //////////
+
+			//T1 = normalize(S - W)
+			a3real3 shoulderTangent;
+			a3real3Diff(shoulderTangent, jointTransform_elbow.v3.xyz.v, jointTransform_shoulder.v3.xyz.v);
+			a3real3Normalize(shoulderTangent);
+
+			//B1 = T1 x N
+			a3real3 shoulderBitangent;
+			a3real3Cross(shoulderBitangent, shoulderTangent, planeNormal);
+			a3real3Normalize(shoulderBitangent);
+
+			//T2 = normalize(W - E)
+			a3real3 elbowTangent;
+			a3real3Diff(elbowTangent, jointTransform_wrist.v3.xyz.v, jointTransform_elbow.v3.xyz.v);
+			a3real3Normalize(elbowTangent);
+
+			//B2 = T2 x N
+			a3real3 elbowBitangent;
+			a3real3Cross(elbowBitangent, elbowTangent, planeNormal);
+			a3real3Normalize(elbowTangent);
+
+			//Set first three columns of shoulder worldspace transform matrix to basis vectors
+			a3real4Set(jointTransform_shoulder.v0.v, shoulderTangent[0], shoulderTangent[1], shoulderTangent[2], 0);
+			a3real4Set(jointTransform_shoulder.v1.v, shoulderBitangent[0], shoulderBitangent[1], shoulderBitangent[2], 0);
+			a3real4Set(jointTransform_shoulder.v2.v, planeNormal[0], planeNormal[1], planeNormal[2], 0);
+			//Position already set
+
+			//Set first three columns of elbow worldspace transform matrix to basis vectors
+			a3real4Set(jointTransform_elbow.v0.v, elbowTangent[0], elbowTangent[1], elbowTangent[2], 0);
+			a3real4Set(jointTransform_elbow.v1.v, elbowBitangent[0], elbowBitangent[1], elbowBitangent[2], 0);
+			a3real4Set(jointTransform_elbow.v2.v, planeNormal[0], planeNormal[1], planeNormal[2], 0);
+			//Position already set
+			
 
 			// ****TO-DO: 
 			// reassign resolved transforms to OBJECT-SPACE matrices
