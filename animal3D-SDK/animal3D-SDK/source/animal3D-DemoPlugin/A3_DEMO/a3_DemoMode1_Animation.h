@@ -126,6 +126,10 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 		animation_ctrl_neckLookat,
 		animation_ctrl_wristEffector_r,
 		animation_ctrl_wristConstraint_r,
+		animation_ctrl_kneeConstraint_r,
+		animation_ctrl_kneeConstraint_l,
+		animation_ctrl_footEffector_r,
+		animation_ctrl_footEffector_l,
 
 		animation_ctrlmode_max
 	};

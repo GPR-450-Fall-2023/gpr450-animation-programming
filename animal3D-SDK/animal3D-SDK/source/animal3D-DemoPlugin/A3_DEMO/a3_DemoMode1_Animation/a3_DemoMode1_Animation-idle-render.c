@@ -104,6 +104,11 @@ void a3animation_render_controls(a3_DemoState const* demoState, a3_DemoMode1_Ani
 		"CHARACTER LOOKAT",
 		"CHARACTER WRIST EFFECTOR (R)",
 		"CHARACTER WRIST CONSTRAINT (R)",
+		"CHARACTER KNEE CONSTRAINT (R)",
+		"CHARACTER KNEE CONSTRAINT (L)",
+		"CHARACTER FOOT EFFECTOR (R)",
+		"CHARACTER FOOT EFFECTOR (L)",
+		
 	};
 	a3byte const* inputModeName[animation_inputmode_max] = {
 		"Direct assignment",
@@ -242,6 +247,10 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 		demoState->draw_node,
 		demoState->draw_node,
 		demoState->draw_node,
+		demoState->draw_node,
+		demoState->draw_node,
+		demoState->draw_node,
+		demoState->draw_node,
 		demoState->draw_character_skin,	// skinned model
 	};
 
@@ -251,6 +260,10 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 		0,
 		0,
 		demoState->tex_checker,
+		0,
+		0,
+		0,
+		0,
 		0,
 		0,
 		0,
@@ -417,19 +430,23 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 		{
 			// send data and draw
 			j = (a3ui32)(currentSceneObject - demoMode->object_scene);
-			a3textureActivate(texture_dm[j], a3tex_unit00);
-			a3textureActivate(texture_dm[j], a3tex_unit01);
-			modelMat = demoMode->sceneGraphState->objectSpace->pose[currentSceneObject->sceneGraphIndex].transformMat;
-			a3real4x4Product(modelViewMat.m, viewMat.m, modelMat.m);
-			a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMV, 1, modelViewMat.mm);
-			a3demo_quickInvertTranspose_internal(modelViewMat.m);
-			modelViewMat.v3 = a3vec4_zero;
-			a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMV_nrm, 1, modelViewMat.mm);
-			a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uIndex, 1, &j);
-			a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, orange);
-			a3vertexDrawableActivateAndRender(demoState->draw_character_skin);
-			a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, sky);
-			a3vertexDrawableActivateAndRender(demoState->draw_character_skin_alt);
+			if (j != 0x0000000c) // make sure texture index is valid
+			{
+				a3textureActivate(texture_dm[j], a3tex_unit00);
+				a3textureActivate(texture_dm[j], a3tex_unit01);
+				modelMat = demoMode->sceneGraphState->objectSpace->pose[currentSceneObject->sceneGraphIndex].transformMat;
+				a3real4x4Product(modelViewMat.m, viewMat.m, modelMat.m);
+				a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMV, 1, modelViewMat.mm);
+				a3demo_quickInvertTranspose_internal(modelViewMat.m);
+				modelViewMat.v3 = a3vec4_zero;
+				a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMV_nrm, 1, modelViewMat.mm);
+				a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uIndex, 1, &j);
+				a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, orange);
+				a3vertexDrawableActivateAndRender(demoState->draw_character_skin);
+				a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, sky);
+				a3vertexDrawableActivateAndRender(demoState->draw_character_skin_alt);
+			}
+			
 		}
 
 	}	break;
@@ -701,7 +718,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 			modelMat = demoMode->sceneGraphState->objectSpace->pose[i].transformMat;
 			a3real4x4Product(modelViewProjectionMat.m, viewProjectionMat.m, modelMat.m);
 			a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMVP, 1, modelViewProjectionMat.mm);
-			a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, green);
+			a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, lime);
 			a3vertexDrawableActivateAndRender(drawable[i]);
 
 			i = (a3ui32)(demoMode->obj_skeleton_footEffector_r_ctrl - demoMode->object_scene);
@@ -715,7 +732,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 			modelMat = demoMode->sceneGraphState->objectSpace->pose[i].transformMat;
 			a3real4x4Product(modelViewProjectionMat.m, viewProjectionMat.m, modelMat.m);
 			a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMVP, 1, modelViewProjectionMat.mm);
-			a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, red);
+			a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, rose);
 			a3vertexDrawableActivateAndRender(drawable[i]);
 
 			// draw skeletal joint orientations

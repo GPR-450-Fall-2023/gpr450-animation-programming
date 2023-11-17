@@ -560,15 +560,16 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 			controlLocator_leftLegBase = jointTransform_leftUpLeg.v3;
 			// ===================================================
 
-			// SOLVE RIGHT LEG
+			// CALCULATE FOOT EFFECTORS (RAYCAST)
 			{
+				
 				// ****TO-DO: 
 				// Calculate foot effector: 
 				// Raycast from hip height above the foot position to find where the foot should be to get the foot target effector
 				//      - If the foot is slightly in the object, you can use a sphere collider to find the next placement candidate (if the foot is able to back up)
 				//      - If the foot is FULLY in an object, raycast back upwards to find the next best foot placement
-			
-				// right foot
+
+				// right foot =========================================
 				a3real3 raycastStartR;
 				a3real3Set(raycastStartR, jointTransform_rightFoot.v3.x, jointTransform_hips.v3.y, jointTransform_rightFoot.v3.z); // get x and z positions of the foot using y position of hips
 
@@ -584,7 +585,27 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 				// raycast back upwards to find the next best foot placement
 				// to do...
 
-			
+				// left foot =========================================
+				a3real3 raycastStartL;
+				a3real3Set(raycastStartL, jointTransform_leftFoot.v3.x, jointTransform_hips.v3.y, jointTransform_leftFoot.v3.z); // get x and z positions of the foot using y position of hips
+
+				// raycast
+				// ***************PLACEHOLDER*******************
+				// instead of raycasting, for now we'll just placeholder with y=2 to make sure it works
+				a3real3 raycastHitL;
+				a3real3Set(raycastHitL, jointTransform_leftFoot.v3.x, 2, jointTransform_leftFoot.v3.z);
+
+				// sphere collider (if we're near the edge of something
+				// to do...
+
+				// raycast back upwards to find the next best foot placement
+				// to do...
+
+			}
+
+			// SOLVE RIGHT LEG
+			{
+				
 				// ****TO-DO: 
 				// Place the foot at the effector and solve for IK (below)
 				// based on dillon's implementation for the arm/wrist effectors
@@ -716,33 +737,9 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 				a3real4x4SetReal4x4(activeHS->objectSpace->pose[j_rightKnee].transformMat.m, jointTransform_rightKnee.m);
 				a3real4x4SetReal4x4(activeHS->objectSpace->pose[j_rightFoot].transformMat.m, jointTransform_rightFoot.m);
 			}
-			// END SOLVE RIGHT LEG
 
 			// SOLVE LEFT LEG
 			{
-				// ****TO-DO: 
-				// Calculate foot effector: 
-				// Raycast from hip height above the foot position to find where the foot should be to get the foot target effector
-				//      - If the foot is slightly in the object, you can use a sphere collider to find the next placement candidate (if the foot is able to back up)
-				//      - If the foot is FULLY in an object, raycast back upwards to find the next best foot placement
-
-				// right foot
-				a3real3 raycastStartL;
-				a3real3Set(raycastStartL, jointTransform_leftFoot.v3.x, jointTransform_hips.v3.y, jointTransform_leftFoot.v3.z); // get x and z positions of the foot using y position of hips
-
-				// raycast
-				// ***************PLACEHOLDEL*******************
-				// instead of raycasting, for now we'll just placeholder with y=2 to make sure it works
-				a3real3 raycastHitL;
-				a3real3Set(raycastHitL, jointTransform_leftFoot.v3.x, 2, jointTransform_leftFoot.v3.z);
-
-				// sphere collider (if we're near the edge of something
-				// to do...
-
-				// raycast back upwards to find the next best foot placement
-				// to do...
-
-
 				// ****TO-DO: 
 				// Place the foot at the effector and solve for IK (below)
 				// based on dillon's implementation for the arm/wrist effectors
@@ -874,7 +871,6 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 				a3real4x4SetReal4x4(activeHS->objectSpace->pose[j_leftKnee].transformMat.m, jointTransform_leftKnee.m);
 				a3real4x4SetReal4x4(activeHS->objectSpace->pose[j_leftFoot].transformMat.m, jointTransform_leftFoot.m);
 			}
-			// END SOLVE LEFT LEG
 		}
 	}
 }
