@@ -383,7 +383,7 @@ a3_ParamNode* a3_CreateParamNode(a3_ParamOp paramOperation);
 //	a3_BlendParam const* param[a3_blend_param_max], a3_BlendOp blendOperation);
 
 // Loop through and try to update parameters for blend tree with blend node results
-a3boolean a3_InitDataFromNodes(a3_BlendNode* node, a3_BlendTree* tree, a3ui32 numBlendData, a3ui32 numParamData);
+a3boolean a3_InitDataFromNodes(a3_BlendNode* node, a3_BlendTree* tree, a3ui32 numBlendData, a3ui32 hierarchyIndex, a3ui32 numParamData);
 
 // Returns result of node's blend operation
 a3_BlendPose a3_GetBlendNodeResult(a3_BlendNode* node, a3_BlendTree* const tree, a3ui32 hierarchyIndex);

@@ -36,7 +36,7 @@
 //-----------------------------------------------------------------------------
 
 
-void a3animation_init_blend_tree(a3_DemoMode1_Animation* demoMode)
+void a3animation_initBlendTree(a3_DemoMode1_Animation* demoMode)
 {
 	{ // Simple clip blend tree
 
@@ -45,12 +45,31 @@ void a3animation_init_blend_tree(a3_DemoMode1_Animation* demoMode)
 		demoMode->runBlendThreshold = 4;
 
 		a3_BlendNode* blendPoseNode = a3_CreateBlendNode(a3_BlendOp_Blend_3);
+		demoMode->blendTree.root = blendPoseNode;
+		
 		blendPoseNode->info.paramData[0] = &(demoMode->ctrlVelocityMagnitude);
 		blendPoseNode->info.paramData[1] = &(demoMode->idleBlendThreshold);
 		blendPoseNode->info.paramData[2] = &(demoMode->walkBlendThreshold);
 		blendPoseNode->info.paramData[3] = &(demoMode->runBlendThreshold);
 
-		demoMode->blendTree.root = blendPoseNode;
+		a3_BlendNode* idleCCNode = a3_CreateBlendNode(a3_BlendOp_EvaluateClipController);
+		idleCCNode->info.miscData[0] = demoMode->idleClipCtrl;
+		idleCCNode->info.miscData[1] = demoMode->hierarchyPoseGroup_skel;
+
+		blendPoseNode->info.spatialDataNodes[0] = idleCCNode;
+
+		a3_BlendNode* walkCCNode = a3_CreateBlendNode(a3_BlendOp_EvaluateClipController);
+		walkCCNode->info.miscData[0] = demoMode->walkClipCtrl;
+		walkCCNode->info.miscData[1] = demoMode->hierarchyPoseGroup_skel;
+
+		blendPoseNode->info.spatialDataNodes[1] = walkCCNode;
+
+		a3_BlendNode* runCCNode = a3_CreateBlendNode(a3_BlendOp_EvaluateClipController);
+		runCCNode->info.miscData[0] = demoMode->runClipCtrl;
+		runCCNode->info.miscData[1] = demoMode->hierarchyPoseGroup_skel;
+
+		blendPoseNode->info.spatialDataNodes[2] = runCCNode;
+
 
 		//a3_BlendNode* combineLerpNode = a3_CreateBlendNode(a3_BlendOp_Lerp);
 		//a3_BlendNode* clipController0LerpNode = a3_CreateBlendNode(a3_BlendOp_Lerp);
@@ -550,6 +569,15 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_skintest");
 		a3clipControllerInit(demoMode->clipCtrlB, "xbot_ctrlB", demoMode->clipPool, j, rate, fps);
 
+		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_idle_f");//"xbot_idle_pistol");
+		a3clipControllerInit(demoMode->idleClipCtrl, "xbot_idleCtrl", demoMode->clipPool, j, rate, fps);
+
+		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_walk_f");//"xbot_idle_pistol");
+		a3clipControllerInit(demoMode->walkClipCtrl, "xbot_walkCtrl", demoMode->clipPool, j, rate, fps);
+
+		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_run_f");//"xbot_idle_pistol");
+		a3clipControllerInit(demoMode->runClipCtrl, "xbot_runCtrl", demoMode->clipPool, j, rate, fps);
+
 		// finally set up hierarchy states
 		// base state for skeleton
 		hierarchyState = demoMode->hierarchyState_skel_base;
@@ -581,7 +609,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		//Set test clip transition that returns true when receiving forward input
 		a3i32 idleClipIndex = a3clipGetIndexInPool(demoMode->clipPool, "xbot_idle_f");
 		demoMode->clipPool[0].clip[idleClipIndex].transitionForward[0].clipTransitionBranch = &a3checkForInputBranchFunction;
-		demoMode->clipPool[0].clip[idleClipIndex].transitionForward[0].flag = a3clip_playFlag | a3clip_overstepFlag | a3clip_branchFlag;
+		demoMode->clipPool[0].clip[idleClipIndex].transitionForward[0].flag = a3clip_playFlag | a3clip_overstepFlag;
 		demoMode->clipPool[0].clip[idleClipIndex].transitionForward[0].parameters = demoMode;
 
 		demoMode->clipPool[0].clip[idleClipIndex].transitionReverse[0].clipTransitionBranch = &a3checkForInputBranchFunction;
@@ -780,6 +808,7 @@ void a3animation_load(a3_DemoState const* demoState, a3_DemoMode1_Animation* dem
 	// setup
 	a3animation_init_animation(demoState, demoMode);
 	a3animation_initCtrlNode(demoMode);
+	a3animation_initBlendTree(demoMode);
 }
 
 

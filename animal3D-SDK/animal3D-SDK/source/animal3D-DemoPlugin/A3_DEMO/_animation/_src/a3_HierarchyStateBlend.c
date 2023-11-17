@@ -399,7 +399,7 @@ a3_ParamNode* a3_CreateParamNode(a3_ParamOp paramOperation)
 //}
 
 
-a3boolean a3_InitDataFromNodes(a3_BlendNode* node_out, a3_BlendTree* tree, a3ui32 numBlendData, a3ui32 numParamData)
+a3boolean a3_InitDataFromNodes(a3_BlendNode* node_out, a3_BlendTree* tree, a3ui32 hierarchyIndex, a3ui32 numBlendData, a3ui32 numParamData)
 {
 	for (a3ui32 i = 0; i < numBlendData; i++)
 	{
@@ -407,7 +407,7 @@ a3boolean a3_InitDataFromNodes(a3_BlendNode* node_out, a3_BlendTree* tree, a3ui3
 
 		if (dataNode != NULL)
 		{
-			a3boolean result = dataNode->blendOperation(dataNode, tree);
+			a3boolean result = dataNode->blendOperation(dataNode, tree, hierarchyIndex);
 
 			if (result == true) // Node successfully run
 			{
@@ -422,7 +422,7 @@ a3boolean a3_InitDataFromNodes(a3_BlendNode* node_out, a3_BlendTree* tree, a3ui3
 
 		if (dataNode != NULL)
 		{
-			a3boolean result = dataNode->paramOperation(dataNode, tree);
+			a3boolean result = dataNode->paramOperation(dataNode, tree, hierarchyIndex);
 
 			if (result == true) // Node successfully run
 			{
@@ -442,7 +442,8 @@ a3_BlendPose a3_GetBlendNodeResult(a3_BlendNode* node, a3_BlendTree* tree, a3ui3
 }
 
 
-a3boolean a3_BlendParamsSequential(a3_BlendParam* params, a3ui32 startIndex, a3ui32 count)
+// Checks if passed in params list is sequential, starting at startIndex and going up to startIndex + count
+a3boolean a3_BlendParamsSequential(a3_BlendParam* params[a3_blend_param_data_max], a3ui32 startIndex, a3ui32 count)
 {
 	if (count <= 1) return true;
 	if (count <= 2) return params[0] <= params[1];
@@ -453,9 +454,9 @@ a3boolean a3_BlendParamsSequential(a3_BlendParam* params, a3ui32 startIndex, a3u
 
 	for (a3ui32 i = startIndex + 1; i < startIndex + count - 1; i++)
 	{
-		prev = params[i - 1];
-		curr = params[i];
-		next = params[i + 1];
+		prev = *(params[i - 1]);
+		curr = *(params[i]);
+		next = *(params[i + 1]);
 
 		if (!(prev <= curr && curr <= next))
 		{
@@ -512,7 +513,7 @@ a3boolean a3_BlendOp_Lerp(a3_BlendNode* const node_lerp, a3_BlendTree* const tre
 
 	a3_BlendPose* const data_out = &(node_lerp->result);
 
-	a3_InitDataFromNodes(node_lerp, tree, 2, 1);
+	a3_InitDataFromNodes(node_lerp, tree, hierarchyIndex, 2, 1);
 
 	const a3_BlendPose* data0 = node_lerp->info.spatialData[0];
 	const a3_BlendPose* data1 = node_lerp->info.spatialData[1];
@@ -527,7 +528,7 @@ a3boolean a3_BlendOp_Concat(a3_BlendNode* const node_concat, a3_BlendTree* const
 {
 	if (!node_concat) return false;
 
-	a3_InitDataFromNodes(node_concat, tree, 2, 0);
+	a3_InitDataFromNodes(node_concat, tree, hierarchyIndex, 2, 0);
 
 	a3_BlendPose* const data_out = &(node_concat->result);
 	const a3_BlendPose* data0 = node_concat->info.spatialData[0];
@@ -543,7 +544,7 @@ a3boolean a3_BlendOp_Scale(a3_BlendNode* const node_scale, a3_BlendTree* const t
 {
 	if (!node_scale) return false;
 
-	a3_InitDataFromNodes(node_scale, tree, 2, 1);
+	a3_InitDataFromNodes(node_scale, tree, hierarchyIndex, 2, 1);
 
 	a3_BlendPose* const data_out = &(node_scale->result);
 	const a3_BlendPose* data0 = node_scale->info.spatialData[0];
@@ -560,9 +561,9 @@ a3boolean a3_BlendOp_Scale(a3_BlendNode* const node_scale, a3_BlendTree* const t
 // 1st Param : Blend Num, 2nd - 4th Param : Blend Threshold
 a3boolean a3_BlendOp_Blend_3(a3_BlendNode* const node_blend, a3_BlendTree* const tree, a3ui32 hierarchyIndex)
 {
-	a3_InitDataFromNodes(node_blend, tree, 3, 4);
+	a3_InitDataFromNodes(node_blend, tree, hierarchyIndex, 3, 4);
 
-	if (a3_BlendParamsSequential(node_blend->info.paramData, 1, 3))
+	if (!a3_BlendParamsSequential(node_blend->info.paramData, 1, 3))
 	{
 		return false;
 	}
@@ -578,18 +579,18 @@ a3boolean a3_BlendOp_Blend_3(a3_BlendNode* const node_blend, a3_BlendTree* const
 	if (param <= *(node_blend->info.paramData[1])) // Check if param below lowest threshold
 	{
 		portionBetween = 0;
+		pose0 = node_blend->info.spatialData[0];
+		pose1 = node_blend->info.spatialData[1];
+	}
+	else if (param >= *(node_blend->info.paramData[3])) // Check if param above highest threshold
+	{
+		portionBetween = 1;
 		pose0 = node_blend->info.spatialData[1];
 		pose1 = node_blend->info.spatialData[2];
 	}
-	else if (param >= *(node_blend->info.paramData[4])) // Check if param above highest threshold
-	{
-		portionBetween = 1;
-		pose0 = node_blend->info.spatialData[2];
-		pose1 = node_blend->info.spatialData[3];
-	}
 	else // Calculate where it is between thresholds
 	{
-		for (a3ui32 i = 2; i <= 4; i++)
+		for (a3ui32 i = 2; i <= 3; i++)
 		{
 			// Check if below threshold, since thresholds are in order this means it is between this and previous one
 			if (param <= *(node_blend->info.paramData[i]))
@@ -600,13 +601,18 @@ a3boolean a3_BlendOp_Blend_3(a3_BlendNode* const node_blend, a3_BlendTree* const
 
 				pose0 = node_blend->info.spatialData[i - 2];
 				pose1 = node_blend->info.spatialData[i - 1];
-			
-				portionBetween = (param - threshold0) / (threshold1 - threshold0);
+
+				portionBetween = 1 - ((threshold1 - param) / (threshold1 - threshold0));
+
+				break;
 			}
 		}
 	}
 
+	printf("%f\n", portionBetween);
+
 	a3_BlendNode calcNode;
+	a3_InitBlendTreeNodeInfoToEmpty(&(calcNode.info));
 
 	calcNode.info.spatialData[0] = pose0;
 	calcNode.info.spatialData[1] = pose1;
@@ -623,7 +629,7 @@ a3boolean a3_BlendOp_Blend_3(a3_BlendNode* const node_blend, a3_BlendTree* const
 // MiscData: 0 = Clip Controller, 1 = Hierarchy Pose Group
 a3boolean a3_BlendOp_EvaluateClipController(a3_BlendNode* const node_eval, a3_BlendTree* const tree, a3ui32 hierarchyIndex)
 {
-	a3_InitDataFromNodes(node_eval, tree, 0, 0);
+	a3_InitDataFromNodes(node_eval, tree, hierarchyIndex, 0, 0);
 
 	a3_ClipController* ctrl = (a3_ClipController*) node_eval->info.miscData[0];
 	a3_HierarchyPoseGroup* poseGroup = (a3_HierarchyPoseGroup*) node_eval->info.miscData[1];
@@ -633,9 +639,11 @@ a3boolean a3_BlendOp_EvaluateClipController(a3_BlendNode* const node_eval, a3_Bl
 	a3_HierarchyPose* pose0 = poseGroup->hpose + ctrl->clipPool->keyframe[ctrl->keyframeIndex].sampleIndex0;
 	a3_HierarchyPose* pose1 = poseGroup->hpose + ctrl->clipPool->keyframe[ctrl->keyframeIndex].sampleIndex1;
 
+	a3_BlendParam keyframeParam = (a3real) ctrl->keyframeParam;
+
 	node_eval->info.spatialData[0] = pose0->pose + hierarchyIndex;
 	node_eval->info.spatialData[1] = pose1->pose + hierarchyIndex;
-	node_eval->info.paramData[0] = &(ctrl->keyframeParam);
+	node_eval->info.paramData[0] = &keyframeParam;
 
 	a3_BlendOp_Lerp(node_eval, tree, hierarchyIndex);
 

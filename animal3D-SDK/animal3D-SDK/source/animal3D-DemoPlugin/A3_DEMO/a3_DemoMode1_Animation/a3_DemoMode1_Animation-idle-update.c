@@ -505,6 +505,8 @@ void a3handleLocomotionInput(a3_DemoState* demoState, a3_DemoMode1_Animation* de
 	demoMode->ctrlNode->translate = (a3vec4){ posResult.x, posResult.y, 0, demoMode->ctrlNode->translate.w };
 	demoMode->ctrlNode->rotate = (a3vec4){ 0, 0, rotResult, demoMode->ctrlNode->translate.w };
 
+	a3vec2 vel = demoMode->ctrlVelocity;
+	demoMode->ctrlVelocityMagnitude = a3sqrt((vel.x * vel.x) + (vel.y * vel.y));
 }
 
 void a3animation_update_sceneGraph(a3_DemoMode1_Animation* demoMode, a3f64 const dt)
@@ -535,7 +537,7 @@ void a3animation_update_sceneGraph(a3_DemoMode1_Animation* demoMode, a3f64 const
 
 void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode, a3f64 const dt)
 {
-	//a3_HierarchyState* activeHS = demoMode->hierarchyState_skel + 1, * baseHS = demoMode->hierarchyState_skel;
+	a3_HierarchyState* activeHS = demoMode->hierarchyState_skel + 1, * baseHS = demoMode->hierarchyState_skel;
 
 	////printf("Movement: (%f, %f)   Rotate: (%f, %f)\n", demoMode->axis_l[0], demoMode->axis_l[1], demoMode->axis_r[0], demoMode->axis_r[1]);
 
@@ -649,28 +651,28 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		a3clipControllerUpdate(demoMode->walkClipCtrl, dt);
 		a3clipControllerUpdate(demoMode->runClipCtrl , dt);
 
-		a3_HierarchyPose* pose0C0 = demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[demoMode->clipCtrlA->keyframeIndex].sampleIndex0;
-		a3_HierarchyPose* pose1C0 = demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[demoMode->clipCtrlA->keyframeIndex].sampleIndex1;
-		a3_HierarchyPose* pose0C1 = demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[demoMode->clipCtrlB->keyframeIndex].sampleIndex0;
-		a3_HierarchyPose* pose1C1 = demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[demoMode->clipCtrlB->keyframeIndex].sampleIndex1;
+		//a3_HierarchyPose* pose0C0 = demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[demoMode->clipCtrlA->keyframeIndex].sampleIndex0;
+		//a3_HierarchyPose* pose1C0 = demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[demoMode->clipCtrlA->keyframeIndex].sampleIndex1;
+		//a3_HierarchyPose* pose0C1 = demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[demoMode->clipCtrlB->keyframeIndex].sampleIndex0;
+		//a3_HierarchyPose* pose1C1 = demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[demoMode->clipCtrlB->keyframeIndex].sampleIndex1;
 
-		// Load params for interpolating clip controller poses
-		demoMode->blendTree.root->dataNodes[0]->param[0] = (a3real*)&(demoMode->clipCtrlA->keyframeParam);
-		demoMode->blendTree.root->dataNodes[1]->param[0] = (a3real*)&(demoMode->clipCtrlB->keyframeParam);
+		//// Load params for interpolating clip controller poses
+		//demoMode->blendTree.root->dataNodes[0]->param[0] = (a3real*)&(demoMode->clipCtrlA->keyframeParam);
+		//demoMode->blendTree.root->dataNodes[1]->param[0] = (a3real*)&(demoMode->clipCtrlB->keyframeParam);
 
 		// Loop through each spatial pose and run blend tree
 		for (a3ui32 i = 0; i < demoMode->hierarchy_skel->numNodes; i++)
 		{
-			demoMode->blendTree.root->dataNodes[0]->spatialData[0] = pose0C0->pose + i;
+			/*demoMode->blendTree.root->dataNodes[0]->spatialData[0] = pose0C0->pose + i;
 			demoMode->blendTree.root->dataNodes[0]->spatialData[1] = pose1C0->pose + i;
 
 			demoMode->blendTree.root->dataNodes[1]->spatialData[0] = pose0C1->pose + i;
-			demoMode->blendTree.root->dataNodes[1]->spatialData[1] = pose1C1->pose + i;
+			demoMode->blendTree.root->dataNodes[1]->spatialData[1] = pose1C1->pose + i;*/
 
 			//demoMode->blendTree.root->spatialData[0] = pose0->pose + i;
 			//demoMode->blendTree.root->spatialData[1] = pose1->pose + i;
 
-			activeHS->animPose[0].pose[i] = a3_GetNodeResult(demoMode->blendTree.root, i);
+			activeHS->animPose[0].pose[i] = a3_GetBlendNodeResult(demoMode->blendTree.root, &(demoMode->blendTree), i);
 		}
 		// End handle blend tree
 
