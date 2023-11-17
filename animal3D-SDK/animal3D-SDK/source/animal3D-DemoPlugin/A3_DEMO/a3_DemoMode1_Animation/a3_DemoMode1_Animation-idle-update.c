@@ -469,7 +469,7 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 			// right foot effector
 			sceneObject = demoMode->obj_skeleton_footEffector_r_ctrl;
 			a3real4Real4x4Product(controlLocator_rightFootEffector.v, controlToSkeleton.m,
-				demoMode->sceneGraphState->localSpace->pose[sceneObject->sceneGraphIndex].transformMat.v3.v); 
+				demoMode->sceneGraphState->localSpace->pose[sceneObject->sceneGraphIndex].transformMat.v3.v);
 
 			// right foot
 			j = j_rightFoot = a3hierarchyGetNodeIndex(activeHS->hierarchy, "mixamorig:RightFoot");

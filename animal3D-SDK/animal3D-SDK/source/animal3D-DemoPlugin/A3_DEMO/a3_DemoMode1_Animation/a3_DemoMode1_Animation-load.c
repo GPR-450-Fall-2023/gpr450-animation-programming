@@ -89,7 +89,7 @@ void a3animation_load_resetEffectors(a3_DemoMode1_Animation* demoMode,
 
 	// right knee constraint
 	// position in front of knee
-	j = a3hierarchyGetNodeIndex(demoMode->hierarchy_skel, "mixamorig:RightUpLeg");
+	j = a3hierarchyGetNodeIndex(demoMode->hierarchy_skel, "mixamorig:RightLeg");
 	sceneObject = demoMode->obj_skeleton_kneeConstraint_r_ctrl;
 	a3real4Real4x4Product(controlLocator.v, skeletonToControl.m,
 		hierarchyState->objectSpace->pose[j].transformMat.v3.v);
@@ -101,7 +101,7 @@ void a3animation_load_resetEffectors(a3_DemoMode1_Animation* demoMode,
 
 	// left knee constraint
 	// position in front of knee
-	j = a3hierarchyGetNodeIndex(demoMode->hierarchy_skel, "mixamorig:LeftUpLeg");
+	j = a3hierarchyGetNodeIndex(demoMode->hierarchy_skel, "mixamorig:LeftLeg");
 	sceneObject = demoMode->obj_skeleton_kneeConstraint_l_ctrl;
 	a3real4Real4x4Product(controlLocator.v, skeletonToControl.m,
 		hierarchyState->objectSpace->pose[j].transformMat.v3.v);
@@ -126,7 +126,7 @@ void a3animation_load_resetEffectors(a3_DemoMode1_Animation* demoMode,
 	// left foot effector
 	// position on foot ball
 	j = a3hierarchyGetNodeIndex(demoMode->hierarchy_skel, "mixamorig:LeftFoot");
-	sceneObject = demoMode->obj_skeleton_footEffector_r_ctrl;
+	sceneObject = demoMode->obj_skeleton_footEffector_l_ctrl;
 	a3real4Real4x4Product(controlLocator.v, skeletonToControl.m,
 		hierarchyState->objectSpace->pose[j].transformMat.v3.v);
 	sceneObject->position.x = controlLocator.x;

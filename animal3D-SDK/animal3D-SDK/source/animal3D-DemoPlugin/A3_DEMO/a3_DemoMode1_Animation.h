@@ -219,10 +219,10 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 					obj_skeleton_neckLookat_ctrl[1],
 					obj_skeleton_wristEffector_r_ctrl[1],
 					obj_skeleton_wristConstraint_r_ctrl[1],
-					obj_skeleton_footEffector_r_ctrl[1],
-					obj_skeleton_footEffector_l_ctrl[1],
 					obj_skeleton_kneeConstraint_r_ctrl[1],
 					obj_skeleton_kneeConstraint_l_ctrl[1],
+					obj_skeleton_footEffector_r_ctrl[1],
+					obj_skeleton_footEffector_l_ctrl[1],
 					obj_skeleton[1];
 			};
 		};
