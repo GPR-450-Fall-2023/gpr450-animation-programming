@@ -436,6 +436,15 @@ void a3handleLocomotionInput(a3_DemoState* demoState, a3_DemoMode1_Animation* de
 	demoMode->ctrlInputsRegistered = posInput.x != 0 || posInput.y != 0 || rotInput != 0;
 
 
+	// Make move input local to player direction
+	// Rotate input by rotation
+	
+	a3vec2 preRotatePosInput = posInput;
+	a3real startRot = demoMode->ctrlNode->rotate.z;
+	posInput.x = preRotatePosInput.x * a3cosd(startRot) - preRotatePosInput.y * a3sind(startRot);
+	posInput.y = preRotatePosInput.x * a3sind(startRot) + preRotatePosInput.y * a3cosd(startRot);
+
+
 	a3vec2 posResult = { demoMode->ctrlNode->translate.x, demoMode->ctrlNode->translate.y };
 	a3real rotResult = { demoMode->ctrlNode->rotate.z };
 
@@ -544,7 +553,9 @@ void a3handleLocomotionInput(a3_DemoState* demoState, a3_DemoMode1_Animation* de
 	// Make sure rotation is between 0 and 360 degrees
 	rotResult = fmodf(rotResult, 360.0f);
 
-	demoMode->ctrlNode->translate = (a3vec4){ posResult.x, posResult.y, 0, demoMode->ctrlNode->translate.w };
+
+	//demoMode->ctrlNode->translate = (a3vec4){ posResult.x, posResult.y, 0, demoMode->ctrlNode->translate.w };
+	a3spatialPoseSetTranslation(demoMode->ctrlNode, posResult.x, posResult.y, demoMode->ctrlNode->translate.z);
 	demoMode->ctrlNode->rotate = (a3vec4){ 0, 0, rotResult, demoMode->ctrlNode->translate.w };
 
 	a3vec2 vel = demoMode->ctrlVelocity;
