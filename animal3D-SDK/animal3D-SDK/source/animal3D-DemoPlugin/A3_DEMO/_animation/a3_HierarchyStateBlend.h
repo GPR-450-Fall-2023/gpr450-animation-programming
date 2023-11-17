@@ -46,9 +46,9 @@ extern "C"
 // Blend Enums
 enum // Max array sizes for blend data and params
 {
-	a3_blend_data_max = 16,
-	a3_blend_param_max = 16,
-	a3_blend_tree_variable_max = 16
+	a3_blend_spatial_data_max = 16,
+	a3_blend_param_data_max = 16,
+	a3_blend_misc_data_max = 16
 };
 
 
@@ -70,17 +70,18 @@ struct a3_BlendTree;
 
 // Function delegate for blend operation
 // Returns -1 for error, 1 for success
-typedef a3boolean(*a3_BlendOp)(struct a3_BlendNode* node, struct a3_BlendTree* tree);
-typedef a3boolean(*a3_ParamOp)(struct a3_ParamNode* node, struct a3_BlendTree* tree);
+typedef a3boolean(*a3_BlendOp)(struct a3_BlendNode* node, struct a3_BlendTree* tree, a3ui32 hierarchyIndex);
+typedef a3boolean(*a3_ParamOp)(struct a3_ParamNode* node, struct a3_BlendTree* tree, a3ui32 hierarchyIndex);
 
 
 typedef struct a3_BlendTreeNodeInfo
 {
-	struct a3_BlendNode* spatialDataNodes[a3_blend_data_max];
-	struct a3_ParamNode* paramDataNodes[a3_blend_param_max];
+	struct a3_BlendNode* spatialDataNodes[a3_blend_spatial_data_max];
+	struct a3_ParamNode* paramDataNodes[a3_blend_param_data_max];
 
-	a3_BlendPose* spatialData[a3_blend_data_max];
-	a3_BlendParam* paramData[a3_blend_param_max];
+	a3_BlendPose* spatialData[a3_blend_spatial_data_max];
+	a3_BlendParam* paramData[a3_blend_param_data_max];
+	void* miscData[a3_blend_misc_data_max];
 
 } a3_BlendTreeNodeInfo;
 
@@ -374,7 +375,7 @@ a3real a3smoothStep(a3real x);
 
 // Blend Tree Functions
 //-----------------------------------------------------------------------------
-void a3_InitBlendTreeNodeInfo(a3_BlendTreeNodeInfo* info);
+void a3_InitBlendTreeNodeInfoToEmpty(a3_BlendTreeNodeInfo* info);
 a3_BlendNode* a3_CreateBlendNode(a3_BlendOp blendOperation);
 a3_ParamNode* a3_CreateParamNode(a3_ParamOp paramOperation);
 
@@ -385,17 +386,18 @@ a3_ParamNode* a3_CreateParamNode(a3_ParamOp paramOperation);
 a3boolean a3_InitDataFromNodes(a3_BlendNode* node, a3_BlendTree* tree, a3ui32 numBlendData, a3ui32 numParamData);
 
 // Returns result of node's blend operation
-a3_BlendPose a3_GetBlendNodeResult(a3_BlendNode* node, a3_BlendTree* const tree);
+a3_BlendPose a3_GetBlendNodeResult(a3_BlendNode* node, a3_BlendTree* const tree, a3ui32 hierarchyIndex);
 
 // Blend Operations
-a3boolean a3_BlendOp_Identity(a3_BlendNode* const node_identity, a3_BlendTree* const tree);
-a3boolean a3_BlendOp_Lerp(a3_BlendNode* const node_lerp, a3_BlendTree* const tree);
-a3boolean a3_BlendOp_Concat(a3_BlendNode* const node_concat, a3_BlendTree* const tree);
-a3boolean a3_BlendOp_Scale(a3_BlendNode* const node_scale, a3_BlendTree* const tree);
-a3boolean a3_BlendOp_Blend_3(a3_BlendNode* const node_blend, a3_BlendTree* const tree);
+a3boolean a3_BlendOp_Identity(a3_BlendNode* const node_identity, a3_BlendTree* const tree, a3ui32 hierarchyIndex);
+a3boolean a3_BlendOp_Lerp(a3_BlendNode* const node_lerp, a3_BlendTree* const tree, a3ui32 hierarchyIndex);
+a3boolean a3_BlendOp_Concat(a3_BlendNode* const node_concat, a3_BlendTree* const tree, a3ui32 hierarchyIndex);
+a3boolean a3_BlendOp_Scale(a3_BlendNode* const node_scale, a3_BlendTree* const tree, a3ui32 hierarchyIndex);
+a3boolean a3_BlendOp_Blend_3(a3_BlendNode* const node_blend, a3_BlendTree* const tree, a3ui32 hierarchyIndex);
+a3boolean a3_BlendOp_EvaluateClipController(a3_BlendNode* const node_eval, a3_BlendTree* const tree, a3ui32 hierarchyIndex);
 
 // Param Operations
-a3boolean a3_ParamOp_Identity(a3_ParamNode* const node_identity, a3_BlendTree* const tree);
+a3boolean a3_ParamOp_Identity(a3_ParamNode* const node_identity, a3_BlendTree* const tree, a3ui32 hierarchyIndex);
 
 
 // Per-channel blending (just my notes -aster)

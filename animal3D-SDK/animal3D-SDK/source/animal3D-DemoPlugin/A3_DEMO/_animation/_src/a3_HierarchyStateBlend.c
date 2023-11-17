@@ -328,18 +328,23 @@ a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, a3ui32* triCount
 //-------------------------------------------
 
 
-void a3_InitBlendTreeNodeInfo(a3_BlendTreeNodeInfo* info)
+void a3_InitBlendTreeNodeInfoToEmpty(a3_BlendTreeNodeInfo* info)
 {
-	for (a3ui32 i = 0; i < a3_blend_data_max; i++)
+	for (a3ui32 i = 0; i < a3_blend_spatial_data_max; i++)
 	{
 		info->spatialData[i] = NULL;
 		info->spatialDataNodes[i] = NULL;
 	}
 
-	for (a3ui32 i = 0; i < a3_blend_param_max; i++)
+	for (a3ui32 i = 0; i < a3_blend_param_data_max; i++)
 	{
 		info->paramData[i] = NULL;
 		info->paramDataNodes[i] = NULL;
+	}
+
+	for (a3ui32 i = 0; i < a3_blend_misc_data_max; i++)
+	{
+		info->miscData[i] = NULL;
 	}
 }
 
@@ -350,7 +355,7 @@ a3_BlendNode* a3_CreateBlendNode(a3_BlendOp blendOperation)
 
 	if (newNode == NULL) return newNode;
 
-	a3_InitBlendTreeNodeInfo(&(newNode->info));
+	a3_InitBlendTreeNodeInfoToEmpty(&(newNode->info));
 
 	newNode->blendOperation = blendOperation;
 
@@ -364,7 +369,7 @@ a3_ParamNode* a3_CreateParamNode(a3_ParamOp paramOperation)
 
 	if (newNode == NULL) return newNode;
 
-	a3_InitBlendTreeNodeInfo(&(newNode->info));
+	a3_InitBlendTreeNodeInfoToEmpty(&(newNode->info));
 
 	newNode->paramOperation = paramOperation;
 
@@ -430,9 +435,9 @@ a3boolean a3_InitDataFromNodes(a3_BlendNode* node_out, a3_BlendTree* tree, a3ui3
 }
 
 
-a3_BlendPose a3_GetBlendNodeResult(a3_BlendNode* node, a3_BlendTree* tree)
+a3_BlendPose a3_GetBlendNodeResult(a3_BlendNode* node, a3_BlendTree* tree, a3ui32 hierarchyIndex)
 {
-	node->blendOperation(node, tree);
+	node->blendOperation(node, tree, hierarchyIndex);
 	return node->result;
 }
 
@@ -464,7 +469,7 @@ a3boolean a3_BlendParamsSequential(a3_BlendParam* params, a3ui32 startIndex, a3u
 
 // BLEND OPERATIONS ------------------------------------------------------------------------------- 
 
-a3boolean a3_BlendOp_Identity(a3_BlendNode* const node_identity, a3_BlendTree* const tree)
+a3boolean a3_BlendOp_Identity(a3_BlendNode* const node_identity, a3_BlendTree* const tree, a3ui32 hierarchyIndex)
 {
 	node_identity->result = *node_identity->info.spatialData[0];
 	return true;
@@ -501,7 +506,7 @@ a3boolean a3_BlendOp_Identity(a3_BlendNode* const node_identity, a3_BlendTree* c
 //}
 
 
-a3boolean a3_BlendOp_Lerp(a3_BlendNode* const node_lerp, a3_BlendTree* const tree)
+a3boolean a3_BlendOp_Lerp(a3_BlendNode* const node_lerp, a3_BlendTree* const tree, a3ui32 hierarchyIndex)
 {
 	if (!node_lerp) return false;
 
@@ -518,7 +523,7 @@ a3boolean a3_BlendOp_Lerp(a3_BlendNode* const node_lerp, a3_BlendTree* const tre
 }
 
 
-a3boolean a3_BlendOp_Concat(a3_BlendNode* const node_concat, a3_BlendTree* const tree)
+a3boolean a3_BlendOp_Concat(a3_BlendNode* const node_concat, a3_BlendTree* const tree, a3ui32 hierarchyIndex)
 {
 	if (!node_concat) return false;
 
@@ -534,7 +539,7 @@ a3boolean a3_BlendOp_Concat(a3_BlendNode* const node_concat, a3_BlendTree* const
 }
 
 
-a3boolean a3_BlendOp_Scale(a3_BlendNode* const node_scale, a3_BlendTree* const tree)
+a3boolean a3_BlendOp_Scale(a3_BlendNode* const node_scale, a3_BlendTree* const tree, a3ui32 hierarchyIndex)
 {
 	if (!node_scale) return false;
 
@@ -553,7 +558,7 @@ a3boolean a3_BlendOp_Scale(a3_BlendNode* const node_scale, a3_BlendTree* const t
 // Note: Can definitely make this generic to handle n blend options, but need a way to store in node how many it should blend
 // Would love to add variables to blend tree, but not enough time
 // 1st Param : Blend Num, 2nd - 4th Param : Blend Threshold
-a3boolean a3_BlendOp_Blend_3(a3_BlendNode* const node_blend, a3_BlendTree* const tree)
+a3boolean a3_BlendOp_Blend_3(a3_BlendNode* const node_blend, a3_BlendTree* const tree, a3ui32 hierarchyIndex)
 {
 	a3_InitDataFromNodes(node_blend, tree, 3, 4);
 
@@ -607,9 +612,32 @@ a3boolean a3_BlendOp_Blend_3(a3_BlendNode* const node_blend, a3_BlendTree* const
 	calcNode.info.spatialData[1] = pose1;
 	calcNode.info.paramData[0] = &portionBetween;
 
-	a3_BlendOp_Lerp(&calcNode, tree);
+	a3_BlendOp_Lerp(&calcNode, tree, hierarchyIndex);
 
 	node_blend->result = calcNode.result;
+
+	return true;
+}
+
+
+// MiscData: 0 = Clip Controller, 1 = Hierarchy Pose Group
+a3boolean a3_BlendOp_EvaluateClipController(a3_BlendNode* const node_eval, a3_BlendTree* const tree, a3ui32 hierarchyIndex)
+{
+	a3_InitDataFromNodes(node_eval, tree, 0, 0);
+
+	a3_ClipController* ctrl = (a3_ClipController*) node_eval->info.miscData[0];
+	a3_HierarchyPoseGroup* poseGroup = (a3_HierarchyPoseGroup*) node_eval->info.miscData[1];
+
+	if (ctrl == NULL || poseGroup == NULL) return false;
+
+	a3_HierarchyPose* pose0 = poseGroup->hpose + ctrl->clipPool->keyframe[ctrl->keyframeIndex].sampleIndex0;
+	a3_HierarchyPose* pose1 = poseGroup->hpose + ctrl->clipPool->keyframe[ctrl->keyframeIndex].sampleIndex1;
+
+	node_eval->info.spatialData[0] = pose0->pose + hierarchyIndex;
+	node_eval->info.spatialData[1] = pose1->pose + hierarchyIndex;
+	node_eval->info.paramData[0] = &(ctrl->keyframeParam);
+
+	a3_BlendOp_Lerp(node_eval, tree, hierarchyIndex);
 
 	return true;
 }
@@ -618,7 +646,7 @@ a3boolean a3_BlendOp_Blend_3(a3_BlendNode* const node_blend, a3_BlendTree* const
 // PARAM OPERATIONS -------------------------------------------------------------------------------------
 
 
-a3boolean a3_ParamOp_Identity(a3_ParamNode* const node_identity, a3_BlendTree* const tree)
+a3boolean a3_ParamOp_Identity(a3_ParamNode* const node_identity, a3_BlendTree* const tree, a3ui32 hierarchyIndex)
 {
 	node_identity->result = *node_identity->info.paramData[0];
 	return true;

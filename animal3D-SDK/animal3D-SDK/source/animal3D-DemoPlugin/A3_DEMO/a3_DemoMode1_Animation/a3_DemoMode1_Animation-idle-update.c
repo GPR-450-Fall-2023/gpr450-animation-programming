@@ -649,8 +649,6 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		a3clipControllerUpdate(demoMode->walkClipCtrl, dt);
 		a3clipControllerUpdate(demoMode->runClipCtrl , dt);
 
-		a3_ClipController
-
 		a3_HierarchyPose* pose0C0 = demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[demoMode->clipCtrlA->keyframeIndex].sampleIndex0;
 		a3_HierarchyPose* pose1C0 = demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[demoMode->clipCtrlA->keyframeIndex].sampleIndex1;
 		a3_HierarchyPose* pose0C1 = demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[demoMode->clipCtrlB->keyframeIndex].sampleIndex0;
@@ -672,7 +670,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 			//demoMode->blendTree.root->spatialData[0] = pose0->pose + i;
 			//demoMode->blendTree.root->spatialData[1] = pose1->pose + i;
 
-			activeHS->animPose[0].pose[i] = a3_GetNodeResult(demoMode->blendTree.root);
+			activeHS->animPose[0].pose[i] = a3_GetNodeResult(demoMode->blendTree.root, i);
 		}
 		// End handle blend tree
 
