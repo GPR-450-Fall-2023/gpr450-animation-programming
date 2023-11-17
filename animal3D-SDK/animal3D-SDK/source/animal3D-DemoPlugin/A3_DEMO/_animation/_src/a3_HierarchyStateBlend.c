@@ -28,6 +28,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <assert.h>
 
 
 //-----------------------------------------------------------------------------
@@ -429,10 +430,35 @@ a3boolean a3_InitDataFromNodes(a3_BlendNode* node_out, a3_BlendTree* tree, a3ui3
 }
 
 
-a3_BlendData a3_GetBlendNodeResult(a3_BlendNode* node, a3_BlendTree* tree)
+a3_BlendPose a3_GetBlendNodeResult(a3_BlendNode* node, a3_BlendTree* tree)
 {
 	node->blendOperation(node, tree);
 	return node->result;
+}
+
+
+a3boolean a3_BlendParamsSequential(a3_BlendParam* params, a3ui32 startIndex, a3ui32 count)
+{
+	if (count <= 1) return true;
+	if (count <= 2) return params[0] <= params[1];
+
+	a3_BlendParam prev;
+	a3_BlendParam curr;
+	a3_BlendParam next;
+
+	for (a3ui32 i = startIndex + 1; i < startIndex + count - 1; i++)
+	{
+		prev = params[i - 1];
+		curr = params[i];
+		next = params[i + 1];
+
+		if (!(prev <= curr && curr <= next))
+		{
+			return false;
+		}
+	}
+
+	return true;
 }
 
 
@@ -479,12 +505,12 @@ a3boolean a3_BlendOp_Lerp(a3_BlendNode* const node_lerp, a3_BlendTree* const tre
 {
 	if (!node_lerp) return false;
 
-	a3_BlendData* const data_out = &(node_lerp->result);
+	a3_BlendPose* const data_out = &(node_lerp->result);
 
 	a3_InitDataFromNodes(node_lerp, tree, 2, 1);
 
-	const a3_BlendData* data0 = node_lerp->info.spatialData[0];
-	const a3_BlendData* data1 = node_lerp->info.spatialData[1];
+	const a3_BlendPose* data0 = node_lerp->info.spatialData[0];
+	const a3_BlendPose* data1 = node_lerp->info.spatialData[1];
 	const a3_BlendParam param = *(node_lerp->info.paramData[0]);
 
 	a3_SpatialPose* result = a3spatialPoseOpLERP(data_out, data0, data1, param);
@@ -498,9 +524,9 @@ a3boolean a3_BlendOp_Concat(a3_BlendNode* const node_concat, a3_BlendTree* const
 
 	a3_InitDataFromNodes(node_concat, tree, 2, 0);
 
-	a3_BlendData* const data_out = &(node_concat->result);
-	const a3_BlendData* data0 = node_concat->info.spatialData[0];
-	const a3_BlendData* data1 = node_concat->info.spatialData[1];
+	a3_BlendPose* const data_out = &(node_concat->result);
+	const a3_BlendPose* data0 = node_concat->info.spatialData[0];
+	const a3_BlendPose* data1 = node_concat->info.spatialData[1];
 
 	a3_SpatialPose* result = a3spatialPoseOpConcatenate(data_out, data0, data1);
 
@@ -514,13 +540,78 @@ a3boolean a3_BlendOp_Scale(a3_BlendNode* const node_scale, a3_BlendTree* const t
 
 	a3_InitDataFromNodes(node_scale, tree, 2, 1);
 
-	a3_BlendData* const data_out = &(node_scale->result);
-	const a3_BlendData* data0 = node_scale->info.spatialData[0];
+	a3_BlendPose* const data_out = &(node_scale->result);
+	const a3_BlendPose* data0 = node_scale->info.spatialData[0];
 	const a3_BlendParam param = *(node_scale->info.paramData[0]);
 
 	a3_SpatialPose* result = a3spatialPoseOpScale(data_out, data0, param);
 
 	return result == data_out;
+}
+
+
+// Note: Can definitely make this generic to handle n blend options, but need a way to store in node how many it should blend
+// Would love to add variables to blend tree, but not enough time
+// 1st Param : Blend Num, 2nd - 4th Param : Blend Threshold
+a3boolean a3_BlendOp_Blend_3(a3_BlendNode* const node_blend, a3_BlendTree* const tree)
+{
+	a3_InitDataFromNodes(node_blend, tree, 3, 4);
+
+	if (a3_BlendParamsSequential(node_blend->info.paramData, 1, 3))
+	{
+		return false;
+	}
+
+	a3_BlendParam param = *(node_blend->info.paramData[0]);
+
+	a3real portionBetween = 0;
+	
+	a3_BlendPose* pose0;
+	a3_BlendPose* pose1;
+
+	// Note: Spatial Data tied to threshold = Threshold index - 1
+	if (param <= *(node_blend->info.paramData[1])) // Check if param below lowest threshold
+	{
+		portionBetween = 0;
+		pose0 = node_blend->info.spatialData[1];
+		pose1 = node_blend->info.spatialData[2];
+	}
+	else if (param >= *(node_blend->info.paramData[4])) // Check if param above highest threshold
+	{
+		portionBetween = 1;
+		pose0 = node_blend->info.spatialData[2];
+		pose1 = node_blend->info.spatialData[3];
+	}
+	else // Calculate where it is between thresholds
+	{
+		for (a3ui32 i = 2; i <= 4; i++)
+		{
+			// Check if below threshold, since thresholds are in order this means it is between this and previous one
+			if (param <= *(node_blend->info.paramData[i]))
+			{
+				// Threshold0 will be a lower number
+				a3real threshold0 = *(node_blend->info.paramData[i - 1]);
+				a3real threshold1 = *(node_blend->info.paramData[i]);
+
+				pose0 = node_blend->info.spatialData[i - 2];
+				pose1 = node_blend->info.spatialData[i - 1];
+			
+				portionBetween = (param - threshold0) / (threshold1 - threshold0);
+			}
+		}
+	}
+
+	a3_BlendNode calcNode;
+
+	calcNode.info.spatialData[0] = pose0;
+	calcNode.info.spatialData[1] = pose1;
+	calcNode.info.paramData[0] = &portionBetween;
+
+	a3_BlendOp_Lerp(&calcNode, tree);
+
+	node_blend->result = calcNode.result;
+
+	return true;
 }
 
 

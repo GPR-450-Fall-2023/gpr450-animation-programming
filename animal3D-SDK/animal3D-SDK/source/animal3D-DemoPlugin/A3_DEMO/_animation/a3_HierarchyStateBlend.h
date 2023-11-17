@@ -60,7 +60,7 @@ typedef struct a3_ClipController a3_ClipController;
 
 // Blend Typedefs
 //typedef a3_Hierarchy a3_BlendTree; // Hierarchy of blend nodes // Not using this because not compatible with blend node
-typedef a3_SpatialPose a3_BlendData; // Data used in blend operations
+typedef a3_SpatialPose a3_BlendPose; // Data used in blend operations
 typedef a3real a3_BlendParam; // Params used in blend operations
 
 // Forward declare
@@ -79,7 +79,7 @@ typedef struct a3_BlendTreeNodeInfo
 	struct a3_BlendNode* spatialDataNodes[a3_blend_data_max];
 	struct a3_ParamNode* paramDataNodes[a3_blend_param_max];
 
-	a3_BlendData* spatialData[a3_blend_data_max];
+	a3_BlendPose* spatialData[a3_blend_data_max];
 	a3_BlendParam* paramData[a3_blend_param_max];
 
 } a3_BlendTreeNodeInfo;
@@ -89,7 +89,7 @@ typedef struct a3_BlendNode
 {
 	a3_BlendTreeNodeInfo info;
 
-	a3_BlendData result; // One thing that is physically there to store result
+	a3_BlendPose result; // One thing that is physically there to store result
 
 	a3_BlendOp blendOperation;
 
@@ -385,16 +385,18 @@ a3_ParamNode* a3_CreateParamNode(a3_ParamOp paramOperation);
 a3boolean a3_InitDataFromNodes(a3_BlendNode* node, a3_BlendTree* tree, a3ui32 numBlendData, a3ui32 numParamData);
 
 // Returns result of node's blend operation
-a3_BlendData a3_GetBlendNodeResult(a3_BlendNode* node, a3_BlendTree* const tree);
+a3_BlendPose a3_GetBlendNodeResult(a3_BlendNode* node, a3_BlendTree* const tree);
 
 // Blend Operations
 a3boolean a3_BlendOp_Identity(a3_BlendNode* const node_identity, a3_BlendTree* const tree);
 a3boolean a3_BlendOp_Lerp(a3_BlendNode* const node_lerp, a3_BlendTree* const tree);
 a3boolean a3_BlendOp_Concat(a3_BlendNode* const node_concat, a3_BlendTree* const tree);
 a3boolean a3_BlendOp_Scale(a3_BlendNode* const node_scale, a3_BlendTree* const tree);
+a3boolean a3_BlendOp_Blend_3(a3_BlendNode* const node_blend, a3_BlendTree* const tree);
 
 // Param Operations
 a3boolean a3_ParamOp_Identity(a3_ParamNode* const node_identity, a3_BlendTree* const tree);
+
 
 // Per-channel blending (just my notes -aster)
 // visual notes:

@@ -35,6 +35,43 @@
 
 //-----------------------------------------------------------------------------
 
+
+void a3animation_init_blend_tree(a3_DemoMode1_Animation* demoMode)
+{
+	{ // Simple clip blend tree
+
+		demoMode->idleBlendThreshold = 0;
+		demoMode->walkBlendThreshold = 2;
+		demoMode->runBlendThreshold = 4;
+
+		a3_BlendNode* blendPoseNode = a3_CreateBlendNode(a3_BlendOp_Blend_3);
+		blendPoseNode->info.paramData[0] = &(demoMode->ctrlVelocityMagnitude);
+		blendPoseNode->info.paramData[1] = &(demoMode->idleBlendThreshold);
+		blendPoseNode->info.paramData[2] = &(demoMode->walkBlendThreshold);
+		blendPoseNode->info.paramData[3] = &(demoMode->runBlendThreshold);
+
+		demoMode->blendTree.root = blendPoseNode;
+
+		//a3_BlendNode* combineLerpNode = a3_CreateBlendNode(a3_BlendOp_Lerp);
+		//a3_BlendNode* clipController0LerpNode = a3_CreateBlendNode(a3_BlendOp_Lerp);
+		//a3_BlendNode* clipController1LerpNode = a3_CreateBlendNode(a3_BlendOp_Lerp);
+
+		//combineLerpNode->info.spatialDataNodes[0] = clipController0LerpNode;
+		//combineLerpNode->info.spatialDataNodes[1] = clipController1LerpNode;
+
+		//demoMode->blendTreeLerpParam = .5;
+		//combineLerpNode->param[0] = &(demoMode->blendTreeLerpParam);
+
+		//demoMode->blendTree.root = combineLerpNode; // Just pass in root
+	}
+
+	{ // Test blend tree, just lerps between two poses
+		/*a3_BlendNode* combineLerpNode = a3_CreateBlendNode(a3_BlendOpLerp);
+		demoMode->blendTree.root = combineLerpNode;*/
+	}
+}
+
+
 void a3animation_load_resetEffectors(a3_DemoMode1_Animation* demoMode,
 	a3_HierarchyState* hierarchyState, a3_HierarchyPoseGroup const* poseGroup)
 {
@@ -84,6 +121,7 @@ void a3animation_load_resetEffectors(a3_DemoMode1_Animation* demoMode,
 	// right wrist base
 	//j = a3hierarchyGetNodeIndex(demoMode->hierarchy_skel, "mixamorig:RightArm");
 }
+
 
 // utility to load animation
 void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Animation* demoMode)
@@ -651,6 +689,7 @@ void a3animation_loadValidate(a3_DemoState* demoState, a3_DemoMode1_Animation* d
 	for (i = 0, j = sizeof(demoMode->hierarchyState_skel) / sizeof(a3_HierarchyState); i < j; ++i)
 		demoMode->hierarchyState_skel[i].hierarchy = demoMode->hierarchy_skel;
 }
+
 
 // Initialize ctrl node with data from skeleton scene object
 void a3animation_initCtrlNode(a3_DemoMode1_Animation* demoMode)

@@ -164,6 +164,12 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 		a3_ClipController clipCtrl[1], clipCtrlA[1], clipCtrlB[1];
 		a3_ClipPool clipPool[1];
 
+		// Blend tree
+		a3_BlendTree blendTree;
+
+		// Blend clip controllers
+		a3_ClipController idleClipCtrl[1], walkClipCtrl[1], runClipCtrl[1], jumpClipCtrl[1];
+
 		// skeletal animation
 		union {
 			a3_HierarchyState hierarchyState_skel[4];
@@ -198,6 +204,11 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 		a3_SpatialPose* ctrlNode; // Input node that will update obj_skeleton_ctrl with values every frame
 		a3vec2 ctrlVelocity;
 		a3real ctrlAngularVelocity;
+		a3real ctrlVelocityMagnitude;
+
+		a3real idleBlendThreshold;
+		a3real walkBlendThreshold;
+		a3real runBlendThreshold;
 
 		a3boolean ctrlInputsRegistered;
 
