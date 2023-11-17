@@ -613,20 +613,28 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		demoMode->clipPool[0].clip[idleClipIndex].transitionForward[0].parameters = demoMode;
 
 		demoMode->clipPool[0].clip[idleClipIndex].transitionReverse[0].clipTransitionBranch = &a3checkForInputBranchFunction;
-		demoMode->clipPool[0].clip[idleClipIndex].transitionReverse[0].flag = a3clip_playFlag | a3clip_reverseFlag | a3clip_terminusFlag | a3clip_overstepFlag | a3clip_branchFlag;
+		demoMode->clipPool[0].clip[idleClipIndex].transitionReverse[0].flag = a3clip_playFlag | a3clip_reverseFlag | a3clip_terminusFlag | a3clip_overstepFlag;
 		demoMode->clipPool[0].clip[idleClipIndex].transitionReverse[0].parameters = demoMode;
 
 
 		a3i32 walkClipIndex = a3clipGetIndexInPool(demoMode->clipPool, "xbot_walk_f");
 		demoMode->clipPool[0].clip[walkClipIndex].rootMotion = a3root_AllRot | a3root_YPosition;
 
-		demoMode->clipPool[0].clip[walkClipIndex].transitionForward[0].clipTransitionBranch = &a3checkForInputBranchFunction;
-		demoMode->clipPool[0].clip[walkClipIndex].transitionForward[0].flag = a3clip_playFlag | a3clip_overstepFlag | a3clip_branchFlag;
+		demoMode->clipPool[0].clip[walkClipIndex].transitionForward[0].flag = a3clip_playFlag | a3clip_overstepFlag;
 		demoMode->clipPool[0].clip[walkClipIndex].transitionForward[0].parameters = demoMode;
 
-		demoMode->clipPool[0].clip[walkClipIndex].transitionReverse[0].clipTransitionBranch = &a3checkForInputBranchFunction;
-		demoMode->clipPool[0].clip[walkClipIndex].transitionReverse[0].flag = a3clip_playFlag | a3clip_reverseFlag | a3clip_terminusFlag | a3clip_overstepFlag | a3clip_branchFlag;
+		demoMode->clipPool[0].clip[walkClipIndex].transitionReverse[0].flag = a3clip_playFlag | a3clip_reverseFlag | a3clip_terminusFlag | a3clip_overstepFlag;
 		demoMode->clipPool[0].clip[walkClipIndex].transitionReverse[0].parameters = demoMode;
+
+
+		a3i32 runClipIndex = a3clipGetIndexInPool(demoMode->clipPool, "xbot_run_f");
+		demoMode->clipPool[0].clip[runClipIndex].rootMotion = a3root_AllRot | a3root_YPosition;
+
+		demoMode->clipPool[0].clip[runClipIndex].transitionForward[0].flag = a3clip_playFlag | a3clip_overstepFlag;
+		demoMode->clipPool[0].clip[runClipIndex].transitionForward[0].parameters = demoMode;
+
+		demoMode->clipPool[0].clip[runClipIndex].transitionReverse[0].flag = a3clip_playFlag | a3clip_reverseFlag | a3clip_terminusFlag | a3clip_overstepFlag;
+		demoMode->clipPool[0].clip[runClipIndex].transitionReverse[0].parameters = demoMode;
 			
 
 
