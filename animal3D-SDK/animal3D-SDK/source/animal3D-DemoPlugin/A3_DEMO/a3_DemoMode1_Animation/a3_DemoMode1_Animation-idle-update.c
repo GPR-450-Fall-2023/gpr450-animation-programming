@@ -231,9 +231,9 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 
 		// need to properly transform joints to their parent frame and vice-versa
 		a3mat4 const controlToSkeleton = demoMode->sceneGraphState->localSpaceInv->pose[j].transformMat;
-		a3vec4 controlLocator_neckLookat, controlLocator_wristEffector, controlLocator_wristConstraint, controlLocator_wristBase;
-		a3mat4 jointTransform_neck = a3mat4_identity, jointTransform_wrist = a3mat4_identity, jointTransform_elbow = a3mat4_identity, jointTransform_shoulder = a3mat4_identity;
-		a3ui32 j_neck, j_wrist, j_elbow, j_shoulder;
+		a3vec4 controlLocator_neckLookat, controlLocator_wristEffector, controlLocator_wristConstraint, controlLocator_wristBase, controlLocator_rightKneeConstraint, controlLocator_leftKneeConstraint, controlLocator_rightFootEffector, controlLocator_leftFootEffector;
+		a3mat4 jointTransform_neck = a3mat4_identity, jointTransform_wrist = a3mat4_identity, jointTransform_elbow = a3mat4_identity, jointTransform_shoulder = a3mat4_identity, jointTransform_rightUpLeg = a3mat4_identity, jointTransform_leftUpLeg = a3mat4_identity, jointTransform_rightKnee = a3mat4_identity, jointTransform_leftKnee = a3mat4_identity, jointTransform_rightFoot = a3mat4_identity, jointTransform_leftFoot = a3mat4_identity;
+		a3ui32 j_neck, j_wrist, j_elbow, j_shoulder, j_rightUpLeg, j_leftUpLeg, j_rightKnee, j_rightFoot, j_leftKnee, j_leftFoot;
 
 		// NECK LOOK-AT
 		{
@@ -457,6 +457,80 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 			//a3spatialPoseOpDeconcatenate(&activeHS->animPose->pose[j_wrist],
 			//	&activeHS->localSpace->pose[j_wrist],
 			//	&baseHS->localSpace->pose[j_wrist]);
+		}
+
+		// FEET EFFECTORS (for unlevel ground) - aster
+		{
+			// hips
+			//j = j_hips = a3hierarchyGetNodeIndex(activeHS->hierarchy, "mixamorig:Hips");
+		//	jointTransform_hips = activeHS->objectSpace->pose[j].transformMat;
+
+			// right leg =========================================
+			// right foot effector
+			sceneObject = demoMode->obj_skeleton_footEffector_r_ctrl;
+			a3real4Real4x4Product(controlLocator_rightFootEffector.v, controlToSkeleton.m,
+				demoMode->sceneGraphState->localSpace->pose[sceneObject->sceneGraphIndex].transformMat.v3.v); 
+
+			// right foot
+			j = j_rightFoot = a3hierarchyGetNodeIndex(activeHS->hierarchy, "mixamorig:RightFoot");
+			jointTransform_rightFoot = activeHS->objectSpace->pose[j].transformMat;
+
+			// right knee
+			j = j_rightKnee = a3hierarchyGetNodeIndex(activeHS->hierarchy, "mixamorig:RightLeg");
+			jointTransform_rightKnee = activeHS->objectSpace->pose[j].transformMat;
+
+			// right knee constraint
+			sceneObject = demoMode->obj_skeleton_kneeConstraint_r_ctrl;
+			a3real4Real4x4Product(controlLocator_rightKneeConstraint.v, controlToSkeleton.m,
+				demoMode->sceneGraphState->localSpace->pose[sceneObject->sceneGraphIndex].transformMat.v3.v);
+
+			// right upper leg
+			j = j_rightUpLeg = a3hierarchyGetNodeIndex(activeHS->hierarchy, "mixamorig:RightUpLeg");
+			jointTransform_rightUpLeg = activeHS->objectSpace->pose[j].transformMat;
+			// ===================================================
+
+			// left leg ==========================================
+			// left foot effector
+			sceneObject = demoMode->obj_skeleton_footEffector_l_ctrl;
+			a3real4Real4x4Product(controlLocator_leftFootEffector.v, controlToSkeleton.m,
+				demoMode->sceneGraphState->localSpace->pose[sceneObject->sceneGraphIndex].transformMat.v3.v);
+
+			// left foot
+			j = j_leftFoot = a3hierarchyGetNodeIndex(activeHS->hierarchy, "mixamorig:LeftFoot");
+			jointTransform_leftFoot = activeHS->objectSpace->pose[j].transformMat;
+
+			// left knee
+			j = j_leftKnee = a3hierarchyGetNodeIndex(activeHS->hierarchy, "mixamorig:LeftLeg");
+			jointTransform_leftKnee = activeHS->objectSpace->pose[j].transformMat;
+
+			// left knee constraint
+			sceneObject = demoMode->obj_skeleton_kneeConstraint_l_ctrl;
+			a3real4Real4x4Product(controlLocator_leftKneeConstraint.v, controlToSkeleton.m,
+				demoMode->sceneGraphState->localSpace->pose[sceneObject->sceneGraphIndex].transformMat.v3.v);
+
+			// left upper leg
+			j = j_leftUpLeg = a3hierarchyGetNodeIndex(activeHS->hierarchy, "mixamorig:RightUpLeg");
+			jointTransform_leftUpLeg = activeHS->objectSpace->pose[j].transformMat;
+			// ===================================================
+
+			// based on the arms:
+			// ****TO-DO: 
+			// make raycast to find where the effectors should be placed based on the current foot position
+			// in this example, +Z is towards locator, +Y is up
+
+			// ****TO-DO: 
+			// solve positions and orientations for joints
+			// in this example, +X points away from child, +Y is normal
+			// 1) check if solution exists
+			//	-> get vector between base and end effector; if it extends max length, straighten limb
+			//	-> position of end effector's target is at the minimum possible distance along this vector
+
+			// ****TO-DO: 
+			// reassign resolved transforms to OBJECT-SPACE matrices
+			// work from root to leaf too get correct transformations
+			a3real4x4SetReal4x4(activeHS->objectSpace->pose[j_shoulder].transformMat.m, jointTransform_shoulder.m);
+			a3real4x4SetReal4x4(activeHS->objectSpace->pose[j_elbow].transformMat.m, jointTransform_elbow.m);
+			a3real4x4SetReal4x4(activeHS->objectSpace->pose[j_wrist].transformMat.m, jointTransform_wrist.m);
 		}
 	}
 }

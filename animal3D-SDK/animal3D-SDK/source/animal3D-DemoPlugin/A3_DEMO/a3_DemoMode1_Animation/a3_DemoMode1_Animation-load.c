@@ -83,6 +83,58 @@ void a3animation_load_resetEffectors(a3_DemoMode1_Animation* demoMode,
 
 	// right wrist base
 	//j = a3hierarchyGetNodeIndex(demoMode->hierarchy_skel, "mixamorig:RightArm");
+
+
+	// feet effectors (for unlevel ground)
+
+	// right knee constraint
+	// position in front of knee
+	j = a3hierarchyGetNodeIndex(demoMode->hierarchy_skel, "mixamorig:RightUpLeg");
+	sceneObject = demoMode->obj_skeleton_kneeConstraint_r_ctrl;
+	a3real4Real4x4Product(controlLocator.v, skeletonToControl.m,
+		hierarchyState->objectSpace->pose[j].transformMat.v3.v);
+	sceneObject->position.x = controlLocator.x;
+	sceneObject->position.y = controlLocator.y + a3real_half;
+	sceneObject->position.z = controlLocator.z;
+	sceneObject->scale.x = a3real_third;
+	sceneObject->scaleMode = 1;
+
+	// left knee constraint
+	// position in front of knee
+	j = a3hierarchyGetNodeIndex(demoMode->hierarchy_skel, "mixamorig:LeftUpLeg");
+	sceneObject = demoMode->obj_skeleton_kneeConstraint_l_ctrl;
+	a3real4Real4x4Product(controlLocator.v, skeletonToControl.m,
+		hierarchyState->objectSpace->pose[j].transformMat.v3.v);
+	sceneObject->position.x = controlLocator.x;
+	sceneObject->position.y = controlLocator.y + a3real_half;
+	sceneObject->position.z = controlLocator.z;
+	sceneObject->scale.x = a3real_third;
+	sceneObject->scaleMode = 1;
+
+	// right foot effector
+	// position on foot ball
+	j = a3hierarchyGetNodeIndex(demoMode->hierarchy_skel, "mixamorig:RightFoot");
+	sceneObject = demoMode->obj_skeleton_footEffector_r_ctrl;
+	a3real4Real4x4Product(controlLocator.v, skeletonToControl.m,
+		hierarchyState->objectSpace->pose[j].transformMat.v3.v);
+	sceneObject->position.x = controlLocator.x;
+	sceneObject->position.y = controlLocator.y;
+	sceneObject->position.z = controlLocator.z;
+	sceneObject->scale.x = a3real_third;
+	sceneObject->scaleMode = 1;
+
+	// left foot effector
+	// position on foot ball
+	j = a3hierarchyGetNodeIndex(demoMode->hierarchy_skel, "mixamorig:LeftFoot");
+	sceneObject = demoMode->obj_skeleton_footEffector_r_ctrl;
+	a3real4Real4x4Product(controlLocator.v, skeletonToControl.m,
+		hierarchyState->objectSpace->pose[j].transformMat.v3.v);
+	sceneObject->position.x = controlLocator.x;
+	sceneObject->position.y = controlLocator.y;
+	sceneObject->position.z = controlLocator.z;
+	sceneObject->scale.x = a3real_third;
+	sceneObject->scaleMode = 1;
+
 }
 
 // utility to load animation
@@ -131,7 +183,11 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		a3hierarchySetNode(demoMode->sceneGraph, 5, 4, "scene_skeleton_neckLookat_ctrl");
 		a3hierarchySetNode(demoMode->sceneGraph, 6, 4, "scene_skeleton_wristEff_r_ctrl");
 		a3hierarchySetNode(demoMode->sceneGraph, 7, 4, "scene_skeleton_wristCon_r_ctrl");
-		a3hierarchySetNode(demoMode->sceneGraph, 8, 4, "scene_skeleton");
+		a3hierarchySetNode(demoMode->sceneGraph, 8, 4, "scene_skeleton_kneeCon_r_ctrl");
+		a3hierarchySetNode(demoMode->sceneGraph, 9, 4, "scene_skeleton_kneeCon_l_ctrl");
+		a3hierarchySetNode(demoMode->sceneGraph, 10, 4, "scene_skeleton_legEff_r_ctrl");
+		a3hierarchySetNode(demoMode->sceneGraph, 11, 4, "scene_skeleton_legEff_l_ctrl");
+		a3hierarchySetNode(demoMode->sceneGraph, 12, 4, "scene_skeleton");
 
 	/*
 		// manually set up a skeleton
@@ -436,6 +492,10 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	demoMode->obj_skeleton_neckLookat_ctrl->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_skeleton_neckLookat_ctrl");
 	demoMode->obj_skeleton_wristEffector_r_ctrl->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_skeleton_wristEff_r_ctrl");
 	demoMode->obj_skeleton_wristConstraint_r_ctrl->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_skeleton_wristCon_r_ctrl");
+	demoMode->obj_skeleton_kneeConstraint_r_ctrl->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_skeleton_kneeCon_r_ctrl");
+	demoMode->obj_skeleton_kneeConstraint_l_ctrl->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_skeleton_kneeCon_l_ctrl");
+	demoMode->obj_skeleton_footEffector_r_ctrl->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_skeleton_legEff_r_ctrl");
+	demoMode->obj_skeleton_footEffector_l_ctrl->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_skeleton_legEff_l_ctrl");
 	demoMode->obj_skeleton->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_skeleton");
 
 	// scene graph state
@@ -603,7 +663,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		{
 			void a3animation_update_animation(a3_DemoMode1_Animation * demoMode, a3f64 const dt, a3boolean const updateIK);
 			void a3animation_update_sceneGraph(a3_DemoMode1_Animation * demoMode, a3f64 const dt);
-			for (p = 0; p < 3; ++p)
+			for (p = 0; p < 7; ++p)
 			{
 				a3animation_update_animation(demoMode, 0.0, 0);
 				a3animation_update_sceneGraph(demoMode, 0.0);
