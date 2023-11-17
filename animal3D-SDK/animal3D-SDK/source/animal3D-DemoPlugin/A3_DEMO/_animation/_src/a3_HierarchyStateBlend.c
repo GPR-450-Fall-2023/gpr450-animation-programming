@@ -571,6 +571,7 @@ a3boolean a3_BlendOp_Blend_3(a3_BlendNode* const node_blend, a3_BlendTree* const
 	a3_BlendParam param = *(node_blend->info.paramData[0]);
 
 	a3real portionBetween = 0;
+	a3ui32 indexChosen = 0; // Not used for functionality, just debug
 	
 	a3_BlendPose* pose0;
 	a3_BlendPose* pose1;
@@ -579,12 +580,14 @@ a3boolean a3_BlendOp_Blend_3(a3_BlendNode* const node_blend, a3_BlendTree* const
 	if (param <= *(node_blend->info.paramData[1])) // Check if param below lowest threshold
 	{
 		portionBetween = 0;
+		indexChosen = 1;
 		pose0 = node_blend->info.spatialData[0];
 		pose1 = node_blend->info.spatialData[1];
 	}
 	else if (param >= *(node_blend->info.paramData[3])) // Check if param above highest threshold
 	{
 		portionBetween = 1;
+		indexChosen = 3;
 		pose0 = node_blend->info.spatialData[1];
 		pose1 = node_blend->info.spatialData[2];
 	}
@@ -604,12 +607,12 @@ a3boolean a3_BlendOp_Blend_3(a3_BlendNode* const node_blend, a3_BlendTree* const
 
 				portionBetween = 1 - ((threshold1 - param) / (threshold1 - threshold0));
 
+				indexChosen = i - 1;
+
 				break;
 			}
 		}
 	}
-
-	printf("%f\n", portionBetween);
 
 	a3_BlendNode calcNode;
 	a3_InitBlendTreeNodeInfoToEmpty(&(calcNode.info));
