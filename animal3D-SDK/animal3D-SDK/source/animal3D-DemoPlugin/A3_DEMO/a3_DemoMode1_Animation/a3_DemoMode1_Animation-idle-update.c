@@ -236,12 +236,50 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 			// ****TO-DO: 
 			// make "look-at" matrix
 			// in this example, +Z is towards locator, +Y is up
+			a3real4x4 lookAt;
+			a3real4x4SetIdentity(lookAt);
+			a3real4x4 lookAtInv;
+			a3real4x4SetIdentity(lookAtInv);
+
+			a3real3 neckPos;
+			neckPos[0] = activeHS->objectSpace->pose[j].translate.x;
+			neckPos[1] = activeHS->objectSpace->pose[j].translate.y;
+			neckPos[2] = activeHS->objectSpace->pose[j].translate.z;
+
+			a3real3 targetPos;
+			targetPos[0] = demoMode->obj_skeleton_neckLookat_ctrl->position.x;
+			targetPos[1] = demoMode->obj_skeleton_neckLookat_ctrl->position.y;
+			targetPos[2] = demoMode->obj_skeleton_neckLookat_ctrl->position.z;
+
+			// subtract target from self to get forward vector
+			a3real3 relTargetPos;
+			relTargetPos[0] = targetPos[0];
+			relTargetPos[1] = targetPos[1];
+			relTargetPos[2] = targetPos[2];
+			a3real3Sub(relTargetPos, neckPos);
+			a3real3Normalize(relTargetPos);
+
+			// cross product forward vector with true up to get right vector
+			a3real3 up;
+			up[0] = 0;
+			up[1] = 1;
+			up[2] = 0;
+			a3real3 worldRight;
+			a3real3Cross(worldRight, relTargetPos, up);
+			a3real3Normalize(worldRight);
+
+			// cross product right vector with forward vector to get up vector
+			a3real3 worldUpVec;
+			a3real3Cross(worldUpVec, worldRight, relTargetPos);
+			a3real3Normalize(worldUpVec);
+
+			a3real4x4MakeLookAt(lookAt, lookAtInv, neckPos, targetPos, worldUpVec);
 
 			// ****TO-DO: 
 			// reassign resolved transforms to OBJECT-SPACE matrices
 			// resolve local and animation pose for affected joint
 			//	(instead of doing IK for whole skeleton when only one joint has changed)
-
+			a3real4x4SetReal4x4(activeHS->objectSpace->pose[j].transformMat.m, lookAt);
 		}
 
 		// RIGHT ARM REACH
