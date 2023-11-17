@@ -169,6 +169,7 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 		}
 		break;
 	case animation_ctrl_neckLookat:
+
 	case animation_ctrl_wristEffector_r:
 	case animation_ctrl_wristConstraint_r:
 		sceneObject = demoMode->obj_skeleton_ctrl + demoMode->ctrl_target - animation_ctrl_character;
