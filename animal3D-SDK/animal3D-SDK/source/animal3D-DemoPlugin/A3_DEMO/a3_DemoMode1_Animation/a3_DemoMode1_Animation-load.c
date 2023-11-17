@@ -572,10 +572,19 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_idle_f");//"xbot_idle_pistol");
 		a3clipControllerInit(demoMode->idleClipCtrl, "xbot_idleCtrl", demoMode->clipPool, j, rate, fps);
 
+
+
+
+		const a3real CYCLE_DURATION = 1.0f;
+
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_walk_f");//"xbot_idle_pistol");
+		float distributeTime = demoMode->clipPool[0].clip[j].keyframeCount / CYCLE_DURATION;
+		a3clipDistributeDuration(&(demoMode->clipPool[0]), j, distributeTime);
 		a3clipControllerInit(demoMode->walkClipCtrl, "xbot_walkCtrl", demoMode->clipPool, j, rate, fps);
 
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_run_f");//"xbot_idle_pistol");
+		distributeTime = demoMode->clipPool[0].clip[j].keyframeCount / CYCLE_DURATION;
+		a3clipDistributeDuration(&(demoMode->clipPool[0]), j, distributeTime);
 		a3clipControllerInit(demoMode->runClipCtrl, "xbot_runCtrl", demoMode->clipPool, j, rate, fps);
 
 		// finally set up hierarchy states
@@ -815,8 +824,8 @@ void a3animation_load(a3_DemoState const* demoState, a3_DemoMode1_Animation* dem
 
 	// setup
 	a3animation_init_animation(demoState, demoMode);
-	a3animation_initCtrlNode(demoMode);
 	a3animation_initBlendTree(demoMode);
+	a3animation_initCtrlNode(demoMode);
 }
 
 
