@@ -557,7 +557,7 @@ void a3handleLocomotionInput(a3_DemoState* demoState, a3_DemoMode1_Animation* de
 
 	//demoMode->ctrlNode->translate = (a3vec4){ posResult.x, posResult.y, 0, demoMode->ctrlNode->translate.w };
 	a3spatialPoseSetTranslation(demoMode->ctrlNode, posResult.x, posResult.y, demoMode->ctrlNode->translate.z);
-	demoMode->ctrlNode->rotate = (a3vec4){ 0, 0, rotResult, demoMode->ctrlNode->translate.w };
+	demoMode->ctrlNode->rotate = (a3vec4){ 0, 0, rotResult, demoMode->ctrlNode->rotate.w };
 
 	a3vec2 vel = demoMode->ctrlVelocity;
 	demoMode->ctrlVelocityMagnitude = a3sqrt((vel.x * vel.x) + (vel.y * vel.y));

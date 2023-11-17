@@ -685,9 +685,6 @@ a3boolean a3_BlendOp_BoolBranch(a3_BlendNode* const node_branch, a3_BlendTree* c
 // Misc Data: 0 = timeSinceJump, 1 = jumpLerpParam, 2 = isJumping, 3 = ctrlNode
 a3boolean a3_BlendOp_HandleJump(a3_BlendNode* const node_jump, a3_BlendTree* const tree, a3ui32 hierarchyIndex, a3real dt)
 {
-	// Parabola equation: (-4H/D^2)t^2 + (4H/D)t
-	// H = Max jump height, D = Max jump duration
-
 	a3_InitDataFromNodes(node_jump, tree, hierarchyIndex, dt, 1, 0);
 	node_jump->result = *(node_jump->info.spatialData[0]);
 	
@@ -714,13 +711,31 @@ a3boolean a3_BlendOp_HandleJump(a3_BlendNode* const node_jump, a3_BlendTree* con
 		return true;
 	}
 
-	//// Calculate jumpLerpParam
-	//if (timeSinceJump >= jumpFadeInTime)
-	//{
-	//	*jumpLerpParam = 
-	//}
+	// Calculate jumpLerpParam
+	if (*timeSinceJump < *jumpFadeInTime)
+	{
+		*jumpLerpParam = *timeSinceJump / *jumpFadeInTime;
+	}
+	else if (*jumpDuration - *timeSinceJump < *jumpFadeOutTime)
+	{
+		*jumpLerpParam = (*jumpDuration - *timeSinceJump) / *jumpFadeOutTime;
+	}
+	else
+	{
+		*jumpLerpParam = 1;
+	}
 
+	// Parabola equation: (-4H/D^2)t^2 + (4H/D)t
+	// H = Max jump height, D = Max jump duration
+	a3real a = (-4 * *jumpHeight) / (*jumpDuration * *jumpDuration);
+	a3real b = (4 * *jumpHeight) / *jumpDuration;
 
+	a3real firstComp = (a * *timeSinceJump * *timeSinceJump);
+	a3real secondComp = (b * *timeSinceJump);
+
+	ctrlNode->translate.z = firstComp + secondComp;
+
+	//printf("%f\n", ctrlNode->translate.z);
 
 	return true;
 }

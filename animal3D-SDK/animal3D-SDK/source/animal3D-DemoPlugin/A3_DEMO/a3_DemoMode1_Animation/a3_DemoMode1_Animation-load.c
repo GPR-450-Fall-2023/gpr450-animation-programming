@@ -46,38 +46,45 @@ void a3animation_initBlendTree(a3_DemoMode1_Animation* demoMode)
 		demoMode->runBlendThreshold = 4;
 		demoMode->isJumping = false;
 		demoMode->timeSinceJump = 0;
-		demoMode->jumpFadeInTime = .3f;
-		demoMode->jumpFadeOutTime = .3f;
+		demoMode->jumpFadeInTime = .8f;
+		demoMode->jumpFadeOutTime = .6f;
 		demoMode->jumpLerpParam = 0;
+		demoMode->jumpHeight = 5;
 		demoMode->jumpDuration = (a3real) demoMode->clipPool[0].clip[demoMode->jumpClipCtrl->clipIndex].duration_sec;
 
 		a3_BlendNode* jumpCCNode = a3_CreateBlendNode(a3_BlendOp_EvaluateClipController);
 		jumpCCNode->info.miscData[0] = demoMode->jumpClipCtrl;
 		jumpCCNode->info.miscData[1] = demoMode->hierarchyPoseGroup_skel;
 
-		a3_BlendNode* blendPoseNode = a3_CreateBlendNode(a3_BlendOp_Blend_3);
-		blendPoseNode->info.paramData[0] = &(demoMode->ctrlVelocityMagnitude);
-		blendPoseNode->info.paramData[1] = &(demoMode->idleBlendThreshold);
-		blendPoseNode->info.paramData[2] = &(demoMode->walkBlendThreshold);
-		blendPoseNode->info.paramData[3] = &(demoMode->runBlendThreshold);
+		a3_BlendNode* blendGroundPoseNode = a3_CreateBlendNode(a3_BlendOp_Blend_3);
+		blendGroundPoseNode->info.paramData[0] = &(demoMode->ctrlVelocityMagnitude);
+		blendGroundPoseNode->info.paramData[1] = &(demoMode->idleBlendThreshold);
+		blendGroundPoseNode->info.paramData[2] = &(demoMode->walkBlendThreshold);
+		blendGroundPoseNode->info.paramData[3] = &(demoMode->runBlendThreshold);
 
 		a3_BlendNode* idleCCNode = a3_CreateBlendNode(a3_BlendOp_EvaluateClipController);
 		idleCCNode->info.miscData[0] = demoMode->idleClipCtrl;
 		idleCCNode->info.miscData[1] = demoMode->hierarchyPoseGroup_skel;
 
-		blendPoseNode->info.spatialDataNodes[0] = idleCCNode;
+		blendGroundPoseNode->info.spatialDataNodes[0] = idleCCNode;
 
 		a3_BlendNode* walkCCNode = a3_CreateBlendNode(a3_BlendOp_EvaluateClipController);
 		walkCCNode->info.miscData[0] = demoMode->walkClipCtrl;
 		walkCCNode->info.miscData[1] = demoMode->hierarchyPoseGroup_skel;
 
-		blendPoseNode->info.spatialDataNodes[1] = walkCCNode;
+		blendGroundPoseNode->info.spatialDataNodes[1] = walkCCNode;
 
 		a3_BlendNode* runCCNode = a3_CreateBlendNode(a3_BlendOp_EvaluateClipController);
 		runCCNode->info.miscData[0] = demoMode->runClipCtrl;
 		runCCNode->info.miscData[1] = demoMode->hierarchyPoseGroup_skel;
 
-		blendPoseNode->info.spatialDataNodes[2] = runCCNode;
+		blendGroundPoseNode->info.spatialDataNodes[2] = runCCNode;
+		
+		// Lerps between ground and jump anims, allows for gradual transition
+		a3_BlendNode* jumpGroundLerpNode = a3_CreateBlendNode(a3_BlendOp_Lerp);
+		jumpGroundLerpNode->info.spatialDataNodes[0] = blendGroundPoseNode;
+		jumpGroundLerpNode->info.spatialDataNodes[1] = jumpCCNode;
+		jumpGroundLerpNode->info.paramData[0] = &(demoMode->jumpLerpParam);
 
 		a3_BlendNode* handleJumpNode = a3_CreateBlendNode(a3_BlendOp_HandleJump);
 		handleJumpNode->info.paramData[0] = &(demoMode->jumpDuration);
@@ -87,13 +94,13 @@ void a3animation_initBlendTree(a3_DemoMode1_Animation* demoMode)
 		handleJumpNode->info.miscData[0] = &(demoMode->timeSinceJump);
 		handleJumpNode->info.miscData[1] = &(demoMode->jumpLerpParam);
 		handleJumpNode->info.miscData[2] = &(demoMode->isJumping);
-		handleJumpNode->info.miscData[3] = &(demoMode->ctrlNode);
-		handleJumpNode->info.spatialDataNodes[0] = jumpCCNode;
+		handleJumpNode->info.miscData[3] = demoMode->ctrlNode;
+		handleJumpNode->info.spatialDataNodes[0] = jumpGroundLerpNode;
 
 		a3_BlendNode* jumpBranchNode = a3_CreateBlendNode(a3_BlendOp_BoolBranch);
 		jumpBranchNode->info.miscData[0] = &(demoMode->isJumping);
 		jumpBranchNode->info.spatialDataNodes[0] = handleJumpNode; // True, we are jumping
-		jumpBranchNode->info.spatialDataNodes[1] = blendPoseNode; // False, we are on ground
+		jumpBranchNode->info.spatialDataNodes[1] = blendGroundPoseNode; // False, we are on ground
 
 		demoMode->blendTree.root = jumpBranchNode;
 
@@ -867,8 +874,8 @@ void a3animation_load(a3_DemoState const* demoState, a3_DemoMode1_Animation* dem
 
 	// setup
 	a3animation_init_animation(demoState, demoMode);
-	a3animation_initBlendTree(demoMode);
 	a3animation_initCtrlNode(demoMode);
+	a3animation_initBlendTree(demoMode);
 }
 
 
