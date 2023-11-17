@@ -654,6 +654,33 @@ a3boolean a3_BlendOp_EvaluateClipController(a3_BlendNode* const node_eval, a3_Bl
 }
 
 
+// If condition is true, will run node at 0, else will run node at 1
+a3boolean a3_BlendOp_BoolBranch(a3_BlendNode* const node_branch, a3_BlendTree* const tree, a3ui32 hierarchyIndex, a3real dt)
+{
+	a3boolean* condition = node_branch->info.miscData[0];
+
+	if (condition == NULL) return false;
+
+	a3ui32 index = *condition ? 0 : 1;
+
+	a3_BlendNode* dataNode = node_branch->info.spatialDataNodes[index];
+
+	if (dataNode != NULL)
+	{
+		a3boolean result = dataNode->blendOperation(dataNode, tree, hierarchyIndex, dt);
+
+		if (result == true) // Node successfully run
+		{
+			node_branch->result = dataNode->result;
+			return true;
+		}
+	}
+
+	node_branch->result = *(node_branch->info.spatialData[index]);
+	return true;
+}
+
+
 // PARAM OPERATIONS -------------------------------------------------------------------------------------
 
 

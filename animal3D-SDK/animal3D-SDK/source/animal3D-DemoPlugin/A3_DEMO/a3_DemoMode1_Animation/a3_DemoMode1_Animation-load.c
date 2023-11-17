@@ -46,8 +46,8 @@ void a3animation_initBlendTree(a3_DemoMode1_Animation* demoMode)
 		demoMode->runBlendThreshold = 4;
 		demoMode->isJumping = false;
 		demoMode->timeSinceJump = 0;
-		demoMode->jumpFadeTimes = (a3vec2){ .3, .3 };
-		demoMode->jumpDuration = a3clipCalculateDuration(&(demoMode->clipPool[0]), demoMode->jumpClipCtrl->clipIndex, demoMode->jumpClipCtrl->playback_stepPerSec);
+		demoMode->jumpFadeTimes = (a3vec2){ .3f, .3f };
+		demoMode->jumpDuration = (a3real) demoMode->clipPool[0].clip[demoMode->jumpClipCtrl->clipIndex].duration_sec;
 
 		a3_BlendNode* blendPoseNode = a3_CreateBlendNode(a3_BlendOp_Blend_3);
 		demoMode->blendTree.root = blendPoseNode;
