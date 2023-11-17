@@ -40,9 +40,14 @@ void a3animation_initBlendTree(a3_DemoMode1_Animation* demoMode)
 {
 	{ // Simple clip blend tree
 
+		// Variable initialization
 		demoMode->idleBlendThreshold = 0;
 		demoMode->walkBlendThreshold = 2;
 		demoMode->runBlendThreshold = 4;
+		demoMode->isJumping = false;
+		demoMode->timeSinceJump = 0;
+		demoMode->jumpFadeTimes = (a3vec2){ .3, .3 };
+		demoMode->jumpDuration = a3clipCalculateDuration(&(demoMode->clipPool[0]), demoMode->jumpClipCtrl->clipIndex, demoMode->jumpClipCtrl->playback_stepPerSec);
 
 		a3_BlendNode* blendPoseNode = a3_CreateBlendNode(a3_BlendOp_Blend_3);
 		demoMode->blendTree.root = blendPoseNode;
@@ -575,7 +580,9 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 
 
 
-		const a3real CYCLE_DURATION = 1.0f;
+		const a3real CYCLE_DURATION = 1.2f;
+
+
 
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_walk_f");//"xbot_idle_pistol");
 		float distributeTime = demoMode->clipPool[0].clip[j].keyframeCount / CYCLE_DURATION;

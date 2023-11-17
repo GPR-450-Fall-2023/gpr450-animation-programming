@@ -70,8 +70,8 @@ struct a3_BlendTree;
 
 // Function delegate for blend operation
 // Returns -1 for error, 1 for success
-typedef a3boolean(*a3_BlendOp)(struct a3_BlendNode* node, struct a3_BlendTree* tree, a3ui32 hierarchyIndex);
-typedef a3boolean(*a3_ParamOp)(struct a3_ParamNode* node, struct a3_BlendTree* tree, a3ui32 hierarchyIndex);
+typedef a3boolean(*a3_BlendOp)(struct a3_BlendNode* node, struct a3_BlendTree* tree, a3ui32 hierarchyIndex, a3real dt);
+typedef a3boolean(*a3_ParamOp)(struct a3_ParamNode* node, struct a3_BlendTree* tree, a3ui32 hierarchyIndex, a3real dt);
 
 
 typedef struct a3_BlendTreeNodeInfo
@@ -383,21 +383,21 @@ a3_ParamNode* a3_CreateParamNode(a3_ParamOp paramOperation);
 //	a3_BlendParam const* param[a3_blend_param_max], a3_BlendOp blendOperation);
 
 // Loop through and try to update parameters for blend tree with blend node results
-a3boolean a3_InitDataFromNodes(a3_BlendNode* node, a3_BlendTree* tree, a3ui32 numBlendData, a3ui32 hierarchyIndex, a3ui32 numParamData);
+a3boolean a3_InitDataFromNodes(a3_BlendNode* node, a3_BlendTree* tree, a3ui32 hierarchyIndex, a3real dt, a3ui32 numBlendData, a3ui32 numParamData);
 
 // Returns result of node's blend operation
-a3_BlendPose a3_GetBlendNodeResult(a3_BlendNode* node, a3_BlendTree* const tree, a3ui32 hierarchyIndex);
+a3_BlendPose a3_GetBlendNodeResult(a3_BlendNode* node, a3_BlendTree* const tree, a3ui32 hierarchyIndex, a3real dt);
 
 // Blend Operations
-a3boolean a3_BlendOp_Identity(a3_BlendNode* const node_identity, a3_BlendTree* const tree, a3ui32 hierarchyIndex);
-a3boolean a3_BlendOp_Lerp(a3_BlendNode* const node_lerp, a3_BlendTree* const tree, a3ui32 hierarchyIndex);
-a3boolean a3_BlendOp_Concat(a3_BlendNode* const node_concat, a3_BlendTree* const tree, a3ui32 hierarchyIndex);
-a3boolean a3_BlendOp_Scale(a3_BlendNode* const node_scale, a3_BlendTree* const tree, a3ui32 hierarchyIndex);
-a3boolean a3_BlendOp_Blend_3(a3_BlendNode* const node_blend, a3_BlendTree* const tree, a3ui32 hierarchyIndex);
-a3boolean a3_BlendOp_EvaluateClipController(a3_BlendNode* const node_eval, a3_BlendTree* const tree, a3ui32 hierarchyIndex);
+a3boolean a3_BlendOp_Identity(a3_BlendNode* const node_identity, a3_BlendTree* const tree, a3ui32 hierarchyIndex, a3real dt);
+a3boolean a3_BlendOp_Lerp(a3_BlendNode* const node_lerp, a3_BlendTree* const tree, a3ui32 hierarchyIndex, a3real dt);
+a3boolean a3_BlendOp_Concat(a3_BlendNode* const node_concat, a3_BlendTree* const tree, a3ui32 hierarchyIndex, a3real dt);
+a3boolean a3_BlendOp_Scale(a3_BlendNode* const node_scale, a3_BlendTree* const tree, a3ui32 hierarchyIndex, a3real dt);
+a3boolean a3_BlendOp_Blend_3(a3_BlendNode* const node_blend, a3_BlendTree* const tree, a3ui32 hierarchyIndex, a3real dt);
+a3boolean a3_BlendOp_EvaluateClipController(a3_BlendNode* const node_eval, a3_BlendTree* const tree, a3ui32 hierarchyIndex, a3real dt);
 
 // Param Operations
-a3boolean a3_ParamOp_Identity(a3_ParamNode* const node_identity, a3_BlendTree* const tree, a3ui32 hierarchyIndex);
+a3boolean a3_ParamOp_Identity(a3_ParamNode* const node_identity, a3_BlendTree* const tree, a3ui32 hierarchyIndex, a3real dt);
 
 
 // Per-channel blending (just my notes -aster)

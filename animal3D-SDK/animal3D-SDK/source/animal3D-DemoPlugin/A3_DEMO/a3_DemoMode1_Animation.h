@@ -170,6 +170,11 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 		// Blend clip controllers
 		a3_ClipController idleClipCtrl[1], walkClipCtrl[1], runClipCtrl[1], jumpClipCtrl[1];
 
+		a3boolean isJumping;
+		a3real timeSinceJump;
+		a3real jumpDuration;
+		a3vec2 jumpFadeTimes; // Ex. <.3, .3> would take .3 seconds to fully blend into jump, and then take .3 seconds to fully blend out of jump
+
 		// skeletal animation
 		union {
 			a3_HierarchyState hierarchyState_skel[4];

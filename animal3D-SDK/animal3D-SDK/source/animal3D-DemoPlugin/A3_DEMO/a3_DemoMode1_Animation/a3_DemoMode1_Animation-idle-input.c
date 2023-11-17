@@ -83,6 +83,23 @@ void a3animation_input_keyCharHold(a3_DemoState const* demoState, a3_DemoMode1_A
 
 
 
+void a3animation_tryStartJump(a3_DemoMode1_Animation* demoMode)
+{
+	if (demoMode->isJumping) return;
+
+	demoMode->isJumping = true;
+
+	// Reset to beginning of jump clip
+	demoMode->jumpClipCtrl->keyframeIndex = demoMode->jumpClipCtrl->clip->keyframeIndex_first;
+	demoMode->jumpClipCtrl->keyframe = demoMode->jumpClipCtrl->clipPool->keyframe + demoMode->jumpClipCtrl->keyframeIndex;
+	demoMode->jumpClipCtrl->playback_sec = 0;
+	demoMode->jumpClipCtrl->clipTime_sec = 0;
+	demoMode->jumpClipCtrl->keyframeTime_sec = 0;
+
+
+}
+
+
 
 //-----------------------------------------------------------------------------
 
@@ -202,9 +219,21 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 		if (a3XboxControlIsPressed(demoState->xcontrol, a3xbox_X))
 			a3demoCtrlDecLoop(demoMode->ctrl_position, animation_inputmode_max);
 
-		if (a3XboxControlIsPressed(demoState->xcontrol, a3xbox_Y))
+		if (a3XboxControlIsPressed(demoState->xcontrol, a3xbox_DPAD_up))
 			a3demoCtrlIncLoop(demoMode->ctrl_rotation, animation_inputmode_max);
-		if (a3XboxControlIsPressed(demoState->xcontrol, a3xbox_A))
+		if (a3XboxControlIsPressed(demoState->xcontrol, a3xbox_DPAD_down))
 			a3demoCtrlDecLoop(demoMode->ctrl_rotation, animation_inputmode_max);
+
+		if (a3XboxControlIsPressed(demoState->xcontrol, a3xbox_A))
+		{
+
+		}
+
+		if (a3XboxControlIsPressed(demoState->xcontrol, a3xbox_start))
+		{
+			demoMode->ctrl_target = animation_ctrl_character;
+			demoMode->ctrl_position = animation_input_interpolate2;
+			demoMode->ctrl_rotation = animation_input_interpolate2;
+		}
 	}
 }

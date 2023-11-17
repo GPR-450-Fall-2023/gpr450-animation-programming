@@ -386,7 +386,7 @@ void a3animation_update_animation_from_blend_tree(a3_DemoMode1_Animation* demoMo
 	// Loop through each spatial pose and run blend tree
 	for (a3ui32 i = 0; i < demoMode->hierarchy_skel->numNodes; i++)
 	{
-		activeHS->animPose[0].pose[i] = a3_GetBlendNodeResult(demoMode->blendTree.root, &(demoMode->blendTree), i);
+		activeHS->animPose[0].pose[i] = a3_GetBlendNodeResult(demoMode->blendTree.root, &(demoMode->blendTree), i, (a3real) dt);
 	}
 	// End handle blend tree
 
