@@ -430,23 +430,20 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 		{
 			// send data and draw
 			j = (a3ui32)(currentSceneObject - demoMode->object_scene);
-			if (j != 0x0000000c) // make sure texture index is valid
-			{
-				a3textureActivate(texture_dm[j], a3tex_unit00);
-				a3textureActivate(texture_dm[j], a3tex_unit01);
-				modelMat = demoMode->sceneGraphState->objectSpace->pose[currentSceneObject->sceneGraphIndex].transformMat;
-				a3real4x4Product(modelViewMat.m, viewMat.m, modelMat.m);
-				a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMV, 1, modelViewMat.mm);
-				a3demo_quickInvertTranspose_internal(modelViewMat.m);
-				modelViewMat.v3 = a3vec4_zero;
-				a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMV_nrm, 1, modelViewMat.mm);
-				a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uIndex, 1, &j);
-				a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, orange);
-				a3vertexDrawableActivateAndRender(demoState->draw_character_skin);
-				a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, sky);
-				a3vertexDrawableActivateAndRender(demoState->draw_character_skin_alt);
-			}
-			
+			a3textureActivate(texture_dm[j], a3tex_unit00);
+			a3textureActivate(texture_dm[j], a3tex_unit01);
+			modelMat = demoMode->sceneGraphState->objectSpace->pose[currentSceneObject->sceneGraphIndex].transformMat;
+			a3real4x4Product(modelViewMat.m, viewMat.m, modelMat.m);
+			a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMV, 1, modelViewMat.mm);
+			a3demo_quickInvertTranspose_internal(modelViewMat.m);
+			modelViewMat.v3 = a3vec4_zero;
+			a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMV_nrm, 1, modelViewMat.mm);
+			a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uIndex, 1, &j);
+			a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, orange);
+			a3vertexDrawableActivateAndRender(demoState->draw_character_skin);
+			a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, sky);
+			a3vertexDrawableActivateAndRender(demoState->draw_character_skin_alt);
+
 		}
 
 	}	break;

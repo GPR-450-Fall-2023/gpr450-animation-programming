@@ -560,7 +560,7 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 			controlLocator_leftLegBase = jointTransform_leftUpLeg.v3;
 			// ===================================================
 
-			// CALCULATE FOOT EFFECTORS (RAYCAST)
+			// CALCULATE GROUND TARGET FOR FOOT EFFECTORS (RAYCAST)
 			{
 				
 				// ****TO-DO: 
