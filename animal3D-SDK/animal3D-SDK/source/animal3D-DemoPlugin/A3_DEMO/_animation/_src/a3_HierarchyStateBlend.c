@@ -377,33 +377,11 @@ a3_ParamNode* a3_CreateParamNode(a3_ParamOp paramOperation)
 }
 
 
-// Create blend node with passed in variables
-//a3_BlendNode* a3_CreateInitializedBlendNode(a3_BlendNode* dataNodes[a3_blend_data_max], a3_BlendData* data[a3_blend_data_max], a3_BlendParam const* param[a3_blend_param_max], a3_BlendOp blendOperation)
-//{
-//	a3_BlendNode* newNode = a3_CreateBlendNode(blendOperation);
-//
-//	if (newNode == NULL) return newNode;
-//
-//	for (a3ui32 i = 0; i < a3_blend_data_max; i++)
-//	{
-//		newNode->info.spatialDataNodes[i] = dataNodes[i];
-//		newNode->info.spatialData[i] = data[i];
-//	}
-//
-//	for (a3ui32 i = 0; i < a3_blend_param_max; i++)
-//	{
-//		newNode->paramData[i] = param[i];
-//	}
-//
-//	return newNode;
-//}
-
-
-a3boolean a3_InitDataFromNodes(a3_BlendNode* node_out, a3_BlendTree* tree, a3ui32 hierarchyIndex, a3real dt, a3ui32 numBlendData, a3ui32 numParamData)
+a3boolean a3_InitDataFromNodes(a3_BlendTreeNodeInfo* info, a3_BlendTree* tree, a3ui32 hierarchyIndex, a3real dt, a3ui32 numBlendData, a3ui32 numParamData)
 {
 	for (a3ui32 i = 0; i < numBlendData; i++)
 	{
-		a3_BlendNode* dataNode = node_out->info.spatialDataNodes[i];
+		a3_BlendNode* dataNode = info->spatialDataNodes[i];
 
 		if (dataNode != NULL)
 		{
@@ -411,14 +389,14 @@ a3boolean a3_InitDataFromNodes(a3_BlendNode* node_out, a3_BlendTree* tree, a3ui3
 
 			if (result == true) // Node successfully run
 			{
-				node_out->info.spatialData[i] = &(dataNode->result);
+				info->spatialData[i] = &(dataNode->result);
 			}
 		}
 	}
 
 	for (a3ui32 i = 0; i < numParamData; i++)
 	{
-		a3_ParamNode* dataNode = node_out->info.paramDataNodes[i];
+		a3_ParamNode* dataNode = info->paramDataNodes[i];
 
 		if (dataNode != NULL)
 		{
@@ -426,7 +404,7 @@ a3boolean a3_InitDataFromNodes(a3_BlendNode* node_out, a3_BlendTree* tree, a3ui3
 
 			if (result == true) // Node successfully run
 			{
-				node_out->info.paramData[i] = &(dataNode->result);
+				info->paramData[i] = &(dataNode->result);
 			}
 		}
 	}
@@ -435,6 +413,7 @@ a3boolean a3_InitDataFromNodes(a3_BlendNode* node_out, a3_BlendTree* tree, a3ui3
 }
 
 
+// Gets result of blend operation from node
 a3_BlendPose a3_GetBlendNodeResult(a3_BlendNode* node, a3_BlendTree* tree, a3ui32 hierarchyIndex, a3real dt)
 {
 	node->blendOperation(node, tree, hierarchyIndex, dt);
@@ -442,8 +421,8 @@ a3_BlendPose a3_GetBlendNodeResult(a3_BlendNode* node, a3_BlendTree* tree, a3ui3
 }
 
 
-// Checks if passed in params list is sequential, starting at startIndex and going up to startIndex + count
-a3boolean a3_BlendParamsSequential(a3_BlendParam* params[a3_blend_param_data_max], a3ui32 startIndex, a3ui32 count)
+// Checks if passed in params list is sequential ascending, starting at startIndex and going up to startIndex + count
+a3boolean a3_BlendParamsAscendingSequential(a3_BlendParam* params[a3_blend_param_data_max], a3ui32 startIndex, a3ui32 count)
 {
 	if (count <= 1) return true;
 	if (count <= 2) return params[0] <= params[1];
@@ -477,43 +456,13 @@ a3boolean a3_BlendOp_Identity(a3_BlendNode* const node_identity, a3_BlendTree* c
 }
 
 
-// Requires:
-// miscData: [0] = clip controller : a3_ClipController*, [1] = clip pool : a3_ClipPool*,
-	// [2] = skeletonGroup : a3_HierarchyPoseGroup*, [3] = skeletonHierarchy : a3_Hierarchy*
-//a3boolean a3_BlendOpGetClipControllerPose(a3_BlendNode* const node_pose)
-//{
-//	if (!node_pose) return false;
-//	
-//	a3_ClipController* clipController = (a3_ClipController*) node_pose->miscData[0];
-//	a3_ClipPool* clipPool = (a3_ClipPool*) node_pose->miscData[1];
-//	a3_HierarchyPoseGroup* skeletonGroup = (a3_HierarchyPoseGroup*) node_pose->miscData[2];
-//	a3_Hierarchy* skeletonHierarchy = (a3_Hierarchy*) node_pose->miscData[3];
-//
-//	a3_Keyframe keyframe = clipController->keyframe[clipController->keyframeIndex];
-//	//a3_Keyframe pose1 = clipController->keyframe[a3clipControllerGetNextKeyframeIndex(clipController)];
-//
-//	if(pose == NULL) return false;
-//
-//	a3hierarchyPoseLerp(node_pose->result,
-//		demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[clipCtrl->keyframeIndex].sampleIndex0,
-//		demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[clipCtrl->keyframeIndex].sampleIndex1,
-//		(a3f32)clipCtrl->keyframeParam, demoMode->hierarchy_skel->numNodes);
-//
-//	//a3spatialPoseOpLERP(pose0.)
-//
-//	//if(clipController->clip[clipController->clipIndex].keyframeCount - 1 <= a3clipControllerUpdate)
-//
-//	return true;
-//}
-
-
 a3boolean a3_BlendOp_Lerp(a3_BlendNode* const node_lerp, a3_BlendTree* const tree, a3ui32 hierarchyIndex, a3real dt)
 {
 	if (!node_lerp) return false;
 
 	a3_BlendPose* const data_out = &(node_lerp->result);
 
-	a3_InitDataFromNodes(node_lerp, tree, hierarchyIndex, dt, 2, 1);
+	a3_InitDataFromNodes(&(node_lerp->info), tree, hierarchyIndex, dt, 2, 1);
 
 	const a3_BlendPose* data0 = node_lerp->info.spatialData[0];
 	const a3_BlendPose* data1 = node_lerp->info.spatialData[1];
@@ -528,7 +477,7 @@ a3boolean a3_BlendOp_Concat(a3_BlendNode* const node_concat, a3_BlendTree* const
 {
 	if (!node_concat) return false;
 
-	a3_InitDataFromNodes(node_concat, tree, hierarchyIndex, dt, 2, 0);
+	a3_InitDataFromNodes(&(node_concat->info), tree, hierarchyIndex, dt, 2, 0);
 
 	a3_BlendPose* const data_out = &(node_concat->result);
 	const a3_BlendPose* data0 = node_concat->info.spatialData[0];
@@ -544,7 +493,7 @@ a3boolean a3_BlendOp_Scale(a3_BlendNode* const node_scale, a3_BlendTree* const t
 {
 	if (!node_scale) return false;
 
-	a3_InitDataFromNodes(node_scale, tree, hierarchyIndex, dt, 2, 1);
+	a3_InitDataFromNodes(&(node_scale->info), tree, hierarchyIndex, dt, 2, 1);
 
 	a3_BlendPose* const data_out = &(node_scale->result);
 	const a3_BlendPose* data0 = node_scale->info.spatialData[0];
@@ -561,9 +510,9 @@ a3boolean a3_BlendOp_Scale(a3_BlendNode* const node_scale, a3_BlendTree* const t
 // 1st Param : Blend Num, 2nd - 4th Param : Blend Threshold
 a3boolean a3_BlendOp_Blend_3(a3_BlendNode* const node_blend, a3_BlendTree* const tree, a3ui32 hierarchyIndex, a3real dt)
 {
-	a3_InitDataFromNodes(node_blend, tree, hierarchyIndex, dt, 3, 4);
+	a3_InitDataFromNodes(&(node_blend->info), tree, hierarchyIndex, dt, 3, 4);
 
-	if (!a3_BlendParamsSequential(node_blend->info.paramData, 1, 3))
+	if (!a3_BlendParamsAscendingSequential(node_blend->info.paramData, 1, 3))
 	{
 		return false;
 	}
@@ -632,7 +581,7 @@ a3boolean a3_BlendOp_Blend_3(a3_BlendNode* const node_blend, a3_BlendTree* const
 // MiscData: 0 = Clip Controller, 1 = Hierarchy Pose Group
 a3boolean a3_BlendOp_EvaluateClipController(a3_BlendNode* const node_eval, a3_BlendTree* const tree, a3ui32 hierarchyIndex, a3real dt)
 {
-	a3_InitDataFromNodes(node_eval, tree, hierarchyIndex, dt, 0, 0);
+	a3_InitDataFromNodes(&(node_eval->info), tree, hierarchyIndex, dt, 0, 0);
 
 	a3_ClipController* ctrl = (a3_ClipController*) node_eval->info.miscData[0];
 	a3_HierarchyPoseGroup* poseGroup = (a3_HierarchyPoseGroup*) node_eval->info.miscData[1];
@@ -655,6 +604,7 @@ a3boolean a3_BlendOp_EvaluateClipController(a3_BlendNode* const node_eval, a3_Bl
 
 
 // If condition is true, will run node at 0, else will run node at 1
+// MiscData: 0 = Boolean condition
 a3boolean a3_BlendOp_BoolBranch(a3_BlendNode* const node_branch, a3_BlendTree* const tree, a3ui32 hierarchyIndex, a3real dt)
 {
 	a3boolean* condition = node_branch->info.miscData[0];
@@ -685,7 +635,7 @@ a3boolean a3_BlendOp_BoolBranch(a3_BlendNode* const node_branch, a3_BlendTree* c
 // Misc Data: 0 = timeSinceJump, 1 = jumpLerpParam, 2 = isJumping, 3 = ctrlNode
 a3boolean a3_BlendOp_HandleJump(a3_BlendNode* const node_jump, a3_BlendTree* const tree, a3ui32 hierarchyIndex, a3real dt)
 {
-	a3_InitDataFromNodes(node_jump, tree, hierarchyIndex, dt, 1, 0);
+	a3_InitDataFromNodes(&(node_jump->info), tree, hierarchyIndex, dt, 1, 0);
 	node_jump->result = *(node_jump->info.spatialData[0]);
 	
 	if (hierarchyIndex != 0) return true;

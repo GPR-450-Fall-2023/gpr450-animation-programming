@@ -40,9 +40,6 @@ extern "C"
 
 
 
-
-
-
 // Blend Enums
 enum // Max array sizes for blend data and params
 {
@@ -73,7 +70,7 @@ struct a3_BlendTree;
 typedef a3boolean(*a3_BlendOp)(struct a3_BlendNode* node, struct a3_BlendTree* tree, a3ui32 hierarchyIndex, a3real dt);
 typedef a3boolean(*a3_ParamOp)(struct a3_ParamNode* node, struct a3_BlendTree* tree, a3ui32 hierarchyIndex, a3real dt);
 
-
+// Holds what nodes and data a certain node in a blend tree has
 typedef struct a3_BlendTreeNodeInfo
 {
 	struct a3_BlendNode* spatialDataNodes[a3_blend_spatial_data_max];
@@ -86,6 +83,7 @@ typedef struct a3_BlendTreeNodeInfo
 } a3_BlendTreeNodeInfo;
 
 
+// Node with return type of spatial pose
 typedef struct a3_BlendNode
 {
 	a3_BlendTreeNodeInfo info;
@@ -97,6 +95,7 @@ typedef struct a3_BlendNode
 } a3_BlendNode;
 
 
+// Node with return type of a3real
 typedef struct a3_ParamNode
 {
 	a3_BlendTreeNodeInfo info;
@@ -379,11 +378,8 @@ void a3_InitBlendTreeNodeInfoToEmpty(a3_BlendTreeNodeInfo* info);
 a3_BlendNode* a3_CreateBlendNode(a3_BlendOp blendOperation);
 a3_ParamNode* a3_CreateParamNode(a3_ParamOp paramOperation);
 
-//a3_BlendNode* a3_CreateInitializedBlendNode(a3_BlendNode* dataNodes[a3_blend_data_max], a3_BlendData* data[a3_blend_data_max],
-//	a3_BlendParam const* param[a3_blend_param_max], a3_BlendOp blendOperation);
-
 // Loop through and try to update parameters for blend tree with blend node results
-a3boolean a3_InitDataFromNodes(a3_BlendNode* node, a3_BlendTree* tree, a3ui32 hierarchyIndex, a3real dt, a3ui32 numBlendData, a3ui32 numParamData);
+a3boolean a3_InitDataFromNodes(a3_BlendTreeNodeInfo* info, a3_BlendTree* tree, a3ui32 hierarchyIndex, a3real dt, a3ui32 numBlendData, a3ui32 numParamData);
 
 // Returns result of node's blend operation
 a3_BlendPose a3_GetBlendNodeResult(a3_BlendNode* node, a3_BlendTree* const tree, a3ui32 hierarchyIndex, a3real dt);
@@ -393,12 +389,19 @@ a3boolean a3_BlendOp_Identity(a3_BlendNode* const node_identity, a3_BlendTree* c
 a3boolean a3_BlendOp_Lerp(a3_BlendNode* const node_lerp, a3_BlendTree* const tree, a3ui32 hierarchyIndex, a3real dt);
 a3boolean a3_BlendOp_Concat(a3_BlendNode* const node_concat, a3_BlendTree* const tree, a3ui32 hierarchyIndex, a3real dt);
 a3boolean a3_BlendOp_Scale(a3_BlendNode* const node_scale, a3_BlendTree* const tree, a3ui32 hierarchyIndex, a3real dt);
+
+// Blends between three different poses using provided thresholds
 a3boolean a3_BlendOp_Blend_3(a3_BlendNode* const node_blend, a3_BlendTree* const tree, a3ui32 hierarchyIndex, a3real dt);
+
+// Gets spatial pose from clip controller
 a3boolean a3_BlendOp_EvaluateClipController(a3_BlendNode* const node_eval, a3_BlendTree* const tree, a3ui32 hierarchyIndex, a3real dt);
+
+// Returns spatialData[0] if condition is true, spatialData[1] if false
 a3boolean a3_BlendOp_BoolBranch(a3_BlendNode* const node_branch, a3_BlendTree* const tree, a3ui32 hierarchyIndex, a3real dt);
 
 // Functionality for moving character during jump + updating variables accordingly, will pass connected spatial node / data unchanged to caller
 a3boolean a3_BlendOp_HandleJump(a3_BlendNode* const node_jump, a3_BlendTree* const tree, a3ui32 hierarchyIndex, a3real dt);
+
 
 // Param Operations
 a3boolean a3_ParamOp_Identity(a3_ParamNode* const node_identity, a3_BlendTree* const tree, a3ui32 hierarchyIndex, a3real dt);

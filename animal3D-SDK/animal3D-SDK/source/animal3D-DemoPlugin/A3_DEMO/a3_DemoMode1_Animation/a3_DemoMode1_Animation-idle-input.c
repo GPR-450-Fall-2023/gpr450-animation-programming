@@ -83,6 +83,7 @@ void a3animation_input_keyCharHold(a3_DemoState const* demoState, a3_DemoMode1_A
 
 
 
+// Sees if we're already jumping and, if not, preps us to start the jump action
 void a3animation_tryStartJump(a3_DemoMode1_Animation* demoMode)
 {
 	if (demoMode->isJumping) return;
@@ -92,11 +93,6 @@ void a3animation_tryStartJump(a3_DemoMode1_Animation* demoMode)
 	// Reset to beginning of jump clip
 	demoMode->jumpClipCtrl->keyframeIndex = demoMode->jumpClipCtrl->clip->keyframeIndex_first;
 	demoMode->jumpClipCtrl->keyframe = demoMode->jumpClipCtrl->clipPool->keyframe + demoMode->jumpClipCtrl->keyframeIndex;
-	//demoMode->jumpClipCtrl->playback_sec = 0;
-	//demoMode->jumpClipCtrl->clipTime_sec = 0;
-	//demoMode->jumpClipCtrl->keyframeTime_sec = 0;
-
-
 }
 
 
@@ -224,11 +220,13 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 		if (a3XboxControlIsPressed(demoState->xcontrol, a3xbox_DPAD_down))
 			a3demoCtrlDecLoop(demoMode->ctrl_rotation, animation_inputmode_max);
 
+		// Try to jump when A button pressed
 		if (a3XboxControlIsPressed(demoState->xcontrol, a3xbox_A))
 		{
 			a3animation_tryStartJump(demoMode);
 		}
 
+		// When start is pressed, go immediately to character controller mode with correct controls
 		if (a3XboxControlIsPressed(demoState->xcontrol, a3xbox_start))
 		{
 			demoMode->ctrl_target = animation_ctrl_character;

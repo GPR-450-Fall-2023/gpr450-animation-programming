@@ -38,91 +38,78 @@
 
 void a3animation_initBlendTree(a3_DemoMode1_Animation* demoMode)
 {
-	{ // Simple clip blend tree
+	// Character controller blend tree
+	
+	// Variable initialization
+	demoMode->idleBlendThreshold = 0;
+	demoMode->walkBlendThreshold = 2;
+	demoMode->runBlendThreshold = 4;
+	demoMode->isJumping = false;
+	demoMode->timeSinceJump = 0;
+	demoMode->jumpFadeInTime = .8f;
+	demoMode->jumpFadeOutTime = .6f;
+	demoMode->jumpLerpParam = 0;
+	demoMode->jumpHeight = 5;
+	demoMode->jumpDuration = (a3real) demoMode->clipPool[0].clip[demoMode->jumpClipCtrl->clipIndex].duration_sec;
 
-		// Variable initialization
-		demoMode->idleBlendThreshold = 0;
-		demoMode->walkBlendThreshold = 2;
-		demoMode->runBlendThreshold = 4;
-		demoMode->isJumping = false;
-		demoMode->timeSinceJump = 0;
-		demoMode->jumpFadeInTime = .8f;
-		demoMode->jumpFadeOutTime = .6f;
-		demoMode->jumpLerpParam = 0;
-		demoMode->jumpHeight = 5;
-		demoMode->jumpDuration = (a3real) demoMode->clipPool[0].clip[demoMode->jumpClipCtrl->clipIndex].duration_sec;
+	// Node for getting spatial data from jump clip controller
+	a3_BlendNode* jumpCCNode = a3_CreateBlendNode(a3_BlendOp_EvaluateClipController);
+	jumpCCNode->info.miscData[0] = demoMode->jumpClipCtrl;
+	jumpCCNode->info.miscData[1] = demoMode->hierarchyPoseGroup_skel;
 
-		a3_BlendNode* jumpCCNode = a3_CreateBlendNode(a3_BlendOp_EvaluateClipController);
-		jumpCCNode->info.miscData[0] = demoMode->jumpClipCtrl;
-		jumpCCNode->info.miscData[1] = demoMode->hierarchyPoseGroup_skel;
+	// Node for getting spatial data from idle clip controller
+	a3_BlendNode* idleCCNode = a3_CreateBlendNode(a3_BlendOp_EvaluateClipController);
+	idleCCNode->info.miscData[0] = demoMode->idleClipCtrl;
+	idleCCNode->info.miscData[1] = demoMode->hierarchyPoseGroup_skel;
 
-		a3_BlendNode* blendGroundPoseNode = a3_CreateBlendNode(a3_BlendOp_Blend_3);
-		blendGroundPoseNode->info.paramData[0] = &(demoMode->ctrlVelocityMagnitude);
-		blendGroundPoseNode->info.paramData[1] = &(demoMode->idleBlendThreshold);
-		blendGroundPoseNode->info.paramData[2] = &(demoMode->walkBlendThreshold);
-		blendGroundPoseNode->info.paramData[3] = &(demoMode->runBlendThreshold);
 
-		a3_BlendNode* idleCCNode = a3_CreateBlendNode(a3_BlendOp_EvaluateClipController);
-		idleCCNode->info.miscData[0] = demoMode->idleClipCtrl;
-		idleCCNode->info.miscData[1] = demoMode->hierarchyPoseGroup_skel;
+	// Node for getting spatial data from walk clip controller
+	a3_BlendNode* walkCCNode = a3_CreateBlendNode(a3_BlendOp_EvaluateClipController);
+	walkCCNode->info.miscData[0] = demoMode->walkClipCtrl;
+	walkCCNode->info.miscData[1] = demoMode->hierarchyPoseGroup_skel;
 
-		blendGroundPoseNode->info.spatialDataNodes[0] = idleCCNode;
 
-		a3_BlendNode* walkCCNode = a3_CreateBlendNode(a3_BlendOp_EvaluateClipController);
-		walkCCNode->info.miscData[0] = demoMode->walkClipCtrl;
-		walkCCNode->info.miscData[1] = demoMode->hierarchyPoseGroup_skel;
+	// Node for getting spatial data from run clip controller
+	a3_BlendNode* runCCNode = a3_CreateBlendNode(a3_BlendOp_EvaluateClipController);
+	runCCNode->info.miscData[0] = demoMode->runClipCtrl;
+	runCCNode->info.miscData[1] = demoMode->hierarchyPoseGroup_skel;
 
-		blendGroundPoseNode->info.spatialDataNodes[1] = walkCCNode;
-
-		a3_BlendNode* runCCNode = a3_CreateBlendNode(a3_BlendOp_EvaluateClipController);
-		runCCNode->info.miscData[0] = demoMode->runClipCtrl;
-		runCCNode->info.miscData[1] = demoMode->hierarchyPoseGroup_skel;
-
-		blendGroundPoseNode->info.spatialDataNodes[2] = runCCNode;
 		
-		// Lerps between ground and jump anims, allows for gradual transition
-		a3_BlendNode* jumpGroundLerpNode = a3_CreateBlendNode(a3_BlendOp_Lerp);
-		jumpGroundLerpNode->info.spatialDataNodes[0] = blendGroundPoseNode;
-		jumpGroundLerpNode->info.spatialDataNodes[1] = jumpCCNode;
-		jumpGroundLerpNode->info.paramData[0] = &(demoMode->jumpLerpParam);
+	// Node used for blending between idle, walk, and run depending on velocity
+	a3_BlendNode* blendGroundPoseNode = a3_CreateBlendNode(a3_BlendOp_Blend_3);
+	blendGroundPoseNode->info.paramData[0] = &(demoMode->ctrlVelocityMagnitude);
+	blendGroundPoseNode->info.paramData[1] = &(demoMode->idleBlendThreshold);
+	blendGroundPoseNode->info.paramData[2] = &(demoMode->walkBlendThreshold);
+	blendGroundPoseNode->info.paramData[3] = &(demoMode->runBlendThreshold);
+	blendGroundPoseNode->info.spatialDataNodes[0] = idleCCNode;
+	blendGroundPoseNode->info.spatialDataNodes[1] = walkCCNode;
+	blendGroundPoseNode->info.spatialDataNodes[2] = runCCNode;
 
-		a3_BlendNode* handleJumpNode = a3_CreateBlendNode(a3_BlendOp_HandleJump);
-		handleJumpNode->info.paramData[0] = &(demoMode->jumpDuration);
-		handleJumpNode->info.paramData[1] = &(demoMode->jumpHeight);
-		handleJumpNode->info.paramData[2] = &(demoMode->jumpFadeInTime);
-		handleJumpNode->info.paramData[3] = &(demoMode->jumpFadeOutTime);
-		handleJumpNode->info.miscData[0] = &(demoMode->timeSinceJump);
-		handleJumpNode->info.miscData[1] = &(demoMode->jumpLerpParam);
-		handleJumpNode->info.miscData[2] = &(demoMode->isJumping);
-		handleJumpNode->info.miscData[3] = demoMode->ctrlNode;
-		handleJumpNode->info.spatialDataNodes[0] = jumpGroundLerpNode;
+	// Lerps between ground and jump anims, allows for gradual transition
+	a3_BlendNode* jumpGroundLerpNode = a3_CreateBlendNode(a3_BlendOp_Lerp);
+	jumpGroundLerpNode->info.spatialDataNodes[0] = blendGroundPoseNode;
+	jumpGroundLerpNode->info.spatialDataNodes[1] = jumpCCNode;
+	jumpGroundLerpNode->info.paramData[0] = &(demoMode->jumpLerpParam);
 
-		a3_BlendNode* jumpBranchNode = a3_CreateBlendNode(a3_BlendOp_BoolBranch);
-		jumpBranchNode->info.miscData[0] = &(demoMode->isJumping);
-		jumpBranchNode->info.spatialDataNodes[0] = handleJumpNode; // True, we are jumping
-		jumpBranchNode->info.spatialDataNodes[1] = blendGroundPoseNode; // False, we are on ground
+	// Node for updating jump variables and applying them for jump
+	a3_BlendNode* handleJumpNode = a3_CreateBlendNode(a3_BlendOp_HandleJump);
+	handleJumpNode->info.paramData[0] = &(demoMode->jumpDuration);
+	handleJumpNode->info.paramData[1] = &(demoMode->jumpHeight);
+	handleJumpNode->info.paramData[2] = &(demoMode->jumpFadeInTime);
+	handleJumpNode->info.paramData[3] = &(demoMode->jumpFadeOutTime);
+	handleJumpNode->info.miscData[0] = &(demoMode->timeSinceJump);
+	handleJumpNode->info.miscData[1] = &(demoMode->jumpLerpParam);
+	handleJumpNode->info.miscData[2] = &(demoMode->isJumping);
+	handleJumpNode->info.miscData[3] = demoMode->ctrlNode;
+	handleJumpNode->info.spatialDataNodes[0] = jumpGroundLerpNode;
 
-		demoMode->blendTree.root = jumpBranchNode;
+	// Node for branching depending on whether character should be jumping or not
+	a3_BlendNode* jumpBranchNode = a3_CreateBlendNode(a3_BlendOp_BoolBranch);
+	jumpBranchNode->info.miscData[0] = &(demoMode->isJumping);
+	jumpBranchNode->info.spatialDataNodes[0] = handleJumpNode; // True, we are jumping
+	jumpBranchNode->info.spatialDataNodes[1] = blendGroundPoseNode; // False, we are on ground
 
-
-
-		//a3_BlendNode* combineLerpNode = a3_CreateBlendNode(a3_BlendOp_Lerp);
-		//a3_BlendNode* clipController0LerpNode = a3_CreateBlendNode(a3_BlendOp_Lerp);
-		//a3_BlendNode* clipController1LerpNode = a3_CreateBlendNode(a3_BlendOp_Lerp);
-
-		//combineLerpNode->info.spatialDataNodes[0] = clipController0LerpNode;
-		//combineLerpNode->info.spatialDataNodes[1] = clipController1LerpNode;
-
-		//demoMode->blendTreeLerpParam = .5;
-		//combineLerpNode->param[0] = &(demoMode->blendTreeLerpParam);
-
-		//demoMode->blendTree.root = combineLerpNode; // Just pass in root
-	}
-
-	{ // Test blend tree, just lerps between two poses
-		/*a3_BlendNode* combineLerpNode = a3_CreateBlendNode(a3_BlendOpLerp);
-		demoMode->blendTree.root = combineLerpNode;*/
-	}
+	demoMode->blendTree.root = jumpBranchNode;
 }
 
 

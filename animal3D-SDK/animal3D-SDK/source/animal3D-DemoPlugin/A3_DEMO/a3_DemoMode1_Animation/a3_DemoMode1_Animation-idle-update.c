@@ -389,20 +389,9 @@ void a3animation_update_animation_from_blend_tree(a3_DemoMode1_Animation* demoMo
 	{
 		activeHS->animPose[0].pose[i] = a3_GetBlendNodeResult(demoMode->blendTree.root, &(demoMode->blendTree), i, (a3real) dt);
 	}
-	// End handle blend tree
-
-	// resolve FK state
-	// update clip controller, keyframe lerp
-	// run FK pipeline
-	//a3animation_update_fk(activeHS_fk, baseHS, poseGroup, false);
 
 	// run FK
 	a3animation_update_fk(activeHS, baseHS, poseGroup, false);
-
-	// run FK pipeline (skinning optional)
-	/*a3animation_update_fk(activeHS, baseHS, poseGroup,
-		demoMode->clipPool->clip[clipCtrl_fk->clipIndex].rootMotion);*/
-
 	a3animation_update_skin(activeHS, baseHS);
 
 }
@@ -437,9 +426,7 @@ void a3handleLocomotionInput(a3_DemoState* demoState, a3_DemoMode1_Animation* de
 	demoMode->ctrlInputsRegistered = posInput.x != 0 || posInput.y != 0 || rotInput != 0;
 
 
-	// Make move input local to player direction
-	// Rotate input by rotation
-	
+	// Make move input relative to player direction
 	a3vec2 preRotatePosInput = posInput;
 	a3real startRot = demoMode->ctrlNode->rotate.z;
 	posInput.x = preRotatePosInput.x * a3cosd(startRot) - preRotatePosInput.y * a3sind(startRot);
@@ -554,11 +541,11 @@ void a3handleLocomotionInput(a3_DemoState* demoState, a3_DemoMode1_Animation* de
 	// Make sure rotation is between 0 and 360 degrees
 	rotResult = fmodf(rotResult, 360.0f);
 
-
-	//demoMode->ctrlNode->translate = (a3vec4){ posResult.x, posResult.y, 0, demoMode->ctrlNode->translate.w };
+	// Update position and rotation from calculations
 	a3spatialPoseSetTranslation(demoMode->ctrlNode, posResult.x, posResult.y, demoMode->ctrlNode->translate.z);
 	demoMode->ctrlNode->rotate = (a3vec4){ 0, 0, rotResult, demoMode->ctrlNode->rotate.w };
 
+	// Update velocity magnitude
 	a3vec2 vel = demoMode->ctrlVelocity;
 	demoMode->ctrlVelocityMagnitude = a3sqrt((vel.x * vel.x) + (vel.y * vel.y));
 }
