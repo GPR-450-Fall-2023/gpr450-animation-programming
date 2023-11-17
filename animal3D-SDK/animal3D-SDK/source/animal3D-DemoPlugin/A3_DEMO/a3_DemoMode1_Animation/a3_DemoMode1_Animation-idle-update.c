@@ -672,7 +672,7 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 					//Calculate right knee position
 					a3real3 localrightKnee;
 					a3real3Sum(localrightKnee, rightKneeD, rightKneeH);
-					a3real3Sum(jointTransform_rightKnee.v3.xyz.v, jointTransform_shoulder.v3.xyz.v, localrightKnee);
+					a3real3Sum(jointTransform_rightKnee.v3.xyz.v, jointTransform_rightUpLeg.v3.xyz.v, localrightKnee);
 
 					//Set position of foot to foot effector
 					a3real3SetReal3(jointTransform_rightFoot.v3.xyz.v, controlLocator_rightFootEffector.v);
@@ -736,6 +736,9 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 				a3real4x4SetReal4x4(activeHS->objectSpace->pose[j_rightUpLeg].transformMat.m, jointTransform_rightUpLeg.m);
 				a3real4x4SetReal4x4(activeHS->objectSpace->pose[j_rightKnee].transformMat.m, jointTransform_rightKnee.m);
 				a3real4x4SetReal4x4(activeHS->objectSpace->pose[j_rightFoot].transformMat.m, jointTransform_rightFoot.m);
+
+				// solve for children (toe base)
+				// to do...
 			}
 
 			// SOLVE LEFT LEG
@@ -806,7 +809,7 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 					//Calculate left knee position
 					a3real3 localleftKnee;
 					a3real3Sum(localleftKnee, leftKneeD, leftKneeH);
-					a3real3Sum(jointTransform_leftKnee.v3.xyz.v, jointTransform_shoulder.v3.xyz.v, localleftKnee);
+					a3real3Sum(jointTransform_leftKnee.v3.xyz.v, jointTransform_leftUpLeg.v3.xyz.v, localleftKnee);
 
 					//Set position of foot to foot effector
 					a3real3SetReal3(jointTransform_leftFoot.v3.xyz.v, controlLocator_leftFootEffector.v);
@@ -870,6 +873,9 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 				a3real4x4SetReal4x4(activeHS->objectSpace->pose[j_leftUpLeg].transformMat.m, jointTransform_leftUpLeg.m);
 				a3real4x4SetReal4x4(activeHS->objectSpace->pose[j_leftKnee].transformMat.m, jointTransform_leftKnee.m);
 				a3real4x4SetReal4x4(activeHS->objectSpace->pose[j_leftFoot].transformMat.m, jointTransform_leftFoot.m);
+
+				// solve for children (toe base)
+				// to do...
 			}
 		}
 	}

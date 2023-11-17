@@ -172,6 +172,7 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 
 	case animation_ctrl_wristEffector_r:
 	case animation_ctrl_wristConstraint_r:
+
 	case animation_ctrl_kneeConstraint_r:
 	case animation_ctrl_kneeConstraint_l:
 	case animation_ctrl_footEffector_r:
