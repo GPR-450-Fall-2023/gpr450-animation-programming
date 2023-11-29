@@ -38,7 +38,15 @@
 
 void a3animation_initBlendTree(a3_DemoMode1_Animation* demoMode)
 {
+	char joints[2][48] = 
+	{
+		"mixamoRig:LeftShoulder",
+		"mixamoRig:RightShoulder"
+	};
+
+
 	// Character controller blend tree
+	a3_InitBlendTree(&(demoMode->blendTree), demoMode->hierarchy_skel, joints);
 	
 	// Variable initialization
 	demoMode->idleBlendThreshold = 0;

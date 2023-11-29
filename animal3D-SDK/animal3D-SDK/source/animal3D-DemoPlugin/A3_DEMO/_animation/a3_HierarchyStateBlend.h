@@ -45,7 +45,8 @@ enum // Max array sizes for blend data and params
 {
 	a3_blend_spatial_data_max = 16,
 	a3_blend_param_data_max = 16,
-	a3_blend_misc_data_max = 16
+	a3_blend_misc_data_max = 16,
+	a3_blend_tree_max_joints = 128
 };
 
 
@@ -110,6 +111,7 @@ typedef struct a3_ParamNode
 typedef struct a3_BlendTree
 {
 	a3_BlendNode* root; // Root of tree
+	a3boolean targetJointList[a3_blend_tree_max_joints];
 
 } a3_BlendTree;
 
@@ -374,6 +376,7 @@ a3real a3smoothStep(a3real x);
 
 // Blend Tree Functions
 //-----------------------------------------------------------------------------
+void a3_InitBlendTree(a3_BlendTree* blendTree, char** jointNamesToTarget, a3ui32 numJoints);
 void a3_InitBlendTreeNodeInfoToEmpty(a3_BlendTreeNodeInfo* info);
 a3_BlendNode* a3_CreateBlendNode(a3_BlendOp blendOperation);
 a3_ParamNode* a3_CreateParamNode(a3_ParamOp paramOperation);
