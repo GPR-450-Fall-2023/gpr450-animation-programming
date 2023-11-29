@@ -414,10 +414,25 @@ a3boolean a3_InitDataFromNodes(a3_BlendTreeNodeInfo* info, a3_BlendTree* tree, a
 
 
 // Gets result of blend operation from node
-a3_BlendPose a3_GetBlendNodeResult(a3_BlendNode* node, a3_BlendTree* tree, a3ui32 hierarchyIndex, a3real dt)
+a3_BlendPose a3_GetBlendNodeResult(const a3_Hierarchy* const hierarchy, a3_BlendPose defaultPose, a3_BlendNode* node, a3_BlendTree* tree, a3ui32 hierarchyIndex, a3real dt)
 {
-	node->blendOperation(node, tree, hierarchyIndex, dt);
-	return node->result;
+	a3ret testIndex = a3hierarchyGetNodeIndex(hierarchy, "mixamorig:LeftArm");
+
+	if (hierarchyIndex == testIndex)
+	{
+		return defaultPose;
+	}
+	else
+	{
+		if (node->blendOperation(node, tree, hierarchyIndex, dt)) // Run blend operation, check if successful
+		{
+			return node->result;
+		}
+		else
+		{
+			return defaultPose;
+		}
+	}
 }
 
 

@@ -382,7 +382,7 @@ a3_ParamNode* a3_CreateParamNode(a3_ParamOp paramOperation);
 a3boolean a3_InitDataFromNodes(a3_BlendTreeNodeInfo* info, a3_BlendTree* tree, a3ui32 hierarchyIndex, a3real dt, a3ui32 numBlendData, a3ui32 numParamData);
 
 // Returns result of node's blend operation
-a3_BlendPose a3_GetBlendNodeResult(a3_BlendNode* node, a3_BlendTree* const tree, a3ui32 hierarchyIndex, a3real dt);
+a3_BlendPose a3_GetBlendNodeResult(const a3_Hierarchy* const hierarchy, a3_BlendPose defaultPose, a3_BlendNode* node, a3_BlendTree* const tree, a3ui32 hierarchyIndex, a3real dt);
 
 // Blend Operations
 a3boolean a3_BlendOp_Identity(a3_BlendNode* const node_identity, a3_BlendTree* const tree, a3ui32 hierarchyIndex, a3real dt);
