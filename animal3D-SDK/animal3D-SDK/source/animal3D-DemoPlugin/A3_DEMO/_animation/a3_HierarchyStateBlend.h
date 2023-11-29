@@ -50,12 +50,13 @@ enum // Max array sizes for blend data and params
 
 //Constants
 enum {
-	a3_blend_node_name_length = 24
+	a3_blend_node_id_length = 24
 };
 
 
+
 //Blend Tree Blend Operations Enum
-enum a3_BlendTree_BlendOp
+typedef enum a3_BlendTree_BlendOp
 {
 	blendop_identity,
 	blendop_lerp,
@@ -64,16 +65,37 @@ enum a3_BlendTree_BlendOp
 	blendop_blend_3,
 	blendop_evaluate_clip_controller,
 	blendop_bool_branch,
-	blendop_handle_jump
+	blendop_handle_jump,
+
+	blendop_max
+}a3_BlendTree_BlendOp;
+
+//JSON keys for blend operations
+a3byte const* blendOpKeys[blendop_max] = {
+	"blendop_identity",
+	"blendop_lerp",
+	"blendop_concat",
+	"blendop_scale",
+	"blendop_blend_3",
+	"blendop_evaluate_clip_controller",
+	"blendop_bool_branch",
+	"blendop_handle_jump"
 };
 
-//Blend Tree Parameter Operations Enum
-enum a3_BlendTree_ParamOp
+
+
+//Blend Tree Param Operations Enum
+typedef enum a3_BlendTree_ParamOp
 {
-	paramop_identity
+	paramop_identity,
+
+	paramop_max
+}a3_BlendTree_ParamOp;
+
+//JSON keys for param operations
+a3byte const* paramOpKeys[paramop_max] = {
+	"paramop_identity"
 };
-
-
 
 
 //Typedefs
@@ -101,7 +123,7 @@ typedef a3boolean(*a3_ParamOp)(struct a3_ParamNode* node, struct a3_BlendTree* t
 typedef struct a3_BlendTreeNodeInfo
 {
 	//MUST be unique
-	char node_id[a3_blend_node_name_length];
+	a3byte node_id[a3_blend_node_id_length];
 
 	struct a3_BlendNode* spatialDataNodes[a3_blend_spatial_data_max];
 	struct a3_ParamNode* paramDataNodes[a3_blend_param_data_max];
@@ -154,6 +176,18 @@ typedef struct a3_BlendTree
 
 //Forward Declarations
 struct a3_ClipController;
+
+//-----------------------------------------------------------------------------
+
+/////////////////// Blend Tree Helper Functions //////////////////////////
+
+//Convert a key to a blend operation
+a3_BlendOp a3keyToBlendOp(a3_BlendTree_BlendOp blendOp);
+
+//Convert a key to a param operation
+a3_ParamOp a3keyToParamOp(a3_BlendTree_ParamOp paramOp);
+
+//Find a specified node in demoMode->blendTreeNodeArray from a node ID 
 
 
 //-----------------------------------------------------------------------------

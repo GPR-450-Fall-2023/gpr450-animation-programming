@@ -35,17 +35,103 @@
 
 //-----------------------------------------------------------------------------
 
-a3ui32 a3_jsonKeyToEnumKey(a3_DemoMode1_Animation* demoMode, a3byte const jsonKey[a3_blend_node_name_length], void* data)
+//Animal Variable Enum
+typedef enum a3_Animal_Variable
 {
-	if (jsonKey == "node_num")
-	{
-		demoMode->blendNodeCount = (a3ui32)data;
-	}
-	else if (jsonKey == "root")
-	{
+	animal_var_hierarchyPoseGroup_skel,
 
+	animal_var_jumpClipCtrl,
+	animal_var_idleClipCtrl,
+	animal_var_walkClipCtrl,
+	animal_var_runClipCtrl,
+
+	animal_var_ctrlVelocityMagnitude,
+	animal_var_idleBlendThreshold,
+	animal_var_walkBlendThreshold,
+	animal_var_runBlendThreshold,
+
+	animal_var_jumpLerpParam,
+	animal_var_jumpDuration,
+	animal_var_jumpHeight,
+	animal_var_jumpFadeInTime,
+	animal_var_jumpFadeOutTime,
+	animal_var_timeSinceJump,
+	animal_var_isJumping,
+	animal_var_ctrlNode,
+
+	animal_var_max
+}a3_Animal_Variable;
+
+//JSON keys for animal variables
+a3byte const* animalVariableKeys[animal_var_max] = {
+	"animal_var_hierarchyPoseGroup_skel",
+	"animal_var_jumpClipCtrl",
+	"animal_var_idleClipCtrl",
+	"animal_var_walkClipCtrl",
+	"animal_var_runClipCtrl",
+	"animal_var_ctrlVelocityMagnitude",
+	"animal_var_idleBlendThreshold",
+	"animal_var_walkBlendThreshold",
+	"animal_var_runBlendThreshold",
+	"animal_var_jumpLerpParam",
+	"animal_var_jumpDuration",
+	"animal_var_jumpHeight",
+	"animal_var_jumpFadeInTime",
+	"animal_var_jumpFadeOutTime",
+	"animal_var_isJumping",
+	"animal_var_ctrlNode"
+};
+
+/////////////////////// Blend Tree Helper Functions ////////////////////////////
+
+//Convert a key to a void pointer to a variable in demoMode
+void* a3keyToAnimalVariable(a3_Animal_Variable animalVar, a3_DemoMode1_Animation* demoMode)
+{
+	switch(animalVar)
+	{
+	case animal_var_hierarchyPoseGroup_skel:
+		return demoMode->hierarchyPoseGroup_skel;
+	case animal_var_jumpClipCtrl:
+		return demoMode->jumpClipCtrl;
+	case animal_var_idleClipCtrl:
+		return demoMode->idleClipCtrl;
+	case animal_var_walkClipCtrl:
+		return demoMode->walkClipCtrl;
+	case animal_var_runClipCtrl:
+		return demoMode->runClipCtrl;
+			
+	case animal_var_ctrlVelocityMagnitude:
+		return &(demoMode->ctrlVelocityMagnitude);
+	case animal_var_idleBlendThreshold:
+		return &(demoMode->ctrlVelocityMagnitude);
+	case animal_var_walkBlendThreshold:
+		return &(demoMode->walkBlendThreshold);
+	case animal_var_runBlendThreshold:
+		return &(demoMode->runBlendThreshold);
+
+	case animal_var_jumpLerpParam:
+		return &(demoMode->jumpDuration);
+	case animal_var_jumpDuration:
+		return &(demoMode->jumpHeight);
+	case animal_var_jumpHeight:
+		return &(demoMode->jumpFadeInTime);
+	case animal_var_jumpFadeInTime:
+		return &(demoMode->jumpFadeOutTime);
+	case animal_var_jumpFadeOutTime:
+		return &(demoMode->timeSinceJump);
+	case animal_var_timeSinceJump:
+		return &(demoMode->jumpLerpParam);
+	case animal_var_isJumping:
+		return &(demoMode->isJumping);
+	case animal_var_ctrlNode:
+		return demoMode->ctrlNode;
+	default:
+		printf("ERROR - key does not exist in a3keyToAnimalVariable");
+		return NULL;
 	}
 }
+
+//-----------------------------------------------------------------------------
 
 
 void a3animation_initBlendTree(a3_DemoMode1_Animation* demoMode)

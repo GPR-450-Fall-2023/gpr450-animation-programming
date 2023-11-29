@@ -167,7 +167,7 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 		// Blend tree
 		a3_BlendTree blendTree;
 
-		a3_BlendTreeNodeInfo* blendTreeNodeArray;
+		a3_BlendTreeNodeInfo* blendTreeNodes;
 		a3ui32 blendNodeCount;
 
 		// Blend clip controllers

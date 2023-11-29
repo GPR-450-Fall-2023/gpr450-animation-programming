@@ -34,6 +34,47 @@
 
 #include "../a3_KeyframeAnimationController.h"
 
+//-----------------------------------------------------------------------------
+
+//Convert a key to a blend operation
+inline a3_BlendOp a3keyToBlendOp(a3_BlendTree_BlendOp blendOp)
+{
+	switch (blendOp)
+	{
+	case blendop_identity:
+		return a3_BlendOp_Identity;
+	case blendop_lerp:
+		return a3_BlendOp_Lerp;
+	case blendop_concat:
+		return a3_BlendOp_Concat;
+	case blendop_scale:
+		return a3_BlendOp_Scale;
+	case blendop_blend_3:
+		return a3_BlendOp_Blend_3;
+	case blendop_evaluate_clip_controller:
+		return a3_BlendOp_EvaluateClipController;
+	case blendop_bool_branch:
+		return a3_BlendOp_BoolBranch;
+	case blendop_handle_jump:
+		return a3_BlendOp_HandleJump;
+	default:
+		printf("ERROR - key does not exist in a3keyToBlendOp");
+		return NULL;
+	}
+}
+
+//Convert a key to a param operation
+inline a3_ParamOp a3keyToParamOp(a3_BlendTree_ParamOp paramOp)
+{
+	switch (paramOp)
+	{
+	case paramop_identity:
+		return a3_ParamOp_Identity;
+	default:
+		printf("ERROR - key does not exist in a3keyToParamOp");
+		return NULL;
+	}
+}
 
 //-----------------------------------------------------------------------------
 
