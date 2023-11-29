@@ -45,8 +45,35 @@ enum // Max array sizes for blend data and params
 {
 	a3_blend_spatial_data_max = 16,
 	a3_blend_param_data_max = 16,
-	a3_blend_misc_data_max = 16
+	a3_blend_misc_data_max = 16,
 };
+
+//Constants
+enum {
+	a3_blend_node_name_length = 24
+};
+
+
+//Blend Tree Blend Operations Enum
+enum a3_BlendTree_BlendOp
+{
+	blendop_identity,
+	blendop_lerp,
+	blendop_concat,
+	blendop_scale,
+	blendop_blend_3,
+	blendop_evaluate_clip_controller,
+	blendop_bool_branch,
+	blendop_handle_jump
+};
+
+//Blend Tree Parameter Operations Enum
+enum a3_BlendTree_ParamOp
+{
+	paramop_identity
+};
+
+
 
 
 //Typedefs
@@ -73,6 +100,9 @@ typedef a3boolean(*a3_ParamOp)(struct a3_ParamNode* node, struct a3_BlendTree* t
 // Holds what nodes and data a certain node in a blend tree has
 typedef struct a3_BlendTreeNodeInfo
 {
+	//MUST be unique
+	char node_id[a3_blend_node_name_length];
+
 	struct a3_BlendNode* spatialDataNodes[a3_blend_spatial_data_max];
 	struct a3_ParamNode* paramDataNodes[a3_blend_param_data_max];
 

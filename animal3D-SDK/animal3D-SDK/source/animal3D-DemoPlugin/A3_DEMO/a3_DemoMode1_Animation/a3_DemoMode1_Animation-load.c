@@ -35,6 +35,18 @@
 
 //-----------------------------------------------------------------------------
 
+a3ui32 a3_jsonKeyToEnumKey(a3_DemoMode1_Animation* demoMode, a3byte const jsonKey[a3_blend_node_name_length], void* data)
+{
+	if (jsonKey == "node_num")
+	{
+		demoMode->blendNodeCount = (a3ui32)data;
+	}
+	else if (jsonKey == "root")
+	{
+
+	}
+}
+
 
 void a3animation_initBlendTree(a3_DemoMode1_Animation* demoMode)
 {
@@ -110,6 +122,40 @@ void a3animation_initBlendTree(a3_DemoMode1_Animation* demoMode)
 	jumpBranchNode->info.spatialDataNodes[1] = blendGroundPoseNode; // False, we are on ground
 
 	demoMode->blendTree.root = jumpBranchNode;
+
+	/////////////////// Temp Code //////////////////
+
+	//Set using "node_num" key in file, set directly when loading data
+	demoMode->blendNodeCount = 8;
+
+	//Read root node block using "root" key, stores ID of root node
+
+	//Create an array of string identifiers for each data type (blend operations, blend nodes, etc.)
+	//Create a parallel enum with values corresponding to those indices names corresponding to the strings in those indices
+	
+	// LOOKUP FUNCTIONS
+	//Need a function that takes in a json key/string identifier and returns a blend operation
+	//Need another function that takes in a json key/string identifier and returns a blend node
+	//Need another function that takes in a json key/string identifier and returns the address / a pointer to a variable in demoMode
+	//Need another function that takes in a node id and json key/string identifier (miscData0, paramData3) and returns 
+		//the address/pointer to the location in the blend tree info struct of that node
+
+	//When data is read in, it just creates the nodes from the file in memory and sets the IDs of things like:
+		//node id
+		//spatialDataNodes
+		//misc data
+		//param data
+		//blend operation
+
+	//At the end when all IDs are set, use the lookup functions to do a pass through each node to start creating references foe:
+		//spatialDataNodes
+		//the root node
+		//misc data variables
+		//param data variables
+		//blend operation pointers
+	
+
+	////////////////////////////////////////////////
 }
 
 
