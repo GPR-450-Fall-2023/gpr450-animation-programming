@@ -338,6 +338,16 @@ a3_ParamOp a3keyToParamOp(a3_BlendTree_ParamOp paramOp)
 	}
 }
 
+a3_BlendTree_ParamOp a3stringToParamOpEnumKey(a3byte const* string)
+{
+	if (!strcmp(string, "paramop_identity"))
+	{
+		return paramop_identity;
+	}
+
+	return paramop_max;
+}
+
 //Find a specified node in demoMode->blendTreeNodeArray from a node ID 
 
 
