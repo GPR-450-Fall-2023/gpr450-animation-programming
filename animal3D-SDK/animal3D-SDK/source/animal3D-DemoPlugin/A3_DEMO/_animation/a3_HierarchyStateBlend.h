@@ -384,13 +384,22 @@ a3real a3smoothStep(a3real x);
 
 
 // Blend Tree Functions
-//-----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+
 void a3_InitBlendTreeNodeInfoToEmpty(a3_BlendTreeNodeInfo* info);
 a3_BlendNode* a3_CreateBlendNode(a3_BlendOp blendOperation);
 a3_ParamNode* a3_CreateParamNode(a3_ParamOp paramOperation);
 
 // Loop through and try to update parameters for blend tree with blend node results
 a3boolean a3_InitDataFromNodes(a3_BlendTreeNodeInfo* info, a3_BlendTree* tree, a3ui32 hierarchyIndex, a3real dt, a3ui32 numBlendData, a3ui32 numParamData);
+
+////// Helper Functions
+
+//Get reference to node from an array
+a3_BlendNode* a3blendTreeGetNode(a3_BlendNode** nodes, a3ui32 nodeCount, const a3byte name[a3_blend_node_id_length]);
+
+/////
+
 
 // Returns result of node's blend operation
 a3_BlendPose a3_GetBlendNodeResult(a3_BlendNode* node, a3_BlendTree* const tree, a3ui32 hierarchyIndex, a3real dt);

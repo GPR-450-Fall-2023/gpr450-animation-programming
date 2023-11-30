@@ -412,6 +412,15 @@ a3boolean a3_InitDataFromNodes(a3_BlendTreeNodeInfo* info, a3_BlendTree* tree, a
 	return true;
 }
 
+a3_BlendNode* a3blendTreeGetNode(a3_BlendNode** nodes, a3ui32 nodeCount, const a3byte name[a3_blend_node_id_length])
+{
+	a3ui32 i;
+	for (i = 0; i < nodeCount; ++i)
+		if (!strcmp(nodes[i]->info.node_id, name))
+			return nodes[i];
+	return NULL;
+}
+
 
 // Gets result of blend operation from node
 a3_BlendPose a3_GetBlendNodeResult(a3_BlendNode* node, a3_BlendTree* tree, a3ui32 hierarchyIndex, a3real dt)
