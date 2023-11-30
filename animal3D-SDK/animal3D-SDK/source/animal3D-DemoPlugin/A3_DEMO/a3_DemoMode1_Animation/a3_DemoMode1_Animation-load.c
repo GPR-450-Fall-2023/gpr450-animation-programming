@@ -82,6 +82,49 @@ a3byte const* animalVariableKeys[animal_var_max] = {
 	"animal_var_ctrlNode"
 };
 
+//Blend Tree Blend Operations Enum
+typedef enum a3_BlendTree_BlendOp
+{
+	blendop_identity,
+	blendop_lerp,
+	blendop_concat,
+	blendop_scale,
+	blendop_blend_3,
+	blendop_evaluate_clip_controller,
+	blendop_bool_branch,
+	blendop_handle_jump,
+
+	blendop_max
+}a3_BlendTree_BlendOp;
+
+//JSON keys for blend operations
+a3byte const* blendOpKeys[blendop_max] = {
+	"blendop_identity",
+	"blendop_lerp",
+	"blendop_concat",
+	"blendop_scale",
+	"blendop_blend_3",
+	"blendop_evaluate_clip_controller",
+	"blendop_bool_branch",
+	"blendop_handle_jump"
+};
+
+
+
+//Blend Tree Param Operations Enum
+typedef enum a3_BlendTree_ParamOp
+{
+	paramop_identity,
+
+	paramop_max
+}a3_BlendTree_ParamOp;
+
+//JSON keys for param operations
+a3byte const* paramOpKeys[paramop_max] = {
+	"paramop_identity"
+};
+
+
 /////////////////////// Blend Tree Helper Functions ////////////////////////////
 
 //Convert a key to a void pointer to a variable in demoMode
@@ -130,6 +173,173 @@ void* a3keyToAnimalVariable(a3_Animal_Variable animalVar, a3_DemoMode1_Animation
 		return NULL;
 	}
 }
+
+a3_Animal_Variable a3stringToAnimalVariableEnumKey(a3byte const* string)
+{
+	if (!strcmp(string, "animal_var_hierarchyPoseGroup_skel"))
+	{
+		return animal_var_hierarchyPoseGroup_skel;
+	}
+	else if (!strcmp(string, "animal_var_jumpClipCtrl"))
+	{
+		return animal_var_jumpClipCtrl;
+
+	}
+	else if (!strcmp(string, "animal_var_idleClipCtrl"))
+	{
+		return animal_var_idleClipCtrl;
+
+	}
+	else if (!strcmp(string, "animal_var_walkClipCtrl"))
+	{
+		return animal_var_walkClipCtrl;
+
+	}
+	else if (!strcmp(string, "animal_var_runClipCtrl"))
+	{
+		return animal_var_runClipCtrl;
+
+	}
+	else if (!strcmp(string, "animal_var_ctrlVelocityMagnitude"))
+	{
+		return animal_var_ctrlVelocityMagnitude;
+
+	}
+	else if (!strcmp(string, "animal_var_idleBlendThreshold"))
+	{
+		return animal_var_idleBlendThreshold;
+
+	}
+	else if (!strcmp(string, "animal_var_walkBlendThreshold"))
+	{
+		return animal_var_walkBlendThreshold;
+
+	}
+	else if (!strcmp(string, "animal_var_runBlendThreshold"))
+	{
+		return animal_var_runBlendThreshold;
+
+	}
+	else if (!strcmp(string, "animal_var_jumpLerpParam"))
+	{
+		return animal_var_jumpLerpParam;
+
+	}
+	else if (!strcmp(string, "animal_var_jumpDuration"))
+	{
+		return animal_var_jumpDuration;
+
+	}
+	else if (!strcmp(string, "animal_var_jumpHeight"))
+	{
+		return animal_var_jumpHeight;
+
+	}
+	else if (!strcmp(string, "animal_var_jumpFadeInTime"))
+	{
+		return animal_var_jumpFadeInTime;
+
+	}
+	else if (!strcmp(string, "animal_var_jumpFadeOutTime"))
+	{
+		return animal_var_jumpFadeOutTime;
+
+	}
+	else if (!strcmp(string, "animal_var_isJumping"))
+	{
+		return animal_var_isJumping;
+
+	}
+	else if (!strcmp(string, "animal_var_ctrlNode"))
+	{
+		return animal_var_ctrlNode;
+	}
+
+	return animal_var_max;
+}
+
+
+
+//Convert a key to a blend operation
+a3_BlendOp a3keyToBlendOp(a3_BlendTree_BlendOp blendOp)
+{
+	switch (blendOp)
+	{
+	case blendop_identity:
+		return a3_BlendOp_Identity;
+	case blendop_lerp:
+		return a3_BlendOp_Lerp;
+	case blendop_concat:
+		return a3_BlendOp_Concat;
+	case blendop_scale:
+		return a3_BlendOp_Scale;
+	case blendop_blend_3:
+		return a3_BlendOp_Blend_3;
+	case blendop_evaluate_clip_controller:
+		return a3_BlendOp_EvaluateClipController;
+	case blendop_bool_branch:
+		return a3_BlendOp_BoolBranch;
+	case blendop_handle_jump:
+		return a3_BlendOp_HandleJump;
+	default:
+		printf("ERROR - key does not exist in a3keyToBlendOp");
+		return NULL;
+	}
+}
+
+a3_BlendTree_BlendOp a3stringToBlendOpEnumKey(a3byte const* string)
+{
+	if (!strcmp(string, "blendop_identity"))
+	{
+		return blendop_identity;
+	}
+	else if (!strcmp(string, "blendop_lerp"))
+	{
+		return blendop_lerp;
+	}
+	else if (!strcmp(string, "blendop_concat"))
+	{
+		return blendop_concat;
+	}
+	else if (!strcmp(string, "blendop_scale"))
+	{
+		return blendop_scale;
+	}
+	else if (!strcmp(string, "blendop_blend_3"))
+	{
+		return blendop_blend_3;
+	}
+	else if (!strcmp(string, "blendop_evaluate_clip_controller"))
+	{
+		return blendop_evaluate_clip_controller;
+	}
+	else if (!strcmp(string, "blendop_bool_branch"))
+	{
+		return blendop_bool_branch;
+	}
+	else if (!strcmp(string, "blendop_handle_jump"))
+	{
+		return blendop_handle_jump;
+	}
+
+	return blendop_max;
+}
+
+//Convert a key to a param operation
+a3_ParamOp a3keyToParamOp(a3_BlendTree_ParamOp paramOp)
+{
+	switch (paramOp)
+	{
+	case paramop_identity:
+		return a3_ParamOp_Identity;
+	default:
+		printf("ERROR - key does not exist in a3keyToParamOp");
+		return NULL;
+	}
+}
+
+//Find a specified node in demoMode->blendTreeNodeArray from a node ID 
+
 
 //-----------------------------------------------------------------------------
 
@@ -215,6 +425,7 @@ void a3animation_initBlendTree(a3_DemoMode1_Animation* demoMode)
 	demoMode->blendNodeCount = 8;
 
 	//Read root node block using "root" key, stores ID of root node
+	*demoMode->blendTree.root_node_id = (a3byte)"jumpBranchNode";
 
 	//Create an array of string identifiers for each data type (blend operations, blend nodes, etc.)
 	//Create a parallel enum with values corresponding to those indices names corresponding to the strings in those indices
@@ -232,6 +443,10 @@ void a3animation_initBlendTree(a3_DemoMode1_Animation* demoMode)
 		//misc data
 		//param data
 		//blend operation
+	//Use a for loop when reading in from the file since we already know the number of nodes.  
+
+	a3_Animal_Variable blendOpEnumKey = a3stringToBlendOpEnumKey("blendop_evaluate_clip_controller");
+	demoMode->blendTreeNodes[0] = a3_CreateBlendNode(a3keyToBlendOp(blendOpEnumKey));
 
 	//At the end when all IDs are set, use the lookup functions to do a pass through each node to start creating references foe:
 		//spatialDataNodes

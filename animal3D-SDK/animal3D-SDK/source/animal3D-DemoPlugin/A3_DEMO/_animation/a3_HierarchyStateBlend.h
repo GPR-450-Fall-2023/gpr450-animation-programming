@@ -54,50 +54,6 @@ enum {
 };
 
 
-
-//Blend Tree Blend Operations Enum
-typedef enum a3_BlendTree_BlendOp
-{
-	blendop_identity,
-	blendop_lerp,
-	blendop_concat,
-	blendop_scale,
-	blendop_blend_3,
-	blendop_evaluate_clip_controller,
-	blendop_bool_branch,
-	blendop_handle_jump,
-
-	blendop_max
-}a3_BlendTree_BlendOp;
-
-//JSON keys for blend operations
-a3byte const* blendOpKeys[blendop_max] = {
-	"blendop_identity",
-	"blendop_lerp",
-	"blendop_concat",
-	"blendop_scale",
-	"blendop_blend_3",
-	"blendop_evaluate_clip_controller",
-	"blendop_bool_branch",
-	"blendop_handle_jump"
-};
-
-
-
-//Blend Tree Param Operations Enum
-typedef enum a3_BlendTree_ParamOp
-{
-	paramop_identity,
-
-	paramop_max
-}a3_BlendTree_ParamOp;
-
-//JSON keys for param operations
-a3byte const* paramOpKeys[paramop_max] = {
-	"paramop_identity"
-};
-
-
 //Typedefs
 typedef struct Circumcircle Circumcircle;
 typedef struct Edge Edge;
@@ -161,6 +117,9 @@ typedef struct a3_ParamNode
 
 typedef struct a3_BlendTree
 {
+	//MUST be unique, needs to be here in order to set up the reference later
+	a3byte root_node_id[a3_blend_node_id_length];
+
 	a3_BlendNode* root; // Root of tree
 
 } a3_BlendTree;
@@ -176,18 +135,6 @@ typedef struct a3_BlendTree
 
 //Forward Declarations
 struct a3_ClipController;
-
-//-----------------------------------------------------------------------------
-
-/////////////////// Blend Tree Helper Functions //////////////////////////
-
-//Convert a key to a blend operation
-a3_BlendOp a3keyToBlendOp(a3_BlendTree_BlendOp blendOp);
-
-//Convert a key to a param operation
-a3_ParamOp a3keyToParamOp(a3_BlendTree_ParamOp paramOp);
-
-//Find a specified node in demoMode->blendTreeNodeArray from a node ID 
 
 
 //-----------------------------------------------------------------------------
