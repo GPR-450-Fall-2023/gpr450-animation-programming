@@ -521,6 +521,7 @@ a3boolean a3_BlendOp_Blend_3(a3_BlendNode* const node_blend, a3_BlendTree* const
 {
 	a3_InitDataFromNodes(&(node_blend->info), tree, hierarchyIndex, dt, 3, 4);
 
+	printf("%f %f %f \n\n", *node_blend->info.paramData[1], *node_blend->info.paramData[2], *node_blend->info.paramData[3]);
 	if (!a3_BlendParamsAscendingSequential(node_blend->info.paramData, 1, 3))
 	{
 		return false;
@@ -632,6 +633,10 @@ a3boolean a3_BlendOp_BoolBranch(a3_BlendNode* const node_branch, a3_BlendTree* c
 		{
 			node_branch->result = dataNode->result;
 			return true;
+		}
+		else
+		{
+			a3boolean result = dataNode->blendOperation(dataNode, tree, hierarchyIndex, dt);
 		}
 	}
 
