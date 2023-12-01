@@ -117,9 +117,6 @@ typedef struct a3_ParamNode
 
 typedef struct a3_BlendTree
 {
-	//MUST be unique, needs to be here in order to set up the reference later
-	a3byte root_node_id[a3_blend_node_id_length];
-
 	a3_BlendNode* root; // Root of tree
 
 } a3_BlendTree;

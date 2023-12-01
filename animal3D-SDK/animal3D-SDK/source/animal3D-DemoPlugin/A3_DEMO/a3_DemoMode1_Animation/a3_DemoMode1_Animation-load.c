@@ -146,24 +146,24 @@ void* a3keyToAnimalVariable(a3_Animal_Variable animalVar, a3_DemoMode1_Animation
 	case animal_var_ctrlVelocityMagnitude:
 		return &(demoMode->ctrlVelocityMagnitude);
 	case animal_var_idleBlendThreshold:
-		return &(demoMode->ctrlVelocityMagnitude);
+		return &(demoMode->idleBlendThreshold);
 	case animal_var_walkBlendThreshold:
 		return &(demoMode->walkBlendThreshold);
 	case animal_var_runBlendThreshold:
 		return &(demoMode->runBlendThreshold);
 
 	case animal_var_jumpLerpParam:
-		return &(demoMode->jumpDuration);
-	case animal_var_jumpDuration:
-		return &(demoMode->jumpHeight);
-	case animal_var_jumpHeight:
-		return &(demoMode->jumpFadeInTime);
-	case animal_var_jumpFadeInTime:
-		return &(demoMode->jumpFadeOutTime);
-	case animal_var_jumpFadeOutTime:
-		return &(demoMode->timeSinceJump);
-	case animal_var_timeSinceJump:
 		return &(demoMode->jumpLerpParam);
+	case animal_var_jumpDuration:
+		return &(demoMode->jumpDuration);
+	case animal_var_jumpHeight:
+		return &(demoMode->jumpHeight);
+	case animal_var_jumpFadeInTime:
+		return &(demoMode->jumpFadeInTime);
+	case animal_var_jumpFadeOutTime:
+		return &(demoMode->jumpFadeOutTime);
+	case animal_var_timeSinceJump:
+		return &(demoMode->timeSinceJump);
 	case animal_var_isJumping:
 		return &(demoMode->isJumping);
 	case animal_var_ctrlNode:
