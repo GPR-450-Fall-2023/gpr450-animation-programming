@@ -34,7 +34,6 @@
 
 #include "../a3_KeyframeAnimationController.h"
 
-
 //-----------------------------------------------------------------------------
 
 // pointer-based reset/identity operation for single spatial pose

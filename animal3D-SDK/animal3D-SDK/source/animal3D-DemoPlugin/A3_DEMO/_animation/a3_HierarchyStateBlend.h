@@ -49,6 +49,11 @@ enum // Max array sizes for blend data and params
 	a3_blend_tree_max_joints = 128
 };
 
+//Constants
+enum {
+	a3_blend_node_id_length = 24
+};
+
 
 //Typedefs
 typedef struct Circumcircle Circumcircle;
@@ -74,6 +79,9 @@ typedef a3boolean(*a3_ParamOp)(struct a3_ParamNode* node, struct a3_BlendTree* t
 // Holds what nodes and data a certain node in a blend tree has
 typedef struct a3_BlendTreeNodeInfo
 {
+	//MUST be unique
+	a3byte node_id[a3_blend_node_id_length];
+
 	struct a3_BlendNode* spatialDataNodes[a3_blend_spatial_data_max];
 	struct a3_ParamNode* paramDataNodes[a3_blend_param_data_max];
 
@@ -383,6 +391,14 @@ a3_ParamNode* a3_CreateParamNode(a3_ParamOp paramOperation);
 
 // Loop through and try to update parameters for blend tree with blend node results
 a3boolean a3_InitDataFromNodes(a3_BlendTreeNodeInfo* info, a3_BlendTree* tree, a3ui32 hierarchyIndex, a3real dt, a3ui32 numBlendData, a3ui32 numParamData);
+
+////// Helper Functions
+
+//Get reference to node from an array
+a3_BlendNode* a3blendTreeGetNode(a3_BlendNode** nodes, a3ui32 nodeCount, const a3byte name[a3_blend_node_id_length]);
+
+/////
+
 
 // Returns result of node's blend operation
 a3_BlendPose a3_GetBlendNodeResult(const a3_Hierarchy* const hierarchy, a3_BlendPose defaultPose, a3_BlendNode* node, a3_BlendTree* const tree, a3ui32 hierarchyIndex, a3real dt);

@@ -434,6 +434,15 @@ a3boolean a3_InitDataFromNodes(a3_BlendTreeNodeInfo* info, a3_BlendTree* tree, a
 	return true;
 }
 
+a3_BlendNode* a3blendTreeGetNode(a3_BlendNode** nodes, a3ui32 nodeCount, const a3byte name[a3_blend_node_id_length])
+{
+	a3ui32 i;
+	for (i = 0; i < nodeCount; ++i)
+		if (!strcmp(nodes[i]->info.node_id, name))
+			return nodes[i];
+	return NULL;
+}
+
 
 // Gets result of blend operation from node
 a3_BlendPose a3_GetBlendNodeResult(const a3_Hierarchy* const hierarchy, a3_BlendPose defaultPose, a3_BlendNode* node, a3_BlendTree* tree, a3ui32 hierarchyIndex, a3real dt)
@@ -547,6 +556,7 @@ a3boolean a3_BlendOp_Blend_3(a3_BlendNode* const node_blend, a3_BlendTree* const
 {
 	a3_InitDataFromNodes(&(node_blend->info), tree, hierarchyIndex, dt, 3, 4);
 
+	printf("%f %f %f \n\n", *node_blend->info.paramData[1], *node_blend->info.paramData[2], *node_blend->info.paramData[3]);
 	if (!a3_BlendParamsAscendingSequential(node_blend->info.paramData, 1, 3))
 	{
 		return false;
@@ -658,6 +668,10 @@ a3boolean a3_BlendOp_BoolBranch(a3_BlendNode* const node_branch, a3_BlendTree* c
 		{
 			node_branch->result = dataNode->result;
 			return true;
+		}
+		else
+		{
+			a3boolean result = dataNode->blendOperation(dataNode, tree, hierarchyIndex, dt);
 		}
 	}
 

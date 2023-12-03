@@ -35,6 +35,358 @@
 
 //-----------------------------------------------------------------------------
 
+//Animal Variable Enum
+typedef enum a3_Animal_Variable
+{
+	animal_var_hierarchyPoseGroup_skel,
+
+	animal_var_jumpClipCtrl,
+	animal_var_idleClipCtrl,
+	animal_var_walkClipCtrl,
+	animal_var_runClipCtrl,
+
+	animal_var_ctrlVelocityMagnitude,
+	animal_var_idleBlendThreshold,
+	animal_var_walkBlendThreshold,
+	animal_var_runBlendThreshold,
+
+	animal_var_jumpLerpParam,
+	animal_var_jumpDuration,
+	animal_var_jumpHeight,
+	animal_var_jumpFadeInTime,
+	animal_var_jumpFadeOutTime,
+	animal_var_timeSinceJump,
+	animal_var_isJumping,
+	animal_var_ctrlNode,
+
+	animal_var_max
+}a3_Animal_Variable;
+
+//JSON keys for animal variables
+a3byte const* animalVariableKeys[animal_var_max] = {
+	"animal_var_hierarchyPoseGroup_skel",
+	"animal_var_jumpClipCtrl",
+	"animal_var_idleClipCtrl",
+	"animal_var_walkClipCtrl",
+	"animal_var_runClipCtrl",
+	"animal_var_ctrlVelocityMagnitude",
+	"animal_var_idleBlendThreshold",
+	"animal_var_walkBlendThreshold",
+	"animal_var_runBlendThreshold",
+	"animal_var_jumpLerpParam",
+	"animal_var_jumpDuration",
+	"animal_var_jumpHeight",
+	"animal_var_jumpFadeInTime",
+	"animal_var_jumpFadeOutTime",
+	"animal_var_isJumping",
+	"animal_var_ctrlNode"
+};
+
+//Blend Tree Blend Operations Enum
+typedef enum a3_BlendTree_BlendOp
+{
+	blendop_identity,
+	blendop_lerp,
+	blendop_concat,
+	blendop_scale,
+	blendop_blend_3,
+	blendop_evaluate_clip_controller,
+	blendop_bool_branch,
+	blendop_handle_jump,
+
+	blendop_max
+}a3_BlendTree_BlendOp;
+
+//JSON keys for blend operations
+a3byte const* blendOpKeys[blendop_max] = {
+	"blendop_identity",
+	"blendop_lerp",
+	"blendop_concat",
+	"blendop_scale",
+	"blendop_blend_3",
+	"blendop_evaluate_clip_controller",
+	"blendop_bool_branch",
+	"blendop_handle_jump"
+};
+
+
+
+//Blend Tree Param Operations Enum
+typedef enum a3_BlendTree_ParamOp
+{
+	paramop_identity,
+
+	paramop_max
+}a3_BlendTree_ParamOp;
+
+//JSON keys for param operations
+a3byte const* paramOpKeys[paramop_max] = {
+	"paramop_identity"
+};
+
+
+/////////////////////// Blend Tree Helper Functions ////////////////////////////
+
+//Convert a key to a void pointer to a variable in demoMode
+void* a3keyToAnimalVariable(a3_Animal_Variable animalVar, a3_DemoMode1_Animation* demoMode)
+{
+	switch(animalVar)
+	{
+	case animal_var_hierarchyPoseGroup_skel:
+		return demoMode->hierarchyPoseGroup_skel;
+	case animal_var_jumpClipCtrl:
+		return demoMode->jumpClipCtrl;
+	case animal_var_idleClipCtrl:
+		return demoMode->idleClipCtrl;
+	case animal_var_walkClipCtrl:
+		return demoMode->walkClipCtrl;
+	case animal_var_runClipCtrl:
+		return demoMode->runClipCtrl;
+			
+	case animal_var_ctrlVelocityMagnitude:
+		return &(demoMode->ctrlVelocityMagnitude);
+	case animal_var_idleBlendThreshold:
+		return &(demoMode->idleBlendThreshold);
+	case animal_var_walkBlendThreshold:
+		return &(demoMode->walkBlendThreshold);
+	case animal_var_runBlendThreshold:
+		return &(demoMode->runBlendThreshold);
+
+	case animal_var_jumpLerpParam:
+		return &(demoMode->jumpLerpParam);
+	case animal_var_jumpDuration:
+		return &(demoMode->jumpDuration);
+	case animal_var_jumpHeight:
+		return &(demoMode->jumpHeight);
+	case animal_var_jumpFadeInTime:
+		return &(demoMode->jumpFadeInTime);
+	case animal_var_jumpFadeOutTime:
+		return &(demoMode->jumpFadeOutTime);
+	case animal_var_timeSinceJump:
+		return &(demoMode->timeSinceJump);
+	case animal_var_isJumping:
+		return &(demoMode->isJumping);
+	case animal_var_ctrlNode:
+		return demoMode->ctrlNode;
+	default:
+		printf("ERROR - key does not exist in a3keyToAnimalVariable");
+		return NULL;
+	}
+}
+
+//Gets the animal variable enum value corresponding to a string
+a3_Animal_Variable a3stringToAnimalVariableEnumKey(a3byte const* string)
+{
+	if (!strcmp(string, "animal_var_hierarchyPoseGroup_skel"))
+	{
+		return animal_var_hierarchyPoseGroup_skel;
+	}
+	else if (!strcmp(string, "animal_var_jumpClipCtrl"))
+	{
+		return animal_var_jumpClipCtrl;
+
+	}
+	else if (!strcmp(string, "animal_var_idleClipCtrl"))
+	{
+		return animal_var_idleClipCtrl;
+
+	}
+	else if (!strcmp(string, "animal_var_walkClipCtrl"))
+	{
+		return animal_var_walkClipCtrl;
+
+	}
+	else if (!strcmp(string, "animal_var_runClipCtrl"))
+	{
+		return animal_var_runClipCtrl;
+
+	}
+	else if (!strcmp(string, "animal_var_ctrlVelocityMagnitude"))
+	{
+		return animal_var_ctrlVelocityMagnitude;
+
+	}
+	else if (!strcmp(string, "animal_var_idleBlendThreshold"))
+	{
+		return animal_var_idleBlendThreshold;
+
+	}
+	else if (!strcmp(string, "animal_var_walkBlendThreshold"))
+	{
+		return animal_var_walkBlendThreshold;
+
+	}
+	else if (!strcmp(string, "animal_var_runBlendThreshold"))
+	{
+		return animal_var_runBlendThreshold;
+
+	}
+	else if (!strcmp(string, "animal_var_jumpLerpParam"))
+	{
+		return animal_var_jumpLerpParam;
+
+	}
+	else if (!strcmp(string, "animal_var_jumpDuration"))
+	{
+		return animal_var_jumpDuration;
+
+	}
+	else if (!strcmp(string, "animal_var_jumpHeight"))
+	{
+		return animal_var_jumpHeight;
+
+	}
+	else if (!strcmp(string, "animal_var_jumpFadeInTime"))
+	{
+		return animal_var_jumpFadeInTime;
+
+	}
+	else if (!strcmp(string, "animal_var_jumpFadeOutTime"))
+	{
+		return animal_var_jumpFadeOutTime;
+
+	}
+	else if (!strcmp(string, "animal_var_isJumping"))
+	{
+		return animal_var_isJumping;
+
+	}
+	else if (!strcmp(string, "animal_var_ctrlNode"))
+	{
+		return animal_var_ctrlNode;
+	}
+
+	return animal_var_max;
+}
+
+
+
+//Convert a key to a blend operation
+a3_BlendOp a3keyToBlendOp(a3_BlendTree_BlendOp blendOp)
+{
+	switch (blendOp)
+	{
+	case blendop_identity:
+		return a3_BlendOp_Identity;
+	case blendop_lerp:
+		return a3_BlendOp_Lerp;
+	case blendop_concat:
+		return a3_BlendOp_Concat;
+	case blendop_scale:
+		return a3_BlendOp_Scale;
+	case blendop_blend_3:
+		return a3_BlendOp_Blend_3;
+	case blendop_evaluate_clip_controller:
+		return a3_BlendOp_EvaluateClipController;
+	case blendop_bool_branch:
+		return a3_BlendOp_BoolBranch;
+	case blendop_handle_jump:
+		return a3_BlendOp_HandleJump;
+	default:
+		printf("ERROR - key does not exist in a3keyToBlendOp");
+		return NULL;
+	}
+}
+
+//Gets the blend op enum value corresponding to a string
+a3_BlendTree_BlendOp a3stringToBlendOpEnumKey(a3byte const* string)
+{
+	if (!strcmp(string, "blendop_identity"))
+	{
+		return blendop_identity;
+	}
+	else if (!strcmp(string, "blendop_lerp"))
+	{
+		return blendop_lerp;
+	}
+	else if (!strcmp(string, "blendop_concat"))
+	{
+		return blendop_concat;
+	}
+	else if (!strcmp(string, "blendop_scale"))
+	{
+		return blendop_scale;
+	}
+	else if (!strcmp(string, "blendop_blend_3"))
+	{
+		return blendop_blend_3;
+	}
+	else if (!strcmp(string, "blendop_evaluate_clip_controller"))
+	{
+		return blendop_evaluate_clip_controller;
+	}
+	else if (!strcmp(string, "blendop_bool_branch"))
+	{
+		return blendop_bool_branch;
+	}
+	else if (!strcmp(string, "blendop_handle_jump"))
+	{
+		return blendop_handle_jump;
+	}
+
+	return blendop_max;
+}
+
+//Convert a key to a param operation
+a3_ParamOp a3keyToParamOp(a3_BlendTree_ParamOp paramOp)
+{
+	switch (paramOp)
+	{
+	case paramop_identity:
+		return a3_ParamOp_Identity;
+	default:
+		printf("ERROR - key does not exist in a3keyToParamOp");
+		return NULL;
+	}
+}
+
+//Gets the param op enum value corresponding to a string
+a3_BlendTree_ParamOp a3stringToParamOpEnumKey(a3byte const* string)
+{
+	if (!strcmp(string, "paramop_identity"))
+	{
+		return paramop_identity;
+	}
+
+	return paramop_max;
+}
+
+//Find a specified node in demoMode->blendTreeNodeArray from a node ID 
+
+
+//Gets a reference to a variable in a blend tree node using a string identifier
+void* a3stringToBlendTreeVariable(a3byte* string, a3_BlendNode* blendNode)
+{
+	if (!strncmp(string, "paramData", 9))
+	{
+		a3byte* indexStr = &string[9]; //substring to get just the number
+
+		a3ui32 index = (a3ui32)atoi(indexStr);
+
+		return &blendNode->info.paramData[index];
+	}
+	else if (!strncmp(string, "miscData", 8))
+	{
+		a3byte* indexStr = &string[8]; //substring to get just the number
+
+		a3ui32 index = (a3ui32)atoi(indexStr);
+
+		return &blendNode->info.miscData[index];
+	}
+	else if (!strncmp(string, "spatialDataNodes", 16))
+	{
+		a3byte* indexStr = &string[16]; //substring to get just the number
+
+		a3ui32 index = (a3ui32)atoi(indexStr);
+
+		return &blendNode->info.spatialDataNodes[index];
+	}
+
+	return NULL;
+}
+
+//-----------------------------------------------------------------------------
+
 
 void a3animation_initBlendTree(a3_DemoMode1_Animation* demoMode)
 {
@@ -113,6 +465,84 @@ void a3animation_initBlendTree(a3_DemoMode1_Animation* demoMode)
 	// Character controller blend tree
 	a3_InitBlendTree(&(demoMode->blendTree), demoMode->hierarchy_skel, joints, sizeof(joints) / sizeof(joints[0]));
 	
+	//// Variable initialization
+	//demoMode->idleBlendThreshold = 0;
+	//demoMode->walkBlendThreshold = 2;
+	//demoMode->runBlendThreshold = 4;
+	//demoMode->isJumping = false;
+	//demoMode->timeSinceJump = 0;
+	//demoMode->jumpFadeInTime = .8f;
+	//demoMode->jumpFadeOutTime = .6f;
+	//demoMode->jumpLerpParam = 0;
+	//demoMode->jumpHeight = 5;
+	//demoMode->jumpDuration = (a3real) demoMode->clipPool[0].clip[demoMode->jumpClipCtrl->clipIndex].duration_sec;
+
+	//// Node for getting spatial data from jump clip controller
+	//a3_BlendNode* jumpCCNode = a3_CreateBlendNode(a3_BlendOp_EvaluateClipController);
+	//jumpCCNode->info.miscData[0] = demoMode->jumpClipCtrl;
+	//jumpCCNode->info.miscData[1] = demoMode->hierarchyPoseGroup_skel;
+
+	//// Node for getting spatial data from idle clip controller
+	//a3_BlendNode* idleCCNode = a3_CreateBlendNode(a3_BlendOp_EvaluateClipController);
+	//idleCCNode->info.miscData[0] = demoMode->idleClipCtrl;
+	//idleCCNode->info.miscData[1] = demoMode->hierarchyPoseGroup_skel;
+
+
+	//// Node for getting spatial data from walk clip controller
+	//a3_BlendNode* walkCCNode = a3_CreateBlendNode(a3_BlendOp_EvaluateClipController);
+	//walkCCNode->info.miscData[0] = demoMode->walkClipCtrl;
+	//walkCCNode->info.miscData[1] = demoMode->hierarchyPoseGroup_skel;
+
+
+	//// Node for getting spatial data from run clip controller
+	//a3_BlendNode* runCCNode = a3_CreateBlendNode(a3_BlendOp_EvaluateClipController);
+	//runCCNode->info.miscData[0] = demoMode->runClipCtrl;
+	//runCCNode->info.miscData[1] = demoMode->hierarchyPoseGroup_skel;
+
+	//	
+	//// Node used for blending between idle, walk, and run depending on velocity
+	//a3_BlendNode* blendGroundPoseNode = a3_CreateBlendNode(a3_BlendOp_Blend_3);
+	//blendGroundPoseNode->info.paramData[0] = &(demoMode->ctrlVelocityMagnitude);
+	//blendGroundPoseNode->info.paramData[1] = &(demoMode->idleBlendThreshold);
+	//blendGroundPoseNode->info.paramData[2] = &(demoMode->walkBlendThreshold);
+	//blendGroundPoseNode->info.paramData[3] = &(demoMode->runBlendThreshold);
+	//blendGroundPoseNode->info.spatialDataNodes[0] = idleCCNode;
+	//blendGroundPoseNode->info.spatialDataNodes[1] = walkCCNode;
+	//blendGroundPoseNode->info.spatialDataNodes[2] = runCCNode;
+
+	//// Lerps between ground and jump anims, allows for gradual transition
+	//a3_BlendNode* jumpGroundLerpNode = a3_CreateBlendNode(a3_BlendOp_Lerp);
+	//jumpGroundLerpNode->info.spatialDataNodes[0] = blendGroundPoseNode;
+	//jumpGroundLerpNode->info.spatialDataNodes[1] = jumpCCNode;
+	//jumpGroundLerpNode->info.paramData[0] = &(demoMode->jumpLerpParam);
+
+	//// Node for updating jump variables and applying them for jump
+	//a3_BlendNode* handleJumpNode = a3_CreateBlendNode(a3_BlendOp_HandleJump);
+	//handleJumpNode->info.paramData[0] = &(demoMode->jumpDuration);
+	//handleJumpNode->info.paramData[1] = &(demoMode->jumpHeight);
+	//handleJumpNode->info.paramData[2] = &(demoMode->jumpFadeInTime);
+	//handleJumpNode->info.paramData[3] = &(demoMode->jumpFadeOutTime);
+	//handleJumpNode->info.miscData[0] = &(demoMode->timeSinceJump);
+	//handleJumpNode->info.miscData[1] = &(demoMode->jumpLerpParam);
+	//handleJumpNode->info.miscData[2] = &(demoMode->isJumping);
+	//handleJumpNode->info.miscData[3] = demoMode->ctrlNode;
+	//handleJumpNode->info.spatialDataNodes[0] = jumpGroundLerpNode;
+
+	//// Node for branching depending on whether character should be jumping or not
+	//a3_BlendNode* jumpBranchNode = a3_CreateBlendNode(a3_BlendOp_BoolBranch);
+	//jumpBranchNode->info.miscData[0] = &(demoMode->isJumping);
+	//jumpBranchNode->info.spatialDataNodes[0] = handleJumpNode; // True, we are jumping
+	//jumpBranchNode->info.spatialDataNodes[1] = blendGroundPoseNode; // False, we are on ground
+
+	//demoMode->blendTree.root = jumpBranchNode;
+
+	//return;
+
+
+
+	/////////////////// Temp Code //////////////////
+
+	// Read from file or set in animal, either way
 	// Variable initialization
 	demoMode->idleBlendThreshold = 0;
 	demoMode->walkBlendThreshold = 2;
@@ -125,64 +555,216 @@ void a3animation_initBlendTree(a3_DemoMode1_Animation* demoMode)
 	demoMode->jumpHeight = 5;
 	demoMode->jumpDuration = (a3real) demoMode->clipPool[0].clip[demoMode->jumpClipCtrl->clipIndex].duration_sec;
 
-	// Node for getting spatial data from jump clip controller
-	a3_BlendNode* jumpCCNode = a3_CreateBlendNode(a3_BlendOp_EvaluateClipController);
-	jumpCCNode->info.miscData[0] = demoMode->jumpClipCtrl;
-	jumpCCNode->info.miscData[1] = demoMode->hierarchyPoseGroup_skel;
+	//Set using "node_num" key in file, set directly when loading data
+	demoMode->blendNodeCount = 8;
 
-	// Node for getting spatial data from idle clip controller
-	a3_BlendNode* idleCCNode = a3_CreateBlendNode(a3_BlendOp_EvaluateClipController);
-	idleCCNode->info.miscData[0] = demoMode->idleClipCtrl;
-	idleCCNode->info.miscData[1] = demoMode->hierarchyPoseGroup_skel;
+	//Create an array of string identifiers for each data type (blend operations, blend nodes, etc.)
+	//Create a parallel enum with values corresponding to those indices names corresponding to the strings in those indices
+	
+	// LOOKUP FUNCTIONS
+	//Need a function that takes in a json key/string identifier and returns a blend operation
+	//Need another function that takes in a json key/string identifier and returns a blend node
+	//Need another function that takes in a json key/string identifier and returns the address / a pointer to a variable in demoMode
+	//Need another function that takes in a node id and json key/string identifier (miscData0, paramData3) and returns 
+		//the address/pointer to the location in the blend tree info struct of that node
+
+	//When data is read in, it just creates the nodes from the file in memory and sets the IDs of things like:
+		//node id
+		//spatialDataNodes
+		//misc data
+		//param data
+		//blend operation
+	//Use a loop when reading from the file, should have same number of node sections in file as the node count at the top of the file
+
+	a3ui32 currentCount = 0;
+
+	//Node jumpCCNode
+	a3_BlendTree_BlendOp blendOpEnumKey = a3stringToBlendOpEnumKey("blendop_evaluate_clip_controller");
+	demoMode->blendTreeNodes[0] = a3_CreateBlendNode(a3keyToBlendOp(blendOpEnumKey));	//Set blend operation
+	strcpy(demoMode->blendTreeNodes[0]->info.node_id, "jumpCCNode");	//Set node ID
+
+	a3_Animal_Variable animalVarEnumKey = a3stringToAnimalVariableEnumKey("animal_var_jumpClipCtrl");
+	void** ptr = a3stringToBlendTreeVariable("miscData0", demoMode->blendTreeNodes[0]);
+	*ptr = a3keyToAnimalVariable(animalVarEnumKey, demoMode);
+
+	animalVarEnumKey = a3stringToAnimalVariableEnumKey("animal_var_hierarchyPoseGroup_skel");
+	ptr = a3stringToBlendTreeVariable("miscData1", demoMode->blendTreeNodes[0]);
+	*ptr = a3keyToAnimalVariable(animalVarEnumKey, demoMode);
+
+	currentCount++;
+
+	//Node idleCCNode
+	blendOpEnumKey = a3stringToBlendOpEnumKey("blendop_evaluate_clip_controller");
+	demoMode->blendTreeNodes[1] = a3_CreateBlendNode(a3keyToBlendOp(blendOpEnumKey));	//Set blend operation
+	strcpy(demoMode->blendTreeNodes[1]->info.node_id, "idleCCNode");	//Set node ID
+
+	animalVarEnumKey = a3stringToAnimalVariableEnumKey("animal_var_idleClipCtrl");
+	ptr = a3stringToBlendTreeVariable("miscData0", demoMode->blendTreeNodes[1]);
+	*ptr = a3keyToAnimalVariable(animalVarEnumKey, demoMode);
+
+	animalVarEnumKey = a3stringToAnimalVariableEnumKey("animal_var_hierarchyPoseGroup_skel");
+	ptr = a3stringToBlendTreeVariable("miscData1", demoMode->blendTreeNodes[1]);
+	*ptr = a3keyToAnimalVariable(animalVarEnumKey, demoMode);
+
+	currentCount++;
+
+	//Node walkCCNode
+	blendOpEnumKey = a3stringToBlendOpEnumKey("blendop_evaluate_clip_controller");
+	demoMode->blendTreeNodes[2] = a3_CreateBlendNode(a3keyToBlendOp(blendOpEnumKey));	//Set blend operation
+	strcpy(demoMode->blendTreeNodes[2]->info.node_id, "walkCCNode");	//Set node ID
+
+	animalVarEnumKey = a3stringToAnimalVariableEnumKey("animal_var_walkClipCtrl");
+	ptr = a3stringToBlendTreeVariable("miscData0", demoMode->blendTreeNodes[2]);
+	*ptr = a3keyToAnimalVariable(animalVarEnumKey, demoMode);
+
+	animalVarEnumKey = a3stringToAnimalVariableEnumKey("animal_var_hierarchyPoseGroup_skel");
+	ptr = a3stringToBlendTreeVariable("miscData1", demoMode->blendTreeNodes[2]);
+	*ptr = a3keyToAnimalVariable(animalVarEnumKey, demoMode);
+
+	currentCount++;
+
+	//Node runCCNode
+	blendOpEnumKey = a3stringToBlendOpEnumKey("blendop_evaluate_clip_controller");
+	demoMode->blendTreeNodes[3] = a3_CreateBlendNode(a3keyToBlendOp(blendOpEnumKey));	//Set blend operation
+	strcpy(demoMode->blendTreeNodes[3]->info.node_id, "runCCNode");	//Set node ID
+
+	animalVarEnumKey = a3stringToAnimalVariableEnumKey("animal_var_runClipCtrl");
+	ptr = a3stringToBlendTreeVariable("miscData0", demoMode->blendTreeNodes[3]);
+	*ptr = a3keyToAnimalVariable(animalVarEnumKey, demoMode);
+
+	animalVarEnumKey = a3stringToAnimalVariableEnumKey("animal_var_hierarchyPoseGroup_skel");
+	ptr = a3stringToBlendTreeVariable("miscData1", demoMode->blendTreeNodes[3]);
+	*ptr = a3keyToAnimalVariable(animalVarEnumKey, demoMode);
+
+	currentCount++;
 
 
-	// Node for getting spatial data from walk clip controller
-	a3_BlendNode* walkCCNode = a3_CreateBlendNode(a3_BlendOp_EvaluateClipController);
-	walkCCNode->info.miscData[0] = demoMode->walkClipCtrl;
-	walkCCNode->info.miscData[1] = demoMode->hierarchyPoseGroup_skel;
+	//Node blendGroundPoseNode
+	blendOpEnumKey = a3stringToBlendOpEnumKey("blendop_blend_3");
+	demoMode->blendTreeNodes[4] = a3_CreateBlendNode(a3keyToBlendOp(blendOpEnumKey));	//Set blend operation
+	strcpy(demoMode->blendTreeNodes[4]->info.node_id, "blendGroundPoseNode");	//Set node ID
+
+	animalVarEnumKey = a3stringToAnimalVariableEnumKey("animal_var_ctrlVelocityMagnitude");
+	ptr = a3stringToBlendTreeVariable("paramData0", demoMode->blendTreeNodes[4]);
+	*ptr = a3keyToAnimalVariable(animalVarEnumKey, demoMode);
+
+	animalVarEnumKey = a3stringToAnimalVariableEnumKey("animal_var_idleBlendThreshold");
+	ptr = a3stringToBlendTreeVariable("paramData1", demoMode->blendTreeNodes[4]);
+	*ptr = a3keyToAnimalVariable(animalVarEnumKey, demoMode);
+
+	animalVarEnumKey = a3stringToAnimalVariableEnumKey("animal_var_walkBlendThreshold");
+	ptr = a3stringToBlendTreeVariable("paramData2", demoMode->blendTreeNodes[4]);
+	*ptr = a3keyToAnimalVariable(animalVarEnumKey, demoMode);
+
+	animalVarEnumKey = a3stringToAnimalVariableEnumKey("animal_var_runBlendThreshold");
+	ptr = a3stringToBlendTreeVariable("paramData3", demoMode->blendTreeNodes[4]);
+	*ptr = a3keyToAnimalVariable(animalVarEnumKey, demoMode);
+
+	ptr = a3stringToBlendTreeVariable("spatialDataNodes0", demoMode->blendTreeNodes[4]);
+	*ptr = a3blendTreeGetNode(demoMode->blendTreeNodes, currentCount, "idleCCNode");
+
+	ptr = a3stringToBlendTreeVariable("spatialDataNodes1", demoMode->blendTreeNodes[4]);
+	*ptr = a3blendTreeGetNode(demoMode->blendTreeNodes, currentCount, "walkCCNode");
+
+	ptr = a3stringToBlendTreeVariable("spatialDataNodes2", demoMode->blendTreeNodes[4]);
+	*ptr = a3blendTreeGetNode(demoMode->blendTreeNodes, currentCount, "runCCNode");
+
+	currentCount++;
 
 
-	// Node for getting spatial data from run clip controller
-	a3_BlendNode* runCCNode = a3_CreateBlendNode(a3_BlendOp_EvaluateClipController);
-	runCCNode->info.miscData[0] = demoMode->runClipCtrl;
-	runCCNode->info.miscData[1] = demoMode->hierarchyPoseGroup_skel;
+	//Node jumpGroundLerpNode
+	blendOpEnumKey = a3stringToBlendOpEnumKey("blendop_lerp");
+	demoMode->blendTreeNodes[5] = a3_CreateBlendNode(a3keyToBlendOp(blendOpEnumKey));	//Set blend operation
+	strcpy(demoMode->blendTreeNodes[5]->info.node_id, "jumpGroundLerpNode");	//Set node ID
 
-		
-	// Node used for blending between idle, walk, and run depending on velocity
-	a3_BlendNode* blendGroundPoseNode = a3_CreateBlendNode(a3_BlendOp_Blend_3);
-	blendGroundPoseNode->info.paramData[0] = &(demoMode->ctrlVelocityMagnitude);
-	blendGroundPoseNode->info.paramData[1] = &(demoMode->idleBlendThreshold);
-	blendGroundPoseNode->info.paramData[2] = &(demoMode->walkBlendThreshold);
-	blendGroundPoseNode->info.paramData[3] = &(demoMode->runBlendThreshold);
-	blendGroundPoseNode->info.spatialDataNodes[0] = idleCCNode;
-	blendGroundPoseNode->info.spatialDataNodes[1] = walkCCNode;
-	blendGroundPoseNode->info.spatialDataNodes[2] = runCCNode;
+	ptr = a3stringToBlendTreeVariable("spatialDataNodes0", demoMode->blendTreeNodes[5]);
+	*ptr = a3blendTreeGetNode(demoMode->blendTreeNodes, currentCount, "blendGroundPoseNode");
 
-	// Lerps between ground and jump anims, allows for gradual transition
-	a3_BlendNode* jumpGroundLerpNode = a3_CreateBlendNode(a3_BlendOp_Lerp);
-	jumpGroundLerpNode->info.spatialDataNodes[0] = blendGroundPoseNode;
-	jumpGroundLerpNode->info.spatialDataNodes[1] = jumpCCNode;
-	jumpGroundLerpNode->info.paramData[0] = &(demoMode->jumpLerpParam);
+	ptr = a3stringToBlendTreeVariable("spatialDataNodes1", demoMode->blendTreeNodes[5]);
+	*ptr = a3blendTreeGetNode(demoMode->blendTreeNodes, currentCount, "jumpCCNode");
 
-	// Node for updating jump variables and applying them for jump
-	a3_BlendNode* handleJumpNode = a3_CreateBlendNode(a3_BlendOp_HandleJump);
-	handleJumpNode->info.paramData[0] = &(demoMode->jumpDuration);
-	handleJumpNode->info.paramData[1] = &(demoMode->jumpHeight);
-	handleJumpNode->info.paramData[2] = &(demoMode->jumpFadeInTime);
-	handleJumpNode->info.paramData[3] = &(demoMode->jumpFadeOutTime);
-	handleJumpNode->info.miscData[0] = &(demoMode->timeSinceJump);
-	handleJumpNode->info.miscData[1] = &(demoMode->jumpLerpParam);
-	handleJumpNode->info.miscData[2] = &(demoMode->isJumping);
-	handleJumpNode->info.miscData[3] = demoMode->ctrlNode;
-	handleJumpNode->info.spatialDataNodes[0] = jumpGroundLerpNode;
+	animalVarEnumKey = a3stringToAnimalVariableEnumKey("animal_var_jumpLerpParam");
+	ptr = a3stringToBlendTreeVariable("paramData0", demoMode->blendTreeNodes[5]);
+	*ptr = a3keyToAnimalVariable(animalVarEnumKey, demoMode);
 
-	// Node for branching depending on whether character should be jumping or not
-	a3_BlendNode* jumpBranchNode = a3_CreateBlendNode(a3_BlendOp_BoolBranch);
-	jumpBranchNode->info.miscData[0] = &(demoMode->isJumping);
-	jumpBranchNode->info.spatialDataNodes[0] = handleJumpNode; // True, we are jumping
-	jumpBranchNode->info.spatialDataNodes[1] = blendGroundPoseNode; // False, we are on ground
+	currentCount++;
 
-	demoMode->blendTree.root = jumpBranchNode;
+
+	//Node handleJumpNode
+	blendOpEnumKey = a3stringToBlendOpEnumKey("blendop_handle_jump");
+	demoMode->blendTreeNodes[6] = a3_CreateBlendNode(a3keyToBlendOp(blendOpEnumKey));	//Set blend operation
+	strcpy(demoMode->blendTreeNodes[6]->info.node_id, "handleJumpNode");	//Set node ID
+
+	animalVarEnumKey = a3stringToAnimalVariableEnumKey("animal_var_jumpDuration");
+	ptr = a3stringToBlendTreeVariable("paramData0", demoMode->blendTreeNodes[6]);
+	*ptr = a3keyToAnimalVariable(animalVarEnumKey, demoMode);
+
+	animalVarEnumKey = a3stringToAnimalVariableEnumKey("animal_var_jumpHeight");
+	ptr = a3stringToBlendTreeVariable("paramData1", demoMode->blendTreeNodes[6]);
+	*ptr = a3keyToAnimalVariable(animalVarEnumKey, demoMode);
+
+	animalVarEnumKey = a3stringToAnimalVariableEnumKey("animal_var_jumpFadeInTime");
+	ptr = a3stringToBlendTreeVariable("paramData2", demoMode->blendTreeNodes[6]);
+	*ptr = a3keyToAnimalVariable(animalVarEnumKey, demoMode);
+
+	animalVarEnumKey = a3stringToAnimalVariableEnumKey("animal_var_jumpFadeOutTime");
+	ptr = a3stringToBlendTreeVariable("paramData3", demoMode->blendTreeNodes[6]);
+	*ptr = a3keyToAnimalVariable(animalVarEnumKey, demoMode);
+
+	animalVarEnumKey = a3stringToAnimalVariableEnumKey("animal_var_timeSinceJump");
+	ptr = a3stringToBlendTreeVariable("miscData0", demoMode->blendTreeNodes[6]);
+	*ptr = a3keyToAnimalVariable(animalVarEnumKey, demoMode);
+
+	animalVarEnumKey = a3stringToAnimalVariableEnumKey("animal_var_jumpLerpParam");
+	ptr = a3stringToBlendTreeVariable("miscData1", demoMode->blendTreeNodes[6]);
+	*ptr = a3keyToAnimalVariable(animalVarEnumKey, demoMode);
+
+	animalVarEnumKey = a3stringToAnimalVariableEnumKey("animal_var_isJumping");
+	ptr = a3stringToBlendTreeVariable("miscData2", demoMode->blendTreeNodes[6]);
+	*ptr = a3keyToAnimalVariable(animalVarEnumKey, demoMode);
+
+	animalVarEnumKey = a3stringToAnimalVariableEnumKey("animal_var_ctrlNode");
+	ptr = a3stringToBlendTreeVariable("miscData3", demoMode->blendTreeNodes[6]);
+	*ptr = a3keyToAnimalVariable(animalVarEnumKey, demoMode);
+
+	ptr = a3stringToBlendTreeVariable("spatialDataNodes0", demoMode->blendTreeNodes[6]);
+	*ptr = a3blendTreeGetNode(demoMode->blendTreeNodes, currentCount, "jumpGroundLerpNode");
+
+	currentCount++;
+
+
+	//Node jumpBranchNode
+	blendOpEnumKey = a3stringToBlendOpEnumKey("blendop_bool_branch");
+	demoMode->blendTreeNodes[7] = a3_CreateBlendNode(a3keyToBlendOp(blendOpEnumKey));	//Set blend operation
+	strcpy(demoMode->blendTreeNodes[7]->info.node_id, "jumpBranchNode");	//Set node ID
+
+	animalVarEnumKey = a3stringToAnimalVariableEnumKey("animal_var_isJumping");
+	ptr = a3stringToBlendTreeVariable("miscData0", demoMode->blendTreeNodes[7]);
+	*ptr = a3keyToAnimalVariable(animalVarEnumKey, demoMode);
+
+	ptr = a3stringToBlendTreeVariable("spatialDataNodes0", demoMode->blendTreeNodes[7]);
+	*ptr = a3blendTreeGetNode(demoMode->blendTreeNodes, currentCount, "handleJumpNode");
+
+	ptr = a3stringToBlendTreeVariable("spatialDataNodes1", demoMode->blendTreeNodes[7]);
+	*ptr = a3blendTreeGetNode(demoMode->blendTreeNodes, currentCount, "blendGroundPoseNode");
+
+	currentCount++;
+
+
+	//a3_BlendNode* test = a3blendTreeGetNode(demoMode->blendTreeNodes, demoMode->blendNodeCount, "stuff");
+
+	//At the end when all IDs are set, use the lookup functions to do a pass through each node to start creating references foe:
+		//spatialDataNodes
+		//the root node
+		//misc data variables
+		//param data variables
+		//blend operation pointers
+
+	//Read root node block using "root" key, stores ID of root node
+	demoMode->blendTree.root = a3blendTreeGetNode(demoMode->blendTreeNodes, demoMode->blendNodeCount, "jumpBranchNode");
+	
+
+	//////////////////////////////////////////////////
 }
 
 
