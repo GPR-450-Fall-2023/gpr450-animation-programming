@@ -388,7 +388,7 @@ void* a3stringToBlendTreeVariable(a3byte* string, a3_BlendNode* blendNode)
 //-----------------------------------------------------------------------------
 
 
-void a3animation_initBlendTree(a3_DemoMode1_Animation* demoMode)
+void a3animation_initBlendTree(a3_DemoMode1_Animation* demoMode, a3byte* filePath)
 {
 	char joints[][48] = 
 	{
@@ -461,6 +461,11 @@ void a3animation_initBlendTree(a3_DemoMode1_Animation* demoMode)
 		"mixamorig:RightToe_End"
 	};
 
+	FILE* fptr = fopen(filePath, "r");
+	if (fptr == NULL) {
+		printf("no such file.\n");
+		return 0;
+	}
 
 	// Character controller blend tree
 	a3_InitBlendTree(&(demoMode->blendTree), demoMode->hierarchy_skel, joints, sizeof(joints) / sizeof(joints[0]));
@@ -577,6 +582,54 @@ void a3animation_initBlendTree(a3_DemoMode1_Animation* demoMode)
 	//Use a loop when reading from the file, should have same number of node sections in file as the node count at the top of the file
 
 	a3ui32 currentCount = 0;
+	a3ui32 mDataCount = 0;
+	a3ui32 pDataCount = 0;
+	a3ui32 sDataCount = 0;
+
+	a3byte line[200];
+	const a3byte tab[8] = "	";
+	a3byte* tok;
+	a3byte fileData[25][6][32];
+
+	while( fgets(line, 200, fptr) ) {
+		switch(line[0]) {
+			case '"':
+				//if node_num
+				//if root
+				//else	// Node Name
+				break;
+			case '	':
+				//if blendOp
+				//if miscData
+				//if paramData
+				//if spatialDataNodes
+				break;
+			case '}':	// End of node data
+
+				break;
+			default:	// Error
+				printf("file reading error.\n");
+				return 0;
+		}
+	}
+
+	// 
+//		case node_num:
+// 
+//		case root:
+// 
+//		//node data
+//		case blendOp:
+//		case miscData#:
+//		case paramData#:
+//		case spatialDataNodes#:
+// 
+//		//end of node data
+//		case }:
+// 
+//		//node name
+//		default:
+// 
 
 	//Node jumpCCNode
 	a3_BlendTree_BlendOp blendOpEnumKey = a3stringToBlendOpEnumKey("blendop_evaluate_clip_controller");
