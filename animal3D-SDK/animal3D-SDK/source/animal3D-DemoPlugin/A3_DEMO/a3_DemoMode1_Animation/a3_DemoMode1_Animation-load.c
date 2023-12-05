@@ -585,31 +585,61 @@ void a3animation_initBlendTree(a3_DemoMode1_Animation* demoMode, a3byte* filePat
 	a3ui32 mDataCount = 0;
 	a3ui32 pDataCount = 0;
 	a3ui32 sDataCount = 0;
+	a3ui32 totalNodes = 100;
 
-	a3byte line[200];
+	a3byte line[256];
 	const a3byte tab[8] = "	";
 	//a3byte* tok;
 	//a3byte fileData[25][6][32];
 
-	while( fgets(line, 200, fptr) ) {
-		switch(line[0]) {
-			case '"':
-				//if node_num
-				//if root
-				//else	// Node Name
-				break;
-			case '	':
-				//if blendOp
-				//if miscData
-				//if paramData
-				//if spatialDataNodes
-				break;
-			case '}':	// End of node data
+	while (fgets(line, sizeof(line), fptr)) {
+		if (line[1] == '"') {
+			if (line[2] == 'n' &&
+				line[3] == 'o' &&
+				line[4] == 'd' &&
+				line[5] == 'e' &&
+				line[6] == '_' &&
+				line[7] == 'n' &&
+				line[8] == 'u' &&
+				line[9] == 'm' &&
+				line[10] == '"') {
+				// Number of Nodes
+				totalNodes = 8;
+			}
+			else if(line[2] == 'r' &&
+					line[3] == 'o' &&
+					line[4] == 'o' &&
+					line[5] == 't' &&
+					line[6] == '"') {
+				// Root
 
-				break;
-			default:	// Error
-				printf("file reading error.\n");
-				return;
+			}
+			else {
+				// New Node
+			}
+		}
+		else if (line[2] == '"') {
+			// Node Data
+			if (line[3] == 'b') {
+				// Blend Operation
+
+			}
+			else if (line[3] == 'p') {
+				// Parameter Data
+
+			}
+			else if (line[3] == 'm') {
+				// Miscellaneous Data
+
+			}
+			else if (line[3] == 's') {
+				// Spatial Data Nodes
+
+			}
+		}
+		else if (line[1] == '}') {
+			// End of Node
+			currentCount++;
 		}
 	}
 
