@@ -1,0 +1,69 @@
+{
+	"node_num": 8,
+
+	"runCCNode": {
+		"blendOp": "blendop_evaluate_clip_controller",
+		"miscData0": “animal_var_runClipCtrl”,
+		"miscData1": “animal_var_hierarchyPoseGroup_skel”
+	}
+
+	"walkCCNode": {
+		"blendOp": "blendop_evaluate_clip_controller",
+		"miscData0": “animal_var_walkClipCtrl”,
+		"miscData1": “animal_var_hierarchyPoseGroup_skel”
+	},
+
+	"idleCCNode": {
+		"blendOp": "blendop_evaluate_clip_controller",
+		"miscData0": “animal_var_idleClipCtrl”,
+		"miscData1": “animal_var_hierarchyPoseGroup_skel”
+	},
+
+	"blendGroundPoseNode": {
+		"blendOp": "blendop_blend_3",
+		"paramData0": “animal_var_ctrlVelocityMagnitude”,
+		"paramData1":  “animal_var_idleBlendThreshold”,
+		"paramData2":  “animal_var_walkBlendThreshold”,
+		"paramData3":  “animal_var_runBlendThreshold”,
+		"spatialDataNodes0": "idleCCNode",
+		"spatialDataNodes1": "walkCCNode",
+		"spatialDataNodes2": "runCCNode"
+	},
+
+	"jumpCCNode": {
+		"blendOp": "blendop_evaluate_clip_controller",
+		"miscData0": “animal_var_jumpClipCtrl”,
+		"miscData1": “animal_var_hierarchyPoseGroup_skel”
+	},
+
+	"jumpGroundLerpNode": {
+		"blendOp": "blendop_lerp",
+		"spatialDataNodes0": "blendGroundPoseNode",
+		"spatialDataNodes1": "jumpCCNode",
+		"paramData0": “animal_var_jumpLerpParam”
+	},
+
+	"handleJumpNode": {
+		"blendOp": "blendop_handle_jump",
+		"paramData0": “animal_var_jumpDuration”,
+		"paramData1":  “animal_var_jumpHeight”,
+		"paramData2":  “animal_var_jumpFadeInTime”,
+		"paramData3":  “animal_var_jumpFadeOutTime”,
+		"miscData0": “animal_var_timeSinceJump”,
+		"miscData1":  “animal_var_jumpLerpParam”,
+		"miscData2":  “animal_var_isJumping”,
+		"miscData3":  “animal_var_ctrlNode”,
+		"spatialDataNodes0": "jumpGroundLerpNode"
+	},
+
+	"jumpBranchNode": {
+		"blendOp": "blendop_bool_branch",
+		"miscData0":  “animal_var_isJumping”,
+		"spatialDataNodes0": "handleJumpNode",
+		"spatialDataNodes1": "blendGroundPoseNode"
+	}
+
+	"root" {
+		"blendOp": "jumpBranchNode"
+	}
+}

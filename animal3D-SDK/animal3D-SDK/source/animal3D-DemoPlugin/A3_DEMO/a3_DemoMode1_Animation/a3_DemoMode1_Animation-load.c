@@ -464,7 +464,7 @@ void a3animation_initBlendTree(a3_DemoMode1_Animation* demoMode, a3byte* filePat
 	FILE* fptr = fopen(filePath, "r");
 	if (fptr == NULL) {
 		printf("no such file.\n");
-		return 0;
+		return;
 	}
 
 	// Character controller blend tree
@@ -588,8 +588,8 @@ void a3animation_initBlendTree(a3_DemoMode1_Animation* demoMode, a3byte* filePat
 
 	a3byte line[200];
 	const a3byte tab[8] = "	";
-	a3byte* tok;
-	a3byte fileData[25][6][32];
+	//a3byte* tok;
+	//a3byte fileData[25][6][32];
 
 	while( fgets(line, 200, fptr) ) {
 		switch(line[0]) {
@@ -609,7 +609,7 @@ void a3animation_initBlendTree(a3_DemoMode1_Animation* demoMode, a3byte* filePat
 				break;
 			default:	// Error
 				printf("file reading error.\n");
-				return 0;
+				return;
 		}
 	}
 
@@ -1570,7 +1570,7 @@ void a3animation_load(a3_DemoState const* demoState, a3_DemoMode1_Animation* dem
 	// setup
 	a3animation_init_animation(demoState, demoMode);
 	a3animation_initCtrlNode(demoMode);
-	a3animation_initBlendTree(demoMode);
+	a3animation_initBlendTree(demoMode, "blendtree.json");
 }
 
 
