@@ -561,7 +561,7 @@ void a3animation_initBlendTree(a3_DemoMode1_Animation* demoMode, a3byte* filePat
 	demoMode->jumpDuration = (a3real) demoMode->clipPool[0].clip[demoMode->jumpClipCtrl->clipIndex].duration_sec;
 
 	//Set using "node_num" key in file, set directly when loading data
-	demoMode->blendNodeCount = 8;
+	//demoMode->blendNodeCount = 8;
 
 	//Create an array of string identifiers for each data type (blend operations, blend nodes, etc.)
 	//Create a parallel enum with values corresponding to those indices names corresponding to the strings in those indices
@@ -582,59 +582,96 @@ void a3animation_initBlendTree(a3_DemoMode1_Animation* demoMode, a3byte* filePat
 	//Use a loop when reading from the file, should have same number of node sections in file as the node count at the top of the file
 
 	a3ui32 currentCount = 0;
-	a3ui32 mDataCount = 0;
 	a3ui32 pDataCount = 0;
+	a3ui32 mDataCount = 0;
 	a3ui32 sDataCount = 0;
 	a3ui32 totalNodes = 100;
 
 	a3byte line[256];
-	const a3byte tab[8] = "	";
-	//a3byte* tok;
-	//a3byte fileData[25][6][32];
+	const a3byte tab[4] =	"    ";
+	const a3byte quote[4] =	"\"";
+	const a3byte colon[4] =	":";
+	const a3byte space[4] =	" ";
+	const a3byte comma[4] =	",";
+	a3byte* tok;
+	a3byte* nodeID = "watermelon";
+
+	void** ptr;
+	a3_Animal_Variable animalVarEnumKey;
 
 	while (fgets(line, sizeof(line), fptr)) {
 		if (line[1] == '"') {
-			if (line[2] == 'n' &&
-				line[3] == 'o' &&
-				line[4] == 'd' &&
-				line[5] == 'e' &&
-				line[6] == '_' &&
-				line[7] == 'n' &&
-				line[8] == 'u' &&
-				line[9] == 'm' &&
-				line[10] == '"') {
+			// Isolate the part in the quotes
+			tok = strtok(line, quote);
+			tok = strtok(0, quote);
+			if (strcmp(tok, "node_num") == 0) {
 				// Number of Nodes
-				totalNodes = 8;
+				tok = strtok(0, space);
+				tok = strtok(0, comma);
+				totalNodes = atoi(tok);
+				demoMode->blendNodeCount = totalNodes;
 			}
-			else if(line[2] == 'r' &&
-					line[3] == 'o' &&
-					line[4] == 'o' &&
-					line[5] == 't' &&
-					line[6] == '"') {
+			else if(strcmp(tok, "root") == 0) {
 				// Root
-
+				fgets(line, sizeof(line), fptr);
+				tok = strtok(line, quote);
+				tok = strtok(0, quote);
+				tok = strtok(0, quote);
+				tok = strtok(0, quote);
+				demoMode->blendTree.root = a3blendTreeGetNode(demoMode->blendTreeNodes, demoMode->blendNodeCount, tok);
 			}
 			else {
 				// New Node
+				strcpy(nodeID, tok);
 			}
 		}
 		else if (line[2] == '"') {
 			// Node Data
-			if (line[3] == 'b') {
+			tok = strtok(line, quote);
+			tok = strtok(0, quote);
+			if (strcmp(tok, "blendOp") == 0) {
 				// Blend Operation
+				tok = strtok(0, quote);
+				tok = strtok(0, quote);
+				a3_BlendTree_BlendOp blendOpEnumKey = a3stringToBlendOpEnumKey(tok);
 
+				demoMode->blendTreeNodes[currentCount] = a3_CreateBlendNode(a3keyToBlendOp(blendOpEnumKey));	//Set blend operation
+				
+				strcpy(demoMode->blendTreeNodes[currentCount]->info.node_id, nodeID);	//Set node ID
 			}
-			else if (line[3] == 'p') {
+			else if (tok[0] == 'p') {
 				// Parameter Data
+				pDataCount++;
 
+				ptr = a3stringToBlendTreeVariable(tok, demoMode->blendTreeNodes[currentCount]);
+
+				tok = strtok(0, quote);
+				tok = strtok(0, quote);
+				animalVarEnumKey = a3stringToAnimalVariableEnumKey(tok);
+
+				*ptr = a3keyToAnimalVariable(animalVarEnumKey, demoMode);
 			}
-			else if (line[3] == 'm') {
+			else if (tok[0] == 'm') {
 				// Miscellaneous Data
+				mDataCount++;
 
+				ptr = a3stringToBlendTreeVariable(tok, demoMode->blendTreeNodes[currentCount]);
+
+				tok = strtok(0, quote);
+				tok = strtok(0, quote);
+				animalVarEnumKey = a3stringToAnimalVariableEnumKey(tok);
+
+				*ptr = a3keyToAnimalVariable(animalVarEnumKey, demoMode);
 			}
-			else if (line[3] == 's') {
+			else if (tok[0] == 's') {
 				// Spatial Data Nodes
+				sDataCount++;
 
+				ptr = a3stringToBlendTreeVariable(tok, demoMode->blendTreeNodes[currentCount]);
+
+				tok = strtok(0, quote);
+				tok = strtok(0, quote);
+				*ptr = a3blendTreeGetNode(demoMode->blendTreeNodes, currentCount, tok);
 			}
 		}
 		else if (line[1] == '}') {
@@ -643,31 +680,14 @@ void a3animation_initBlendTree(a3_DemoMode1_Animation* demoMode, a3byte* filePat
 		}
 	}
 
-	// 
-//		case node_num:
-// 
-//		case root:
-// 
-//		//node data
-//		case blendOp:
-//		case miscData#:
-//		case paramData#:
-//		case spatialDataNodes#:
-// 
-//		//end of node data
-//		case }:
-// 
-//		//node name
-//		default:
-// 
-
+	/*
 	//Node jumpCCNode
 	a3_BlendTree_BlendOp blendOpEnumKey = a3stringToBlendOpEnumKey("blendop_evaluate_clip_controller");
 	demoMode->blendTreeNodes[0] = a3_CreateBlendNode(a3keyToBlendOp(blendOpEnumKey));	//Set blend operation
 	strcpy(demoMode->blendTreeNodes[0]->info.node_id, "jumpCCNode");	//Set node ID
 
-	a3_Animal_Variable animalVarEnumKey = a3stringToAnimalVariableEnumKey("animal_var_jumpClipCtrl");
-	void** ptr = a3stringToBlendTreeVariable("miscData0", demoMode->blendTreeNodes[0]);
+	animalVarEnumKey = a3stringToAnimalVariableEnumKey("animal_var_jumpClipCtrl");
+	ptr = a3stringToBlendTreeVariable("miscData0", demoMode->blendTreeNodes[0]);
 	*ptr = a3keyToAnimalVariable(animalVarEnumKey, demoMode);
 
 	animalVarEnumKey = a3stringToAnimalVariableEnumKey("animal_var_hierarchyPoseGroup_skel");
@@ -845,7 +865,7 @@ void a3animation_initBlendTree(a3_DemoMode1_Animation* demoMode, a3byte* filePat
 
 	//Read root node block using "root" key, stores ID of root node
 	demoMode->blendTree.root = a3blendTreeGetNode(demoMode->blendTreeNodes, demoMode->blendNodeCount, "jumpBranchNode");
-	
+	*/
 
 	//////////////////////////////////////////////////
 }
@@ -1600,7 +1620,7 @@ void a3animation_load(a3_DemoState const* demoState, a3_DemoMode1_Animation* dem
 	// setup
 	a3animation_init_animation(demoState, demoMode);
 	a3animation_initCtrlNode(demoMode);
-	a3animation_initBlendTree(demoMode, "blendtree.json");
+	a3animation_initBlendTree(demoMode, "../../../../resource/blendtreefinalproj/blendtree.json");
 }
 
 
