@@ -166,7 +166,7 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 		a3_ClipPool clipPool[1];
 
 		// Blend tree
-		a3_BlendTree blendTree;
+		a3_BlendTree blendTrees[animationMaxCount_blendTrees];
 
 		// Moving these to inside blend tree so we can support multiple blend trees running at once
 		/*a3_BlendNode* blendTreeNodes[64];

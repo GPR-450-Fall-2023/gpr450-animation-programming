@@ -388,7 +388,7 @@ void a3animation_update_animation_from_blend_tree(a3_DemoMode1_Animation* demoMo
 	for (a3ui32 i = 0; i < demoMode->hierarchy_skel->numNodes; i++)
 	{
 		activeHS->animPose[0].pose[i] = a3_GetBlendNodeResult(demoMode->hierarchy_skel, activeHS->animPose[0].pose[i],
-			demoMode->blendTree.root, &(demoMode->blendTree), i, (a3real) dt);
+			demoMode->blendTrees[0].root, &(demoMode->blendTrees[0]), i, (a3real)dt);
 	}
 
 	// run FK

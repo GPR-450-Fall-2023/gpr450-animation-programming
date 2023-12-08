@@ -388,7 +388,7 @@ void* a3stringToBlendTreeVariable(a3byte* string, a3_BlendNode* blendNode)
 //-----------------------------------------------------------------------------
 
 
-void a3animation_initBlendTree(a3_BlendTree* blendTree, a3_DemoMode1_Animation* demoMode, a3byte* filePath)
+void a3animation_initBlendTree(a3_DemoMode1_Animation* demoMode, a3byte* filePath)
 {
 	char joints[][48] = 
 	{
@@ -468,7 +468,7 @@ void a3animation_initBlendTree(a3_BlendTree* blendTree, a3_DemoMode1_Animation* 
 	}
 
 	// Character controller blend tree
-	a3_InitBlendTree(blendTree, demoMode->hierarchy_skel, joints, sizeof(joints) / sizeof(joints[0]));
+	a3_InitBlendTree(&(demoMode->blendTrees[0]), demoMode->hierarchy_skel, joints, sizeof(joints) / sizeof(joints[0]));
 	
 	//// Variable initialization
 	//demoMode->idleBlendThreshold = 0;
@@ -609,7 +609,7 @@ void a3animation_initBlendTree(a3_BlendTree* blendTree, a3_DemoMode1_Animation* 
 				tok = strtok(0, space);
 				tok = strtok(0, comma);
 				totalNodes = atoi(tok);
-				demoMode->blendTree.blendNodeCount = totalNodes;
+				demoMode->blendTrees[0].blendNodeCount = totalNodes;
 			}
 			else if(strcmp(tok, "root") == 0) {
 				// Root
@@ -618,7 +618,7 @@ void a3animation_initBlendTree(a3_BlendTree* blendTree, a3_DemoMode1_Animation* 
 				tok = strtok(0, quote);
 				tok = strtok(0, quote);
 				tok = strtok(0, quote);
-				demoMode->blendTree.root = a3blendTreeGetNode(demoMode->blendTree.blendTreeNodes, demoMode->blendTree.blendNodeCount, tok);
+				demoMode->blendTrees[0].root = a3blendTreeGetNode(demoMode->blendTrees[0].blendTreeNodes, demoMode->blendTrees[0].blendNodeCount, tok);
 			}
 			else {
 				// New Node
@@ -635,15 +635,15 @@ void a3animation_initBlendTree(a3_BlendTree* blendTree, a3_DemoMode1_Animation* 
 				tok = strtok(0, quote);
 				a3_BlendTree_BlendOp blendOpEnumKey = a3stringToBlendOpEnumKey(tok);
 
-				demoMode->blendTree.blendTreeNodes[currentCount] = a3_CreateBlendNode(a3keyToBlendOp(blendOpEnumKey));	//Set blend operation
+				demoMode->blendTrees[0].blendTreeNodes[currentCount] = a3_CreateBlendNode(a3keyToBlendOp(blendOpEnumKey));	//Set blend operation
 				
-				strcpy(demoMode->blendTree.blendTreeNodes[currentCount]->info.node_id, nodeID);	//Set node ID
+				strcpy(demoMode->blendTrees[0].blendTreeNodes[currentCount]->info.node_id, nodeID);	//Set node ID
 			}
 			else if (tok[0] == 'p') {
 				// Parameter Data
 				pDataCount++;
 
-				ptr = a3stringToBlendTreeVariable(tok, demoMode->blendTree.blendTreeNodes[currentCount]);
+				ptr = a3stringToBlendTreeVariable(tok, demoMode->blendTrees[0].blendTreeNodes[currentCount]);
 
 				tok = strtok(0, quote);
 				tok = strtok(0, quote);
@@ -655,7 +655,7 @@ void a3animation_initBlendTree(a3_BlendTree* blendTree, a3_DemoMode1_Animation* 
 				// Miscellaneous Data
 				mDataCount++;
 
-				ptr = a3stringToBlendTreeVariable(tok, demoMode->blendTree.blendTreeNodes[currentCount]);
+				ptr = a3stringToBlendTreeVariable(tok, demoMode->blendTrees[0].blendTreeNodes[currentCount]);
 
 				tok = strtok(0, quote);
 				tok = strtok(0, quote);
@@ -667,11 +667,11 @@ void a3animation_initBlendTree(a3_BlendTree* blendTree, a3_DemoMode1_Animation* 
 				// Spatial Data Nodes
 				sDataCount++;
 
-				ptr = a3stringToBlendTreeVariable(tok, demoMode->blendTree.blendTreeNodes[currentCount]);
+				ptr = a3stringToBlendTreeVariable(tok, demoMode->blendTrees[0].blendTreeNodes[currentCount]);
 
 				tok = strtok(0, quote);
 				tok = strtok(0, quote);
-				*ptr = a3blendTreeGetNode(demoMode->blendTree.blendTreeNodes, currentCount, tok);
+				*ptr = a3blendTreeGetNode(demoMode->blendTrees[0].blendTreeNodes, currentCount, tok);
 			}
 		}
 		else if (line[1] == '}') {
@@ -1620,7 +1620,7 @@ void a3animation_load(a3_DemoState const* demoState, a3_DemoMode1_Animation* dem
 	// setup
 	a3animation_init_animation(demoState, demoMode);
 	a3animation_initCtrlNode(demoMode);
-	a3animation_initBlendTree(&(demoMode->blendTree), demoMode, "../../../../resource/blendtreefinalproj/blendtree.json");
+	a3animation_initBlendTree(demoMode, "../../../../resource/blendtreefinalproj/blendtree.json");
 }
 
 
