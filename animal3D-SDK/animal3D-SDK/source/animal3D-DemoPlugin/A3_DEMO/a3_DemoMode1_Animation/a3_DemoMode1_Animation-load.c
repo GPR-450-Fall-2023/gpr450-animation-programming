@@ -390,76 +390,79 @@ void* a3stringToBlendTreeVariable(a3byte* string, a3_BlendNode* blendNode)
 
 void a3animation_initBlendTree(a3_DemoMode1_Animation* demoMode, a3byte* filePath)
 {
-	char joints[][48] = 
-	{
-		"mixamorig:Hips",
-		/*"mixamorig:Spine",
-		"mixamorig:Spine1",
-		"mixamorig:Spine2",*/
-		"mixamorig:Neck",
-		"mixamorig:Head",
-		"mixamorig:HeadTop_End",
-		"mixamorig:LeftEye",
-		"mixamorig:RightEye",
-		//"mixamorig:LeftShoulder",
-		//"mixamorig:LeftArm",
-		//"mixamorig:LeftForeArm",
-		//"mixamorig:LeftHand",
-		//"mixamorig:LeftHandThumb1",
-		//"mixamorig:LeftHandThumb2",
-		//"mixamorig:LeftHandThumb3",
-		//"mixamorig:LeftHandThumb4",
-		//"mixamorig:LeftHandIndex1",
-		//"mixamorig:LeftHandIndex2",
-		//"mixamorig:LeftHandIndex3",
-		//"mixamorig:LeftHandIndex4",
-		//"mixamorig:LeftHandMiddle1",
-		//"mixamorig:LeftHandMiddle2",
-		//"mixamorig:LeftHandMiddle3",
-		//"mixamorig:LeftHandMiddle4",
-		//"mixamorig:LeftHandRing1",
-		//"mixamorig:LeftHandRing2",
-		//"mixamorig:LeftHandRing3",
-		//"mixamorig:LeftHandRing4",
-		//"mixamorig:LeftHandPinky1",
-		//"mixamorig:LeftHandPinky2",
-		//"mixamorig:LeftHandPinky3",
-		//"mixamorig:LeftHandPinky4",
-		//"mixamorig:RightShoulder",
-		//"mixamorig:RightArm",
-		//"mixamorig:RightForeArm",
-		//"mixamorig:RightHand",
-		//"mixamorig:RightHandPinky1",
-		//"mixamorig:RightHandPinky2",
-		//"mixamorig:RightHandPinky3",
-		//"mixamorig:RightHandPinky4",
-		//"mixamorig:RightHandRing1",
-		//"mixamorig:RightHandRing2",
-		//"mixamorig:RightHandRing3",
-		//"mixamorig:RightHandRing4",
-		//"mixamorig:RightHandMiddle1",
-		//"mixamorig:RightHandMiddle2",
-		//"mixamorig:RightHandMiddle3",
-		//"mixamorig:RightHandMiddle4",
-		//"mixamorig:RightHandIndex1",
-		//"mixamorig:RightHandIndex2",
-		//"mixamorig:RightHandIndex3",
-		//"mixamorig:RightHandIndex4",
-		//"mixamorig:RightHandThumb1",
-		//"mixamorig:RightHandThumb2",
-		//"mixamorig:RightHandThumb3",
-		//"mixamorig:RightHandThumb4",
-		"mixamorig:LeftUpLeg",
-		"mixamorig:LeftLeg",
-		"mixamorig:LeftFoot",
-		"mixamorig:LeftToeBase",
-		"mixamorig:LeftToe_End",
-		"mixamorig:RightUpLeg",
-		"mixamorig:RightLeg",
-		"mixamorig:RightFoot",
-		"mixamorig:RightToeBase",
-		"mixamorig:RightToe_End"
-	};
+	//char joints[][48] = 
+	//{
+	//	"mixamorig:Hips",
+	//	/*"mixamorig:Spine",
+	//	"mixamorig:Spine1",
+	//	"mixamorig:Spine2",*/
+	//	"mixamorig:Neck",
+	//	"mixamorig:Head",
+	//	"mixamorig:HeadTop_End",
+	//	"mixamorig:LeftEye",
+	//	"mixamorig:RightEye",
+	//	//"mixamorig:LeftShoulder",
+	//	//"mixamorig:LeftArm",
+	//	//"mixamorig:LeftForeArm",
+	//	//"mixamorig:LeftHand",
+	//	//"mixamorig:LeftHandThumb1",
+	//	//"mixamorig:LeftHandThumb2",
+	//	//"mixamorig:LeftHandThumb3",
+	//	//"mixamorig:LeftHandThumb4",
+	//	//"mixamorig:LeftHandIndex1",
+	//	//"mixamorig:LeftHandIndex2",
+	//	//"mixamorig:LeftHandIndex3",
+	//	//"mixamorig:LeftHandIndex4",
+	//	//"mixamorig:LeftHandMiddle1",
+	//	//"mixamorig:LeftHandMiddle2",
+	//	//"mixamorig:LeftHandMiddle3",
+	//	//"mixamorig:LeftHandMiddle4",
+	//	//"mixamorig:LeftHandRing1",
+	//	//"mixamorig:LeftHandRing2",
+	//	//"mixamorig:LeftHandRing3",
+	//	//"mixamorig:LeftHandRing4",
+	//	//"mixamorig:LeftHandPinky1",
+	//	//"mixamorig:LeftHandPinky2",
+	//	//"mixamorig:LeftHandPinky3",
+	//	//"mixamorig:LeftHandPinky4",
+	//	//"mixamorig:RightShoulder",
+	//	//"mixamorig:RightArm",
+	//	//"mixamorig:RightForeArm",
+	//	//"mixamorig:RightHand",
+	//	//"mixamorig:RightHandPinky1",
+	//	//"mixamorig:RightHandPinky2",
+	//	//"mixamorig:RightHandPinky3",
+	//	//"mixamorig:RightHandPinky4",
+	//	//"mixamorig:RightHandRing1",
+	//	//"mixamorig:RightHandRing2",
+	//	//"mixamorig:RightHandRing3",
+	//	//"mixamorig:RightHandRing4",
+	//	//"mixamorig:RightHandMiddle1",
+	//	//"mixamorig:RightHandMiddle2",
+	//	//"mixamorig:RightHandMiddle3",
+	//	//"mixamorig:RightHandMiddle4",
+	//	//"mixamorig:RightHandIndex1",
+	//	//"mixamorig:RightHandIndex2",
+	//	//"mixamorig:RightHandIndex3",
+	//	//"mixamorig:RightHandIndex4",
+	//	//"mixamorig:RightHandThumb1",
+	//	//"mixamorig:RightHandThumb2",
+	//	//"mixamorig:RightHandThumb3",
+	//	//"mixamorig:RightHandThumb4",
+	//	"mixamorig:LeftUpLeg",
+	//	"mixamorig:LeftLeg",
+	//	"mixamorig:LeftFoot",
+	//	"mixamorig:LeftToeBase",
+	//	"mixamorig:LeftToe_End",
+	//	"mixamorig:RightUpLeg",
+	//	"mixamorig:RightLeg",
+	//	"mixamorig:RightFoot",
+	//	"mixamorig:RightToeBase",
+	//	"mixamorig:RightToe_End"
+	//};
+
+	//// TEMP: WILL BE OVERWRITTEN BY FILE LATER
+	//demoMode->numBlendTrees = 1;
 
 	FILE* fptr = fopen(filePath, "r");
 	if (fptr == NULL) {
@@ -468,7 +471,7 @@ void a3animation_initBlendTree(a3_DemoMode1_Animation* demoMode, a3byte* filePat
 	}
 
 	// Character controller blend tree
-	a3_InitBlendTree(&(demoMode->blendTrees[0]), demoMode->hierarchy_skel, joints, sizeof(joints) / sizeof(joints[0]));
+	//a3_InitBlendTree(&(demoMode->blendTrees[0]), demoMode->hierarchy_skel, joints, sizeof(joints) / sizeof(joints[0]));
 	
 	//// Variable initialization
 	//demoMode->idleBlendThreshold = 0;
@@ -581,11 +584,18 @@ void a3animation_initBlendTree(a3_DemoMode1_Animation* demoMode, a3byte* filePat
 		//blend operation
 	//Use a loop when reading from the file, should have same number of node sections in file as the node count at the top of the file
 
+	demoMode->numBlendTrees = 0;
+	char joints[a3_blend_tree_max_joints][64] = {0};
+	a3ui32 jointCount = 0;
+
 	a3ui32 currentCount = 0;
 	a3ui32 pDataCount = 0;
 	a3ui32 mDataCount = 0;
 	a3ui32 sDataCount = 0;
 	a3ui32 totalNodes = 100;
+
+	a3boolean insideBlendTree = false;
+	a3ui32 treeIndex = -1;
 
 	a3byte line[256];
 	const a3byte tab[4] =	"    ";
@@ -600,7 +610,13 @@ void a3animation_initBlendTree(a3_DemoMode1_Animation* demoMode, a3byte* filePat
 	a3_Animal_Variable animalVarEnumKey;
 
 	while (fgets(line, sizeof(line), fptr)) {
-		if (line[1] == '"') {
+		if (line[1] == '"') 
+		{
+			// Going into blend tree
+			insideBlendTree = true;
+			treeIndex++;
+		}
+		if (line[2] == '"') {
 			// Isolate the part in the quotes
 			tok = strtok(line, quote);
 			tok = strtok(0, quote);
@@ -609,7 +625,7 @@ void a3animation_initBlendTree(a3_DemoMode1_Animation* demoMode, a3byte* filePat
 				tok = strtok(0, space);
 				tok = strtok(0, comma);
 				totalNodes = atoi(tok);
-				demoMode->blendTrees[0].blendNodeCount = totalNodes;
+				demoMode->blendTrees[treeIndex].blendNodeCount = totalNodes;
 			}
 			else if(strcmp(tok, "root") == 0) {
 				// Root
@@ -618,14 +634,47 @@ void a3animation_initBlendTree(a3_DemoMode1_Animation* demoMode, a3byte* filePat
 				tok = strtok(0, quote);
 				tok = strtok(0, quote);
 				tok = strtok(0, quote);
-				demoMode->blendTrees[0].root = a3blendTreeGetNode(demoMode->blendTrees[0].blendTreeNodes, demoMode->blendTrees[0].blendNodeCount, tok);
+				demoMode->blendTrees[treeIndex].root = a3blendTreeGetNode(demoMode->blendTrees[treeIndex].blendTreeNodes, demoMode->blendTrees[treeIndex].blendNodeCount, tok);
+			}
+			else if (strcmp(tok, "target_joints") == 0)
+			{
+				jointCount = 0;
+
+				fgets(line, sizeof(line), fptr);
+
+				// Loop through and get target joints
+				while (fgets(line, sizeof(line), fptr))
+				{
+					// https://stackoverflow.com/questions/1514660/remove-preceding-spaces-and-tabs-from-a-given-string-in-c-language
+					char* currChar = line;
+					while (*currChar == ' ' || *currChar == '\t') // Navigate past any white space
+					{
+						++currChar;
+					}
+
+					if (*currChar == '"')
+					{
+						tok = strtok(currChar, quote);
+						
+						// If stuff goes wrong, look here. I think we'll need to provide it with a proper
+						// memory address, but want to try it just in case
+						//*(joints[jointCount]) = *tok;
+						strcpy(joints[jointCount], tok);
+
+						jointCount++;
+					}
+				}
 			}
 			else {
-				// New Node
-				strcpy(nodeID, tok);
+				
+				if (insideBlendTree) // Inside blend tree, create new node
+				{
+					// New Node
+					strcpy(nodeID, tok);
+				}
 			}
 		}
-		else if (line[2] == '"') {
+		else if (line[3] == '"') {
 			// Node Data
 			tok = strtok(line, quote);
 			tok = strtok(0, quote);
@@ -635,15 +684,15 @@ void a3animation_initBlendTree(a3_DemoMode1_Animation* demoMode, a3byte* filePat
 				tok = strtok(0, quote);
 				a3_BlendTree_BlendOp blendOpEnumKey = a3stringToBlendOpEnumKey(tok);
 
-				demoMode->blendTrees[0].blendTreeNodes[currentCount] = a3_CreateBlendNode(a3keyToBlendOp(blendOpEnumKey));	//Set blend operation
+				demoMode->blendTrees[treeIndex].blendTreeNodes[currentCount] = a3_CreateBlendNode(a3keyToBlendOp(blendOpEnumKey));	//Set blend operation
 				
-				strcpy(demoMode->blendTrees[0].blendTreeNodes[currentCount]->info.node_id, nodeID);	//Set node ID
+				strcpy(demoMode->blendTrees[treeIndex].blendTreeNodes[currentCount]->info.node_id, nodeID);	//Set node ID
 			}
 			else if (tok[0] == 'p') {
 				// Parameter Data
 				pDataCount++;
 
-				ptr = a3stringToBlendTreeVariable(tok, demoMode->blendTrees[0].blendTreeNodes[currentCount]);
+				ptr = a3stringToBlendTreeVariable(tok, demoMode->blendTrees[treeIndex].blendTreeNodes[currentCount]);
 
 				tok = strtok(0, quote);
 				tok = strtok(0, quote);
@@ -655,7 +704,7 @@ void a3animation_initBlendTree(a3_DemoMode1_Animation* demoMode, a3byte* filePat
 				// Miscellaneous Data
 				mDataCount++;
 
-				ptr = a3stringToBlendTreeVariable(tok, demoMode->blendTrees[0].blendTreeNodes[currentCount]);
+				ptr = a3stringToBlendTreeVariable(tok, demoMode->blendTrees[treeIndex].blendTreeNodes[currentCount]);
 
 				tok = strtok(0, quote);
 				tok = strtok(0, quote);
@@ -667,18 +716,36 @@ void a3animation_initBlendTree(a3_DemoMode1_Animation* demoMode, a3byte* filePat
 				// Spatial Data Nodes
 				sDataCount++;
 
-				ptr = a3stringToBlendTreeVariable(tok, demoMode->blendTrees[0].blendTreeNodes[currentCount]);
+				ptr = a3stringToBlendTreeVariable(tok, demoMode->blendTrees[treeIndex].blendTreeNodes[currentCount]);
 
 				tok = strtok(0, quote);
 				tok = strtok(0, quote);
-				*ptr = a3blendTreeGetNode(demoMode->blendTrees[0].blendTreeNodes, currentCount, tok);
+				*ptr = a3blendTreeGetNode(demoMode->blendTrees[treeIndex].blendTreeNodes, currentCount, tok);
 			}
 		}
 		else if (line[1] == '}') {
-			// End of Node
-			currentCount++;
+			
+			if (insideBlendTree)
+			{
+				a3_InitBlendTree(&(demoMode->blendTrees[treeIndex]), demoMode->hierarchy_skel, joints, jointCount);
+				
+				insideBlendTree = false;
+				jointCount = 0;
+				currentCount = 0;
+				pDataCount = 0;
+				mDataCount = 0;
+				sDataCount = 0;
+				totalNodes = 100;
+			}
+			else
+			{
+				// End of Node
+				currentCount++;
+			}
 		}
 	}
+
+	demoMode->numBlendTrees = treeIndex + 1;
 
 	/*
 	//Node jumpCCNode

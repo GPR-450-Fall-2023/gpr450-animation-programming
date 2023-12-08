@@ -384,11 +384,14 @@ void a3animation_update_animation_from_blend_tree(a3_DemoMode1_Animation* demoMo
 	a3clipControllerUpdate(demoMode->runClipCtrl, dt);
 	a3clipControllerUpdate(demoMode->jumpClipCtrl, dt);
 
-	// Loop through each spatial pose and run blend tree
-	for (a3ui32 i = 0; i < demoMode->hierarchy_skel->numNodes; i++)
+	for (a3ui32 treeIndex = 0; treeIndex < demoMode->numBlendTrees; treeIndex++)
 	{
-		activeHS->animPose[0].pose[i] = a3_GetBlendNodeResult(demoMode->hierarchy_skel, activeHS->animPose[0].pose[i],
-			demoMode->blendTrees[0].root, &(demoMode->blendTrees[0]), i, (a3real)dt);
+		// Loop through each spatial pose and run blend tree
+		for (a3ui32 i = 0; i < demoMode->hierarchy_skel->numNodes; i++)
+		{
+			activeHS->animPose[0].pose[i] = a3_GetBlendNodeResult(demoMode->hierarchy_skel, activeHS->animPose[0].pose[i],
+				demoMode->blendTrees[treeIndex].root, &(demoMode->blendTrees[treeIndex]), i, (a3real)dt);
+		}
 	}
 
 	// run FK

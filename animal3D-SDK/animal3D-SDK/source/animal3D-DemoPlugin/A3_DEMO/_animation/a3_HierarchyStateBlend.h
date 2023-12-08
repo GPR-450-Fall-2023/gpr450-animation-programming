@@ -387,7 +387,7 @@ a3real a3smoothStep(a3real x);
 
 // Blend Tree Functions
 //-----------------------------------------------------------------------------
-void a3_InitBlendTree(a3_BlendTree* blendTree, const a3_Hierarchy* const targetHierarchy, char jointNamesToTarget[a3_blend_tree_max_joints][48], a3ui32 numJoints);
+void a3_InitBlendTree(a3_BlendTree* blendTree, const a3_Hierarchy* const targetHierarchy, char jointNamesToTarget[a3_blend_tree_max_joints][64], a3ui32 numJoints);
 void a3_InitBlendTreeNodeInfoToEmpty(a3_BlendTreeNodeInfo* info);
 a3_BlendNode* a3_CreateBlendNode(a3_BlendOp blendOperation);
 a3_ParamNode* a3_CreateParamNode(a3_ParamOp paramOperation);

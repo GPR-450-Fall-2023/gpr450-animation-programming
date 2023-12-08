@@ -329,7 +329,7 @@ a3i32 a3_calculateDelaunayTriangulation(Triangle* triArray_out, a3ui32* triCount
 
 
 // Joint names can be max of 48 characters
-void a3_InitBlendTree(a3_BlendTree* blendTree, const a3_Hierarchy* const targetHierarchy, char jointNamesToTarget[a3_blend_tree_max_joints][48], a3ui32 numJoints)
+void a3_InitBlendTree(a3_BlendTree* blendTree, const a3_Hierarchy* const targetHierarchy, char jointNamesToTarget[a3_blend_tree_max_joints][64], a3ui32 numJoints)
 {
 	// Could be optimized into one loop probably, but not needed
 
