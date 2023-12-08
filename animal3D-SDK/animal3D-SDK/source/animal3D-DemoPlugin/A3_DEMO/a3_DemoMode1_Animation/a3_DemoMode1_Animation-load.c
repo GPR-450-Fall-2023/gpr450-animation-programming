@@ -595,6 +595,7 @@ void a3animation_initBlendTree(a3_DemoMode1_Animation* demoMode, a3byte* filePat
 	a3ui32 totalNodes = 100;
 
 	a3boolean insideBlendTree = false;
+	a3boolean insideNode = false;
 	a3ui32 treeIndex = -1;
 
 	a3byte line[256];
@@ -663,6 +664,10 @@ void a3animation_initBlendTree(a3_DemoMode1_Animation* demoMode, a3byte* filePat
 
 						jointCount++;
 					}
+					else if (*currChar == ']')
+					{
+						break;
+					}
 				}
 			}
 			else {
@@ -670,6 +675,7 @@ void a3animation_initBlendTree(a3_DemoMode1_Animation* demoMode, a3byte* filePat
 				if (insideBlendTree) // Inside blend tree, create new node
 				{
 					// New Node
+					insideNode = true;
 					strcpy(nodeID, tok);
 				}
 			}
@@ -723,25 +729,26 @@ void a3animation_initBlendTree(a3_DemoMode1_Animation* demoMode, a3byte* filePat
 				*ptr = a3blendTreeGetNode(demoMode->blendTrees[treeIndex].blendTreeNodes, currentCount, tok);
 			}
 		}
-		else if (line[1] == '}') {
+		else if (line[2] == '}') { // End of node
 			
-			if (insideBlendTree)
-			{
-				a3_InitBlendTree(&(demoMode->blendTrees[treeIndex]), demoMode->hierarchy_skel, joints, jointCount);
-				
-				insideBlendTree = false;
-				jointCount = 0;
-				currentCount = 0;
-				pDataCount = 0;
-				mDataCount = 0;
-				sDataCount = 0;
-				totalNodes = 100;
-			}
-			else
+			if (insideNode)
 			{
 				// End of Node
 				currentCount++;
+				insideNode = false;
 			}
+		}
+		else if (line[1] == '}') { // End of blend tree
+
+			a3_InitBlendTree(&(demoMode->blendTrees[treeIndex]), demoMode->hierarchy_skel, joints, jointCount);
+
+			insideBlendTree = false;
+			jointCount = 0;
+			currentCount = 0;
+			pDataCount = 0;
+			mDataCount = 0;
+			sDataCount = 0;
+			totalNodes = 100;
 		}
 	}
 
