@@ -412,7 +412,7 @@ void a3handleLocomotionInput(a3_DemoState* demoState, a3_DemoMode1_Animation* de
 	const a3real MOVE_MAGNITUDE = 2.5;
 	const a3real ROT_MAGNITUDE = 180;
 
-	const a3real VEL_MAGNITUDE = 4;
+	const a3real VEL_MAGNITUDE = 10;
 	const a3real ACC_MAGNITUDE = 4;
 
 	const a3real ANG_VEL_MAGNITUDE = 45;
