@@ -621,6 +621,11 @@ void a3animation_initBlendTree(a3_DemoMode1_Animation* demoMode, a3byte* filePat
 			// Isolate the part in the quotes
 			tok = strtok(line, quote);
 			tok = strtok(0, quote);
+
+			// I have 0 clue why, but if you comment / delete this particular line of code, the
+				// strcmp(tok, "node_num") will fail in the if statement below, and the program will crash
+			a3ui32 cmpResult = strcmp(tok, "node_num");
+
 			if (strcmp(tok, "node_num") == 0) {
 				// Number of Nodes
 				tok = strtok(0, space);
