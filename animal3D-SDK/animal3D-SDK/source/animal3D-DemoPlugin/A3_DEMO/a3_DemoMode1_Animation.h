@@ -63,6 +63,7 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 	{
 		animationMaxCount_sceneObject = 16,
 		animationMaxCount_projector = 1,
+		animationMaxCount_blendTrees = 10
 	};
 
 	// scene object rendering program names
@@ -167,8 +168,9 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 		// Blend tree
 		a3_BlendTree blendTree;
 
-		a3_BlendNode* blendTreeNodes[64];
-		a3ui32 blendNodeCount;
+		// Moving these to inside blend tree so we can support multiple blend trees running at once
+		/*a3_BlendNode* blendTreeNodes[64];
+		a3ui32 blendNodeCount;*/
 
 		// Blend clip controllers
 		a3_ClipController idleClipCtrl[1], walkClipCtrl[1], runClipCtrl[1], jumpClipCtrl[1];

@@ -121,6 +121,9 @@ typedef struct a3_BlendTree
 	a3_BlendNode* root; // Root of tree
 	a3boolean targetJointList[a3_blend_tree_max_joints];
 
+	a3_BlendNode* blendTreeNodes[64];
+	a3ui32 blendNodeCount;
+
 } a3_BlendTree;
 
 
