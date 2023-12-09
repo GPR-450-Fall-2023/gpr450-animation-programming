@@ -383,6 +383,7 @@ void a3animation_update_animation_from_blend_tree(a3_DemoMode1_Animation* demoMo
 	a3clipControllerUpdate(demoMode->walkClipCtrl, dt);
 	a3clipControllerUpdate(demoMode->runClipCtrl, dt);
 	a3clipControllerUpdate(demoMode->jumpClipCtrl, dt);
+	a3clipControllerUpdate(demoMode->idlePistolClipCtrl, dt);
 
 	for (a3ui32 treeIndex = 0; treeIndex < demoMode->numBlendTrees; treeIndex++)
 	{

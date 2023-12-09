@@ -149,7 +149,7 @@
 
 		"upperJumpNode": {
 			"blendOp": "blendop_evaluate_clip_controller",
-			"miscData0": "animal_var_jumpClipCtrl",
+			"miscData0": "animal_var_idlePistolClipCtrl",
 			"miscData1": "animal_var_hierarchyPoseGroup_skel"
 		},
 

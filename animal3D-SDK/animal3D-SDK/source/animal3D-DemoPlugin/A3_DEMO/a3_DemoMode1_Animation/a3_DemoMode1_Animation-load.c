@@ -44,6 +44,7 @@ typedef enum a3_Animal_Variable
 	animal_var_idleClipCtrl,
 	animal_var_walkClipCtrl,
 	animal_var_runClipCtrl,
+	animal_var_idlePistolClipCtrl,
 
 	animal_var_ctrlVelocityMagnitude,
 	animal_var_idleBlendThreshold,
@@ -69,6 +70,7 @@ a3byte const* animalVariableKeys[animal_var_max] = {
 	"animal_var_idleClipCtrl",
 	"animal_var_walkClipCtrl",
 	"animal_var_runClipCtrl",
+	"animal_var_idlePistolClipCtrl",
 	"animal_var_ctrlVelocityMagnitude",
 	"animal_var_idleBlendThreshold",
 	"animal_var_walkBlendThreshold",
@@ -142,6 +144,8 @@ void* a3keyToAnimalVariable(a3_Animal_Variable animalVar, a3_DemoMode1_Animation
 		return demoMode->walkClipCtrl;
 	case animal_var_runClipCtrl:
 		return demoMode->runClipCtrl;
+	case animal_var_idlePistolClipCtrl:
+		return demoMode->idlePistolClipCtrl;
 			
 	case animal_var_ctrlVelocityMagnitude:
 		return &(demoMode->ctrlVelocityMagnitude);
@@ -199,6 +203,11 @@ a3_Animal_Variable a3stringToAnimalVariableEnumKey(a3byte const* string)
 	else if (!strcmp(string, "animal_var_runClipCtrl"))
 	{
 		return animal_var_runClipCtrl;
+
+	}
+	else if (!strcmp(string, "animal_var_idlePistolClipCtrl"))
+	{
+		return animal_var_idlePistolClipCtrl;
 
 	}
 	else if (!strcmp(string, "animal_var_ctrlVelocityMagnitude"))
@@ -1433,6 +1442,9 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_jump_f");//"xbot_idle_pistol");
 		a3clipControllerInit(demoMode->jumpClipCtrl, "xbot_jumpCtrl", demoMode->clipPool, j, rate, fps);
+
+		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_idle_pistol");
+		a3clipControllerInit(demoMode->idlePistolClipCtrl, "xbot_idlePistolCtrl", demoMode->clipPool, j, rate, fps);
 
 
 
